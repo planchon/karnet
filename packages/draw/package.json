@@ -1,8 +1,7 @@
 {
-  "name": "@poltion/editor",
+  "name": "@poltion/draw",
   "keywords": [],
-  "description": "Editor",
-  "author": "illodev",
+  "description": "Draw",
   "license": "MIT",
   "exports": "./src/index.ts",
   "main": "./dist/index.js",
@@ -22,6 +21,8 @@
     "tldraw": "^3.13.1"
   },
   "devDependencies": {
+    "@poltion/eslint-config": "workspace:*",
+    "@poltion/typescript-config": "workspace:*",
     "@types/react": "^19.0.0",
     "react": "catalog:",
     "react-dom": "catalog:"

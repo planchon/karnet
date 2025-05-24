@@ -1,13 +1,11 @@
 {
-  "name": "editor",
+  "name": "@poltion/editor",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsup src/index.ts --format cjs,esm --dts"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.8",

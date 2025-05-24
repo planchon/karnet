@@ -20,7 +20,7 @@ const CalendarDayHeader = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "sticky top-16 z-10 grid h-12 w-full flex-none items-center divide-[hsl(var(--calendar-border)/0.5)] border-b bg-[hsl(var(--calendar-background))] pl-20",
+        "sticky top-0 z-10 grid h-12 w-full flex-none items-center divide-[hsl(var(--calendar-border)/0.5)] border-b bg-[hsl(var(--calendar-background))] pl-20",
         className
       )}
       style={{ gridTemplateColumns: `repeat(${dates.length}, 1fr)` }}

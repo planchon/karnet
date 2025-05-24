@@ -1,5 +1,5 @@
 {
-  "name": "editor",
+  "name": "@poltion/web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,11 +10,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@illostack/react-calendar": "workspace:*",
+    "@illostack/react-calendar-day": "workspace:*",
+    "@illostack/react-calendar-month": "workspace:*",
+    "@illostack/react-calendar-range": "workspace:*",
+    "@illostack/react-calendar-week": "workspace:*",
+    "@illostack/react-calendar-ui": "workspace:*",
+    "@poltion/draw": "workspace:*",
+    "@poltion/editor": "workspace:*",
+    "@tailwindcss/vite": "^4.1.7",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "react-router": "^7.6.0",
+    "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@poltion/eslint-config": "workspace:*",
+    "@poltion/typescript-config": "workspace:*",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
