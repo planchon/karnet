@@ -16,5 +16,6 @@
     "typescript": "catalog:",
     "@poltion/eslint-config": "workspace:*",
     "@poltion/typescript-config": "workspace:*"
-  }
+  },
+  "packageManager": "pnpm@10.9.0"
 }
