@@ -1,88 +1,88 @@
-import * as React from "react"
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import * as React from "react";
+import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
-import { StarterKit } from "@tiptap/starter-kit"
-import { Image } from "@tiptap/extension-image"
-import { TaskItem } from "@tiptap/extension-task-item"
-import { TaskList } from "@tiptap/extension-task-list"
-import { TextAlign } from "@tiptap/extension-text-align"
-import { Typography } from "@tiptap/extension-typography"
-import { Highlight } from "@tiptap/extension-highlight"
-import { Subscript } from "@tiptap/extension-subscript"
-import { Superscript } from "@tiptap/extension-superscript"
-import { Underline } from "@tiptap/extension-underline"
+import { StarterKit } from "@tiptap/starter-kit";
+import { Image } from "@tiptap/extension-image";
+import { TaskItem } from "@tiptap/extension-task-item";
+import { TaskList } from "@tiptap/extension-task-list";
+import { TextAlign } from "@tiptap/extension-text-align";
+import { Typography } from "@tiptap/extension-typography";
+import { Highlight } from "@tiptap/extension-highlight";
+import { Subscript } from "@tiptap/extension-subscript";
+import { Superscript } from "@tiptap/extension-superscript";
+import { Underline } from "@tiptap/extension-underline";
 
 // --- Custom Extensions ---
-import { Link } from "@/components/tiptap-extension/link-extension"
-import { Selection } from "@/components/tiptap-extension/selection-extension"
-import { TrailingNode } from "@/components/tiptap-extension/trailing-node-extension"
+import { Link } from "../../../components/tiptap-extension/link-extension";
+import { Selection } from "../../../components/tiptap-extension/selection-extension";
+import { TrailingNode } from "../../../components/tiptap-extension/trailing-node-extension";
 
 // --- UI Primitives ---
-import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Spacer } from "@/components/tiptap-ui-primitive/spacer"
+import { Button } from "../../../components/tiptap-ui-primitive/button";
+import { Spacer } from "../../../components/tiptap-ui-primitive/spacer";
 import {
   Toolbar,
   ToolbarGroup,
-  ToolbarSeparator,
-} from "@/components/tiptap-ui-primitive/toolbar"
+  ToolbarSeparator
+} from "../../../components/tiptap-ui-primitive/toolbar";
 
 // --- Tiptap Node ---
-import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension"
-import "@/components/tiptap-node/code-block-node/code-block-node.scss"
-import "@/components/tiptap-node/list-node/list-node.scss"
-import "@/components/tiptap-node/image-node/image-node.scss"
-import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
+import { ImageUploadNode } from "../../../components/tiptap-node/image-upload-node/image-upload-node-extension";
+import "../../../components/tiptap-node/code-block-node/code-block-node.scss";
+import "../../../components/tiptap-node/list-node/list-node.scss";
+import "../../../components/tiptap-node/image-node/image-node.scss";
+import "../../../components/tiptap-node/paragraph-node/paragraph-node.scss";
 
 // --- Tiptap UI ---
-import { HeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu"
-import { ImageUploadButton } from "@/components/tiptap-ui/image-upload-button"
-import { ListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu"
-import { BlockQuoteButton } from "@/components/tiptap-ui/blockquote-button"
-import { CodeBlockButton } from "@/components/tiptap-ui/code-block-button"
+import { HeadingDropdownMenu } from "../../../components/tiptap-ui/heading-dropdown-menu";
+import { ImageUploadButton } from "../../../components/tiptap-ui/image-upload-button";
+import { ListDropdownMenu } from "../../../components/tiptap-ui/list-dropdown-menu";
+import { BlockQuoteButton } from "../../../components/tiptap-ui/blockquote-button";
+import { CodeBlockButton } from "../../../components/tiptap-ui/code-block-button";
 import {
   ColorHighlightPopover,
   ColorHighlightPopoverContent,
-  ColorHighlightPopoverButton,
-} from "@/components/tiptap-ui/color-highlight-popover"
+  ColorHighlightPopoverButton
+} from "../../../components/tiptap-ui/color-highlight-popover";
 import {
   LinkPopover,
   LinkContent,
-  LinkButton,
-} from "@/components/tiptap-ui/link-popover"
-import { MarkButton } from "@/components/tiptap-ui/mark-button"
-import { TextAlignButton } from "@/components/tiptap-ui/text-align-button"
-import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
+  LinkButton
+} from "../../../components/tiptap-ui/link-popover";
+import { MarkButton } from "../../../components/tiptap-ui/mark-button";
+import { TextAlignButton } from "../../../components/tiptap-ui/text-align-button";
+import { UndoRedoButton } from "../../../components/tiptap-ui/undo-redo-button";
 
 // --- Icons ---
-import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon"
-import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon"
-import { LinkIcon } from "@/components/tiptap-icons/link-icon"
+import { ArrowLeftIcon } from "../../../components/tiptap-icons/arrow-left-icon";
+import { HighlighterIcon } from "../../../components/tiptap-icons/highlighter-icon";
+import { LinkIcon } from "../../../components/tiptap-icons/link-icon";
 
 // --- Hooks ---
-import { useMobile } from "@/hooks/use-mobile"
-import { useWindowSize } from "@/hooks/use-window-size"
-import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
+import { useMobile } from "../../../hooks/use-mobile";
+import { useWindowSize } from "../../../hooks/use-window-size";
+import { useCursorVisibility } from "../../../hooks/use-cursor-visibility";
 
 // --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
+import { ThemeToggle } from "../../../components/tiptap-templates/simple/theme-toggle";
 
 // --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
+import { handleImageUpload, MAX_FILE_SIZE } from "../../../lib/tiptap-utils";
 
 // --- Styles ---
-import "@/components/tiptap-templates/simple/simple-editor.scss"
+import "../../../components/tiptap-templates/simple/simple-editor.scss";
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+import content from "../../../components/tiptap-templates/simple/data/content.json";
 
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
-  isMobile,
+  isMobile
 }: {
-  onHighlighterClick: () => void
-  onLinkClick: () => void
-  isMobile: boolean
+  onHighlighterClick: () => void;
+  onLinkClick: () => void;
+  isMobile: boolean;
 }) => {
   return (
     <>
@@ -148,15 +148,15 @@ const MainToolbarContent = ({
         <ThemeToggle />
       </ToolbarGroup>
     </>
-  )
-}
+  );
+};
 
 const MobileToolbarContent = ({
   type,
-  onBack,
+  onBack
 }: {
-  type: "highlighter" | "link"
-  onBack: () => void
+  type: "highlighter" | "link";
+  onBack: () => void;
 }) => (
   <>
     <ToolbarGroup>
@@ -178,15 +178,15 @@ const MobileToolbarContent = ({
       <LinkContent />
     )}
   </>
-)
+);
 
 export function SimpleEditor() {
-  const isMobile = useMobile()
-  const windowSize = useWindowSize()
+  const isMobile = useMobile();
+  const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
     "main" | "highlighter" | "link"
-  >("main")
-  const toolbarRef = React.useRef<HTMLDivElement>(null)
+  >("main");
+  const toolbarRef = React.useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -195,8 +195,8 @@ export function SimpleEditor() {
         autocomplete: "off",
         autocorrect: "off",
         autocapitalize: "off",
-        "aria-label": "Main content area, start typing to enter text.",
-      },
+        "aria-label": "Main content area, start typing to enter text."
+      }
     },
     extensions: [
       StarterKit,
@@ -216,24 +216,24 @@ export function SimpleEditor() {
         maxSize: MAX_FILE_SIZE,
         limit: 3,
         upload: handleImageUpload,
-        onError: (error) => console.error("Upload failed:", error),
+        onError: (error) => console.error("Upload failed:", error)
       }),
       TrailingNode,
-      Link.configure({ openOnClick: false }),
+      Link.configure({ openOnClick: false })
     ],
-    content: content,
-  })
+    content: content
+  });
 
   const bodyRect = useCursorVisibility({
     editor,
-    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
-  })
+    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0
+  });
 
   React.useEffect(() => {
     if (!isMobile && mobileView !== "main") {
-      setMobileView("main")
+      setMobileView("main");
     }
-  }, [isMobile, mobileView])
+  }, [isMobile, mobileView]);
 
   return (
     <EditorContext.Provider value={{ editor }}>
@@ -242,7 +242,7 @@ export function SimpleEditor() {
         style={
           isMobile
             ? {
-                bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`,
+                bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`
               }
             : {}
         }
@@ -269,5 +269,5 @@ export function SimpleEditor() {
         />
       </div>
     </EditorContext.Provider>
-  )
+  );
 }

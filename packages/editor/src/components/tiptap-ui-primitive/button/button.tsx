@@ -1,54 +1,54 @@
-import * as React from "react"
+import * as React from "react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
-} from "@/components/tiptap-ui-primitive/tooltip"
+  TooltipTrigger
+} from "../../../components/tiptap-ui-primitive/tooltip";
 
-import "@/components/tiptap-ui-primitive/button/button-colors.scss"
-import "@/components/tiptap-ui-primitive/button/button-group.scss"
-import "@/components/tiptap-ui-primitive/button/button.scss"
+import "../../../components/tiptap-ui-primitive/button/button-colors.scss";
+import "../../../components/tiptap-ui-primitive/button/button-group.scss";
+import "../../../components/tiptap-ui-primitive/button/button.scss";
 
-type PlatformShortcuts = Record<string, string>
+type PlatformShortcuts = Record<string, string>;
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string
-  showTooltip?: boolean
-  tooltip?: React.ReactNode
-  shortcutKeys?: string
+  className?: string;
+  showTooltip?: boolean;
+  tooltip?: React.ReactNode;
+  shortcutKeys?: string;
 }
 
 export const MAC_SYMBOLS: PlatformShortcuts = {
   ctrl: "⌘",
   alt: "⌥",
-  shift: "⇧",
-} as const
+  shift: "⇧"
+} as const;
 
 export const formatShortcutKey = (key: string, isMac: boolean) => {
   if (isMac) {
-    const lowerKey = key.toLowerCase()
-    return MAC_SYMBOLS[lowerKey] || key.toUpperCase()
+    const lowerKey = key.toLowerCase();
+    return MAC_SYMBOLS[lowerKey] || key.toUpperCase();
   }
-  return key.charAt(0).toUpperCase() + key.slice(1)
-}
+  return key.charAt(0).toUpperCase() + key.slice(1);
+};
 
 export const parseShortcutKeys = (
   shortcutKeys: string | undefined,
   isMac: boolean
 ) => {
-  if (!shortcutKeys) return []
+  if (!shortcutKeys) return [];
 
   return shortcutKeys
     .split("-")
     .map((key) => key.trim())
-    .map((key) => formatShortcutKey(key, isMac))
-}
+    .map((key) => formatShortcutKey(key, isMac));
+};
 
 export const ShortcutDisplay: React.FC<{ shortcuts: string[] }> = ({
-  shortcuts,
+  shortcuts
 }) => {
-  if (shortcuts.length === 0) return null
+  if (shortcuts.length === 0) return null;
 
   return (
     <div>
@@ -59,8 +59,8 @@ export const ShortcutDisplay: React.FC<{ shortcuts: string[] }> = ({
         </React.Fragment>
       ))}
     </div>
-  )
-}
+  );
+};
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -80,12 +80,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         typeof navigator !== "undefined" &&
         navigator.platform.toLowerCase().includes("mac"),
       []
-    )
+    );
 
     const shortcuts = React.useMemo(
       () => parseShortcutKeys(shortcutKeys, isMac),
       [shortcutKeys, isMac]
-    )
+    );
 
     if (!tooltip || !showTooltip) {
       return (
@@ -97,7 +97,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         >
           {children}
         </button>
-      )
+      );
     }
 
     return (
@@ -115,10 +115,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <ShortcutDisplay shortcuts={shortcuts} />
         </TooltipContent>
       </Tooltip>
-    )
+    );
   }
-)
+);
 
-Button.displayName = "Button"
+Button.displayName = "Button";
 
-export default Button
+export default Button;
