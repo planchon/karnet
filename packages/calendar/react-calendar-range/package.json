@@ -27,8 +27,8 @@
   "devDependencies": {
     "@poltion/eslint-config": "workspace:*",
     "@poltion/typescript-config": "workspace:*",
-    "@types/react": "^19.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "@types/react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   }
 }
