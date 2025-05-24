@@ -1,0 +1,36 @@
+{
+  "name": "@illostack/react-calendar",
+  "version": "0.0.1-beta.2",
+  "keywords": [],
+  "description": "React Calendar",
+  "author": "illodev",
+  "license": "MIT",
+  "exports": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/illostack/calendar.git",
+    "directory": "packages/react-calendar"
+  },
+  "homepage": "https://github.com/illostack/calendar",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
+    "@illostack/react-store": "^0.0.1",
+    "@illostack/react-calendar-ui": "workspace:*",
+    "react-hook-form": "^7.55.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@poltion/eslint-config": "workspace:*",
+    "@poltion/typescript-config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@poltion/typescript-config",
+  "version": "0.0.1",
+  "private": false,
+  "license": "MIT",
+  "exports": {
+    "./base.json": "./base.json",
+    "./react.json": "./react.json"
+  },
+  "files": [
+    "base.json",
+    "react.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
