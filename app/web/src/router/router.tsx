@@ -1,12 +1,17 @@
 import { Route, Routes } from "react-router";
 import { DrawPage } from "../pages/draw";
-import { CalendarPage } from "../pages/calendar";
+import { AgendaPage } from "../pages/agenda";
 import { PagePage } from "../pages/pages";
+import { GeneralOutlet } from "./outlet/general.outlet";
+import { ChatPage } from "../pages/chat";
 
 export const Router = () => (
   <Routes>
-    <Route path="/pages" element={<PagePage />} />
-    <Route path="/calendar" element={<CalendarPage />} />
-    <Route path="/draw" element={<DrawPage />} />
+    <Route path="/" element={<GeneralOutlet />}>
+      <Route path="/pages" element={<PagePage />} />
+      <Route path="/agenda" element={<AgendaPage />} />
+      <Route path="/sketches" element={<DrawPage />} />
+      <Route path="/chat" element={<ChatPage />} />
+    </Route>
   </Routes>
 );

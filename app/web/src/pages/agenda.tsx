@@ -82,7 +82,7 @@ const events: CalendarProvidedEvent[] = [
   }
 ];
 
-export const CalendarPage = () => {
+export const AgendaPage = () => {
   const views = React.useMemo(
     () => [
       CalendarDayView,

@@ -1,4 +1,3 @@
-import React from "react";
 import { Tldraw, TLUiComponents } from "tldraw";
 import "tldraw/tldraw.css";
 
@@ -8,7 +7,7 @@ const components: TLUiComponents = {
 
 function Draw() {
   return (
-    <div style={{ position: "fixed", inset: 0 }}>
+    <div style={{ position: "fixed", inset: 0 }} className="tldraw__editor">
       <Tldraw components={components} />
     </div>
   );
