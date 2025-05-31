@@ -24,7 +24,8 @@ import {
   ListCheck,
   Briefcase,
   Moon,
-  Sun
+  Sun,
+  ArrowRight
 } from "lucide-react";
 import { useSnapshot } from "valtio";
 import {
@@ -56,134 +57,150 @@ export const CommandK = () => {
     toggleCommandKEvents();
   });
 
+  const navigationCommands: Group = {
+    group: "Navigation",
+    items: [
+      {
+        name: "Go to agenda",
+        shortcut: "g+a",
+        action: () => {
+          navigate("/agenda");
+        },
+        icon: ArrowRight
+      },
+      {
+        name: "Go to pages",
+        shortcut: "g+p",
+        action: () => {
+          navigate("/pages");
+        },
+        icon: ArrowRight
+      },
+      {
+        name: "Go to sketches",
+        shortcut: "g+s",
+        action: () => {
+          navigate("/sketches");
+        },
+        icon: ArrowRight
+      },
+      {
+        name: "Go to chat",
+        shortcut: "g+c",
+        action: () => {
+          navigate("/chat");
+        },
+        icon: ArrowRight
+      }
+    ]
+  };
+
+  const agendaCommands: Group = {
+    group: "Agenda",
+    items: [
+      {
+        name: "New agenda event",
+        shortcut: "c+a",
+        action: () => {
+          toggleCommandKEvents();
+          toggleCreateEventEvents();
+        },
+        icon: CalendarPlus
+      }
+    ]
+  };
+
+  const pagesCommands: Group = {
+    group: "Pages",
+    items: [
+      {
+        name: "New page",
+        shortcut: "c+p",
+        action: () => {},
+        icon: FilePlus
+      }
+    ]
+  };
+
+  const sketchesCommands: Group = {
+    group: "Sketches",
+    items: [
+      {
+        name: "New sketch",
+        shortcut: "c+s",
+        action: () => {},
+        icon: Brush
+      }
+    ]
+  };
+
+  const chatCommands: Group = {
+    group: "Chat",
+    items: [
+      {
+        name: "New chat",
+        shortcut: "c+c",
+        action: () => {},
+        icon: Sparkles
+      }
+    ]
+  };
+
+  const taskCommands: Group = {
+    group: "Tasks",
+    items: [
+      {
+        name: "New task",
+        shortcut: "c+t",
+        action: () => {},
+        icon: ListCheck
+      }
+    ]
+  };
+
+  const projectCommands: Group = {
+    group: "Projects",
+    items: [
+      {
+        name: "New project",
+        shortcut: "c+pr",
+        action: () => {},
+        icon: Briefcase
+      }
+    ]
+  };
+
+  const settingsCommands: Group = {
+    group: "Settings",
+    items: [
+      {
+        name: "Switch to dark theme",
+        shortcut: "",
+        action: () => {
+          toggleTheme("dark");
+        },
+        icon: Moon
+      },
+      {
+        name: "Switch to light theme",
+        shortcut: "",
+        action: () => {
+          toggleTheme("light");
+        },
+        icon: Sun
+      }
+    ]
+  };
+
   const commands: Command = [
-    {
-      group: "Navigation",
-      items: [
-        {
-          name: "Go to agenda",
-          shortcut: "g+a",
-          action: () => {
-            navigate("/agenda");
-          },
-          icon: CalendarIcon
-        },
-        {
-          name: "Go to pages",
-          shortcut: "g+p",
-          action: () => {
-            navigate("/pages");
-          },
-          icon: FileIcon
-        },
-        {
-          name: "Go to sketches",
-          shortcut: "g+s",
-          action: () => {
-            navigate("/sketches");
-          },
-          icon: PencilIcon
-        },
-        {
-          name: "Go to chat",
-          shortcut: "g+c",
-          action: () => {
-            navigate("/chat");
-          },
-          icon: MessageCircleIcon
-        }
-      ]
-    },
-    {
-      group: "Agenda",
-      items: [
-        {
-          name: "New agenda event",
-          shortcut: "c+a",
-          action: () => {
-            toggleCommandKEvents();
-            toggleCreateEventEvents();
-          },
-          icon: CalendarPlus
-        }
-      ]
-    },
-    {
-      group: "Pages",
-      items: [
-        {
-          name: "New page",
-          shortcut: "c+p",
-          action: () => {},
-          icon: FilePlus
-        }
-      ]
-    },
-    {
-      group: "Sketches",
-      items: [
-        {
-          name: "New sketch",
-          shortcut: "c+s",
-          action: () => {},
-          icon: Brush
-        }
-      ]
-    },
-    {
-      group: "Chat",
-      items: [
-        {
-          name: "New chat",
-          shortcut: "c+c",
-          action: () => {},
-          icon: Sparkles
-        }
-      ]
-    },
-    {
-      group: "Tasks",
-      items: [
-        {
-          name: "New task",
-          shortcut: "c+t",
-          action: () => {},
-          icon: ListCheck
-        }
-      ]
-    },
-    {
-      group: "Projects",
-      items: [
-        {
-          name: "New project",
-          shortcut: "c+pr",
-          action: () => {},
-          icon: Briefcase
-        }
-      ]
-    },
-    {
-      group: "Settings",
-      items: [
-        {
-          name: "Switch to dark theme",
-          shortcut: "",
-          action: () => {
-            toggleTheme("dark");
-          },
-          icon: Moon
-        },
-        {
-          name: "Switch to light theme",
-          shortcut: "",
-          action: () => {
-            toggleTheme("light");
-          },
-          icon: Sun
-        }
-      ]
-    }
+    taskCommands,
+    agendaCommands,
+    pagesCommands,
+    sketchesCommands,
+    chatCommands,
+    projectCommands,
+    settingsCommands,
+    navigationCommands
   ];
 
   return (
