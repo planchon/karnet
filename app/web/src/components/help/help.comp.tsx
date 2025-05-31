@@ -38,6 +38,24 @@ const shortcuts = [
     ]
   },
   {
+    category: "Task",
+    shortcuts: [
+      {
+        shortcut: "c+t",
+        description: "Create new task"
+      }
+    ]
+  },
+  {
+    category: "Project",
+    shortcuts: [
+      {
+        shortcut: "c+p",
+        description: "Create new project"
+      }
+    ]
+  },
+  {
     category: "Agenda",
     shortcuts: [
       {
@@ -50,7 +68,7 @@ const shortcuts = [
     category: "Pages",
     shortcuts: [
       {
-        shortcut: "c+p",
+        shortcut: "c+n",
         description: "Create new page"
       }
     ]
