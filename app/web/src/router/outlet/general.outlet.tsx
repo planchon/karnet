@@ -6,8 +6,7 @@ export function GeneralOutlet() {
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
-      <SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden">
-        {/* <SiteHeader /> */}
+      <SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">
         <Outlet />
       </SidebarInset>
     </SidebarProvider>

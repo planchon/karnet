@@ -132,6 +132,25 @@
   }
 }
 
+.fc-scrollgrid {
+  border: none !important;
+}
+
+.tlui-style-panel {
+  max-width: 150px !important;
+  width: 150px !important;
+}
+
+.tlui-style-panel__wrapper {
+  box-shadow: none !important;
+  border: 1px solid var(--border) !important;
+}
+
+.tlui-toolbar__tools {
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
 .tl-background {
-  --color-background: white;
+  background-color: var(--background) !important;
 }

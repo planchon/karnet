@@ -12,6 +12,7 @@ export const Router = () => (
       <Route path="/agenda" element={<AgendaPage />} />
       <Route path="/sketches" element={<DrawPage />} />
       <Route path="/chat" element={<ChatPage />} />
+      <Route path="/test" element={<div>test</div>} />
     </Route>
   </Routes>
 );

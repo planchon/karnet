@@ -28,7 +28,7 @@ export const AgendaPage = () => {
   };
 
   return (
-    <div className="h-full">
+    <div className="calendar-container h-full">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={false}
@@ -40,9 +40,15 @@ export const AgendaPage = () => {
         allDaySlot={false}
         weekends={true}
         events={events}
+        firstDay={1}
         select={handleDateSelect}
         height="100%"
         themeSystem="standard"
+        nowIndicator={true}
+        dayHeaderFormat={{
+          weekday: "short",
+          day: "numeric"
+        }}
       />
     </div>
   );

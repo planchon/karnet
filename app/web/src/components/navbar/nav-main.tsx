@@ -1,6 +1,5 @@
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
+import { type Icon } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar";
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 
 export function NavMain({
   items
@@ -21,20 +20,26 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-1">
+      <SidebarGroupContent className="flex flex-col gap-1 transition-all">
         <SidebarMenu>
           {items.map((item) => (
-            <Link to={item.url} key={item.title}>
-              <SidebarMenuItem
-                key={item.title}
-                className="hover:cursor-pointer"
-              >
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </Link>
+            <NavLink
+              to={item.url}
+              key={item.title}
+              className={({ isActive }) => (isActive ? "font-semibold" : "")}
+            >
+              {({ isActive }) => (
+                <SidebarMenuItem
+                  key={item.title}
+                  className="hover:cursor-pointer"
+                >
+                  <SidebarMenuButton tooltip={item.title}>
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+            </NavLink>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>

@@ -7,7 +7,7 @@ const components: TLUiComponents = {
 
 function Draw() {
   return (
-    <div style={{ position: "fixed", inset: 0 }} className="tldraw__editor">
+    <div className="h-full w-full">
       <Tldraw components={components} />
     </div>
   );
