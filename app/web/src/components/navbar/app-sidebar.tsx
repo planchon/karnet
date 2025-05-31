@@ -38,22 +38,42 @@ const data = {
     {
       title: "Agenda",
       url: "/agenda",
-      icon: IconCalendar
+      icon: IconCalendar,
+      tooltip: {
+        title: "Go to agenda",
+        side: "right",
+        shortcut: ["G", "A"]
+      }
     },
     {
       title: "Pages",
       url: "/pages",
-      icon: IconFileText
+      icon: IconFileText,
+      tooltip: {
+        title: "Write a new page",
+        side: "right",
+        shortcut: ["G", "P"]
+      }
     },
     {
       title: "Sketches",
       url: "/sketches",
-      icon: IconPencilStar
+      icon: IconPencilStar,
+      tooltip: {
+        title: "Draw a new sketch",
+        side: "right",
+        shortcut: ["G", "S"]
+      }
     },
     {
       title: "Chat",
       url: "/chat",
-      icon: IconMessageCircle
+      icon: IconMessageCircle,
+      tooltip: {
+        title: "Chat with an AI",
+        side: "right",
+        shortcut: ["G", "C"]
+      }
     }
   ],
   navClouds: [

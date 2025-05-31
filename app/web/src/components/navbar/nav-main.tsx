@@ -8,6 +8,8 @@ import {
   SidebarMenuItem
 } from "@/components/ui/sidebar";
 import { NavLink } from "react-router";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Shortcut } from "../ui/shortcut";
 
 export function NavMain({
   items
@@ -16,6 +18,11 @@ export function NavMain({
     title: string;
     url: string;
     icon?: Icon;
+    tooltip: {
+      title: string;
+      side?: "top" | "right" | "bottom" | "left";
+      shortcut?: string[];
+    };
   }[];
 }) {
   return (
@@ -28,17 +35,28 @@ export function NavMain({
               key={item.title}
               className={({ isActive }) => (isActive ? "font-semibold" : "")}
             >
-              {({ isActive }) => (
-                <SidebarMenuItem
-                  key={item.title}
-                  className="hover:cursor-pointer"
+              <Tooltip delayDuration={800}>
+                <TooltipTrigger className="w-full">
+                  <SidebarMenuItem
+                    key={item.title}
+                    className="hover:cursor-pointer"
+                  >
+                    <SidebarMenuButton tooltip={item.title}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>{" "}
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="ml-2 flex flex-row items-center gap-2"
                 >
-                  <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
+                  {item.tooltip.title}
+                  {item.tooltip.shortcut && (
+                    <Shortcut shortcut={item.tooltip.shortcut} />
+                  )}
+                </TooltipContent>
+              </Tooltip>
             </NavLink>
           ))}
         </SidebarMenu>
