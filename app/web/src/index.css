@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "tailwind-scrollbar";
 
 @custom-variant dark (&:is(.dark *));
 @source "../../../packages/**/*.{ts,tsx}";
@@ -129,6 +130,31 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    @apply bg-neutral-200;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-400;
+  }
+  ::-webkit-scrollbar-corner {
+    @apply bg-neutral-200;
+  }
+
+  .dark {
+    ::-webkit-scrollbar {
+      @apply bg-neutral-900;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply bg-neutral-800;
+    }
+
+    ::-webkit-scrollbar-corner {
+      @apply bg-neutral-900;
+    }
   }
 }
 

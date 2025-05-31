@@ -217,6 +217,7 @@ export const CommandK = () => {
             {command.items.map((item) => (
               <CommandItem
                 key={item.name}
+                className="hover:cursor-pointer"
                 onSelect={() => {
                   item.action();
                   toggleCommandKEvents();

@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { NavLink } from "react-router";
 import { Shortcut } from "../ui/shortcut";
 import { cn } from "@/lib/utils";
+import { TooltipWrapper } from "./tooltip-wrapper";
 
 type SuperLinkProps = {
   title: string;
@@ -32,23 +33,14 @@ export const SuperLink = ({
         )
       }
     >
-      <Tooltip delayDuration={800}>
-        <TooltipTrigger className="w-[calc(100%-8px)]">
-          <SidebarMenuItem key={title} className="hover:cursor-pointer">
-            <SidebarMenuButton tooltip={title}>
-              {Icon && <Icon />}
-              <span className="truncate">{title}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>{" "}
-        </TooltipTrigger>
-        <TooltipContent
-          side={tooltip.side || "right"}
-          className="ml-2 flex flex-row items-center gap-2"
-        >
-          <span className="text-xs">{tooltip.title}</span>
-          {tooltip.shortcut && <Shortcut shortcut={tooltip.shortcut} />}
-        </TooltipContent>
-      </Tooltip>
+      <TooltipWrapper tooltip={tooltip}>
+        <SidebarMenuItem key={title} className="hover:cursor-pointer">
+          <SidebarMenuButton tooltip={title}>
+            {Icon && <Icon />}
+            <span className="truncate">{title}</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>{" "}
+      </TooltipWrapper>
     </NavLink>
   );
 };

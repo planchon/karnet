@@ -165,7 +165,7 @@ const SlotLabel = ({ arg }: { arg: SlotLabelContentArg }) => {
 
 const DayHeader = ({ arg }: { arg: DayHeaderContentArg }) => {
   return (
-    <div className="py-2">
+    <div className="py-[5.5px]">
       <span
         className={cn(
           "text-sm font-medium text-slate-700",
