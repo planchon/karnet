@@ -34,7 +34,42 @@ import {
   ContextMenuItem
 } from "@/components/ui/context-menu";
 
+type TaskPerDayProps = {
+  day: string;
+  tasks: SingleTaskProps[];
+};
+
 export const TaskPage = () => {
+  const taskPerDay: TaskPerDayProps[] = [
+    {
+      day: "Today",
+      tasks: [
+        {
+          id: "STR-43",
+          title: "Task 1",
+          priority: "1",
+          dueDate: new Date()
+        }
+      ]
+    },
+    {
+      day: "Tomorrow",
+      tasks: [
+        {
+          id: "STR-44",
+          title: "Task 2",
+          priority: "2",
+          dueDate: new Date()
+        },
+        {
+          id: "STR-45",
+          title: "Task 3",
+          priority: "3",
+          dueDate: new Date()
+        }
+      ]
+    }
+  ];
   return (
     <div className="h-full w-full">
       <div className="flex h-10 w-full items-center justify-between border-b">
@@ -106,33 +141,20 @@ export const TaskPage = () => {
         </div>
       </div>
       <div className="scrollbar-thin mr-3 flex h-[calc(100%-40px)] w-full flex-row gap-3 overflow-x-auto overflow-y-hidden py-3 pl-3">
-        <TaskDayColumn />
+        {taskPerDay.map((day) => (
+          <TaskDayColumn key={day.day} {...day} />
+        ))}
       </div>
     </div>
   );
 };
 
-const TaskDayColumn = () => {
-  const tasks: SingleTaskProps[] = [
-    {
-      id: "STR-43",
-      title: "Task 1",
-      priority: "1",
-      dueDate: new Date()
-    },
-    {
-      id: "STR-44",
-      title: "Second task",
-      priority: "2",
-      dueDate: new Date()
-    }
-  ];
-
+const TaskDayColumn = ({ day, tasks }: TaskPerDayProps) => {
   return (
     <div className="h-full w-[350px] min-w-[350px] max-w-[350px] overflow-hidden rounded-md border">
       <div className="from-accent/30 to-accent/10 h-full bg-gradient-to-b">
         <div className="flex flex-row items-center gap-3 p-3">
-          <span className="text-sm font-semibold">Today</span>
+          <span className="text-sm font-semibold">{day}</span>
         </div>
         <div className="scrollbar-thin flex h-full flex-col gap-2 overflow-y-auto px-2">
           {tasks.map((task) => (
