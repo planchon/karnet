@@ -33,7 +33,7 @@ export const SuperLink = ({
       }
     >
       <Tooltip delayDuration={800}>
-        <TooltipTrigger className="w-full">
+        <TooltipTrigger className="w-[calc(100%-8px)]">
           <SidebarMenuItem key={title} className="hover:cursor-pointer">
             <SidebarMenuButton tooltip={title}>
               {Icon && <Icon />}
