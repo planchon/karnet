@@ -33,6 +33,7 @@ import {
   ContextMenuContent,
   ContextMenuItem
 } from "@/components/ui/context-menu";
+import { toggleCreateTaskEvents } from "@/stores/commands";
 
 type TaskPerDayProps = {
   day: string;
@@ -133,7 +134,11 @@ export const TaskPage = () => {
               shortcut: ["c", "t"]
             }}
           >
-            <Button variant="ghost" size="sm">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleCreateTaskEvents()}
+            >
               <IconPlus className="size-3" />
               <span className="text-xs">New task</span>
             </Button>

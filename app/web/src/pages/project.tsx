@@ -1,5 +1,6 @@
 import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
 import { Button } from "@/components/ui/button";
+import { toggleCreateProjectEvents } from "@/stores/commands";
 import {
   Icon123,
   IconBlocks,
@@ -63,7 +64,11 @@ export const ProjectPage = () => {
               shortcut: ["c", "p"]
             }}
           >
-            <Button variant="ghost" size="sm">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleCreateProjectEvents()}
+            >
               <IconPlus className="size-3" />
               <span className="text-xs">New project</span>
             </Button>

@@ -5,13 +5,17 @@ interface CommandEventsState {
   commandKOpen: boolean;
   eventOpen: boolean;
   chatOpen: boolean;
+  taskOpen: boolean;
+  projectOpen: boolean;
 }
 
 export const commandEventsStore = proxy<CommandEventsState>({
   helpOpen: false,
   commandKOpen: false,
   eventOpen: false,
-  chatOpen: false
+  chatOpen: false,
+  taskOpen: false,
+  projectOpen: false
 });
 
 export const toggleCommandEvents = () => {
@@ -28,4 +32,12 @@ export const toggleCreateEventEvents = () => {
 
 export const toggleChatEvents = () => {
   commandEventsStore.chatOpen = !commandEventsStore.chatOpen;
+};
+
+export const toggleCreateTaskEvents = () => {
+  commandEventsStore.taskOpen = !commandEventsStore.taskOpen;
+};
+
+export const toggleCreateProjectEvents = () => {
+  commandEventsStore.projectOpen = !commandEventsStore.projectOpen;
 };
