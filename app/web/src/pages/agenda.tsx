@@ -39,8 +39,9 @@ export const AgendaPage = () => {
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={false}
         initialView="timeGridWeek"
-        slotDuration="00:15:00"
+        slotDuration="00:30:00"
         editable={true}
+        scrollTime="08:00:00"
         selectable={true}
         selectMirror={true}
         dayMaxEvents={true}
