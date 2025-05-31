@@ -3,6 +3,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
 import { useLinkShortcut } from "@/hooks/useShortcut";
 import { HelpComponent } from "@/components/help/help.comp";
+import { CommandK } from "@/components/command/command-k";
 
 export function GeneralOutlet() {
   useLinkShortcut("g+a", "/agenda");
@@ -12,6 +13,7 @@ export function GeneralOutlet() {
 
   return (
     <SidebarProvider>
+      <CommandK />
       <HelpComponent />
       <AppSidebar variant="inset" />
       <SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">

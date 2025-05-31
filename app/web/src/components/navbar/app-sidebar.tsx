@@ -1,14 +1,9 @@
 import * as React from "react";
 import {
-  IconCamera,
   IconDatabase,
-  IconFileAi,
-  IconFileDescription,
   IconFileWord,
   IconHelp,
   IconReport,
-  IconSearch,
-  IconSettings,
   IconFileText,
   IconCalendar,
   IconPencilStar,
@@ -18,13 +13,7 @@ import {
 import { NavDocuments } from "@/components/navbar/nav-documents";
 import { NavMain } from "@/components/navbar/nav-main";
 import { NavSecondary } from "@/components/navbar/nav-secondary";
-import { NavUser } from "@/components/navbar/nav-user";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter
-} from "@/components/ui/sidebar";
-import { Button } from "../ui/button";
+import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 
 import { SidebarHeader } from "./nav-header";
 
@@ -76,60 +65,7 @@ const data = {
       }
     }
   ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#"
-        },
-        {
-          title: "Archived",
-          url: "#"
-        }
-      ]
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#"
-        },
-        {
-          title: "Archived",
-          url: "#"
-        }
-      ]
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#"
-        },
-        {
-          title: "Archived",
-          url: "#"
-        }
-      ]
-    }
-  ],
   navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings
-    },
     {
       title: "Get Help",
       url: "#",
@@ -164,9 +100,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
     </Sidebar>
   );
 }

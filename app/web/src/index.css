@@ -154,3 +154,12 @@
 .tl-background {
   background-color: var(--background) !important;
 }
+
+.fc-col-header-cell-cushion {
+  width: 100% !important;
+}
+
+.fc-col-header-cell {
+  border-right: none !important;
+  border-left: none !important;
+}
