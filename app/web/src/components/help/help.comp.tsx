@@ -12,6 +12,8 @@ import { Search, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Shortcut } from "../ui/shortcut";
+import { useSnapshot } from "valtio";
+import { commandEventsStore, toggleCommandEvents } from "@/stores/commands";
 
 const shortcuts = [
   {
@@ -74,14 +76,14 @@ const shortcuts = [
 ];
 
 export const HelpComponent = () => {
-  const [open, setOpen] = useState(false);
+  const open = useSnapshot(commandEventsStore).helpOpen;
 
   useShortcut("?", () => {
-    setOpen(true);
+    toggleCommandEvents();
   });
 
   return (
-    <Drawer direction="right" open={open} onOpenChange={setOpen}>
+    <Drawer direction="right" open={open} onOpenChange={toggleCommandEvents}>
       <DrawerContent className="z-[500]">
         <DrawerHeader>
           <DrawerTitle>Keyboard shortcuts</DrawerTitle>

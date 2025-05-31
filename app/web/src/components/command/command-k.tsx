@@ -11,16 +11,52 @@ import {
 } from "../ui/command";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useNavigate } from "react-router";
+import {
+  CalendarIcon,
+  FileIcon,
+  MessageCircleIcon,
+  PencilIcon,
+  LucideIcon,
+  CalendarPlus,
+  FilePlus,
+  Brush,
+  Sparkles,
+  ListCheck,
+  Briefcase,
+  Moon,
+  Sun
+} from "lucide-react";
+import { useSnapshot } from "valtio";
+import {
+  commandEventsStore,
+  toggleCommandKEvents,
+  toggleCreateEventEvents
+} from "@/stores/commands";
+import { toggleTheme } from "@/stores/settings";
+
+type Item = {
+  name: string;
+  shortcut: string;
+  action: () => void;
+  icon?: LucideIcon;
+};
+
+type Group = {
+  group: string;
+  items: Item[];
+};
+
+type Command = Group[];
 
 export const CommandK = () => {
-  const [open, setOpen] = useState(false);
+  const open = useSnapshot(commandEventsStore).commandKOpen;
   const navigate = useNavigate();
 
   useShortcut("Meta+k", () => {
-    setOpen(true);
+    toggleCommandKEvents();
   });
 
-  const commands = [
+  const commands: Command = [
     {
       group: "Navigation",
       items: [
@@ -29,28 +65,32 @@ export const CommandK = () => {
           shortcut: "g+a",
           action: () => {
             navigate("/agenda");
-          }
+          },
+          icon: CalendarIcon
         },
         {
           name: "Go to pages",
           shortcut: "g+p",
           action: () => {
             navigate("/pages");
-          }
+          },
+          icon: FileIcon
         },
         {
           name: "Go to sketches",
           shortcut: "g+s",
           action: () => {
             navigate("/sketches");
-          }
+          },
+          icon: PencilIcon
         },
         {
           name: "Go to chat",
           shortcut: "g+c",
           action: () => {
             navigate("/chat");
-          }
+          },
+          icon: MessageCircleIcon
         }
       ]
     },
@@ -60,7 +100,11 @@ export const CommandK = () => {
         {
           name: "New agenda event",
           shortcut: "c+a",
-          action: () => {}
+          action: () => {
+            toggleCommandKEvents();
+            toggleCreateEventEvents();
+          },
+          icon: CalendarPlus
         }
       ]
     },
@@ -70,7 +114,8 @@ export const CommandK = () => {
         {
           name: "New page",
           shortcut: "c+p",
-          action: () => {}
+          action: () => {},
+          icon: FilePlus
         }
       ]
     },
@@ -80,7 +125,8 @@ export const CommandK = () => {
         {
           name: "New sketch",
           shortcut: "c+s",
-          action: () => {}
+          action: () => {},
+          icon: Brush
         }
       ]
     },
@@ -90,14 +136,62 @@ export const CommandK = () => {
         {
           name: "New chat",
           shortcut: "c+c",
-          action: () => {}
+          action: () => {},
+          icon: Sparkles
+        }
+      ]
+    },
+    {
+      group: "Tasks",
+      items: [
+        {
+          name: "New task",
+          shortcut: "c+t",
+          action: () => {},
+          icon: ListCheck
+        }
+      ]
+    },
+    {
+      group: "Projects",
+      items: [
+        {
+          name: "New project",
+          shortcut: "c+pr",
+          action: () => {},
+          icon: Briefcase
+        }
+      ]
+    },
+    {
+      group: "Settings",
+      items: [
+        {
+          name: "Switch to dark theme",
+          shortcut: "",
+          action: () => {
+            toggleTheme("dark");
+          },
+          icon: Moon
+        },
+        {
+          name: "Switch to light theme",
+          shortcut: "",
+          action: () => {
+            toggleTheme("light");
+          },
+          icon: Sun
         }
       ]
     }
   ];
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen}>
+    <CommandDialog
+      open={open}
+      onOpenChange={toggleCommandKEvents}
+      className="min-w-[700px]"
+    >
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
@@ -108,11 +202,14 @@ export const CommandK = () => {
                 key={item.name}
                 onSelect={() => {
                   item.action();
-                  setOpen(false);
+                  toggleCommandKEvents();
                 }}
               >
+                {item.icon && <item.icon className="ml-1" />}
                 <span>{item.name}</span>
-                <CommandShortcut>{item.shortcut}</CommandShortcut>
+                <CommandShortcut className="mr-1">
+                  {item.shortcut}
+                </CommandShortcut>
               </CommandItem>
             ))}
           </CommandGroup>

@@ -2,6 +2,7 @@ import { IconBell, IconSearch } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { toggleCommandKEvents } from "@/stores/commands";
 
 function SidebarHeaderContainer({
   className,
@@ -58,12 +59,17 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
         <img
           src="https://uploads.linear.app/11e50d11-cd50-48fb-87fa-892be26bf591/b878c925-289f-4dd0-a3c0-086635f99fe6/256x256/8ea6086a-0c06-4a69-ba17-ecab9104fc13"
           alt="supernotion"
-          className="size-5 rounded-[4px]"
+          className="size-5 select-none rounded-[4px]"
         />
         <span className="text-sm font-medium">supernotion</span>
       </SidebarHeaderLogo>
       <SidebarHeaderAction>
-        <Button variant="ghost" size="icon" className="size-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-6"
+          onClick={toggleCommandKEvents}
+        >
           <IconSearch />
         </Button>
       </SidebarHeaderAction>

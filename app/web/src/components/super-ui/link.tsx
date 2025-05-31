@@ -1,0 +1,54 @@
+import { SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { NavLink } from "react-router";
+import { Shortcut } from "../ui/shortcut";
+import { cn } from "@/lib/utils";
+
+type SuperLinkProps = {
+  title: string;
+  url: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  tooltip: {
+    title: string;
+    side?: "top" | "right" | "bottom" | "left";
+    shortcut?: string[];
+  };
+};
+
+export const SuperLink = ({
+  title,
+  url,
+  icon: Icon,
+  tooltip
+}: SuperLinkProps) => {
+  return (
+    <NavLink
+      to={url}
+      key={title}
+      className={({ isActive }: { isActive: boolean }) =>
+        cn(
+          "overflow-hidden rounded-md hover:cursor-pointer",
+          isActive ? "font-semibold" : ""
+        )
+      }
+    >
+      <Tooltip delayDuration={800}>
+        <TooltipTrigger className="w-full">
+          <SidebarMenuItem key={title} className="hover:cursor-pointer">
+            <SidebarMenuButton tooltip={title}>
+              {Icon && <Icon />}
+              <span className="truncate">{title}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>{" "}
+        </TooltipTrigger>
+        <TooltipContent
+          side={tooltip.side || "right"}
+          className="ml-2 flex flex-row items-center gap-2"
+        >
+          <span className="text-xs">{tooltip.title}</span>
+          {tooltip.shortcut && <Shortcut shortcut={tooltip.shortcut} />}
+        </TooltipContent>
+      </Tooltip>
+    </NavLink>
+  );
+};
