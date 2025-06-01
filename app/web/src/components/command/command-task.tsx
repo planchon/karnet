@@ -1,7 +1,7 @@
 import { useSnapshot } from "valtio";
 import { Dialog, DialogContent, DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { commandEventsStore, toggleCreateTaskEvents } from "@/stores/commands";
+import { commandEventsStore, toggleCreateTask } from "@/stores/commands";
 import { useShortcut } from "@/hooks/useShortcut";
 import { Switch } from "../ui/switch";
 import { Tooltip, TooltipContent } from "../ui/tooltip";
@@ -24,11 +24,11 @@ export const CreateTaskCommand = () => {
   const open = useSnapshot(commandEventsStore).taskOpen;
 
   useShortcut("c+t", () => {
-    toggleCreateTaskEvents();
+    toggleCreateTask();
   });
 
   return (
-    <Dialog open={open} onOpenChange={toggleCreateTaskEvents}>
+    <Dialog open={open} onOpenChange={toggleCreateTask}>
       <DialogContent className="z-[1000] min-w-[700px] p-0">
         <div className="flex w-full flex-col gap-3 p-3 pb-0">
           <div className="flex items-center gap-2">

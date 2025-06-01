@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Shortcut } from "../ui/shortcut";
 import { useSnapshot } from "valtio";
-import { commandEventsStore, toggleCommandEvents } from "@/stores/commands";
+import { commandEventsStore, toggleHelp } from "@/stores/commands";
 
 const shortcuts = [
   {
@@ -97,11 +97,11 @@ export const HelpComponent = () => {
   const open = useSnapshot(commandEventsStore).helpOpen;
 
   useShortcut("?", () => {
-    toggleCommandEvents();
+    toggleHelp();
   });
 
   return (
-    <Drawer direction="right" open={open} onOpenChange={toggleCommandEvents}>
+    <Drawer direction="right" open={open} onOpenChange={toggleHelp}>
       <DrawerContent className="z-[500]">
         <DrawerHeader>
           <DrawerTitle>Keyboard shortcuts</DrawerTitle>

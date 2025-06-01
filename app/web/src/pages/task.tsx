@@ -33,7 +33,7 @@ import {
   ContextMenuContent,
   ContextMenuItem
 } from "@/components/ui/context-menu";
-import { toggleCreateTaskEvents } from "@/stores/commands";
+import { toggleCreateTask } from "@/stores/commands";
 import { useShortcut } from "@/hooks/useShortcut";
 
 type TaskPerDayProps = {
@@ -43,7 +43,7 @@ type TaskPerDayProps = {
 
 export const TaskPage = () => {
   useShortcut("n", () => {
-    toggleCreateTaskEvents();
+    toggleCreateTask();
   });
 
   const taskPerDay: TaskPerDayProps[] = [
@@ -142,7 +142,7 @@ export const TaskPage = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => toggleCreateTaskEvents()}
+              onClick={() => toggleCreateTask()}
             >
               <IconPlus className="size-3" />
               <span className="text-xs">New task</span>

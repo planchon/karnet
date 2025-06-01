@@ -2,7 +2,7 @@ import { IconBell, IconSearch } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { toggleCommandKEvents } from "@/stores/commands";
+import { toggleCommandK } from "@/stores/commands";
 
 function SidebarHeaderContainer({
   className,
@@ -68,7 +68,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
           variant="ghost"
           size="icon"
           className="size-6"
-          onClick={toggleCommandKEvents}
+          onClick={toggleCommandK}
         >
           <IconSearch />
         </Button>

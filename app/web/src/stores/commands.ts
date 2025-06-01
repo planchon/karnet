@@ -18,11 +18,15 @@ export const commandEventsStore = proxy<CommandEventsState>({
   projectOpen: false
 });
 
-export const toggleCommandEvents = () => {
+export const toggleHelp = () => {
   commandEventsStore.helpOpen = !commandEventsStore.helpOpen;
 };
 
-export const toggleCommandKEvents = () => {
+export const closeCommandK = () => {
+  commandEventsStore.commandKOpen = false;
+};
+
+export const toggleCommandK = () => {
   commandEventsStore.commandKOpen = !commandEventsStore.commandKOpen;
 };
 
@@ -30,14 +34,14 @@ export const toggleCreateEvents = () => {
   commandEventsStore.eventOpen = !commandEventsStore.eventOpen;
 };
 
-export const toggleChatEvents = () => {
+export const toggleCreateChat = () => {
   commandEventsStore.chatOpen = !commandEventsStore.chatOpen;
 };
 
-export const toggleCreateTaskEvents = () => {
+export const toggleCreateTask = () => {
   commandEventsStore.taskOpen = !commandEventsStore.taskOpen;
 };
 
-export const toggleCreateProjectEvents = () => {
+export const toggleCreateProject = () => {
   commandEventsStore.projectOpen = !commandEventsStore.projectOpen;
 };

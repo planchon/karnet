@@ -12,10 +12,6 @@ import {
 import { useShortcut } from "@/hooks/useShortcut";
 import { useNavigate } from "react-router";
 import {
-  CalendarIcon,
-  FileIcon,
-  MessageCircleIcon,
-  PencilIcon,
   LucideIcon,
   CalendarPlus,
   FilePlus,
@@ -29,11 +25,23 @@ import {
 } from "lucide-react";
 import { useSnapshot } from "valtio";
 import {
+  closeCommandK,
   commandEventsStore,
-  toggleCommandKEvents,
-  toggleCreateEvents
+  toggleCommandK,
+  toggleCreateChat,
+  toggleCreateEvents,
+  toggleCreateProject,
+  toggleCreateTask,
+  toggleHelp
 } from "@/stores/commands";
 import { toggleTheme } from "@/stores/settings";
+import {
+  IconChecklist,
+  IconHelpCircle,
+  IconListDetails,
+  IconPlus,
+  IconTextPlus
+} from "@tabler/icons-react";
 
 type Item = {
   name: string;
@@ -54,7 +62,7 @@ export const CommandK = () => {
   const navigate = useNavigate();
 
   useShortcut("Meta+k", () => {
-    toggleCommandKEvents();
+    toggleCommandK();
   });
 
   const navigationCommands: Group = {
@@ -91,6 +99,14 @@ export const CommandK = () => {
           navigate("/chat");
         },
         icon: ArrowRight
+      },
+      {
+        name: "Go to help",
+        shortcut: "?",
+        action: () => {
+          toggleHelp();
+        },
+        icon: IconHelpCircle
       }
     ]
   };
@@ -99,10 +115,9 @@ export const CommandK = () => {
     group: "Agenda",
     items: [
       {
-        name: "New agenda event",
+        name: "Create a new event",
         shortcut: "c+a",
         action: () => {
-          toggleCommandKEvents();
           toggleCreateEvents();
         },
         icon: CalendarPlus
@@ -111,12 +126,14 @@ export const CommandK = () => {
   };
 
   const pagesCommands: Group = {
-    group: "Pages",
+    group: "Documents",
     items: [
       {
-        name: "New page",
-        shortcut: "c+p",
-        action: () => {},
+        name: "Create a new document",
+        shortcut: "c+d",
+        action: () => {
+          navigate("/documents");
+        },
         icon: FilePlus
       }
     ]
@@ -126,9 +143,11 @@ export const CommandK = () => {
     group: "Sketches",
     items: [
       {
-        name: "New sketch",
+        name: "Create a new sketch",
         shortcut: "c+s",
-        action: () => {},
+        action: () => {
+          navigate("/sketches");
+        },
         icon: Brush
       }
     ]
@@ -138,9 +157,11 @@ export const CommandK = () => {
     group: "Chat",
     items: [
       {
-        name: "New chat",
+        name: "Create a new chat",
         shortcut: "c+c",
-        action: () => {},
+        action: () => {
+          toggleCreateChat();
+        },
         icon: Sparkles
       }
     ]
@@ -150,10 +171,20 @@ export const CommandK = () => {
     group: "Tasks",
     items: [
       {
-        name: "New task",
+        name: "Create a new task",
         shortcut: "c+t",
-        action: () => {},
-        icon: ListCheck
+        action: () => {
+          toggleCreateTask();
+        },
+        icon: IconTextPlus
+      },
+      {
+        name: "See all tasks",
+        shortcut: "g+t",
+        icon: IconListDetails,
+        action: () => {
+          navigate("/task");
+        }
       }
     ]
   };
@@ -162,9 +193,11 @@ export const CommandK = () => {
     group: "Projects",
     items: [
       {
-        name: "New project",
-        shortcut: "c+pr",
-        action: () => {},
+        name: "Create a new project",
+        shortcut: "c+p",
+        action: () => {
+          toggleCreateProject();
+        },
         icon: Briefcase
       }
     ]
@@ -206,7 +239,7 @@ export const CommandK = () => {
   return (
     <CommandDialog
       open={open}
-      onOpenChange={toggleCommandKEvents}
+      onOpenChange={toggleCommandK}
       className="min-w-[700px]"
     >
       <CommandInput placeholder="Type a command or search..." />
@@ -220,7 +253,7 @@ export const CommandK = () => {
                 className="hover:cursor-pointer"
                 onSelect={() => {
                   item.action();
-                  toggleCommandKEvents();
+                  closeCommandK();
                 }}
               >
                 {item.icon && <item.icon className="ml-1" />}

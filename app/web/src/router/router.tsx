@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router";
 import { DrawPage } from "../pages/draw";
 import { AgendaPage } from "../pages/agenda";
-import { PagePage } from "../pages/pages";
+import { DocumentPage } from "../pages/documents";
 import { GeneralOutlet } from "./outlet/general.outlet";
 import { ChatPage } from "../pages/chat";
 import { ProjectPage } from "@/pages/project";
@@ -12,7 +12,8 @@ import { toggleTheme } from "@/stores/settings";
 export const Router = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => toggleTheme();
+    const handleChange = () =>
+      toggleTheme(mediaQuery.matches ? "dark" : "light");
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
@@ -25,7 +26,7 @@ export const Router = () => {
         <Route path="/project" element={<ProjectPage />} />
         <Route path="/task" element={<TaskPage />} />
         <Route path="/sketches" element={<DrawPage />} />
-        <Route path="/pages" element={<PagePage />} />
+        <Route path="/documents" element={<DocumentPage />} />
       </Route>
     </Routes>
   );

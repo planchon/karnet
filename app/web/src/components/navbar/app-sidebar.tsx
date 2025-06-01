@@ -19,7 +19,7 @@ import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 
 import { SidebarHeader } from "./nav-header";
 import { useNavigate } from "react-router";
-import { toggleCommandEvents } from "@/stores/commands";
+import { toggleHelp } from "@/stores/commands";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "#",
         icon: IconHelp,
         action: () => {
-          toggleCommandEvents();
+          toggleHelp();
         }
       }
     ],
