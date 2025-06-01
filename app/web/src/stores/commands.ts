@@ -26,7 +26,7 @@ export const toggleCommandKEvents = () => {
   commandEventsStore.commandKOpen = !commandEventsStore.commandKOpen;
 };
 
-export const toggleCreateEventEvents = () => {
+export const toggleCreateEvents = () => {
   commandEventsStore.eventOpen = !commandEventsStore.eventOpen;
 };
 

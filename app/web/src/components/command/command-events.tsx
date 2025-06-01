@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle
 } from "../ui/dialog";
-import { commandEventsStore, toggleCreateEventEvents } from "@/stores/commands";
+import { commandEventsStore, toggleCreateEvents } from "@/stores/commands";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -26,12 +26,12 @@ import { useShortcut } from "@/hooks/useShortcut";
 export const CreateEventCommand = () => {
   const open = useSnapshot(commandEventsStore).eventOpen;
 
-  useShortcut("c+a", () => {
-    toggleCreateEventEvents();
+  useShortcut("c+e", () => {
+    toggleCreateEvents();
   });
 
   return (
-    <Dialog open={open} onOpenChange={toggleCreateEventEvents}>
+    <Dialog open={open} onOpenChange={toggleCreateEvents}>
       <DialogContent className="z-[1000] min-w-[700px] p-3">
         <div className="flex w-full flex-col gap-3">
           <div className="flex items-center gap-2">

@@ -59,7 +59,7 @@ const shortcuts = [
     category: "Agenda",
     shortcuts: [
       {
-        shortcut: "c+a",
+        shortcut: "c+e",
         description: "Create new agenda event"
       }
     ]

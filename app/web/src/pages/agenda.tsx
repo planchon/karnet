@@ -9,8 +9,86 @@ import {
   SlotLabelContentArg
 } from "@fullcalendar/core/index.js";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { IconCube } from "@tabler/icons-react";
+import { IconCloud } from "@tabler/icons-react";
+import { IconBlocks } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
+import { toggleCreateEvents } from "@/stores/commands";
+import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
 
 export const AgendaPage = () => {
+  return (
+    <div className="h-full w-full">
+      <div className="flex h-10 w-full items-center justify-between border-b">
+        <div className="flex h-full flex-row items-center justify-center gap-2 pl-4">
+          <span className="text-sm font-medium">Agenda</span>
+          <div className="flex flex-row items-center gap-2 pl-2">
+            <TooltipWrapper
+              tooltip={{
+                title: "Show all agenda",
+                side: "bottom",
+                shortcut: ["1"]
+              }}
+            >
+              <Button variant="outline" size="sm">
+                <IconCube className="size-3" />
+                <span className="text-xs">All agenda</span>
+              </Button>{" "}
+            </TooltipWrapper>
+            <TooltipWrapper
+              tooltip={{
+                title: "Only show google agenda",
+                side: "bottom",
+                shortcut: ["2"]
+              }}
+            >
+              <Button variant="outline" size="sm">
+                <IconCloud className="size-3" />
+                <span className="text-xs">Google</span>
+              </Button>
+            </TooltipWrapper>
+            <TooltipWrapper
+              tooltip={{
+                title: "Only show apple agenda",
+                side: "bottom",
+                shortcut: ["3"]
+              }}
+            >
+              <Button variant="outline" size="sm">
+                <IconBlocks className="size-3" />
+                <span className="text-xs">Apple</span>
+              </Button>
+            </TooltipWrapper>
+          </div>
+        </div>
+        <div className="flex h-full flex-row items-center justify-center gap-2 pr-4">
+          <TooltipWrapper
+            tooltip={{
+              title: "Create a task",
+              side: "left",
+              shortcut: ["c", "t"]
+            }}
+          >
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleCreateEvents()}
+            >
+              <IconPlus className="size-3" />
+              <span className="text-xs">New event</span>
+            </Button>
+          </TooltipWrapper>
+        </div>
+      </div>
+      <div className="h-[calc(100%-40px)] w-full overflow-x-auto overflow-y-hidden">
+        <AgendaComponent />
+      </div>
+    </div>
+  );
+};
+
+export const AgendaComponent = () => {
   const [events, setEvents] = useState([
     {
       title: "Sample Event",
@@ -34,7 +112,7 @@ export const AgendaPage = () => {
   };
 
   return (
-    <div className="calendar-container h-full">
+    <div className="calendar-container h-full w-full">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={false}
@@ -66,7 +144,8 @@ export const AgendaPage = () => {
         nowIndicator={true}
         dayHeaderFormat={{
           weekday: "short",
-          day: "numeric"
+          day: "numeric",
+          month: "short"
         }}
       />
     </div>
@@ -75,14 +154,14 @@ export const AgendaPage = () => {
 
 const Event = ({ arg }: { arg: EventContentArg }) => {
   return (
-    <div className="flex h-full justify-end">
+    <div className="flex h-full select-none justify-end">
       <div className="contents">
         <div
-          className="group/event-item relative min-w-full cursor-pointer rounded border border-gray-200 bg-gray-50 before:absolute before:-inset-px before:block before:w-1 before:rounded-l before:bg-blue-500"
+          className="group/event-item bg-muted border-muted-foreground relative min-w-full cursor-pointer rounded border before:absolute before:-inset-px before:block before:w-1 before:rounded-l before:bg-blue-500"
           role="button"
           style={{ height: "100%" }}
         >
-          <div className="grid grid-cols-[auto_1fr] items-start gap-2 overflow-hidden py-0.5 pl-2 pr-1 text-xs leading-4 text-gray-700">
+          <div className="text-muted-foreground grid grid-cols-[auto_1fr] items-start gap-2 overflow-hidden py-0.5 pl-2 pr-1 text-xs leading-4">
             <div className="pt-0.5">
               {arg.event.title && (
                 <button
@@ -136,7 +215,7 @@ const Event = ({ arg }: { arg: EventContentArg }) => {
                   </span>
                 </div>
               </div>
-              <span className="truncate text-[9px] font-thin leading-none">
+              <span className="text-muted-foreground truncate text-[9px] font-thin leading-none">
                 {arg.event.start?.toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit"
@@ -157,18 +236,20 @@ const Event = ({ arg }: { arg: EventContentArg }) => {
 
 const SlotLabel = ({ arg }: { arg: SlotLabelContentArg }) => {
   return (
-    <div className="w-18">
-      <span className="text-xs font-medium text-slate-500">{arg.text}</span>
+    <div className="w-18 select-none">
+      <span className="text-muted-foreground text-xs font-medium">
+        {arg.text}
+      </span>
     </div>
   );
 };
 
 const DayHeader = ({ arg }: { arg: DayHeaderContentArg }) => {
   return (
-    <div className="py-[5.5px]">
+    <div className="select-none py-[5.5px]">
       <span
         className={cn(
-          "text-sm font-medium text-slate-700",
+          "text-muted-foreground text-xs font-medium",
           arg.isToday && "font-semibold"
         )}
       >

@@ -31,7 +31,7 @@ import { useSnapshot } from "valtio";
 import {
   commandEventsStore,
   toggleCommandKEvents,
-  toggleCreateEventEvents
+  toggleCreateEvents
 } from "@/stores/commands";
 import { toggleTheme } from "@/stores/settings";
 
@@ -103,7 +103,7 @@ export const CommandK = () => {
         shortcut: "c+a",
         action: () => {
           toggleCommandKEvents();
-          toggleCreateEventEvents();
+          toggleCreateEvents();
         },
         icon: CalendarPlus
       }
