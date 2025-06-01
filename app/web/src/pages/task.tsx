@@ -34,6 +34,7 @@ import {
   ContextMenuItem
 } from "@/components/ui/context-menu";
 import { toggleCreateTaskEvents } from "@/stores/commands";
+import { useShortcut } from "@/hooks/useShortcut";
 
 type TaskPerDayProps = {
   day: string;
@@ -41,6 +42,10 @@ type TaskPerDayProps = {
 };
 
 export const TaskPage = () => {
+  useShortcut("n", () => {
+    toggleCreateTaskEvents();
+  });
+
   const taskPerDay: TaskPerDayProps[] = [
     {
       day: "Today",
@@ -131,7 +136,7 @@ export const TaskPage = () => {
             tooltip={{
               title: "Create a task",
               side: "left",
-              shortcut: ["c", "t"]
+              shortcut: ["n"]
             }}
           >
             <Button
@@ -255,7 +260,7 @@ const TaskDueDate = ({ dueDate }: { dueDate: Date }) => {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger>
-        <div className="shadow-xs flex select-none flex-row items-center gap-1 rounded border p-[3px]">
+        <div className="flex select-none flex-row items-center gap-1 rounded border p-[3px]">
           <IconCalendar className="size-4 text-gray-500" />
           <span className="text-xs font-medium text-gray-500">
             {new Intl.DateTimeFormat("en-US", {
@@ -289,7 +294,7 @@ const Label = ({ label, icon: Icon }: LabelProps) => {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger>
-        <div className="flex select-none flex-row items-center gap-1 rounded-full border py-1 pl-2 pr-3">
+        <div className="shadow-xs flex select-none flex-row items-center gap-1 rounded-full border py-1 pl-2 pr-3">
           <Icon className="size-4 text-gray-500" />
           <span className="text-xs font-medium text-gray-500">{label}</span>
         </div>

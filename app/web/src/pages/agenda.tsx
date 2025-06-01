@@ -16,8 +16,13 @@ import { IconBlocks } from "@tabler/icons-react";
 import { IconPlus } from "@tabler/icons-react";
 import { toggleCreateEvents } from "@/stores/commands";
 import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
+import { useShortcut } from "@/hooks/useShortcut";
 
 export const AgendaPage = () => {
+  useShortcut("n", () => {
+    toggleCreateEvents();
+  });
+
   return (
     <div className="h-full w-full">
       <div className="flex h-10 w-full items-center justify-between border-b">
@@ -67,7 +72,7 @@ export const AgendaPage = () => {
             tooltip={{
               title: "Create a task",
               side: "left",
-              shortcut: ["c", "t"]
+              shortcut: ["n"]
             }}
           >
             <Button

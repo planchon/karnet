@@ -10,8 +10,13 @@ import {
   IconPlus,
   IconSubtask
 } from "@tabler/icons-react";
+import { useShortcut } from "@/hooks/useShortcut";
 
 export const ProjectPage = () => {
+  useShortcut("n", () => {
+    toggleCreateProjectEvents();
+  });
+
   return (
     <div className="h-full w-full">
       <div className="flex h-10 w-full items-center justify-between border-b">
@@ -61,7 +66,7 @@ export const ProjectPage = () => {
             tooltip={{
               title: "Create a project",
               side: "left",
-              shortcut: ["c", "p"]
+              shortcut: ["n"]
             }}
           >
             <Button
