@@ -51,6 +51,7 @@
     "lucide-react": "^0.474.0",
     "mobx": "^6.13.7",
     "mobx-react": "^9.2.0",
+    "nanoid": "^5.1.5",
     "next-themes": "^0.4.6",
     "react": "catalog:",
     "react-day-picker": "8.10.1",
@@ -62,10 +63,12 @@
     "remeda": "^2.22.4",
     "shiki": "^1.29.2",
     "sonner": "^1.7.4",
+    "superjson": "^2.2.2",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^4.1.7",
     "vaul": "^1.1.2",
-    "zod": "^3.25.28"
+    "zod": "^3.25.28",
+    "zod-class": "^0.0.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

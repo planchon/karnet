@@ -14,4 +14,10 @@ export class UserModel extends AbstractModel {
       email: observable
     });
   }
+
+  toJSON() {
+    return {
+      ...this
+    };
+  }
 }

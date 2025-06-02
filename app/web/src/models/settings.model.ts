@@ -21,6 +21,12 @@ export class SettingsModel extends AbstractModel {
     });
   }
 
+  toJSON() {
+    return {
+      ...this
+    };
+  }
+
   setTheme = (theme: ThemeType) => {
     this.theme = theme;
   };
