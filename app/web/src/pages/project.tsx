@@ -1,6 +1,5 @@
 import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
 import { Button } from "@/components/ui/button";
-import { toggleCreateProject } from "@/stores/commands";
 import {
   Icon123,
   IconBlocks,
@@ -10,11 +9,14 @@ import {
   IconPlus,
   IconSubtask
 } from "@tabler/icons-react";
-import { useShortcut } from "@/hooks/useShortcut";
+import { useCommands, useShortcut } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
-export const ProjectPage = () => {
+export const ProjectPage = observer(function ProjectPage() {
+  const commands = useCommands();
+
   useShortcut("n", () => {
-    toggleCreateProject();
+    commands.toggleProject();
   });
 
   return (
@@ -72,7 +74,7 @@ export const ProjectPage = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => toggleCreateProject()}
+              onClick={() => commands.toggleProject()}
             >
               <IconPlus className="size-3" />
               <span className="text-xs">New project</span>
@@ -87,9 +89,9 @@ export const ProjectPage = () => {
       </div>
     </div>
   );
-};
+});
 
-const ProjectColumn = () => {
+const ProjectColumn = observer(function ProjectColumn() {
   return (
     <div className="h-full w-[350px] min-w-[350px] max-w-[350px] overflow-hidden rounded-md border">
       <div className="from-accent/30 to-accent/10 h-full bg-gradient-to-b">
@@ -126,4 +128,4 @@ const ProjectColumn = () => {
       </div>
     </div>
   );
-};
+});

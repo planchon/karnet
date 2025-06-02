@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Command,
   CommandInput,
@@ -17,37 +16,28 @@ import {
   FilePlus,
   Brush,
   Sparkles,
-  ListCheck,
   Briefcase,
   Moon,
   Sun,
   ArrowRight
 } from "lucide-react";
-import { useSnapshot } from "valtio";
 import {
-  closeCommandK,
-  commandEventsStore,
-  toggleCommandK,
-  toggleCreateChat,
-  toggleCreateEvents,
-  toggleCreateProject,
-  toggleCreateTask,
-  toggleHelp
-} from "@/stores/commands";
-import { toggleTheme } from "@/stores/settings";
-import {
-  IconChecklist,
+  Icon123,
   IconHelpCircle,
   IconListDetails,
-  IconPlus,
   IconTextPlus
 } from "@tabler/icons-react";
+import { useCommands } from "@/hooks/useShortcut";
+import { useSettings } from "@/hooks/useStores";
+import { observer } from "mobx-react";
+
+type Icon = LucideIcon | typeof Icon123;
 
 type Item = {
   name: string;
   shortcut: string;
   action: () => void;
-  icon?: LucideIcon;
+  icon?: Icon;
 };
 
 type Group = {
@@ -57,12 +47,13 @@ type Group = {
 
 type Command = Group[];
 
-export const CommandK = () => {
-  const open = useSnapshot(commandEventsStore).commandKOpen;
+export const CommandK = observer(function CommandK() {
+  const commands = useCommands();
   const navigate = useNavigate();
+  const settings = useSettings();
 
   useShortcut("Meta+k", () => {
-    toggleCommandK();
+    commands.toggleCommandK();
   });
 
   const navigationCommands: Group = {
@@ -104,7 +95,7 @@ export const CommandK = () => {
         name: "Go to help",
         shortcut: "?",
         action: () => {
-          toggleHelp();
+          commands.toggleHelp();
         },
         icon: IconHelpCircle
       }
@@ -118,7 +109,7 @@ export const CommandK = () => {
         name: "Create a new event",
         shortcut: "c+a",
         action: () => {
-          toggleCreateEvents();
+          commands.toggleEvent();
         },
         icon: CalendarPlus
       }
@@ -160,7 +151,7 @@ export const CommandK = () => {
         name: "Create a new chat",
         shortcut: "c+c",
         action: () => {
-          toggleCreateChat();
+          commands.toggleChat();
         },
         icon: Sparkles
       }
@@ -174,7 +165,7 @@ export const CommandK = () => {
         name: "Create a new task",
         shortcut: "c+t",
         action: () => {
-          toggleCreateTask();
+          commands.toggleTask();
         },
         icon: IconTextPlus
       },
@@ -196,7 +187,7 @@ export const CommandK = () => {
         name: "Create a new project",
         shortcut: "c+p",
         action: () => {
-          toggleCreateProject();
+          commands.toggleProject();
         },
         icon: Briefcase
       }
@@ -210,7 +201,7 @@ export const CommandK = () => {
         name: "Switch to dark theme",
         shortcut: "",
         action: () => {
-          toggleTheme("dark");
+          settings.setTheme("dark");
         },
         icon: Moon
       },
@@ -218,14 +209,14 @@ export const CommandK = () => {
         name: "Switch to light theme",
         shortcut: "",
         action: () => {
-          toggleTheme("light");
+          settings.setTheme("light");
         },
         icon: Sun
       }
     ]
   };
 
-  const commands: Command = [
+  const commandsList: Command = [
     taskCommands,
     agendaCommands,
     pagesCommands,
@@ -238,14 +229,14 @@ export const CommandK = () => {
 
   return (
     <CommandDialog
-      open={open}
-      onOpenChange={toggleCommandK}
+      open={commands.commandKOpen}
+      onOpenChange={commands.toggleCommandK}
       className="min-w-[700px]"
     >
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        {commands.map((command) => (
+        {commandsList.map((command) => (
           <CommandGroup key={command.group} heading={command.group}>
             {command.items.map((item) => (
               <CommandItem
@@ -253,7 +244,7 @@ export const CommandK = () => {
                 className="hover:cursor-pointer"
                 onSelect={() => {
                   item.action();
-                  closeCommandK();
+                  commands.toggleCommandK();
                 }}
               >
                 {item.icon && <item.icon className="ml-1" />}
@@ -268,4 +259,4 @@ export const CommandK = () => {
       </CommandList>
     </CommandDialog>
   );
-};
+});

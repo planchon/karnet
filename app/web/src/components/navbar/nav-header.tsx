@@ -2,7 +2,7 @@ import { IconBell, IconSearch } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { toggleCommandK } from "@/stores/commands";
+import { useCommands } from "@/hooks/useShortcut";
 
 function SidebarHeaderContainer({
   className,
@@ -53,6 +53,8 @@ function SidebarHeaderAction({
 }
 
 function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
+  const commands = useCommands();
+
   return (
     <SidebarHeaderContainer className={className} {...props}>
       <SidebarHeaderLogo>
@@ -68,7 +70,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
           variant="ghost"
           size="icon"
           className="size-6"
-          onClick={toggleCommandK}
+          onClick={commands.toggleCommandK}
         >
           <IconSearch />
         </Button>

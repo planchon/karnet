@@ -7,13 +7,15 @@ import { ChatPage } from "../pages/chat";
 import { ProjectPage } from "@/pages/project";
 import { TaskPage } from "@/pages/task";
 import { useEffect } from "react";
-import { toggleTheme } from "@/stores/settings";
+import { useSettings } from "@/hooks/useStores";
 
 export const Router = () => {
+  const settings = useSettings();
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () =>
-      toggleTheme(mediaQuery.matches ? "dark" : "light");
+      settings.setTheme(mediaQuery.matches ? "dark" : "light");
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);

@@ -14,13 +14,15 @@ import { IconCube } from "@tabler/icons-react";
 import { IconCloud } from "@tabler/icons-react";
 import { IconBlocks } from "@tabler/icons-react";
 import { IconPlus } from "@tabler/icons-react";
-import { toggleCreateEvents } from "@/stores/commands";
 import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
-import { useShortcut } from "@/hooks/useShortcut";
+import { useCommands, useShortcut } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
-export const AgendaPage = () => {
+export const AgendaPage = observer(function AgendaPage() {
+  const commands = useCommands();
+
   useShortcut("n", () => {
-    toggleCreateEvents();
+    commands.toggleEvent();
   });
 
   return (
@@ -78,7 +80,7 @@ export const AgendaPage = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => toggleCreateEvents()}
+              onClick={() => commands.toggleEvent()}
             >
               <IconPlus className="size-3" />
               <span className="text-xs">New event</span>
@@ -91,9 +93,9 @@ export const AgendaPage = () => {
       </div>
     </div>
   );
-};
+});
 
-export const AgendaComponent = () => {
+export const AgendaComponent = observer(() => {
   const [events, setEvents] = useState([
     {
       title: "Sample Event",
@@ -155,7 +157,7 @@ export const AgendaComponent = () => {
       />
     </div>
   );
-};
+});
 
 const Event = ({ arg }: { arg: EventContentArg }) => {
   return (

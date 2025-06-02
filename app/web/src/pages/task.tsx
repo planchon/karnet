@@ -33,17 +33,19 @@ import {
   ContextMenuContent,
   ContextMenuItem
 } from "@/components/ui/context-menu";
-import { toggleCreateTask } from "@/stores/commands";
-import { useShortcut } from "@/hooks/useShortcut";
+import { useCommands, useShortcut } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
 type TaskPerDayProps = {
   day: string;
   tasks: SingleTaskProps[];
 };
 
-export const TaskPage = () => {
+export const TaskPage = observer(function TaskPage() {
+  const commands = useCommands();
+
   useShortcut("n", () => {
-    toggleCreateTask();
+    commands.toggleTask();
   });
 
   const taskPerDay: TaskPerDayProps[] = [
@@ -142,7 +144,7 @@ export const TaskPage = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => toggleCreateTask()}
+              onClick={() => commands.toggleTask()}
             >
               <IconPlus className="size-3" />
               <span className="text-xs">New task</span>
@@ -157,9 +159,12 @@ export const TaskPage = () => {
       </div>
     </div>
   );
-};
+});
 
-const TaskDayColumn = ({ day, tasks }: TaskPerDayProps) => {
+const TaskDayColumn = observer(function TaskDayColumn({
+  day,
+  tasks
+}: TaskPerDayProps) {
   return (
     <div className="h-full w-[350px] min-w-[350px] max-w-[350px] overflow-hidden rounded-md border">
       <div className="from-accent/30 to-accent/10 h-full bg-gradient-to-b">
@@ -174,7 +179,7 @@ const TaskDayColumn = ({ day, tasks }: TaskPerDayProps) => {
       </div>
     </div>
   );
-};
+});
 
 type SingleTaskProps = {
   id: string;
@@ -183,7 +188,12 @@ type SingleTaskProps = {
   dueDate: Date;
 };
 
-const SingleTask = ({ id, title, priority, dueDate }: SingleTaskProps) => {
+const SingleTask = observer(function SingleTask({
+  id,
+  title,
+  priority,
+  dueDate
+}: SingleTaskProps) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -220,13 +230,13 @@ const SingleTask = ({ id, title, priority, dueDate }: SingleTaskProps) => {
       </ContextMenuContent>
     </ContextMenu>
   );
-};
+});
 
-const TaskPriority = ({
+const TaskPriority = observer(function TaskPriority({
   priority
 }: {
   priority: "1" | "2" | "3" | "4" | "5";
-}) => {
+}) {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger>
@@ -254,9 +264,13 @@ const TaskPriority = ({
       </TooltipContent>
     </Tooltip>
   );
-};
+});
 
-const TaskDueDate = ({ dueDate }: { dueDate: Date }) => {
+const TaskDueDate = observer(function TaskDueDate({
+  dueDate
+}: {
+  dueDate: Date;
+}) {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger>
@@ -283,14 +297,14 @@ const TaskDueDate = ({ dueDate }: { dueDate: Date }) => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});
 
 type LabelProps = {
   label: string;
   icon: React.ElementType;
 };
 
-const Label = ({ label, icon: Icon }: LabelProps) => {
+const Label = observer(function Label({ label, icon: Icon }: LabelProps) {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger>
@@ -304,4 +318,4 @@ const Label = ({ label, icon: Icon }: LabelProps) => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});

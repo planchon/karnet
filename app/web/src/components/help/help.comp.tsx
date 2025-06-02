@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -8,12 +7,12 @@ import {
   DrawerTitle
 } from "../ui/drawer";
 import { useShortcut } from "@/hooks/useShortcut";
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Shortcut } from "../ui/shortcut";
-import { useSnapshot } from "valtio";
-import { commandEventsStore, toggleHelp } from "@/stores/commands";
+import { useCommands } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
 const shortcuts = [
   {
@@ -25,7 +24,15 @@ const shortcuts = [
       },
       {
         shortcut: "g+p",
-        description: "Go to pages"
+        description: "Go to projects"
+      },
+      {
+        shortcut: "g+t",
+        description: "Go to tasks"
+      },
+      {
+        shortcut: "g+d",
+        description: "Go to documents"
       },
       {
         shortcut: "g+s",
@@ -65,11 +72,11 @@ const shortcuts = [
     ]
   },
   {
-    category: "Pages",
+    category: "Documents",
     shortcuts: [
       {
-        shortcut: "c+n",
-        description: "Create new page"
+        shortcut: "c+d",
+        description: "Create new document"
       }
     ]
   },
@@ -93,15 +100,19 @@ const shortcuts = [
   }
 ];
 
-export const HelpComponent = () => {
-  const open = useSnapshot(commandEventsStore).helpOpen;
+export const HelpComponent = observer(function HelpComponent() {
+  const commands = useCommands();
 
   useShortcut("?", () => {
-    toggleHelp();
+    commands.toggleHelp();
   });
 
   return (
-    <Drawer direction="right" open={open} onOpenChange={toggleHelp}>
+    <Drawer
+      direction="right"
+      open={commands.helpOpen}
+      onOpenChange={commands.toggleHelp}
+    >
       <DrawerContent className="z-[500]">
         <DrawerHeader>
           <DrawerTitle>Keyboard shortcuts</DrawerTitle>
@@ -146,4 +157,4 @@ export const HelpComponent = () => {
       </DrawerContent>
     </Drawer>
   );
-};
+});

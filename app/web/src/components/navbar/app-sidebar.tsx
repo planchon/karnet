@@ -18,11 +18,13 @@ import { NavSecondary } from "@/components/navbar/nav-secondary";
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 
 import { SidebarHeader } from "./nav-header";
-import { useNavigate } from "react-router";
-import { toggleHelp } from "@/stores/commands";
+import { useCommands } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const navigate = useNavigate();
+export const AppSidebar = observer(function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const commands = useCommands();
 
   const data = {
     user: {
@@ -37,7 +39,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconCalendar,
         tooltip: {
           title: "Go to agenda",
-          side: "right",
+          side: "right" as const,
           shortcut: ["G", "A"]
         }
       },
@@ -47,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconBriefcase,
         tooltip: {
           title: "Go to projects",
-          side: "right",
+          side: "right" as const,
           shortcut: ["G", "P"]
         }
       },
@@ -57,7 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconListCheck,
         tooltip: {
           title: "Go to tasks",
-          side: "right",
+          side: "right" as const,
           shortcut: ["G", "T"]
         }
       },
@@ -67,7 +69,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconMessageCircle,
         tooltip: {
           title: "Chat with an AI",
-          side: "right",
+          side: "right" as const,
           shortcut: ["G", "C"]
         }
       }
@@ -78,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "#",
         icon: IconHelp,
         action: () => {
-          toggleHelp();
+          commands.toggleHelp();
         }
       }
     ],
@@ -111,4 +113,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
     </Sidebar>
   );
-}
+});

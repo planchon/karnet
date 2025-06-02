@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MessageInput } from "@/components/ui/message-input";
 import { ChatInput } from "@/components/chat/chat-input";
+import { observer } from "mobx-react";
 
 interface Message {
   id: string;
@@ -9,7 +10,7 @@ interface Message {
   timestamp: Date;
 }
 
-export function ChatPage() {
+export const ChatPage = observer(function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const handleSubmit = (message: string) => {
@@ -68,4 +69,4 @@ export function ChatPage() {
       <ChatInput />
     </div>
   );
-}
+});

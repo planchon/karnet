@@ -1,14 +1,4 @@
-import { useSnapshot } from "valtio";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from "../ui/dialog";
-import { commandEventsStore, toggleCreateEvents } from "@/stores/commands";
-import { Input } from "../ui/input";
+import { Dialog, DialogContent, DialogFooter } from "../ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { IconCalendar, IconChevronRight, IconLabel } from "@tabler/icons-react";
 import { useShortcut } from "@/hooks/useShortcut";
@@ -16,16 +6,18 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import { Switch } from "../ui/switch";
 import { DateTimePicker } from "../super-ui/date-time-picker";
+import { useCommands } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
-export const CreateEventCommand = () => {
-  const open = useSnapshot(commandEventsStore).eventOpen;
+export const CreateEventCommand = observer(function CreateEventCommand() {
+  const commands = useCommands();
 
   useShortcut("c+e", () => {
-    toggleCreateEvents();
+    commands.toggleEvent();
   });
 
   return (
-    <Dialog open={open} onOpenChange={toggleCreateEvents}>
+    <Dialog open={commands.eventOpen} onOpenChange={commands.toggleEvent}>
       <DialogContent className="z-[1000] min-w-[700px] p-0">
         <div className="flex w-full flex-col gap-3 p-3 pb-0">
           <div className="flex items-center gap-2">
@@ -57,9 +49,9 @@ export const CreateEventCommand = () => {
       </DialogContent>
     </Dialog>
   );
-};
+});
 
-const CalendarSelect = () => {
+const CalendarSelect = observer(function CalendarSelect() {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger autoFocus={false}>
@@ -93,9 +85,9 @@ const CalendarSelect = () => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});
 
-const Deadline = () => {
+const Deadline = observer(function Deadline() {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger autoFocus={false}>
@@ -120,4 +112,4 @@ const Deadline = () => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});

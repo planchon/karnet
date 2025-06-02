@@ -49,6 +49,8 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.474.0",
+    "mobx": "^6.13.7",
+    "mobx-react": "^9.2.0",
     "next-themes": "^0.4.6",
     "react": "catalog:",
     "react-day-picker": "8.10.1",
@@ -62,7 +64,6 @@
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^4.1.7",
-    "valtio": "^2.1.5",
     "vaul": "^1.1.2",
     "zod": "^3.25.28"
   },

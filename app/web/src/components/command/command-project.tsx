@@ -1,7 +1,5 @@
-import { useSnapshot } from "valtio";
 import { Dialog, DialogContent, DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { commandEventsStore, toggleCreateProject } from "@/stores/commands";
 import { useShortcut } from "@/hooks/useShortcut";
 import { Switch } from "../ui/switch";
 import { Tooltip, TooltipContent } from "../ui/tooltip";
@@ -13,16 +11,18 @@ import {
   SelectItem,
   SelectTrigger
 } from "../super-ui/select";
+import { useCommands } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
-export const CreateProjectCommand = () => {
-  const open = useSnapshot(commandEventsStore).projectOpen;
+export const CreateProjectCommand = observer(function CreateProjectCommand() {
+  const commands = useCommands();
 
   useShortcut("c+p", () => {
-    toggleCreateProject();
+    commands.toggleProject();
   });
 
   return (
-    <Dialog open={open} onOpenChange={toggleCreateProject}>
+    <Dialog open={commands.projectOpen} onOpenChange={commands.toggleProject}>
       <DialogContent className="z-[1000] min-w-[700px] p-0">
         <div className="flex h-full min-h-[200px] w-full flex-col gap-3 p-3 pb-0">
           <div className="flex items-center gap-2">
@@ -55,9 +55,9 @@ export const CreateProjectCommand = () => {
       </DialogContent>
     </Dialog>
   );
-};
+});
 
-const ProjectLabel = () => {
+const ProjectLabel = observer(function ProjectLabel() {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger autoFocus={false}>
@@ -85,4 +85,4 @@ const ProjectLabel = () => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});

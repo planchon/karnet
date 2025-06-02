@@ -1,7 +1,5 @@
-import { useSnapshot } from "valtio";
 import { Dialog, DialogContent, DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { commandEventsStore, toggleCreateTask } from "@/stores/commands";
 import { useShortcut } from "@/hooks/useShortcut";
 import { Switch } from "../ui/switch";
 import { Tooltip, TooltipContent } from "../ui/tooltip";
@@ -19,16 +17,18 @@ import {
   IconChevronRight,
   IconLabel
 } from "@tabler/icons-react";
+import { useCommands } from "@/hooks/useShortcut";
+import { observer } from "mobx-react";
 
-export const CreateTaskCommand = () => {
-  const open = useSnapshot(commandEventsStore).taskOpen;
+export const CreateTaskCommand = observer(function CreateTaskCommand() {
+  const commands = useCommands();
 
   useShortcut("c+t", () => {
-    toggleCreateTask();
+    commands.toggleTask();
   });
 
   return (
-    <Dialog open={open} onOpenChange={toggleCreateTask}>
+    <Dialog open={commands.taskOpen} onOpenChange={commands.toggleTask}>
       <DialogContent className="z-[1000] min-w-[700px] p-0">
         <div className="flex w-full flex-col gap-3 p-3 pb-0">
           <div className="flex items-center gap-2">
@@ -62,9 +62,9 @@ export const CreateTaskCommand = () => {
       </DialogContent>
     </Dialog>
   );
-};
+});
 
-const ProjectSelect = () => {
+const ProjectSelect = observer(function ProjectSelect() {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger autoFocus={false}>
@@ -98,9 +98,9 @@ const ProjectSelect = () => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});
 
-const TaskLabel = () => {
+const TaskLabel = observer(function TaskLabel() {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger autoFocus={false}>
@@ -128,9 +128,9 @@ const TaskLabel = () => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});
 
-const TaskPriority = () => {
+const TaskPriority = observer(function TaskPriority() {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger autoFocus={false}>
@@ -155,9 +155,9 @@ const TaskPriority = () => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});
 
-const Deadline = () => {
+const Deadline = observer(function Deadline() {
   return (
     <Tooltip delayDuration={800}>
       <TooltipTrigger autoFocus={false}>
@@ -182,4 +182,4 @@ const Deadline = () => {
       </TooltipContent>
     </Tooltip>
   );
-};
+});

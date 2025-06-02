@@ -1,3 +1,4 @@
+import { CommandsModels } from "@/models/command.model";
 import {
   useCallback,
   useRef,
@@ -13,19 +14,19 @@ export const useShortcut = (
   options = { disableTextInputs: true }
 ) => {
   const callbackRef = useRef(callback);
-  const [keyCombo, setKeyCombo] = useState([]);
+  const [keyCombo, setKeyCombo] = useState<string[]>([]);
 
   useLayoutEffect(() => {
     callbackRef.current = callback;
   });
 
   const handleKeyDown = useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       const isTextInput =
         event.target instanceof HTMLTextAreaElement ||
         (event.target instanceof HTMLInputElement &&
           (!event.target.type || event.target.type === "text")) ||
-        event.target.isContentEditable;
+        (event.target as HTMLTextAreaElement).isContentEditable;
 
       const modifierMap = {
         Control: event.ctrlKey,
@@ -33,6 +34,10 @@ export const useShortcut = (
         Command: event.metaKey,
         Shift: event.shiftKey
       };
+
+      function getModifier(key: string) {
+        return modifierMap[key as keyof typeof modifierMap];
+      }
 
       // Cancel shortcut if key is being held down
       if (event.repeat) {
@@ -48,12 +53,16 @@ export const useShortcut = (
       if (shortcut.includes("+")) {
         const keyArray = shortcut.split("+");
 
+        if (!keyArray[0]) {
+          return;
+        }
+
         // If the first key is a modifier, handle combinations
         if (Object.keys(modifierMap).includes(keyArray[0])) {
           const finalKey = keyArray.pop();
 
           // Run handler if the modifier(s) + key have both been pressed
-          if (keyArray.every((k) => modifierMap[k]) && finalKey === event.key) {
+          if (keyArray.every((k) => getModifier(k)) && finalKey === event.key) {
             return callbackRef.current(event);
           }
         } else {
@@ -102,4 +111,14 @@ export const useLinkShortcut = (shortcut: string, link: string) => {
   useShortcut(shortcut, () => {
     navigate(link);
   });
+};
+
+let __commandSingleton: CommandsModels | null = null;
+
+if (!__commandSingleton) {
+  __commandSingleton = new CommandsModels({});
+}
+
+export const useCommands = () => {
+  return __commandSingleton;
 };
