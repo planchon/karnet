@@ -41,6 +41,7 @@ export const Router = () => {
           />
         </Route>
         <Route path="/document" element={<DocumentPage />} />
+        <Route path="/" index element={<Navigate to={`/agenda`} />} />
       </Route>
     </Routes>
   );
