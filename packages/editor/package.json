@@ -13,6 +13,7 @@
   "types": "./dist/index.d.ts",
   "dependencies": {
     "@floating-ui/react": "^0.27.8",
+    "@tiptap/extension-collaboration": "^2.12.0",
     "@tiptap/extension-highlight": "^2.12.0",
     "@tiptap/extension-image": "^2.12.0",
     "@tiptap/extension-link": "^2.12.0",
@@ -27,7 +28,9 @@
     "@tiptap/react": "^2.12.0",
     "@tiptap/starter-kit": "^2.12.0",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "y-indexeddb": "^9.0.12",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

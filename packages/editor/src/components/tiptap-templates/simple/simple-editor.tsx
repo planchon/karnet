@@ -75,6 +75,10 @@ import "../../../components/tiptap-templates/simple/simple-editor.scss";
 
 import content from "../../../components/tiptap-templates/simple/data/content.json";
 
+import Collaboration from "@tiptap/extension-collaboration";
+import * as Y from "yjs";
+import { IndexeddbPersistence } from "y-indexeddb";
+
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
@@ -180,13 +184,22 @@ const MobileToolbarContent = ({
   </>
 );
 
-export function SimpleEditor() {
+type Props = {
+  id: string;
+};
+
+let doc: Y.Doc = new Y.Doc();
+
+export function SimpleEditor({ id }: Props) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
     "main" | "highlighter" | "link"
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    new IndexeddbPersistence(`p6n-writer-${id}`, doc);
+  }, [id]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -219,7 +232,10 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error)
       }),
       TrailingNode,
-      Link.configure({ openOnClick: false })
+      Link.configure({ openOnClick: false }),
+      Collaboration.configure({
+        document: doc
+      })
     ],
     content: content
   });
