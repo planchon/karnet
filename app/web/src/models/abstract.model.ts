@@ -1,28 +1,38 @@
 import superjson from "superjson";
 import { nanoid } from "nanoid";
-import z from "zod";
-
-const abstractModelSchema = z.object({
-  id: z.string().default(nanoid()),
-  createdAt: z.date().default(new Date()),
-  updatedAt: z.date().default(new Date()),
-  deletedAt: z.date().nullable(),
-  model_version: z.number().default(1)
-});
+import {
+  IsNotEmpty,
+  IsString,
+  IsDate,
+  IsOptional,
+  Length,
+  validateSync as validateClassValidator,
+  ValidationError
+} from "class-validator";
 
 export abstract class AbstractModel {
-  __schema = abstractModelSchema;
+  @Length(21)
+  @IsString()
+  @IsNotEmpty()
+  id: string = nanoid();
+
+  @IsDate()
+  createdAt: Date = new Date();
+
+  @IsDate()
+  updatedAt: Date = new Date();
+
+  @IsDate()
+  @IsOptional()
+  deletedAt: Date | null = null;
 
   constructor(props: Partial<AbstractModel>) {
-    const staticMembers = this.getStaticMembers(this.__schema.shape);
-    Object.assign(this, staticMembers);
     Object.assign(this, props);
+    this.validate();
   }
 
-  getStaticMembers(shape: z.ZodRawShape) {
-    return Object.fromEntries(
-      Object.entries(shape).map(([key, value]) => [toPascalCase(key), value])
-    );
+  validate(): ValidationError[] {
+    return validateClassValidator(this);
   }
 
   abstract toJSON(): unknown;
@@ -34,17 +44,7 @@ export abstract class AbstractModel {
 
   deserialize(data: string) {
     const parsed = superjson.parse(data);
-    return this.__schema.parse(parsed);
+    Object.assign(this, parsed);
+    this.validate();
   }
-}
-
-export function toPascalCase(str: string): string {
-  return (
-    str
-      // Split on non-word characters, underscores, spaces, or boundaries between a lower-case letter and an upper-case letter, or a number and a letter
-      .split(/\W|_|\s+|(?<=[a-z])(?=[A-Z])|(?<=[0-9])(?=[A-Za-z])/)
-      // Capitalize the first letter of each word and join them together
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join("")
-  );
 }
