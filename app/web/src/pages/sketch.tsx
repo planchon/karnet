@@ -1,6 +1,9 @@
 import { Draw } from "@poltion/draw";
 import { observer } from "mobx-react";
+import { useParams } from "react-router";
 
 export const DrawPage = observer(function DrawPage() {
-  return <Draw />;
+  const { id } = useParams();
+
+  return <Draw id={id ?? "infinite"} />;
 });

@@ -26,6 +26,7 @@ export const SuperLink = ({
     <NavLink
       to={url}
       key={title}
+      draggable={false}
       className={({ isActive }: { isActive: boolean }) =>
         cn(
           "overflow-hidden rounded-md hover:cursor-pointer",

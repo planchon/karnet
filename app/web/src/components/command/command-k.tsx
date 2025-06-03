@@ -24,12 +24,14 @@ import {
 import {
   Icon123,
   IconHelpCircle,
+  IconInfinity,
   IconListDetails,
   IconTextPlus
 } from "@tabler/icons-react";
 import { useCommands } from "@/hooks/useShortcut";
 import { useSettings } from "@/hooks/useStores";
 import { observer } from "mobx-react";
+import { generateId } from "@/lib/utils";
 
 type Icon = LucideIcon | typeof Icon123;
 
@@ -79,7 +81,7 @@ export const CommandK = observer(function CommandK() {
         name: "Go to sketches",
         shortcut: "g+s",
         action: () => {
-          navigate("/sketches");
+          navigate("/sketch");
         },
         icon: ArrowRight
       },
@@ -123,9 +125,17 @@ export const CommandK = observer(function CommandK() {
         name: "Create a new document",
         shortcut: "c+d",
         action: () => {
-          navigate("/documents");
+          navigate("/writter");
         },
         icon: FilePlus
+      },
+      {
+        name: "Go to the infinite document",
+        shortcut: "g+D",
+        icon: IconInfinity,
+        action: () => {
+          navigate("/writter/infinite");
+        }
       }
     ]
   };
@@ -137,9 +147,17 @@ export const CommandK = observer(function CommandK() {
         name: "Create a new sketch",
         shortcut: "c+s",
         action: () => {
-          navigate("/sketches");
+          navigate(`/sketch/${generateId()}`);
         },
         icon: Brush
+      },
+      {
+        name: "Go to the infinite sketch",
+        shortcut: "g+S",
+        icon: IconInfinity,
+        action: () => {
+          navigate("/sketch/infinite");
+        }
       }
     ]
   };

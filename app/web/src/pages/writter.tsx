@@ -2,7 +2,10 @@ import { SimpleEditor } from "@poltion/editor";
 import "../../../../packages/editor/src/styles/_variables.scss";
 import "../../../../packages/editor/src/styles/_keyframe-animations.scss";
 import { observer } from "mobx-react";
+import { useParams } from "react-router";
 
-export const DocumentPage = observer(function DocumentPage() {
-  return <SimpleEditor />;
+export const WritterPage = observer(function WritterPage() {
+  const { id } = useParams();
+
+  return <SimpleEditor id={id ?? "infinite"} />;
 });

@@ -1,13 +1,14 @@
-import { Route, Routes } from "react-router";
-import { DrawPage } from "../pages/draw";
+import { Navigate, Route, Routes } from "react-router";
+import { DrawPage } from "../pages/sketch";
 import { AgendaPage } from "../pages/agenda";
-import { DocumentPage } from "../pages/documents";
+import { DocumentPage } from "../pages/document";
 import { GeneralOutlet } from "./outlet/general.outlet";
 import { ChatPage } from "../pages/chat";
 import { ProjectPage } from "@/pages/project";
 import { TaskPage } from "@/pages/task";
 import { useEffect } from "react";
 import { useSettings } from "@/hooks/useStores";
+import { WritterPage } from "@/pages/writter";
 
 export const Router = () => {
   const settings = useSettings();
@@ -27,8 +28,19 @@ export const Router = () => {
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/project" element={<ProjectPage />} />
         <Route path="/task" element={<TaskPage />} />
-        <Route path="/sketches" element={<DrawPage />} />
-        <Route path="/documents" element={<DocumentPage />} />
+        <Route path="/sketch">
+          <Route path=":id" element={<DrawPage />} />
+          <Route path="" index element={<Navigate to={`/sketch/infinite`} />} />
+        </Route>
+        <Route path="/writter">
+          <Route path=":id" index element={<WritterPage />} />
+          <Route
+            path=""
+            index
+            element={<Navigate to={`/writter/infinite`} />}
+          />
+        </Route>
+        <Route path="/document" element={<DocumentPage />} />
       </Route>
     </Routes>
   );

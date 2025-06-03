@@ -40,7 +40,7 @@ export const AppSidebar = observer(function AppSidebar({
         tooltip: {
           title: "Go to agenda",
           side: "right" as const,
-          shortcut: ["G", "A"]
+          shortcut: ["g", "a"]
         }
       },
       {
@@ -50,7 +50,7 @@ export const AppSidebar = observer(function AppSidebar({
         tooltip: {
           title: "Go to projects",
           side: "right" as const,
-          shortcut: ["G", "P"]
+          shortcut: ["g", "p"]
         }
       },
       {
@@ -60,7 +60,7 @@ export const AppSidebar = observer(function AppSidebar({
         tooltip: {
           title: "Go to tasks",
           side: "right" as const,
-          shortcut: ["G", "T"]
+          shortcut: ["g", "t"]
         }
       },
       {
@@ -70,7 +70,17 @@ export const AppSidebar = observer(function AppSidebar({
         tooltip: {
           title: "Chat with an AI",
           side: "right" as const,
-          shortcut: ["G", "C"]
+          shortcut: ["g", "c"]
+        }
+      },
+      {
+        title: "Documents",
+        url: "/document",
+        icon: IconFileText,
+        tooltip: {
+          title: "Go to documents",
+          side: "right" as const,
+          shortcut: ["g", "d"]
         }
       }
     ],

@@ -5,10 +5,14 @@ const components: TLUiComponents = {
   MenuPanel: null
 };
 
-function Draw() {
+type DrawProps = {
+  id: string;
+};
+
+function Draw({ id }: DrawProps) {
   return (
     <div className="h-full w-full">
-      <Tldraw components={components} />
+      <Tldraw components={components} persistenceKey={`p6n-${id}-draw`} />
     </div>
   );
 }

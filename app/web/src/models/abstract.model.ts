@@ -1,5 +1,5 @@
 import superjson from "superjson";
-import { nanoid } from "nanoid";
+import { generateId } from "@/lib/utils";
 import {
   IsNotEmpty,
   IsString,
@@ -14,7 +14,7 @@ export abstract class AbstractModel {
   @Length(21)
   @IsString()
   @IsNotEmpty()
-  id: string = nanoid();
+  id: string = generateId();
 
   @IsDate()
   createdAt: Date = new Date();
