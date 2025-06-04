@@ -1,15 +1,7 @@
-import {
-  createTLStore,
-  defaultShapeUtils,
-  Editor,
-  Tldraw,
-  TLUiComponents,
-  TLUiOverrides
-} from "tldraw";
+import { Editor, Tldraw, TLUiComponents, TLUiOverrides } from "tldraw";
 import { Grid } from "./grid";
 import { Toolbar } from "./toolbar";
 import "tldraw/tldraw.css";
-import { useMemo } from "react";
 
 const components: TLUiComponents & { Grid: typeof Grid } = {
   MenuPanel: null,
@@ -22,11 +14,13 @@ type DrawProps = {
   callback: (editor: Editor) => void;
 };
 const overrides: TLUiOverrides = {
+  // @ts-ignore
   actions(editor, actions, helpers) {
     const newActions = {
       ...actions,
       "toggle-grid": {
         ...actions["toggle-grid"],
+        id: "toggle-grid",
         kbd: "g"
       }
     };
@@ -36,13 +30,6 @@ const overrides: TLUiOverrides = {
 };
 
 function Draw({ id, callback }: DrawProps) {
-  const store = useMemo(() => {
-    return createTLStore({
-      persistenceKey: `p6n-${id}-draw`,
-      shapeUtils: defaultShapeUtils
-    });
-  }, [id]);
-
   return (
     <div className="h-full w-full">
       <Tldraw
