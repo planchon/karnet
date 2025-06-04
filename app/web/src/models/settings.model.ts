@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, reaction } from "mobx";
 import { AbstractModel } from "./abstract.model";
 
 export const Theme = {
@@ -19,6 +19,13 @@ export class SettingsModel extends AbstractModel {
       theme: observable,
       setTheme: action
     });
+
+    reaction(
+      () => this.theme,
+      (theme) => {
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      }
+    );
   }
 
   toJSON() {

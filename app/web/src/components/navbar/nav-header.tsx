@@ -59,7 +59,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
     <SidebarHeaderContainer className={className} {...props}>
       <SidebarHeaderLogo>
         <img
-          src="https://uploads.linear.app/11e50d11-cd50-48fb-87fa-892be26bf591/b878c925-289f-4dd0-a3c0-086635f99fe6/256x256/8ea6086a-0c06-4a69-ba17-ecab9104fc13"
+          src="https://avatars.githubusercontent.com/u/129000276"
           alt="supernotion"
           className="size-5 select-none rounded-[4px]"
         />
