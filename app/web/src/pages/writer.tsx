@@ -4,7 +4,7 @@ import "../../../../packages/editor/src/styles/_keyframe-animations.scss";
 import { observer } from "mobx-react";
 import { useParams } from "react-router";
 
-export const WritterPage = observer(function WritterPage() {
+export const WriterPage = observer(function WritterPage() {
   const { id } = useParams();
 
   return <SimpleEditor id={id ?? "infinite"} />;
