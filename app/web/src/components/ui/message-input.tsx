@@ -177,7 +177,6 @@ export function MessageInput({
   }, [props.value]);
 
   const keydownHandler = (event: KeyboardEvent) => {
-    console.log(event.key);
     if (event.key === "Escape") {
       const activeElement = document.activeElement;
       if (activeElement instanceof HTMLElement) {
