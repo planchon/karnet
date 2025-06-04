@@ -63,6 +63,7 @@ export const useShortcut = (
 
           // Run handler if the modifier(s) + key have both been pressed
           if (keyArray.every((k) => getModifier(k)) && finalKey === event.key) {
+            event.preventDefault();
             return callbackRef.current(event);
           }
         } else {
@@ -75,6 +76,7 @@ export const useShortcut = (
             ) {
               // Run handler if the sequence is complete, then reset it
               callbackRef.current(event);
+              event.stopPropagation();
               return setKeyCombo([]);
             }
 
@@ -90,6 +92,7 @@ export const useShortcut = (
 
       // Single key shortcuts (e.g. pressing D)
       if (shortcut === event.key) {
+        event.stopPropagation();
         return callbackRef.current(event);
       }
     },

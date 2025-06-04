@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/navbar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
-import { useLinkShortcut } from "@/hooks/useShortcut";
+import { useLinkShortcut, useShortcut } from "@/hooks/useShortcut";
 import { HelpComponent } from "@/components/help/help.comp";
 import { CommandK } from "@/components/command/command-k";
 import { CreateEventCommand } from "@/components/command/command-events";
