@@ -29,32 +29,27 @@ import {
   IconTextPlus
 } from "@tabler/icons-react";
 import { useCommands } from "@/hooks/useShortcut";
-import { useSettings } from "@/hooks/useStores";
+import { useSettings, useStores } from "@/hooks/useStores";
 import { observer } from "mobx-react";
 import { generateId } from "@/lib/utils";
-
-type Icon = LucideIcon | typeof Icon123;
-
-type Item = {
-  name: string;
-  shortcut: string;
-  action: () => void;
-  icon?: Icon;
-};
+import { Command as CommandType } from "@/stores/command.store";
 
 type Group = {
   group: string;
-  items: Item[];
+  items: CommandType[];
 };
-
-type Command = Group[];
 
 export const CommandK = observer(function CommandK() {
   const commands = useCommands();
   const navigate = useNavigate();
   const settings = useSettings();
+  const commandStore = useStores().commandStore;
 
   useShortcut("Meta+k", () => {
+    commands.toggleCommandK();
+  });
+
+  useShortcut("Control+k", () => {
     commands.toggleCommandK();
   });
 
@@ -234,7 +229,11 @@ export const CommandK = observer(function CommandK() {
     ]
   };
 
-  const commandsList: Command = [
+  const commandsList: Group[] = [
+    {
+      group: "Contextual commands",
+      items: commandStore.contextualCommands
+    },
     taskCommands,
     agendaCommands,
     pagesCommands,
@@ -254,9 +253,9 @@ export const CommandK = observer(function CommandK() {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        {commandsList.map((command) => (
+        {commandsList.map((command: Group) => (
           <CommandGroup key={command.group} heading={command.group}>
-            {command.items.map((item) => (
+            {command.items.map((item: CommandType) => (
               <CommandItem
                 key={item.name}
                 className="hover:cursor-pointer"

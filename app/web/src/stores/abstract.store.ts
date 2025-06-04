@@ -17,4 +17,8 @@ export class AbstractStore<T extends AbstractModel> {
   getById = (id: string): T | undefined => {
     return this._models[id];
   };
+
+  setById = (id: string, model: T) => {
+    this._models[id] = model;
+  };
 }
