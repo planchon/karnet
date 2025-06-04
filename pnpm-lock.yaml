@@ -270,6 +270,9 @@ importers:
       tailwind-scrollbar:
         specifier: ^4.0.2
         version: 4.0.2(react@19.1.0)(tailwindcss@4.1.7)
+      tldraw:
+        specifier: ^3.13.1
+        version: 3.13.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       tw-animate-css:
         specifier: ^1.3.0
         version: 1.3.0
