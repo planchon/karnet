@@ -17,8 +17,8 @@ export function GeneralOutlet() {
   useLinkShortcut("g+c", "/chat");
   useLinkShortcut("g+d", "/document");
   useLinkShortcut("g+s", `/sketch/${generateId()}`);
-  useLinkShortcut("g+w", `/writter/${generateId()}`);
-  useLinkShortcut("g+D", `/writter/infinite`);
+  useLinkShortcut("g+w", `/writer/${generateId()}`);
+  useLinkShortcut("g+D", `/writer/infinite`);
   useLinkShortcut("g+S", `/sketch/infinite`);
 
   return (

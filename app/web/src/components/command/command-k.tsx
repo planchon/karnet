@@ -120,7 +120,7 @@ export const CommandK = observer(function CommandK() {
         name: "Create a new document",
         shortcut: "c+d",
         action: () => {
-          navigate("/writter");
+          navigate("/writer");
         },
         icon: FilePlus
       },
@@ -129,7 +129,7 @@ export const CommandK = observer(function CommandK() {
         shortcut: "g+D",
         icon: IconInfinity,
         action: () => {
-          navigate("/writter/infinite");
+          navigate("/writer/infinite");
         }
       }
     ]
