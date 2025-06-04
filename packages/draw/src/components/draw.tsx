@@ -1,14 +1,29 @@
-import { Tldraw, TLUiComponents } from "tldraw";
+import { Tldraw, TLUiComponents, TLUiOverrides } from "tldraw";
 import { Grid } from "./grid";
+import { Toolbar } from "./toolbar";
 import "tldraw/tldraw.css";
 
 const components: TLUiComponents & { Grid: typeof Grid } = {
   MenuPanel: null,
-  Grid
+  Grid,
+  Toolbar: Toolbar as TLUiComponents["Toolbar"]
 };
 
 type DrawProps = {
   id: string;
+};
+const overrides: TLUiOverrides = {
+  actions(editor, actions, helpers) {
+    const newActions = {
+      ...actions,
+      "toggle-grid": {
+        ...actions["toggle-grid"],
+        kbd: "g"
+      }
+    };
+
+    return newActions;
+  }
 };
 
 function Draw({ id }: DrawProps) {
@@ -16,6 +31,7 @@ function Draw({ id }: DrawProps) {
     <div className="h-full w-full">
       <Tldraw
         components={components}
+        overrides={overrides}
         persistenceKey={`p6n-${id}-draw`}
         onMount={(e) => {
           e.updateInstanceState({
