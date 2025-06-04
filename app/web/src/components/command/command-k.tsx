@@ -65,18 +65,26 @@ export const CommandK = observer(function CommandK() {
         icon: ArrowRight
       },
       {
-        name: "Go to pages",
-        shortcut: "g+p",
+        name: "Go to tasks",
+        shortcut: "g+t",
         action: () => {
-          navigate("/pages");
+          navigate("/task");
         },
         icon: ArrowRight
       },
       {
-        name: "Go to sketches",
-        shortcut: "g+s",
+        name: "Go to projects",
+        shortcut: "g+p",
         action: () => {
-          navigate("/sketch");
+          navigate("/project");
+        },
+        icon: ArrowRight
+      },
+      {
+        name: "Go to documents",
+        shortcut: "g+d",
+        action: () => {
+          navigate("/document");
         },
         icon: ArrowRight
       },
@@ -114,22 +122,22 @@ export const CommandK = observer(function CommandK() {
   };
 
   const pagesCommands: Group = {
-    group: "Documents",
+    group: "Essays",
     items: [
       {
-        name: "Create a new document",
-        shortcut: "c+d",
+        name: "Create a new essay",
+        shortcut: "c+e",
         action: () => {
-          navigate("/writer");
+          navigate(`/essay/${generateId()}`);
         },
         icon: FilePlus
       },
       {
-        name: "Go to the infinite document",
-        shortcut: "g+D",
+        name: "Go to the infinite essay",
+        shortcut: "g+e",
         icon: IconInfinity,
         action: () => {
-          navigate("/writer/infinite");
+          navigate("/essay/infinite");
         }
       }
     ]

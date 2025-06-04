@@ -16,10 +16,10 @@ export function GeneralOutlet() {
   useLinkShortcut("g+t", "/task");
   useLinkShortcut("g+c", "/chat");
   useLinkShortcut("g+d", "/document");
-  useLinkShortcut("g+s", `/sketch/${generateId()}`);
-  useLinkShortcut("g+w", `/writer/${generateId()}`);
-  useLinkShortcut("g+D", `/writer/infinite`);
-  useLinkShortcut("g+S", `/sketch/infinite`);
+  useLinkShortcut("c+s", `/sketch/${generateId()}`);
+  useLinkShortcut("c+e", `/essay/${generateId()}`);
+  useLinkShortcut("g+e", `/essay/infinite`);
+  useLinkShortcut("g+s", `/sketch/infinite`);
 
   return (
     <SidebarProvider>

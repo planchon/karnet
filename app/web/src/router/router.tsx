@@ -8,7 +8,7 @@ import { ProjectPage } from "@/pages/project";
 import { TaskPage } from "@/pages/task";
 import { useEffect } from "react";
 import { useSettings } from "@/hooks/useStores";
-import { WriterPage } from "@/pages/writer";
+import { EssayPage } from "@/pages/essay";
 
 export const Router = () => {
   const settings = useSettings();
@@ -32,9 +32,9 @@ export const Router = () => {
           <Route path=":id" element={<DrawPage />} />
           <Route path="" index element={<Navigate to={`/sketch/infinite`} />} />
         </Route>
-        <Route path="/writer">
-          <Route path=":id" index element={<WriterPage />} />
-          <Route path="" index element={<Navigate to={`/writer/infinite`} />} />
+        <Route path="/essay">
+          <Route path=":id" index element={<EssayPage />} />
+          <Route path="" index element={<Navigate to={`/essay/infinite`} />} />
         </Route>
         <Route path="/document" element={<DocumentPage />} />
         <Route path="/" index element={<Navigate to={`/agenda`} />} />

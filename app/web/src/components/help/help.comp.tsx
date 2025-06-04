@@ -72,11 +72,15 @@ const shortcuts = [
     ]
   },
   {
-    category: "Documents",
+    category: "Essays",
     shortcuts: [
       {
-        shortcut: "c+d",
+        shortcut: "c+e",
         description: "Create new document"
+      },
+      {
+        shortcut: "g+e",
+        description: "Go to infinite writer"
       }
     ]
   },
@@ -86,6 +90,10 @@ const shortcuts = [
       {
         shortcut: "c+s",
         description: "Create new sketch"
+      },
+      {
+        shortcut: "g+s",
+        description: "Go to infinite sketch"
       }
     ]
   },
