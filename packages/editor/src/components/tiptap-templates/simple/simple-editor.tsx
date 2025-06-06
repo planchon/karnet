@@ -188,7 +188,7 @@ type Props = {
   id: string;
 };
 
-let doc: Y.Doc = new Y.Doc();
+let doc = new Y.Doc();
 
 export function SimpleEditor({ id }: Props) {
   const isMobile = useMobile();
@@ -197,9 +197,6 @@ export function SimpleEditor({ id }: Props) {
     "main" | "highlighter" | "link"
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    new IndexeddbPersistence(`p6n-writer-${id}`, doc);
-  }, [id]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -212,7 +209,9 @@ export function SimpleEditor({ id }: Props) {
       }
     },
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        history: false
+      }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Underline,
       TaskList,
@@ -236,8 +235,7 @@ export function SimpleEditor({ id }: Props) {
       Collaboration.configure({
         document: doc
       })
-    ],
-    content: content
+    ]
   });
 
   const bodyRect = useCursorVisibility({
@@ -250,6 +248,34 @@ export function SimpleEditor({ id }: Props) {
       setMobileView("main");
     }
   }, [isMobile, mobileView]);
+
+  React.useEffect(() => {
+    if (!id || !editor) return;
+
+    const key = `p6n-writer-${id}`;
+    const data = localStorage.getItem(key);
+    if (data) {
+      editor.commands.setContent(JSON.parse(data));
+    } else {
+      editor.commands.setContent("<p>Hello</p>");
+    }
+
+    editor.on("update", () => {
+      // throttle
+      const timeout = setTimeout(() => {
+        const data = editor.getJSON();
+        localStorage.setItem(key, JSON.stringify(data));
+      }, 100);
+
+      return () => clearTimeout(timeout);
+    });
+
+    return () => {
+      editor.off("update");
+    };
+  }, [id, editor]);
+
+  React.useEffect(() => {}, []);
 
   return (
     <EditorContext.Provider value={{ editor }}>

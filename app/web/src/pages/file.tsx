@@ -4,8 +4,10 @@ import "../../../../packages/editor/src/styles/_keyframe-animations.scss";
 import { observer } from "mobx-react";
 import { useParams } from "react-router";
 
-export const EssayPage = observer(function EssayPage() {
+export const FilePage = observer(function FilePage() {
   const { id } = useParams();
 
-  return <SimpleEditor id={id ?? "infinite"} />;
+  console.log("id params", id);
+
+  return <SimpleEditor key={id} id={id ?? "infinite"} />;
 });

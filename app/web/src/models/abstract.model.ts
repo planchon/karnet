@@ -10,6 +10,14 @@ import {
   ValidationError
 } from "class-validator";
 
+declare global {
+  interface Window {
+    DEBUG: boolean;
+  }
+}
+
+window.DEBUG = true;
+
 export abstract class AbstractModel {
   @Length(21)
   @IsString()
@@ -25,6 +33,14 @@ export abstract class AbstractModel {
   @IsDate()
   @IsOptional()
   deletedAt: Date | null = null;
+
+  @IsString()
+  @IsNotEmpty()
+  model_name: string = this.constructor.name;
+
+  @IsString()
+  @IsNotEmpty()
+  key: string = `p6n-models-${this.model_name}-${this.id}`;
 
   constructor(props: Partial<AbstractModel>) {
     Object.assign(this, props);
@@ -46,5 +62,26 @@ export abstract class AbstractModel {
     const parsed = superjson.parse(data);
     Object.assign(this, parsed);
     this.validate();
+  }
+
+  // save to local storage
+  saveToLocalStorage() {
+    const serialized = this.serialize();
+    if (window.DEBUG) {
+      console.log("saving to local storage", this.key);
+      console.log("serialized", serialized);
+    }
+    localStorage.setItem(this.key, serialized);
+  }
+
+  // load from local storage
+  loadFromLocalStorage() {
+    const serialized = localStorage.getItem(this.key);
+    if (window.DEBUG) {
+      console.log("loading from local storage", this.key);
+      console.log("serialized", serialized);
+    }
+    if (!serialized) return;
+    this.deserialize(serialized);
   }
 }

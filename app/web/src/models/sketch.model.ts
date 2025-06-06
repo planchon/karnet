@@ -9,6 +9,8 @@ export class Sketch extends AbstractModel {
   @IsNotEmpty()
   name: string = "Sketch";
 
+  model_name: string = "sketches";
+
   constructor(props: Partial<Sketch>) {
     super(props);
   }

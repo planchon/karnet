@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/navbar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
-import { useLinkShortcut, useShortcut } from "@/hooks/useShortcut";
+import { useLinkShortcut } from "@/hooks/useShortcut";
 import { HelpComponent } from "@/components/help/help.comp";
 import { CommandK } from "@/components/command/command-k";
 import { CreateEventCommand } from "@/components/command/command-events";
@@ -16,10 +16,10 @@ export function GeneralOutlet() {
   useLinkShortcut("g+t", "/task");
   useLinkShortcut("g+c", "/chat");
   useLinkShortcut("g+d", "/document");
-  useLinkShortcut("c+s", `/sketch/${generateId()}`);
-  useLinkShortcut("c+e", `/essay/${generateId()}`);
-  useLinkShortcut("g+e", `/essay/infinite`);
+  useLinkShortcut("g+f", `/file/infinite`);
+  useLinkShortcut("c+f", `/file/${generateId()}`);
   useLinkShortcut("g+s", `/sketch/infinite`);
+  useLinkShortcut("c+s", `/sketch/${generateId()}`);
 
   return (
     <SidebarProvider>
