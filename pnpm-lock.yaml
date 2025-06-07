@@ -364,6 +364,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: ^2.12.0
         version: 2.12.0
+      '@tiptap/suggestion':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2249,6 +2252,12 @@ packages:
 
   '@tiptap/starter-kit@2.12.0':
     resolution: {integrity: sha512-wlcEEtexd6u0gbR311/OFZnbtRWU97DUsY6/GsSQzN4rqZ7Ra6YbfHEN5Lutu+I/anomK8vKy8k9NyvfY5Hllg==}
+
+  '@tiptap/suggestion@2.14.0':
+    resolution: {integrity: sha512-AXzEw0KYIyg5id8gz5geIffnBtkZqan5MWe29rGo3gXTfKH+Ik8tWbZdnlMVheycsUCllrymDRei4zw9DqVqkQ==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+      '@tiptap/pm': ^2.7.0
 
   '@tldraw/editor@3.13.1':
     resolution: {integrity: sha512-ewt9QlOBJf57yvxnYBg6pKiCryVVeJcYCMPM93E6W9kiQ3l3UTtIvVGQSjhHye8Qq5hgwEz6OV8jhBb4bEO8nQ==}
@@ -7368,6 +7377,11 @@ snapshots:
       '@tiptap/extension-strike': 2.12.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))
       '@tiptap/extension-text': 2.12.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))
       '@tiptap/extension-text-style': 2.12.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))
+      '@tiptap/pm': 2.12.0
+
+  '@tiptap/suggestion@2.14.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
+    dependencies:
+      '@tiptap/core': 2.12.0(@tiptap/pm@2.12.0)
       '@tiptap/pm': 2.12.0
 
   '@tldraw/editor@3.13.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':

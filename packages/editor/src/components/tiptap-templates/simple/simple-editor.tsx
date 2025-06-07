@@ -81,6 +81,7 @@ import "../../../components/tiptap-templates/simple/simple-editor.scss";
 import Collaboration from "@tiptap/extension-collaboration";
 import * as Y from "yjs";
 import { BubbleMenuComp } from "../../bubble-menu/bubble-menu";
+import SlashCommand from "../../slash-command/slash-command";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -212,6 +213,7 @@ export function SimpleEditor({ id }: Props) {
       }
     },
     extensions: [
+      SlashCommand,
       StarterKit.configure({
         history: false
       }),
