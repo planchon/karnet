@@ -72,15 +72,15 @@ const shortcuts = [
     ]
   },
   {
-    category: "Essays",
+    category: "Files",
     shortcuts: [
       {
-        shortcut: "c+e",
-        description: "Create new document"
+        shortcut: "c+f",
+        description: "Create new file"
       },
       {
-        shortcut: "g+e",
-        description: "Go to infinite writer"
+        shortcut: "g+f",
+        description: "Go to infinite file"
       }
     ]
   },

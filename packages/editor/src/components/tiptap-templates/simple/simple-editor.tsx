@@ -1,5 +1,10 @@
 import * as React from "react";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import {
+  BubbleMenu,
+  EditorContent,
+  EditorContext,
+  useEditor
+} from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -73,11 +78,9 @@ import { handleImageUpload, MAX_FILE_SIZE } from "../../../lib/tiptap-utils";
 // --- Styles ---
 import "../../../components/tiptap-templates/simple/simple-editor.scss";
 
-import content from "../../../components/tiptap-templates/simple/data/content.json";
-
 import Collaboration from "@tiptap/extension-collaboration";
 import * as Y from "yjs";
-import { IndexeddbPersistence } from "y-indexeddb";
+import { BubbleMenuComp } from "../../bubble-menu/bubble-menu";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -304,6 +307,7 @@ export function SimpleEditor({ id }: Props) {
       </Toolbar>
 
       <div className="content-wrapper">
+        {editor && <BubbleMenuComp editor={editor} />}
         <EditorContent
           editor={editor}
           role="presentation"

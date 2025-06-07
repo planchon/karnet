@@ -122,22 +122,22 @@ export const CommandK = observer(function CommandK() {
   };
 
   const pagesCommands: Group = {
-    group: "Essays",
+    group: "Files",
     items: [
       {
-        name: "Create a new essay",
-        shortcut: "c+e",
+        name: "Create a new file",
+        shortcut: "c+f",
         action: () => {
-          navigate(`/essay/${generateId()}`);
+          navigate(`/file/${generateId()}`);
         },
         icon: FilePlus
       },
       {
-        name: "Go to the infinite essay",
-        shortcut: "g+e",
+        name: "Go to the infinite file",
+        shortcut: "g+f",
         icon: IconInfinity,
         action: () => {
-          navigate("/essay/infinite");
+          navigate("/file/infinite");
         }
       }
     ]

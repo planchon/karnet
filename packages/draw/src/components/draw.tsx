@@ -21,7 +21,7 @@ const overrides: TLUiOverrides = {
       "toggle-grid": {
         ...actions["toggle-grid"],
         id: "toggle-grid",
-        kbd: "g"
+        kbd: "Shift+G"
       }
     };
 
