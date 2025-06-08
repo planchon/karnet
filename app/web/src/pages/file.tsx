@@ -7,7 +7,5 @@ import { useParams } from "react-router";
 export const FilePage = observer(function FilePage() {
   const { id } = useParams();
 
-  console.log("id params", id);
-
   return <SimpleEditor key={id} id={id ?? "infinite"} />;
 });

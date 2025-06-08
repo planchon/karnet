@@ -41,7 +41,6 @@ const Item = React.forwardRef<
     <CommandItem
       {...restProps}
       onSelect={() => {
-        console.log("onSelect", localEditor, range);
         onCommand({ editor: localEditor, range: range });
       }}
       ref={ref}

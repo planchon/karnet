@@ -11,10 +11,11 @@ export type SlashSuggestionBase = {
   title: string;
   command: (props: { editor: Editor; range: TipTapRange }) => void;
   searchTerms?: string[];
+  icon: ReactNode;
 };
 
 export type SlashSuggestion<
-  T extends Record<string, unknown> = Record<string, unknown>,
+  T extends Record<string, unknown> = Record<string, unknown>
 > = SlashSuggestionBase & T;
 
 export type SlashSuggestionRecommended = SlashSuggestion<{
@@ -23,7 +24,7 @@ export type SlashSuggestionRecommended = SlashSuggestion<{
 }>;
 
 export type SlashOptions<
-  TSuggestion extends Record<string, unknown> = Record<string, unknown>,
+  TSuggestion extends Record<string, unknown> = Record<string, unknown>
 > = {
   suggestion: Omit<SuggestionOptions<SlashSuggestion<TSuggestion>>, "editor">;
 };

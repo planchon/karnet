@@ -83,12 +83,13 @@ import Collaboration from "@tiptap/extension-collaboration";
 import * as Y from "yjs";
 import { BubbleMenuComp } from "../../bubble-menu/bubble-menu";
 import {
-  createSuggestionsItems,
   enableKeyboardNavigation,
   Slash,
   SlashCmd,
   SlashCmdProvider
 } from "@poltion/slash-tiptap";
+
+import { allSuggestions } from "../../slash/suggestions";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -201,38 +202,6 @@ type Props = {
 
 let doc = new Y.Doc();
 
-const suggestions = createSuggestionsItems([
-  {
-    title: "text",
-    searchTerms: ["paragraph"],
-    command: ({ editor, range }) => {
-      console.log("text");
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .toggleNode("paragraph", "paragraph")
-        .run();
-    }
-  },
-  {
-    title: "Bullet List",
-    searchTerms: ["unordered", "point"],
-    command: ({ editor, range }) => {
-      console.log("bullet list");
-      editor.chain().focus().deleteRange(range).toggleBulletList().run();
-    }
-  },
-  {
-    title: "Ordered List",
-    searchTerms: ["ordered", "point", "numbers"],
-    command: ({ editor, range }) => {
-      console.log("ordered list");
-      editor.chain().focus().deleteRange(range).toggleOrderedList().run();
-    }
-  }
-]);
-
 export function SimpleEditor({ id }: Props) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
@@ -250,12 +219,25 @@ export function SimpleEditor({ id }: Props) {
         autocorrect: "off",
         autocapitalize: "off",
         "aria-label": "Main content area, start typing to enter text."
+      },
+      handleDOMEvents: {
+        keydown: (_, v) => {
+          return enableKeyboardNavigation(v);
+        }
       }
     },
     extensions: [
       Slash.configure({
         suggestion: {
-          items: () => createSuggestionsItems(suggestions)
+          items: () =>
+            allSuggestions
+              .flatMap((item) => item.items)
+              .map((item) => ({
+                title: item.title,
+                searchTerms: item.searchTerms,
+                icon: item.icon,
+                command: item.command
+              }))
         }
       }),
       StarterKit.configure({
@@ -284,10 +266,7 @@ export function SimpleEditor({ id }: Props) {
       Collaboration.configure({
         document: doc
       })
-    ],
-    handleDOMEvents: {
-      keydown: (_, v) => enableKeyboardNavigation(v)
-    }
+    ]
   });
 
   const bodyRect = useCursorVisibility({
@@ -364,27 +343,9 @@ export function SimpleEditor({ id }: Props) {
             className="simple-editor-content"
           />
           <SlashCmd.Root editor={editor}>
-            <SlashCmd.Cmd className="border-muted bg-background z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border bg-white p-4 shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] transition-all">
+            <SlashCmd.Cmd className="bg-background z-50 h-auto max-h-[330px] w-[200px] rounded-md border p-1 transition-all">
               <SlashCmd.Empty>No commands available</SlashCmd.Empty>
-              <SlashCmd.List>
-                {suggestions.map((item) => {
-                  return (
-                    <SlashCmd.Item
-                      value={item.title}
-                      onCommand={(val) => {
-                        console.log("onCommand", val);
-                        item.command(val);
-                      }}
-                      className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 text-left text-sm hover:bg-gray-200 aria-selected:bg-gray-200"
-                      key={item.title}
-                    >
-                      <div>
-                        <p className="text-sm font-medium">{item.title}</p>
-                      </div>
-                    </SlashCmd.Item>
-                  );
-                })}
-              </SlashCmd.List>
+              <SlashCmd.List>{allSuggestions.map((item) => {})}</SlashCmd.List>
             </SlashCmd.Cmd>
           </SlashCmd.Root>
         </div>
@@ -392,3 +353,19 @@ export function SimpleEditor({ id }: Props) {
     </EditorContext.Provider>
   );
 }
+
+// return (
+//   <SlashCmd.Item
+//     value={item.title}
+//     onCommand={(val) => {
+//       item.command(val);
+//     }}
+//     className="aria-selected:bg-sidebar-accent flex w-full cursor-pointer items-center space-x-2 rounded-sm p-2 text-left text-sm hover:bg-gray-200"
+//     key={item.title}
+//   >
+//     <div className="flex items-center space-x-2">
+//       <item.icon className="h-4 w-4" />
+//       <p className="text-sm font-medium">{item.title}</p>
+//     </div>
+//   </SlashCmd.Item>
+// );
