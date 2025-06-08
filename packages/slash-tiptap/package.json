@@ -32,7 +32,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "dev": "tsup --watch",
     "lint": "tsc",
     "ci": "pnpm run build && pnpm run check-exports && pnpm run lint",
     "check-exports": "attw --pack .",

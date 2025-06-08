@@ -330,8 +330,8 @@ export function SimpleEditor({ id }: Props) {
   if (!editor) return null;
 
   return (
-    <SlashCmdProvider>
-      <EditorContext.Provider value={{ editor }}>
+    <EditorContext.Provider value={{ editor }}>
+      <SlashCmdProvider>
         <Toolbar
           ref={toolbarRef}
           style={
@@ -372,6 +372,7 @@ export function SimpleEditor({ id }: Props) {
                     <SlashCmd.Item
                       value={item.title}
                       onCommand={(val) => {
+                        console.log("onCommand", val);
                         item.command(val);
                       }}
                       className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 text-left text-sm hover:bg-gray-200 aria-selected:bg-gray-200"
@@ -387,7 +388,7 @@ export function SimpleEditor({ id }: Props) {
             </SlashCmd.Cmd>
           </SlashCmd.Root>
         </div>
-      </EditorContext.Provider>
-    </SlashCmdProvider>
+      </SlashCmdProvider>
+    </EditorContext.Provider>
   );
 }

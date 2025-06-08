@@ -8,7 +8,7 @@ import slashStore from "../utils/store";
 export interface SlashItemProps {
   readonly onCommand: ({
     editor,
-    range,
+    range
   }: {
     editor: Editor;
     range: TipTapRange;
@@ -24,12 +24,12 @@ const Item = React.forwardRef<
 
   const { range, localEditor } = useSelector(
     slashStore,
-    (state) => state.context,
+    (state) => state.context
   );
 
   if (!localEditor) {
     throw new Error(
-      "Editor is required, Please provide editor to the Cmd.Root or use within EditorProvider.",
+      "Editor is required, Please provide editor to the Cmd.Root or use within EditorProvider."
     );
   }
 
@@ -40,7 +40,10 @@ const Item = React.forwardRef<
   return (
     <CommandItem
       {...restProps}
-      onSelect={() => onCommand({ editor: localEditor, range: range })}
+      onSelect={() => {
+        console.log("onSelect", localEditor, range);
+        onCommand({ editor: localEditor, range: range });
+      }}
       ref={ref}
       className={className}
     >
