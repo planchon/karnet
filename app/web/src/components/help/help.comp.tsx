@@ -31,8 +31,8 @@ const shortcuts = [
         description: "Go to tasks"
       },
       {
-        shortcut: "g+d",
-        description: "Go to documents"
+        shortcut: "g+f",
+        description: "Go to files"
       },
       {
         shortcut: "g+s",
@@ -41,6 +41,19 @@ const shortcuts = [
       {
         shortcut: "g+c",
         description: "Go to chat"
+      }
+    ]
+  },
+  {
+    category: "Panels",
+    shortcuts: [
+      {
+        shortcut: "⌘+s",
+        description: "Toggle the sidebar"
+      },
+      {
+        shortcut: "⌘+k",
+        description: "Open the command palette"
       }
     ]
   },

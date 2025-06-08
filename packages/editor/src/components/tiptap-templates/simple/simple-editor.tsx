@@ -105,13 +105,6 @@ const MainToolbarContent = ({
       <Spacer />
 
       <ToolbarGroup>
-        <UndoRedoButton action="undo" />
-        <UndoRedoButton action="redo" />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
         <HeadingDropdownMenu levels={[1, 2, 3, 4]} />
         <ListDropdownMenu types={["bulletList", "orderedList", "taskList"]} />
         <BlockQuoteButton />
@@ -137,23 +130,10 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MarkButton type="superscript" />
-        <MarkButton type="subscript" />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
         <TextAlignButton align="left" />
         <TextAlignButton align="center" />
         <TextAlignButton align="right" />
         <TextAlignButton align="justify" />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <ImageUploadButton text="Add" />
       </ToolbarGroup>
 
       <Spacer />
