@@ -204,6 +204,7 @@ export function SimpleEditor({ id }: Props) {
 
   const editor = useEditor({
     immediatelyRender: false,
+    autofocus: "start",
     editorProps: {
       attributes: {
         autocomplete: "off",
@@ -279,8 +280,6 @@ export function SimpleEditor({ id }: Props) {
       editor.off("update");
     };
   }, [id, editor]);
-
-  React.useEffect(() => {}, []);
 
   return (
     <EditorContext.Provider value={{ editor }}>

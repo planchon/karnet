@@ -1,39 +1,23 @@
 import { Editor, Extension, Range } from "@tiptap/react";
 import Suggestion from "@tiptap/suggestion";
+import { slashRenderItems } from "./slash-render";
 
 const SlashCommand = Extension.create({
-  name: "slash-command",
-  addOptions() {
-    return {
-      suggestion: {
-        char: "/",
-        command: ({
-          editor,
-          range,
-          props
-        }: {
-          editor: Editor;
-          range: Range;
-          props: any;
-        }) => {
-          console.log(editor, range);
-          props.command({ editor, range });
-        }
-      }
-    };
-  },
+  name: "p6n-slash-command",
   addProseMirrorPlugins() {
     return [
       Suggestion({
         editor: this.editor,
-        ...this.options.suggestions
+        char: "/",
+        startOfLine: true,
+        allowSpaces: false,
+        render: slashRenderItems,
+        command: ({ editor, range, props }) => {
+          console.log("command selected", props);
+          // props.command({ editor, range, props });
+        }
       })
     ];
-  }
-}).configure({
-  suggestion: {
-    items: () => [],
-    render: () => null
   }
 });
 

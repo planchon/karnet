@@ -73,7 +73,7 @@ export function BubbleMenuComp({ editor }: { editor: Editor }) {
       <ToggleGroup
         type="multiple"
         variant="default"
-        className="border-border rounded-lg border p-1 shadow-sm"
+        className="border-border bg-background rounded-lg border p-[2px] shadow-sm"
         value={actions.map((action) => action.value)}
       >
         {actionsList.map((action) => (
