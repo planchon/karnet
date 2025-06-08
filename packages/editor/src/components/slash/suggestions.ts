@@ -1,5 +1,8 @@
 import {
   IconCode,
+  IconH1,
+  IconH2,
+  IconH3,
   IconHeading,
   IconListCheck,
   IconListNumbers,
@@ -17,7 +20,7 @@ export const allSuggestions = [
       {
         title: "Heading 1",
         searchTerms: ["h1"],
-        icon: IconHeading,
+        icon: IconH1,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
           editor
             .chain()
@@ -30,7 +33,7 @@ export const allSuggestions = [
       {
         title: "Heading 2",
         searchTerms: ["h2"],
-        icon: IconHeading,
+        icon: IconH2,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
           editor
             .chain()
@@ -43,7 +46,7 @@ export const allSuggestions = [
       {
         title: "Heading 3",
         searchTerms: ["h3"],
-        icon: IconHeading,
+        icon: IconH3,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
           editor
             .chain()

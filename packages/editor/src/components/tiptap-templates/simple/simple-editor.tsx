@@ -157,12 +157,6 @@ const MainToolbarContent = ({
       </ToolbarGroup>
 
       <Spacer />
-
-      {isMobile && <ToolbarSeparator />}
-
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
     </>
   );
 };
@@ -229,15 +223,15 @@ export function SimpleEditor({ id }: Props) {
     extensions: [
       Slash.configure({
         suggestion: {
-          items: () =>
-            allSuggestions
-              .flatMap((item) => item.items)
-              .map((item) => ({
-                title: item.title,
-                searchTerms: item.searchTerms,
-                icon: item.icon,
-                command: item.command
-              }))
+          // items: () =>
+          //   allSuggestions
+          //     .flatMap((item) => item.items)
+          //     .map((item) => ({
+          //       title: item.title,
+          //       searchTerms: item.searchTerms,
+          //       icon: item.icon,
+          //       command: item.command
+          //     }))
         }
       }),
       StarterKit.configure({
@@ -343,9 +337,39 @@ export function SimpleEditor({ id }: Props) {
             className="simple-editor-content"
           />
           <SlashCmd.Root editor={editor}>
-            <SlashCmd.Cmd className="bg-background z-50 h-auto max-h-[330px] w-[200px] rounded-md border p-1 transition-all">
+            <SlashCmd.Cmd
+              className="bg-background z-50 h-auto w-[200px] rounded-md border transition-all"
+              loop
+            >
               <SlashCmd.Empty>No commands available</SlashCmd.Empty>
-              <SlashCmd.List>{allSuggestions.map((item) => {})}</SlashCmd.List>
+              <SlashCmd.List>
+                {allSuggestions.map((group, groupIndex) => (
+                  <>
+                    <div className="p-1" key={group.group}>
+                      {group.items.map((item) => (
+                        <SlashCmd.Item
+                          value={item.title}
+                          onCommand={(val) => {
+                            item.command(val);
+                          }}
+                          className="aria-selected:bg-sidebar-accent flex w-full cursor-pointer items-center space-x-2 rounded-sm p-2 text-left text-sm"
+                          key={item.title}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <item.icon className="h-4 w-4" />
+                            <p className="text-sm font-medium">{item.title}</p>
+                          </div>
+                        </SlashCmd.Item>
+                      ))}
+                    </div>
+                    <div>
+                      {groupIndex < allSuggestions.length - 1 && (
+                        <SlashCmd.Separator className="bg-border h-[1px] w-full" />
+                      )}
+                    </div>
+                  </>
+                ))}
+              </SlashCmd.List>
             </SlashCmd.Cmd>
           </SlashCmd.Root>
         </div>
@@ -353,19 +377,3 @@ export function SimpleEditor({ id }: Props) {
     </EditorContext.Provider>
   );
 }
-
-// return (
-//   <SlashCmd.Item
-//     value={item.title}
-//     onCommand={(val) => {
-//       item.command(val);
-//     }}
-//     className="aria-selected:bg-sidebar-accent flex w-full cursor-pointer items-center space-x-2 rounded-sm p-2 text-left text-sm hover:bg-gray-200"
-//     key={item.title}
-//   >
-//     <div className="flex items-center space-x-2">
-//       <item.icon className="h-4 w-4" />
-//       <p className="text-sm font-medium">{item.title}</p>
-//     </div>
-//   </SlashCmd.Item>
-// );

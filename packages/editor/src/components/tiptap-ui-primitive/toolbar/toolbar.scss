@@ -36,7 +36,7 @@
     z-index: 10;
     width: 100%;
     min-height: var(--tt-toolbar-height);
-    background: var(--tt-toolbar-bg-color);
+    // background: var(--tt-toolbar-bg-color);
     border-bottom: 1px solid var(--tt-toolbar-border-color);
     padding: 0 0.5rem;
     overflow-x: auto;
@@ -76,7 +76,7 @@
         var(--tt-toolbar-border-width)
     );
     border: var(--tt-toolbar-border-width) solid var(--tt-toolbar-border-color);
-    background-color: var(--tt-toolbar-bg-color);
+    // background-color: var(--tt-toolbar-bg-color);
     box-shadow: var(--tt-shadow-elevated-md);
     outline: none;
     overflow: hidden;
