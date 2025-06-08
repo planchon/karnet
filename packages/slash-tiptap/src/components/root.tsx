@@ -1,4 +1,4 @@
-import { useCurrentEditor, type Editor } from "@tiptap/react";
+import { useCurrentEditor, Editor } from "@tiptap/react";
 import React, { useEffect } from "react";
 import slashStore from "../utils/store";
 
@@ -23,7 +23,7 @@ const SlashCmdRoot = (props: SlashCmdRootProps) => {
     if (editor) {
       slashStore.send({
         type: "setLocalEditor",
-        localEditor: editor,
+        localEditor: editor
       });
     }
   }, [editor]);

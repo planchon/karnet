@@ -3,7 +3,8 @@ import {
   BubbleMenu,
   EditorContent,
   EditorContext,
-  useEditor
+  useEditor,
+  Editor
 } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
@@ -81,7 +82,13 @@ import "../../../components/tiptap-templates/simple/simple-editor.scss";
 import Collaboration from "@tiptap/extension-collaboration";
 import * as Y from "yjs";
 import { BubbleMenuComp } from "../../bubble-menu/bubble-menu";
-import SlashCommand from "../../slash-command/slash-command";
+import {
+  createSuggestionsItems,
+  enableKeyboardNavigation,
+  Slash,
+  SlashCmd,
+  SlashCmdProvider
+} from "@poltion/slash-tiptap";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -194,6 +201,38 @@ type Props = {
 
 let doc = new Y.Doc();
 
+const suggestions = createSuggestionsItems([
+  {
+    title: "text",
+    searchTerms: ["paragraph"],
+    command: ({ editor, range }) => {
+      console.log("text");
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .toggleNode("paragraph", "paragraph")
+        .run();
+    }
+  },
+  {
+    title: "Bullet List",
+    searchTerms: ["unordered", "point"],
+    command: ({ editor, range }) => {
+      console.log("bullet list");
+      editor.chain().focus().deleteRange(range).toggleBulletList().run();
+    }
+  },
+  {
+    title: "Ordered List",
+    searchTerms: ["ordered", "point", "numbers"],
+    command: ({ editor, range }) => {
+      console.log("ordered list");
+      editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+    }
+  }
+]);
+
 export function SimpleEditor({ id }: Props) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
@@ -202,7 +241,7 @@ export function SimpleEditor({ id }: Props) {
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
 
-  const editor = useEditor({
+  const editor: Editor | null = useEditor({
     immediatelyRender: false,
     autofocus: "start",
     editorProps: {
@@ -214,7 +253,11 @@ export function SimpleEditor({ id }: Props) {
       }
     },
     extensions: [
-      SlashCommand,
+      Slash.configure({
+        suggestion: {
+          items: () => createSuggestionsItems(suggestions)
+        }
+      }),
       StarterKit.configure({
         history: false
       }),
@@ -241,7 +284,10 @@ export function SimpleEditor({ id }: Props) {
       Collaboration.configure({
         document: doc
       })
-    ]
+    ],
+    handleDOMEvents: {
+      keydown: (_, v) => enableKeyboardNavigation(v)
+    }
   });
 
   const bodyRect = useCursorVisibility({
@@ -281,40 +327,67 @@ export function SimpleEditor({ id }: Props) {
     };
   }, [id, editor]);
 
-  return (
-    <EditorContext.Provider value={{ editor }}>
-      <Toolbar
-        ref={toolbarRef}
-        style={
-          isMobile
-            ? {
-                bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`
-              }
-            : {}
-        }
-      >
-        {mobileView === "main" ? (
-          <MainToolbarContent
-            onHighlighterClick={() => setMobileView("highlighter")}
-            onLinkClick={() => setMobileView("link")}
-            isMobile={isMobile}
-          />
-        ) : (
-          <MobileToolbarContent
-            type={mobileView === "highlighter" ? "highlighter" : "link"}
-            onBack={() => setMobileView("main")}
-          />
-        )}
-      </Toolbar>
+  if (!editor) return null;
 
-      <div className="content-wrapper">
-        {editor && <BubbleMenuComp editor={editor} />}
-        <EditorContent
-          editor={editor}
-          role="presentation"
-          className="simple-editor-content"
-        />
-      </div>
-    </EditorContext.Provider>
+  return (
+    <SlashCmdProvider>
+      <EditorContext.Provider value={{ editor }}>
+        <Toolbar
+          ref={toolbarRef}
+          style={
+            isMobile
+              ? {
+                  bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`
+                }
+              : {}
+          }
+        >
+          {mobileView === "main" ? (
+            <MainToolbarContent
+              onHighlighterClick={() => setMobileView("highlighter")}
+              onLinkClick={() => setMobileView("link")}
+              isMobile={isMobile}
+            />
+          ) : (
+            <MobileToolbarContent
+              type={mobileView === "highlighter" ? "highlighter" : "link"}
+              onBack={() => setMobileView("main")}
+            />
+          )}
+        </Toolbar>
+
+        <div className="content-wrapper">
+          <BubbleMenuComp editor={editor} />
+          <EditorContent
+            editor={editor}
+            role="presentation"
+            className="simple-editor-content"
+          />
+          <SlashCmd.Root editor={editor}>
+            <SlashCmd.Cmd className="border-muted bg-background z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border bg-white p-4 shadow-[rgba(100,_100,_111,_0.2)_0px_7px_29px_0px] transition-all">
+              <SlashCmd.Empty>No commands available</SlashCmd.Empty>
+              <SlashCmd.List>
+                {suggestions.map((item) => {
+                  return (
+                    <SlashCmd.Item
+                      value={item.title}
+                      onCommand={(val) => {
+                        item.command(val);
+                      }}
+                      className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 text-left text-sm hover:bg-gray-200 aria-selected:bg-gray-200"
+                      key={item.title}
+                    >
+                      <div>
+                        <p className="text-sm font-medium">{item.title}</p>
+                      </div>
+                    </SlashCmd.Item>
+                  );
+                })}
+              </SlashCmd.List>
+            </SlashCmd.Cmd>
+          </SlashCmd.Root>
+        </div>
+      </EditorContext.Provider>
+    </SlashCmdProvider>
   );
 }

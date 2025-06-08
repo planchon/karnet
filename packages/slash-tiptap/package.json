@@ -16,17 +16,18 @@
     "@poltion/typescript-config": "workspace:*",
     "@changesets/cli": "^2.27.8",
     "@types/node": "^22.6.1",
-    "@types/react": "^18.3.8",
+    "@types/react": "catalog:",
     "tsup": "^8.3.0",
     "typescript": "latest"
   },
   "dependencies": {
-    "@tiptap/pm": "^2.7.2",
-    "@tiptap/react": "^2.7.2",
-    "@tiptap/suggestion": "^2.7.2",
+    "@tiptap/pm": "^2.12.0",
+    "@tiptap/react": "^2.12.0",
+    "@tiptap/suggestion": "^2.12.0",
     "@xstate/store": "^2.6.0",
     "cmdk": "^1.0.0",
-    "react": "^18.3.1",
+    "react": "catalog:",
+    "@types/react": "^19.1.2",
     "tippy.js": "^6.3.7"
   },
   "scripts": {
