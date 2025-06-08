@@ -37,7 +37,7 @@ export const Router = () => {
           <Route path="" index element={<Navigate to={`/file/infinite`} />} />
         </Route>
         <Route path="/document" element={<DocumentPage />} />
-        <Route path="/" index element={<Navigate to={`/agenda`} />} />
+        <Route path="/" index element={<Navigate to={`/file/infinite`} />} />
       </Route>
     </Routes>
   );
