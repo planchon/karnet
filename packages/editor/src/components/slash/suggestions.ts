@@ -113,7 +113,8 @@ export const allSuggestions = [
         searchTerms: ["code"],
         icon: IconCode,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().toggleCode().run();
+          editor.chain().focus().deleteRange(range).run();
+          editor.chain().focus().setCodeBlock().run();
         }
       },
       {
@@ -121,7 +122,8 @@ export const allSuggestions = [
         searchTerms: ["quote"],
         icon: IconQuote,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().toggleBlockquote().run();
+          editor.chain().focus().deleteRange(range).run();
+          editor.chain().focus().setBlockquote().run();
         }
       },
       {
