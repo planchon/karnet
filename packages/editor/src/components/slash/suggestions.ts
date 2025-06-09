@@ -3,7 +3,6 @@ import {
   IconH1,
   IconH2,
   IconH3,
-  IconHeading,
   IconListCheck,
   IconListNumbers,
   IconPencil,
@@ -94,12 +93,14 @@ export const allSuggestions = [
         title: "Image",
         searchTerms: ["image"],
         icon: IconPhoto,
+        disabled: true,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {}
       },
       {
         title: "Sketch",
         searchTerms: ["sketch"],
         icon: IconPencil,
+        disabled: true,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {}
       }
     ]
@@ -111,18 +112,23 @@ export const allSuggestions = [
         title: "Code",
         searchTerms: ["code"],
         icon: IconCode,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {}
+        command: ({ editor, range }: { editor: Editor; range: Range }) => {
+          editor.chain().focus().toggleCode().run();
+        }
       },
       {
         title: "Quote",
         searchTerms: ["quote"],
         icon: IconQuote,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {}
+        command: ({ editor, range }: { editor: Editor; range: Range }) => {
+          editor.chain().focus().toggleBlockquote().run();
+        }
       },
       {
         title: "Table",
         searchTerms: ["table"],
         icon: IconTable,
+        disabled: true,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {}
       }
     ]

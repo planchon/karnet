@@ -13,18 +13,18 @@ const slashExtenstionSuggestion = Extension.create<SlashOptions>({
         command: ({ editor, range, props }) => {
           props.command({ editor, range });
         },
-        render: renderItems,
-      },
+        render: renderItems
+      }
     };
   },
   addProseMirrorPlugins() {
     return [
       Suggestion({
         editor: this.editor,
-        ...this.options.suggestion,
-      }),
+        ...this.options.suggestion
+      })
     ];
-  },
+  }
 });
 
 export default slashExtenstionSuggestion;

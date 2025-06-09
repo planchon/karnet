@@ -42,7 +42,6 @@ import "../../../components/tiptap-node/paragraph-node/paragraph-node.scss";
 
 // --- Tiptap UI ---
 import { HeadingDropdownMenu } from "../../../components/tiptap-ui/heading-dropdown-menu";
-import { ImageUploadButton } from "../../../components/tiptap-ui/image-upload-button";
 import { ListDropdownMenu } from "../../../components/tiptap-ui/list-dropdown-menu";
 import { BlockQuoteButton } from "../../../components/tiptap-ui/blockquote-button";
 import { CodeBlockButton } from "../../../components/tiptap-ui/code-block-button";
@@ -58,7 +57,6 @@ import {
 } from "../../../components/tiptap-ui/link-popover";
 import { MarkButton } from "../../../components/tiptap-ui/mark-button";
 import { TextAlignButton } from "../../../components/tiptap-ui/text-align-button";
-import { UndoRedoButton } from "../../../components/tiptap-ui/undo-redo-button";
 
 // --- Icons ---
 import { ArrowLeftIcon } from "../../../components/tiptap-icons/arrow-left-icon";
@@ -70,11 +68,12 @@ import { useMobile } from "../../../hooks/use-mobile";
 import { useWindowSize } from "../../../hooks/use-window-size";
 import { useCursorVisibility } from "../../../hooks/use-cursor-visibility";
 
-// --- Components ---
-import { ThemeToggle } from "../../../components/tiptap-templates/simple/theme-toggle";
-
 // --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from "../../../lib/tiptap-utils";
+import {
+  cn,
+  handleImageUpload,
+  MAX_FILE_SIZE
+} from "../../../lib/tiptap-utils";
 
 // --- Styles ---
 import "../../../components/tiptap-templates/simple/simple-editor.scss";
@@ -86,7 +85,8 @@ import {
   enableKeyboardNavigation,
   Slash,
   SlashCmd,
-  SlashCmdProvider
+  SlashCmdProvider,
+  createSuggestionsItems
 } from "@poltion/slash-tiptap";
 
 import { allSuggestions } from "../../slash/suggestions";
@@ -176,6 +176,8 @@ type Props = {
 
 let doc = new Y.Doc();
 
+const suggestions = allSuggestions.flatMap((group) => group.items);
+
 export function SimpleEditor({ id }: Props) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
@@ -203,15 +205,7 @@ export function SimpleEditor({ id }: Props) {
     extensions: [
       Slash.configure({
         suggestion: {
-          // items: () =>
-          //   allSuggestions
-          //     .flatMap((item) => item.items)
-          //     .map((item) => ({
-          //       title: item.title,
-          //       searchTerms: item.searchTerms,
-          //       icon: item.icon,
-          //       command: item.command
-          //     }))
+          items: () => suggestions
         }
       }),
       StarterKit.configure({
@@ -325,14 +319,18 @@ export function SimpleEditor({ id }: Props) {
               <SlashCmd.List>
                 {allSuggestions.map((group, groupIndex) => (
                   <>
-                    <div className="p-1" key={group.group}>
+                    <SlashCmd.Group className="p-1">
                       {group.items.map((item) => (
                         <SlashCmd.Item
                           value={item.title}
                           onCommand={(val) => {
                             item.command(val);
                           }}
-                          className="aria-selected:bg-sidebar-accent flex w-full cursor-pointer items-center space-x-2 rounded-sm p-2 text-left text-sm"
+                          disabled={item.disabled}
+                          className={cn(
+                            "aria-selected:bg-sidebar-accent flex w-full cursor-pointer items-center space-x-2 rounded-sm p-2 text-left text-sm",
+                            item.disabled && "opacity-50"
+                          )}
                           key={item.title}
                         >
                           <div className="flex items-center space-x-2">
@@ -341,12 +339,13 @@ export function SimpleEditor({ id }: Props) {
                           </div>
                         </SlashCmd.Item>
                       ))}
-                    </div>
-                    <div>
-                      {groupIndex < allSuggestions.length - 1 && (
-                        <SlashCmd.Separator className="bg-border h-[1px] w-full" />
-                      )}
-                    </div>
+                    </SlashCmd.Group>
+                    <SlashCmd.Group>
+                      {groupIndex < allSuggestions.length - 1 &&
+                        group.items.length > 0 && (
+                          <SlashCmd.Separator className="bg-border h-[1px] w-full" />
+                        )}
+                    </SlashCmd.Group>
                   </>
                 ))}
               </SlashCmd.List>
