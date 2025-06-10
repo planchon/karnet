@@ -206,6 +206,7 @@ export function SimpleEditor({ id }: Props) {
     extensions: [
       Slash.configure({
         suggestion: {
+          // @ts-ignore
           items: () => suggestions
         }
       }),
@@ -312,6 +313,7 @@ export function SimpleEditor({ id }: Props) {
             role="presentation"
             className="simple-editor-content"
           />
+          {/* @ts-ignore */}
           <SlashCmd.Root editor={editor}>
             <SlashCmd.Cmd
               className="bg-background z-50 h-auto w-[200px] rounded-md border transition-all"
