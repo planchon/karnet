@@ -277,6 +277,16 @@ export function SimpleEditor({ id }: Props) {
     };
   }, [id, editor]);
 
+  React.useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        if (!editor) return;
+        editor.commands.blur();
+      }
+    });
+  }, [editor]);
+
   if (!editor) return null;
 
   return (
