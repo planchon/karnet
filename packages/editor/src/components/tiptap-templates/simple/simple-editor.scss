@@ -72,3 +72,12 @@ body {
     padding: 1rem 1.5rem;
   }
 }
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  font-style: italic;
+  height: 0;
+  pointer-events: none;
+}

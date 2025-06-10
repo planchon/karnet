@@ -18,6 +18,7 @@ import { Highlight } from "@tiptap/extension-highlight";
 import { Subscript } from "@tiptap/extension-subscript";
 import { Superscript } from "@tiptap/extension-superscript";
 import { Underline } from "@tiptap/extension-underline";
+import { Placeholder } from "@tiptap/extension-placeholder";
 
 // --- Custom Extensions ---
 import { Link } from "../../../components/tiptap-extension/link-extension";
@@ -190,6 +191,7 @@ export function SimpleEditor({ id }: Props) {
   const editor: Editor | null = useEditor({
     immediatelyRender: false,
     autofocus: "start",
+    shouldRerenderOnTransaction: false,
     editorProps: {
       attributes: {
         autocomplete: "off",
@@ -236,6 +238,19 @@ export function SimpleEditor({ id }: Props) {
       Link.configure({ openOnClick: false }),
       Collaboration.configure({
         document: doc
+      }),
+      Placeholder.configure({
+        placeholder: ({ node }) => {
+          if (node.type.name === "heading") {
+            console.log("heading");
+            return "Heading";
+          }
+          if (node.type.name === "paragraph") {
+            console.log("paragraph");
+            return "Write something (or / to open commands)...";
+          }
+          return "";
+        }
       })
     ]
   });
