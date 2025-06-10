@@ -238,10 +238,7 @@ export const CommandK = observer(function CommandK() {
   };
 
   const commandsList: Group[] = [
-    {
-      group: "Contextual commands",
-      items: commandStore.contextualCommands
-    },
+    ...commandStore.contextualCommands,
     taskCommands,
     agendaCommands,
     pagesCommands,

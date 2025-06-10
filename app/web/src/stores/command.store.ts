@@ -16,11 +16,18 @@ export type Command = {
 
 export class CommandStore {
   rootStore: RootStore;
-  contextualCommands: Command[] = [];
+  contextualCommands: {
+    group: string;
+    items: Command[];
+  }[] = [];
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     makeAutoObservable(this);
+  }
+
+  resetContextualCommands() {
+    this.contextualCommands = [];
   }
 
   setDrawCommands(editor: Editor) {
@@ -59,6 +66,11 @@ export class CommandStore {
       }
     ];
 
-    this.contextualCommands = drawCommands;
+    this.contextualCommands = [
+      {
+        group: "Sketch commands",
+        items: drawCommands
+      }
+    ];
   }
 }
