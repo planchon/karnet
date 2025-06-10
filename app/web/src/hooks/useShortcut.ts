@@ -21,7 +21,8 @@ export const useShortcut = (
   });
 
   const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
+    // the bypass is used in the rich text editor
+    (event: KeyboardEvent & { bypassTextInput?: boolean }) => {
       const isTextInput =
         event.target instanceof HTMLTextAreaElement ||
         (event.target instanceof HTMLInputElement &&
@@ -45,7 +46,7 @@ export const useShortcut = (
       }
 
       // Don't enable shortcuts in inputs unless explicitly declared
-      if (options.disableTextInputs && isTextInput) {
+      if (options.disableTextInputs && isTextInput && !event.bypassTextInput) {
         return event.stopPropagation();
       }
 

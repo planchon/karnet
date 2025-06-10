@@ -45,7 +45,7 @@ export const CommandK = observer(function CommandK() {
   const settings = useSettings();
   const commandStore = useStores().commandStore;
 
-  useShortcut("Meta+k", () => {
+  useShortcut("Command+k", () => {
     commands.toggleCommandK();
   });
 

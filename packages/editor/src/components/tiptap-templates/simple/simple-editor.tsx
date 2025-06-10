@@ -90,6 +90,7 @@ import {
 } from "@poltion/slash-tiptap";
 
 import { allSuggestions } from "../../slash/suggestions";
+import { Shortcut } from "../../shortcut/shortcut";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -208,6 +209,7 @@ export function SimpleEditor({ id }: Props) {
           items: () => suggestions
         }
       }),
+      Shortcut,
       StarterKit.configure({
         history: false
       }),
