@@ -206,6 +206,7 @@ export function SimpleEditor({ id }: Props) {
       }
     },
     extensions: [
+      // @ts-ignore
       Slash.configure({
         suggestion: {
           // @ts-ignore
@@ -353,6 +354,7 @@ export function SimpleEditor({ id }: Props) {
                         <SlashCmd.Item
                           value={item.title}
                           onCommand={(val) => {
+                            // @ts-ignore
                             item.command(val);
                           }}
                           disabled={item.disabled}
