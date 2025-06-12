@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { CalendarIcon } from "lucide-react";
 
-export function DateTimePicker() {
+export function DateTimePicker({ tabIndex }: { tabIndex?: number }) {
   const [date, setDate] = React.useState<Date>();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -52,6 +52,7 @@ export function DateTimePicker() {
             "w-full justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
+          tabIndex={tabIndex}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (

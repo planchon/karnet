@@ -45,6 +45,10 @@ export const useShortcut = (
         return null;
       }
 
+      if (shortcut === "n" && event.key === "n" && !isTextInput) {
+        event.preventDefault();
+      }
+
       // Don't enable shortcuts in inputs unless explicitly declared
       if (options.disableTextInputs && isTextInput && !event.bypassTextInput) {
         return event.stopPropagation();
@@ -78,6 +82,7 @@ export const useShortcut = (
               // Run handler if the sequence is complete, then reset it
               callbackRef.current(event);
               event.stopPropagation();
+              event.preventDefault();
               return setKeyCombo([]);
             }
 

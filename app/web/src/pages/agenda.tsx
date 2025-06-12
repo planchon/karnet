@@ -21,9 +21,13 @@ import { observer } from "mobx-react";
 export const AgendaPage = observer(function AgendaPage() {
   const commands = useCommands();
 
-  useShortcut("n", () => {
-    commands.toggleEvent();
-  });
+  useShortcut(
+    "n",
+    () => {
+      commands.toggleEvent();
+    },
+    { disableTextInputs: true }
+  );
 
   return (
     <div className="h-full w-full">
