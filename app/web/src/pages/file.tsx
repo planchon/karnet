@@ -6,9 +6,17 @@ import { useParams } from "react-router";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useStores } from "@/hooks/useStores";
 
 export const FilePage = observer(function FilePage() {
   const { id } = useParams();
+  const { documentStore } = useStores();
+
+  const document = documentStore.getById(id);
+
+  if (!id) {
+    return <div>No id</div>;
+  }
 
   return (
     <div className="h-full w-full">
@@ -17,7 +25,10 @@ export const FilePage = observer(function FilePage() {
           <Input
             className="w-full border-none font-medium focus:border-transparent focus:!ring-0"
             placeholder="Document name"
-            defaultValue="Document name"
+            value={document.name}
+            onChange={(e) => {
+              document.name = e.target.value;
+            }}
           />
           <div className="flex flex-row items-center gap-2 pl-2">
             {/* <TooltipWrapper
@@ -81,7 +92,7 @@ export const FilePage = observer(function FilePage() {
           </Button>
         </div>
       </div>
-      <SimpleEditor key={id} id={id ?? "infinite"} />;
+      <SimpleEditor key={id} id={id} />;
     </div>
   );
 });

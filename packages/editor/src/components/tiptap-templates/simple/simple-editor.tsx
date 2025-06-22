@@ -191,12 +191,12 @@ export function SimpleEditor({ id }: Props) {
   React.useEffect(() => {
     if (!id || !editor) return;
 
-    const key = `p6n-writer-${id}`;
+    const key = `p6n-file-${id}`;
     const data = localStorage.getItem(key);
     if (data) {
       editor.commands.setContent(JSON.parse(data));
     } else {
-      editor.commands.setContent("<p>Hello</p>");
+      editor.commands.setContent("");
     }
 
     editor.on("update", () => {

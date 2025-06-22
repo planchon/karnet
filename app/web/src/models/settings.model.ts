@@ -11,9 +11,8 @@ export type ThemeType = (typeof Theme)[keyof typeof Theme];
 export class SettingsModel extends AbstractModel {
   theme: ThemeType = "light";
 
-  constructor(props: Partial<SettingsModel>) {
+  constructor(props: Partial<SettingsModel> & { id: string }) {
     super(props);
-    Object.assign(this, props);
 
     makeObservable(this, {
       theme: observable,
@@ -32,6 +31,10 @@ export class SettingsModel extends AbstractModel {
     return {
       ...this
     };
+  }
+
+  _id() {
+    return "p6n-settings";
   }
 
   setTheme = (theme: ThemeType) => {

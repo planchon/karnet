@@ -21,8 +21,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/super-ui/label";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { useStores } from "@/hooks/useStores";
+import { Link, useNavigate } from "react-router";
 
-const DATA = Array.from({ length: 20 });
+type ViewItem = {
+  id: string;
+  smallId: string;
+  name: string;
+  createdAt: Date;
+  type: "file" | "sketch";
+};
 
 export const ProjectPage = observer(function ProjectPage() {
   const commands = useCommands();
@@ -34,12 +42,32 @@ export const ProjectPage = observer(function ProjectPage() {
   const [selectDocumentIndex, setSelectDocumentIndex] = useState<number>(-1);
   const [hoverMode, setHoverMode] = useState<"hover" | "keyboard">("hover");
 
+  const { documentStore, sketchesStore } = useStores();
+
+  const documents = Object.values(documentStore._models).map((doc) => ({
+    id: doc.id,
+    smallId: doc.smallId,
+    name: doc.name,
+    createdAt: doc.createdAt,
+    type: "file" as const
+  }));
+
+  const sketches = Object.values(sketchesStore._models).map((sketch) => ({
+    id: sketch.id,
+    smallId: sketch.smallId,
+    name: sketch.name,
+    createdAt: sketch.createdAt,
+    type: "sketch" as const
+  }));
+
+  const data: ViewItem[] = [...documents, ...sketches];
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       setHoverMode("keyboard");
       if (e.key === "ArrowUp") {
         if (selectDocumentIndex === -1) {
-          setSelectDocumentIndex(DATA.length - 1);
+          setSelectDocumentIndex(data.length - 1);
         } else {
           setSelectDocumentIndex((prev) => prev - 1);
         }
@@ -130,12 +158,13 @@ export const ProjectPage = observer(function ProjectPage() {
         className="scrollbar-thin flex h-full w-full flex-col overflow-y-auto"
         onMouseEnter={() => setHoverMode("hover")}
       >
-        {DATA.map((_, index) => (
+        {data.map((item, index) => (
           <ProjectRow
             key={index}
+            item={item}
             isSelected={
               hoverMode === "keyboard"
-                ? Math.abs(selectDocumentIndex % DATA.length) === index
+                ? Math.abs(selectDocumentIndex % data.length) === index
                 : false
             }
           />
@@ -151,25 +180,33 @@ export const ProjectPage = observer(function ProjectPage() {
 });
 
 const ProjectRow = observer(function ProjectRow({
-  isSelected
+  isSelected,
+  item
 }: {
   isSelected: boolean;
+  item: ViewItem;
 }) {
+  const navigate = useNavigate();
+
   return (
-    <div
+    <Link
       className={cn(
         "hover:bg-accent/50 flex h-10 w-full cursor-pointer select-none items-center justify-between px-5 py-2",
         isSelected && "bg-accent/50"
       )}
+      to={`/${item.type}/${item.id}`}
     >
       <div className="flex flex-row gap-3">
-        <IconPencil className="text-accent-foreground/80 size-4" />
-        {/* <IconPalette className="text-accent-foreground/80 size-4" /> */}
+        {item.type === "file" ? (
+          <IconFile className="text-accent-foreground/80 size-4" />
+        ) : (
+          <IconPencil className="text-accent-foreground/80 size-4" />
+        )}
         <div className="text-accent-foreground/80 text-sm font-normal">
-          PROJ-111
+          {item.smallId}
         </div>
         <div className="text-accent-foreground text-sm font-medium">
-          Titre du document, edite ou genere par IA
+          {item.name}
         </div>
       </div>
       <div className="flex flex-row items-center gap-2">
@@ -182,7 +219,7 @@ const ProjectRow = observer(function ProjectRow({
           </Avatar>
         </div>
       </div>
-    </div>
+    </Link>
   );
 });
 

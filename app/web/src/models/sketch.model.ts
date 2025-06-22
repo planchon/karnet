@@ -1,31 +1,47 @@
-import { IsJSON, IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 import { AbstractModel } from "./abstract.model";
+import { action, makeObservable, observable, reaction } from "mobx";
 
+// this model is only used to store the metadata of the sketch
+// everything else is stored in the sketch itself
+// tldraw is storing the content by itself
 export class Sketch extends AbstractModel {
-  @IsJSON()
-  snapshot: object = {};
-
   @IsString()
   @IsNotEmpty()
-  name: string = "Sketch";
+  name: string = "Untitled sketch";
 
-  model_name: string = "sketches";
-
-  constructor(props: Partial<Sketch>) {
+  constructor(props: Partial<Sketch> & { id: string }) {
     super(props);
+
+    makeObservable(this, {
+      name: observable,
+      setName: action
+    });
+
+    this.load();
+
+    reaction(
+      () => this.name,
+      () => {
+        this.save();
+      },
+      {
+        delay: 100
+      }
+    );
   }
 
-  load(id: string) {
-    const sketch = localStorage.getItem(`p6n-sketches-${id}`);
-    if (!sketch) return null;
-    const parsed = JSON.parse(sketch);
-    Object.assign(this, parsed);
-    this.validate();
+  _id() {
+    return `p6n-sketch-metadata-${this.id}`;
   }
 
   toJSON() {
     return {
       ...this
     };
+  }
+
+  setName(name: string) {
+    this.name = name;
   }
 }

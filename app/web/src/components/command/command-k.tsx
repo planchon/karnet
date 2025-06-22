@@ -44,6 +44,7 @@ export const CommandK = observer(function CommandK() {
   const navigate = useNavigate();
   const settings = useSettings();
   const commandStore = useStores().commandStore;
+  const store = useStores();
 
   useShortcut("Command+k", () => {
     commands.toggleCommandK();
@@ -128,7 +129,9 @@ export const CommandK = observer(function CommandK() {
         name: "Create a new file",
         shortcut: "c+f",
         action: () => {
-          navigate(`/file/${generateId()}`);
+          const id = generateId();
+          store.documentStore.createNewModel(id);
+          navigate(`/file/${id}`);
         },
         icon: FilePlus
       },
@@ -150,7 +153,9 @@ export const CommandK = observer(function CommandK() {
         name: "Create a new sketch",
         shortcut: "c+s",
         action: () => {
-          navigate(`/sketch/${generateId()}`);
+          const id = generateId();
+          store.sketchesStore.createNewModel(id);
+          navigate(`/sketch/${id}`);
         },
         icon: Brush
       },

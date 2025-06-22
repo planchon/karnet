@@ -22,7 +22,11 @@ export abstract class AbstractModel {
   @Length(21)
   @IsString()
   @IsNotEmpty()
-  id: string = generateId();
+  id: string = "no_id";
+
+  @IsString()
+  @IsNotEmpty()
+  smallId: string = "";
 
   @IsDate()
   createdAt: Date = new Date();
@@ -42,9 +46,9 @@ export abstract class AbstractModel {
   @IsNotEmpty()
   key: string = `p6n-models-${this.model_name}-${this.id}`;
 
-  constructor(props: Partial<AbstractModel>) {
+  constructor(props: Partial<AbstractModel> & { id: string }) {
+    // assign ids
     Object.assign(this, props);
-    this.validate();
   }
 
   validate(): ValidationError[] {
@@ -52,36 +56,22 @@ export abstract class AbstractModel {
   }
 
   abstract toJSON(): unknown;
+  abstract _id(): string;
 
-  // return a safe stringified JSON of the model
-  serialize() {
-    return superjson.stringify(this.toJSON());
-  }
-
-  deserialize(data: string) {
-    const parsed = superjson.parse(data);
+  // load the model from local storage
+  load() {
+    const serialized = localStorage.getItem(this._id());
+    if (!serialized) {
+      console.error("No model found in local storage", this._id());
+      return;
+    }
+    const parsed = JSON.parse(serialized);
     Object.assign(this, parsed);
     this.validate();
   }
 
-  // save to local storage
-  saveToLocalStorage() {
-    const serialized = this.serialize();
-    if (window.DEBUG) {
-      console.log("saving to local storage", this.key);
-      console.log("serialized", serialized);
-    }
-    localStorage.setItem(this.key, serialized);
-  }
-
-  // load from local storage
-  loadFromLocalStorage() {
-    const serialized = localStorage.getItem(this.key);
-    if (window.DEBUG) {
-      console.log("loading from local storage", this.key);
-      console.log("serialized", serialized);
-    }
-    if (!serialized) return;
-    this.deserialize(serialized);
+  save() {
+    console.log("saving model", this._id());
+    localStorage.setItem(this._id(), JSON.stringify(this.toJSON()));
   }
 }

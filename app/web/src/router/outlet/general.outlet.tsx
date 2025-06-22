@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/navbar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Outlet } from "react-router";
-import { useLinkShortcut } from "@/hooks/useShortcut";
+import { Outlet, useNavigate } from "react-router";
+import { useLinkShortcut, useShortcut } from "@/hooks/useShortcut";
 import { HelpComponent } from "@/components/help/help.comp";
 import { CommandK } from "@/components/command/command-k";
 import { CreateEventCommand } from "@/components/command/command-events";
@@ -9,8 +9,13 @@ import { CommandChat } from "@/components/command/command-chat";
 import { CreateTaskCommand } from "@/components/command/command-task";
 import { CreateProjectCommand } from "@/components/command/command-project";
 import { generateId } from "@/lib/utils";
+import { rootStore } from "@/stores/root.store";
+import { useEffect, useState } from "react";
 
 export function GeneralOutlet() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
   useLinkShortcut("g+a", "/agenda");
   useLinkShortcut("g+t", "/task");
   useLinkShortcut("g+c", "/chat");
@@ -18,8 +23,27 @@ export function GeneralOutlet() {
   useLinkShortcut("g+f", `/document?type=file`);
   useLinkShortcut("g+s", `/document?type=sketch`);
 
-  useLinkShortcut("c+f", `/file/${generateId()}`);
-  useLinkShortcut("c+s", `/sketch/${generateId()}`);
+  useShortcut("c+f", () => {
+    const id = generateId();
+    const document = rootStore.documentStore.createNewModel(id);
+    navigate(`/file/${id}`);
+  });
+
+  useShortcut("c+s", () => {
+    const id = generateId();
+    const sketch = rootStore.sketchesStore.createNewModel(id);
+    navigate(`/sketch/${id}`);
+  });
+
+  useEffect(() => {
+    rootStore.sketchesStore.load();
+    rootStore.documentStore.load();
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return <div></div>;
+  }
 
   return (
     <SidebarProvider>

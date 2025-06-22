@@ -3,7 +3,7 @@ import { makeObservable, observable } from "mobx";
 import { RootStore } from "./root.store";
 import { IsObject, IsString } from "class-validator";
 
-export class AbstractStore<T extends AbstractModel> {
+export abstract class AbstractStore<T extends AbstractModel> {
   rootStore: RootStore;
 
   @IsObject()
@@ -23,33 +23,38 @@ export class AbstractStore<T extends AbstractModel> {
     });
   }
 
-  getById = (id: string): T | undefined => {
-    return this._models[id];
-  };
+  abstract loadInMemory(id: string | undefined): T;
+  abstract createNewModel(id: string): T;
 
-  setById = (id: string, model: T) => {
-    this._models[id] = model;
-  };
+  getById(id: string | undefined): T {
+    if (id === undefined) throw new Error("Id is undefined");
+    let el = this._models[id];
+    if (!el) {
+      el = this.loadInMemory(id);
+      this._models[id] = el;
+    }
 
-  saveToLocalStorage() {
-    const ids = Object.keys(this._models);
-    const serialized = JSON.stringify(ids);
-    localStorage.setItem(this.store_key, serialized);
+    return el;
   }
 
-  loadFromLocalStorage() {
-    const serialized = localStorage.getItem(this.store_key);
-
-    if (!serialized) {
-      this._models = {};
+  load() {
+    const ids = localStorage.getItem(this.store_key);
+    if (!ids) {
       console.error("No store local storage found for", this.store_key);
       return;
     }
 
-    const ids = JSON.parse(serialized);
-    ids.forEach((id: string) => {
-      const model = this.getById(id);
-      if (model) model.loadFromLocalStorage();
+    const parsed = JSON.parse(ids) as string[];
+    parsed.forEach((id: string) => {
+      const model = this.loadInMemory(id);
+      this._models[id] = model;
     });
+  }
+
+  save() {
+    console.log("[AbstractStore] start saving", this.store_key);
+
+    const serialized = JSON.stringify(Object.keys(this._models));
+    localStorage.setItem(this.store_key, serialized);
   }
 }

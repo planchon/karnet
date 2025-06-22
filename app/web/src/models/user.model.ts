@@ -11,14 +11,16 @@ export class UserModel extends AbstractModel {
   @IsEmail()
   email: string = "anonymous@example.com";
 
-  constructor(props: Partial<UserModel>) {
+  constructor(props: Partial<UserModel> & { id: string }) {
     super(props);
-    Object.assign(this, props);
 
-    makeObservable(this, {
-      name: observable,
-      email: observable
-    });
+    makeObservable(this, {});
+
+    this.load();
+  }
+
+  _id() {
+    return "p6n-user";
   }
 
   toJSON() {

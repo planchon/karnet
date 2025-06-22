@@ -5,14 +5,6 @@ import { RootStore } from "./root.store";
 
 export const AnonymousUserId = "anonymous" as const;
 
-function getCurrentUserId() {
-  const user = localStorage.getItem("user_id");
-  if (!user) {
-    return AnonymousUserId;
-  }
-  return user;
-}
-
 export class UserStore extends AbstractStore<UserModel> {
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -28,13 +20,12 @@ export class UserStore extends AbstractStore<UserModel> {
     makeObservable(this, {});
   }
 
-  getCurrentUser(): UserModel {
-    const userId = getCurrentUserId();
-    if (userId === AnonymousUserId) {
-      // we are sure because we seeded the anonymous user
-      return this._models[AnonymousUserId] as UserModel;
-    }
+  loadInMemory(id: string | undefined): UserModel {
+    if (id === undefined) throw new Error("Id is undefined");
+    return new UserModel({ id });
+  }
 
-    return this.getById(userId) as UserModel;
+  createNewModel(id: string): UserModel {
+    throw new Error("User model is not creatable");
   }
 }
