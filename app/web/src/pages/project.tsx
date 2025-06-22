@@ -1,4 +1,5 @@
 import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Icon123,
@@ -9,12 +10,19 @@ import {
   IconPlus,
   IconSubtask,
   IconAdjustmentsHorizontal,
-  IconCalendar
+  IconCalendar,
+  IconPencil,
+  IconPaint,
+  IconPalette
 } from "@tabler/icons-react";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/super-ui/label";
+import { useEffect } from "react";
+import { cn } from "@/lib/utils";
+
+const DATA = Array.from({ length: 20 });
 
 export const ProjectPage = observer(function ProjectPage() {
   const commands = useCommands();
@@ -23,11 +31,39 @@ export const ProjectPage = observer(function ProjectPage() {
     commands.toggleProject();
   });
 
+  const [selectDocumentIndex, setSelectDocumentIndex] = useState<number>(-1);
+  const [hoverMode, setHoverMode] = useState<"hover" | "keyboard">("hover");
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      setHoverMode("keyboard");
+      if (e.key === "ArrowUp") {
+        if (selectDocumentIndex === -1) {
+          setSelectDocumentIndex(DATA.length - 1);
+        } else {
+          setSelectDocumentIndex((prev) => prev - 1);
+        }
+      }
+      if (e.key === "ArrowDown") {
+        setSelectDocumentIndex((prev) => prev + 1);
+      }
+      if (e.key === "Escape") {
+        setSelectDocumentIndex(-1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <div className="h-full w-full">
       <div className="flex h-10 w-full items-center justify-between border-b">
         <div className="flex h-full select-none flex-row items-center justify-center gap-2 pl-4">
-          <span className="text-sm font-medium">Projects</span>
+          <span className="text-sm font-medium">Documents</span>
           <div className="flex flex-row items-center gap-2 pl-2">
             <TooltipWrapper
               tooltip={{
@@ -68,7 +104,7 @@ export const ProjectPage = observer(function ProjectPage() {
           </div>
         </div>
         <div className="flex h-full flex-row items-center justify-center gap-2 pr-4">
-          <TooltipWrapper
+          {/* <TooltipWrapper
             tooltip={{
               title: "Create a project",
               side: "left",
@@ -83,22 +119,27 @@ export const ProjectPage = observer(function ProjectPage() {
               <IconPlus className="size-3" />
               <span className="text-xs">New project</span>
             </Button>
-          </TooltipWrapper>
+          </TooltipWrapper> */}
           <Button variant="outline" size="sm">
             <IconAdjustmentsHorizontal className="size-3" />
             <span className="text-xs">Display</span>
           </Button>
         </div>
       </div>
-      <div className="flex w-full flex-col">
-        <ProjectRow />
-        <ProjectRow />
-        <ProjectRow />
-        <ProjectRow />
-        <ProjectRow />
-        <ProjectRow />
-        <ProjectRow />
-        <ProjectRow />
+      <div
+        className="scrollbar-thin flex h-full w-full flex-col overflow-y-auto"
+        onMouseEnter={() => setHoverMode("hover")}
+      >
+        {DATA.map((_, index) => (
+          <ProjectRow
+            key={index}
+            isSelected={
+              hoverMode === "keyboard"
+                ? Math.abs(selectDocumentIndex % DATA.length) === index
+                : false
+            }
+          />
+        ))}
       </div>
       {/* <div className="scrollbar-thin mr-3 flex h-[calc(100%-40px)] w-full flex-row gap-3 overflow-x-auto py-3 pl-3">
         <ProjectColumn />
@@ -109,15 +150,26 @@ export const ProjectPage = observer(function ProjectPage() {
   );
 });
 
-const ProjectRow = observer(function ProjectRow() {
+const ProjectRow = observer(function ProjectRow({
+  isSelected
+}: {
+  isSelected: boolean;
+}) {
   return (
-    <div className="hover:bg-accent/50 flex h-10 w-full select-none items-center justify-between px-5">
+    <div
+      className={cn(
+        "hover:bg-accent/50 flex h-10 w-full cursor-pointer select-none items-center justify-between px-5 py-2",
+        isSelected && "bg-accent/50"
+      )}
+    >
       <div className="flex flex-row gap-3">
+        <IconPencil className="text-accent-foreground/80 size-4" />
+        {/* <IconPalette className="text-accent-foreground/80 size-4" /> */}
         <div className="text-accent-foreground/80 text-sm font-normal">
           PROJ-111
         </div>
         <div className="text-accent-foreground text-sm font-medium">
-          Je suis un titre de project
+          Titre du document, edite ou genere par IA
         </div>
       </div>
       <div className="flex flex-row items-center gap-2">

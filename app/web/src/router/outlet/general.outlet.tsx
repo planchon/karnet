@@ -12,13 +12,13 @@ import { generateId } from "@/lib/utils";
 
 export function GeneralOutlet() {
   useLinkShortcut("g+a", "/agenda");
-  useLinkShortcut("g+p", "/project");
   useLinkShortcut("g+t", "/task");
   useLinkShortcut("g+c", "/chat");
   useLinkShortcut("g+d", "/document");
-  useLinkShortcut("g+f", `/file/infinite`);
+  useLinkShortcut("g+f", `/document?type=file`);
+  useLinkShortcut("g+s", `/document?type=sketch`);
+
   useLinkShortcut("c+f", `/file/${generateId()}`);
-  useLinkShortcut("g+s", `/sketch/infinite`);
   useLinkShortcut("c+s", `/sketch/${generateId()}`);
 
   return (

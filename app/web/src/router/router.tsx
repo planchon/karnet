@@ -29,11 +29,9 @@ export const Router = () => {
         <Route path="/task" element={<TaskPage />} />
         <Route path="/sketch">
           <Route path=":id" element={<DrawPage />} />
-          <Route path="" index element={<Navigate to={`/sketch/infinite`} />} />
         </Route>
         <Route path="/file">
           <Route path=":id" index element={<FilePage />} />
-          <Route path="" index element={<Navigate to={`/file/infinite`} />} />
         </Route>
         <Route path="/document" element={<ProjectPage />} />
         <Route path="/" index element={<Navigate to={`/file/infinite`} />} />

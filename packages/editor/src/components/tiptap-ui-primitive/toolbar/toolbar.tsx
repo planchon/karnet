@@ -276,7 +276,7 @@ export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
         role="toolbar"
         aria-label="toolbar"
         data-variant={variant}
-        className={`tiptap-toolbar ${className || ""} bg-accent/30`}
+        className={`tiptap-toolbar ${className || ""} bg-background`}
         {...props}
       >
         {children}
