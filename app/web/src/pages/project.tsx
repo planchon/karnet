@@ -7,10 +7,14 @@ import {
   IconCube,
   IconFile,
   IconPlus,
-  IconSubtask
+  IconSubtask,
+  IconAdjustmentsHorizontal,
+  IconCalendar
 } from "@tabler/icons-react";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Label } from "@/components/super-ui/label";
 
 export const ProjectPage = observer(function ProjectPage() {
   const commands = useCommands();
@@ -22,7 +26,7 @@ export const ProjectPage = observer(function ProjectPage() {
   return (
     <div className="h-full w-full">
       <div className="flex h-10 w-full items-center justify-between border-b">
-        <div className="flex h-full flex-row items-center justify-center gap-2 pl-4">
+        <div className="flex h-full select-none flex-row items-center justify-center gap-2 pl-4">
           <span className="text-sm font-medium">Projects</span>
           <div className="flex flex-row items-center gap-2 pl-2">
             <TooltipWrapper
@@ -80,12 +84,51 @@ export const ProjectPage = observer(function ProjectPage() {
               <span className="text-xs">New project</span>
             </Button>
           </TooltipWrapper>
+          <Button variant="outline" size="sm">
+            <IconAdjustmentsHorizontal className="size-3" />
+            <span className="text-xs">Display</span>
+          </Button>
         </div>
       </div>
-      <div className="scrollbar-thin mr-3 flex h-[calc(100%-40px)] w-full flex-row gap-3 overflow-x-auto overflow-y-hidden py-3 pl-3">
+      <div className="flex w-full flex-col">
+        <ProjectRow />
+        <ProjectRow />
+        <ProjectRow />
+        <ProjectRow />
+        <ProjectRow />
+        <ProjectRow />
+        <ProjectRow />
+        <ProjectRow />
+      </div>
+      {/* <div className="scrollbar-thin mr-3 flex h-[calc(100%-40px)] w-full flex-row gap-3 overflow-x-auto py-3 pl-3">
         <ProjectColumn />
         <ProjectColumn />
         <ProjectColumn />
+      </div> */}
+    </div>
+  );
+});
+
+const ProjectRow = observer(function ProjectRow() {
+  return (
+    <div className="hover:bg-accent/50 flex h-10 w-full select-none items-center justify-between px-5">
+      <div className="flex flex-row gap-3">
+        <div className="text-accent-foreground/80 text-sm font-normal">
+          PROJ-111
+        </div>
+        <div className="text-accent-foreground text-sm font-medium">
+          Je suis un titre de project
+        </div>
+      </div>
+      <div className="flex flex-row items-center gap-2">
+        <Label label="test" icon={IconCalendar} className="bg-background" />
+        <div className="text-accent-foreground/70 text-[12px]">Mer 24.06</div>
+        <div>
+          <Avatar className="size-5">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
       </div>
     </div>
   );

@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/context-menu";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
+import { Label } from "@/components/super-ui/label";
 
 type TaskPerDayProps = {
   day: string;
@@ -294,27 +295,6 @@ const TaskDueDate = observer(function TaskDueDate({
             minute: "2-digit"
           }).format(dueDate)}
         </span>
-      </TooltipContent>
-    </Tooltip>
-  );
-});
-
-type LabelProps = {
-  label: string;
-  icon: React.ElementType;
-};
-
-const Label = observer(function Label({ label, icon: Icon }: LabelProps) {
-  return (
-    <Tooltip delayDuration={800}>
-      <TooltipTrigger>
-        <div className="shadow-xs flex select-none flex-row items-center gap-1 rounded-full border py-1 pl-2 pr-3">
-          <Icon className="size-4 text-gray-500" />
-          <span className="text-xs font-medium text-gray-500">{label}</span>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent side="bottom" className="m-1">
-        <span className="text-xs font-medium text-gray-500">{label}</span>
       </TooltipContent>
     </Tooltip>
   );

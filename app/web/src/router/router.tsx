@@ -24,9 +24,8 @@ export const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<GeneralOutlet />}>
-        <Route path="/agenda" element={<AgendaPage />} />
+        {/* <Route path="/agenda" element={<AgendaPage />} /> */}
         <Route path="/chat" element={<ChatPage />} />
-        <Route path="/project" element={<ProjectPage />} />
         <Route path="/task" element={<TaskPage />} />
         <Route path="/sketch">
           <Route path=":id" element={<DrawPage />} />
@@ -36,7 +35,7 @@ export const Router = () => {
           <Route path=":id" index element={<FilePage />} />
           <Route path="" index element={<Navigate to={`/file/infinite`} />} />
         </Route>
-        <Route path="/document" element={<DocumentPage />} />
+        <Route path="/document" element={<ProjectPage />} />
         <Route path="/" index element={<Navigate to={`/file/infinite`} />} />
       </Route>
     </Routes>

@@ -33,24 +33,24 @@ export const AppSidebar = observer(function AppSidebar({
       avatar: "/avatars/shadcn.jpg"
     },
     navMain: [
+      // {
+      //   title: "Agenda",
+      //   url: "/agenda",
+      //   icon: IconCalendar,
+      //   tooltip: {
+      //     title: "Go to agenda",
+      //     side: "right" as const,
+      //     shortcut: ["g", "a"]
+      //   }
+      // },
       {
-        title: "Agenda",
-        url: "/agenda",
-        icon: IconCalendar,
+        title: "Documents",
+        url: "/document",
+        icon: IconFileText,
         tooltip: {
-          title: "Go to agenda",
+          title: "Go to documents",
           side: "right" as const,
-          shortcut: ["g", "a"]
-        }
-      },
-      {
-        title: "Projects",
-        url: "/project",
-        icon: IconBriefcase,
-        tooltip: {
-          title: "Go to projects",
-          side: "right" as const,
-          shortcut: ["g", "p"]
+          shortcut: ["g", "d"]
         }
       },
       {
@@ -71,16 +71,6 @@ export const AppSidebar = observer(function AppSidebar({
           title: "Chat with an AI",
           side: "right" as const,
           shortcut: ["g", "c"]
-        }
-      },
-      {
-        title: "Documents",
-        url: "/document",
-        icon: IconFileText,
-        tooltip: {
-          title: "Go to documents",
-          side: "right" as const,
-          shortcut: ["g", "d"]
         }
       }
     ],

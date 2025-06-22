@@ -53,6 +53,7 @@
   --calendar-radius: var(--radius);
 
   --header-height: 3rem;
+  --text-sm: 13px;
 }
 
 :root {
