@@ -1,7 +1,7 @@
 const SingleShortcut = ({ shortcut }: { shortcut: string }) => {
   return (
-    <span className="flex h-5 w-5 items-center justify-center rounded-[3px] border bg-white p-[2px] font-mono text-xs text-gray-800">
-      {shortcut}
+    <span className="text-muted-foreground flex h-5 w-5 items-center justify-center rounded-[3px] border bg-white p-[2px] text-xs">
+      {shortcut.toUpperCase()}
     </span>
   );
 };

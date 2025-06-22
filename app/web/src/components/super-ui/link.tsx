@@ -29,19 +29,29 @@ export const SuperLink = ({
       draggable={false}
       className={({ isActive }: { isActive: boolean }) =>
         cn(
-          "overflow-hidden rounded-md hover:cursor-pointer",
-          isActive ? "font-semibold" : ""
+          "text-accent-foreground rounded-[4px] hover:cursor-pointer",
+          isActive ? "bg-sidebar-accent" : ""
         )
       }
     >
-      <TooltipWrapper tooltip={tooltip}>
-        <SidebarMenuItem key={title} className="hover:cursor-pointer">
-          <SidebarMenuButton tooltip={title}>
-            {Icon && <Icon />}
-            <span className="truncate">{title}</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>{" "}
-      </TooltipWrapper>
+      {({ isActive }: { isActive: boolean }) => (
+        <TooltipWrapper tooltip={tooltip} className="w-full">
+          <SidebarMenuItem key={title} className="hover:cursor-pointer">
+            <SidebarMenuButton tooltip={title} className="group/item">
+              {Icon && (
+                <Icon
+                  className={cn(
+                    isActive
+                      ? "text-accent-foreground"
+                      : "text-accent-foreground/80 group-hover/item:text-accent-foreground"
+                  )}
+                />
+              )}
+              <span className="truncate">{title}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>{" "}
+        </TooltipWrapper>
+      )}
     </NavLink>
   );
 };
