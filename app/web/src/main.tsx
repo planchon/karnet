@@ -3,11 +3,18 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import { Router } from "./router/router";
 import "./index.css";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
+    <TooltipProvider
+      delayDuration={800}
+      skipDelayDuration={1000}
+      disableHoverableContent
+    >
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </TooltipProvider>
   </StrictMode>
 );

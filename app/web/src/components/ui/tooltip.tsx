@@ -10,7 +10,8 @@ function TooltipProvider({
   return (
     <TooltipPrimitive.Provider
       data-slot="tooltip-provider"
-      delayDuration={delayDuration}
+      delayDuration={800}
+      skipDelayDuration={100}
       {...props}
     />
   );
@@ -20,9 +21,9 @@ function Tooltip({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return (
-    <TooltipProvider>
-      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
-    </TooltipProvider>
+    // <TooltipProvider>
+    <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+    // </TooltipProvider>
   );
 }
 

@@ -185,6 +185,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      non.geist:
+        specifier: ^1.0.4
+        version: 1.0.4
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -487,13 +490,13 @@ importers:
     dependencies:
       '@tiptap/pm':
         specifier: ^2.12.0
-        version: 2.12.0
+        version: 2.14.0
       '@tiptap/react':
         specifier: ^2.12.0
-        version: 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tiptap/suggestion':
         specifier: ^2.12.0
-        version: 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
+        version: 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
       '@types/react':
         specifier: ^19.1.2
         version: 19.1.5
@@ -4438,6 +4441,9 @@ packages:
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
+  non.geist@1.0.4:
+    resolution: {integrity: sha512-2spmLTgz5ipZrFGLiI1YkiHb8Yit0yFySPvWzal3wCwCFilMFQQ/Jwwz4lcEatwIKUpOeMYwyFwP8MJ8EVKqGA==}
+
   normalize-package-data@6.0.2:
     resolution: {integrity: sha512-V6gygoYb/5EmNI+MEGrWkC+e6+Rr7mTmfHrxDbLzxQogBkgzo76rkok0Am6thgSF7Mv2nLOajAJj5vDJZEFn7g==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -7541,10 +7547,6 @@ snapshots:
     dependencies:
       '@tiptap/pm': 2.14.0
 
-  '@tiptap/core@2.14.0(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/pm': 2.12.0
-
   '@tiptap/core@2.14.0(@tiptap/pm@2.14.0)':
     dependencies:
       '@tiptap/pm': 2.14.0
@@ -7568,12 +7570,6 @@ snapshots:
   '@tiptap/extension-bubble-menu@2.12.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
     dependencies:
       '@tiptap/core': 2.12.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      tippy.js: 6.3.7
-
-  '@tiptap/extension-bubble-menu@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
       '@tiptap/pm': 2.12.0
       tippy.js: 6.3.7
 
@@ -7642,12 +7638,6 @@ snapshots:
   '@tiptap/extension-floating-menu@2.12.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
     dependencies:
       '@tiptap/core': 2.12.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      tippy.js: 6.3.7
-
-  '@tiptap/extension-floating-menu@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
       '@tiptap/pm': 2.12.0
       tippy.js: 6.3.7
 
@@ -7877,18 +7867,6 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
       use-sync-external-store: 1.5.0(react@19.1.0)
 
-  '@tiptap/react@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/extension-bubble-menu': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
-      '@tiptap/extension-floating-menu': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      '@types/use-sync-external-store': 0.0.6
-      fast-deep-equal: 3.1.3
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      use-sync-external-store: 1.5.0(react@19.1.0)
-
   '@tiptap/react@2.14.0(@tiptap/core@2.12.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@tiptap/core': 2.12.0(@tiptap/pm@2.12.0)
@@ -7960,11 +7938,6 @@ snapshots:
       '@tiptap/extension-text': 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.14.0))
       '@tiptap/extension-text-style': 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.14.0))
       '@tiptap/pm': 2.14.0
-
-  '@tiptap/suggestion@2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
 
   '@tiptap/suggestion@2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
@@ -10244,6 +10217,8 @@ snapshots:
       skin-tone: 2.0.0
 
   node-releases@2.0.19: {}
+
+  non.geist@1.0.4: {}
 
   normalize-package-data@6.0.2:
     dependencies:
