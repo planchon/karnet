@@ -101,16 +101,18 @@ export const allSuggestions = [
         searchTerms: ["sketch"],
         icon: IconPencil,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
+          const allSketches = localStorage.getItem("p6n-all-sketches");
+          if (!allSketches) return;
+          const sketches = JSON.parse(allSketches);
+          const id = sketches[0];
           editor.chain().focus().deleteRange(range).run();
           editor
             .chain()
             .focus()
             .setNode("tldraw", {
-              id: "LEn1laM1KF"
+              id
             })
             .run();
-
-          console.log(editor.getHTML());
         }
       }
     ]
