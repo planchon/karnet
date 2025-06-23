@@ -13,7 +13,8 @@ import {
   IconCalendar,
   IconPencil,
   IconPaint,
-  IconPalette
+  IconPalette,
+  IconTrash
 } from "@tabler/icons-react";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
@@ -22,7 +23,16 @@ import { Label } from "@/components/super-ui/label";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useStores } from "@/hooks/useStores";
-import { Link, useNavigate } from "react-router";
+import { data, Link, useNavigate } from "react-router";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger
+} from "@/components/ui/context-menu";
 
 type ViewItem = {
   id: string;
@@ -32,7 +42,7 @@ type ViewItem = {
   type: "file" | "sketch";
 };
 
-export const ProjectPage = observer(function ProjectPage() {
+export const DocumentView = observer(function DocumentView() {
   const commands = useCommands();
 
   useShortcut("n", () => {
@@ -154,32 +164,59 @@ export const ProjectPage = observer(function ProjectPage() {
           </Button>
         </div>
       </div>
-      <div
-        className="scrollbar-thin flex h-full w-full flex-col overflow-y-auto"
-        onMouseEnter={() => setHoverMode("hover")}
-      >
-        {data.map((item, index) => (
-          <ProjectRow
-            key={index}
-            item={item}
-            isSelected={
-              hoverMode === "keyboard"
-                ? Math.abs(selectDocumentIndex % data.length) === index
-                : false
-            }
-          />
-        ))}
-      </div>
-      {/* <div className="scrollbar-thin mr-3 flex h-[calc(100%-40px)] w-full flex-row gap-3 overflow-x-auto py-3 pl-3">
-        <ProjectColumn />
-        <ProjectColumn />
-        <ProjectColumn />
-      </div> */}
+      <ContextMenu>
+        <ContextMenuTrigger>
+          <div className="scrollbar-thin h-full w-full overflow-y-auto">
+            <ContextMenu>
+              <ContextMenuTrigger
+                className="flex w-full flex-col"
+                onMouseEnter={() => setHoverMode("hover")}
+              >
+                {data.map((item, index) => (
+                  <DocumentRow
+                    key={index}
+                    item={item}
+                    isSelected={
+                      hoverMode === "keyboard"
+                        ? Math.abs(selectDocumentIndex % data.length) === index
+                        : false
+                    }
+                  />
+                ))}
+              </ContextMenuTrigger>
+              <ContextMenuContent className="w-56">
+                <ContextMenuItem>
+                  <IconTrash className="size-4 text-red-600" />
+                  <span className="text-xs text-red-600">Delete</span>
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenuContent className="w-56 overflow-hidden">
+          <ContextMenuSub>
+            <ContextMenuSubTrigger className="flex flex-row items-center gap-2">
+              <IconPlus className="size-4" />
+              <span className="text-xs">Create</span>
+            </ContextMenuSubTrigger>
+            <ContextMenuSubContent className="w-44">
+              <ContextMenuItem>
+                <IconFile className="size-4" />
+                <span className="text-xs">File</span>
+              </ContextMenuItem>
+              <ContextMenuItem>
+                <IconPencil className="size-4" />
+                <span className="text-xs">Sketch</span>
+              </ContextMenuItem>
+            </ContextMenuSubContent>
+          </ContextMenuSub>
+        </ContextMenuContent>
+      </ContextMenu>
     </div>
   );
 });
 
-const ProjectRow = observer(function ProjectRow({
+const DocumentRow = observer(function DocumentRow({
   isSelected,
   item
 }: {
@@ -197,12 +234,14 @@ const ProjectRow = observer(function ProjectRow({
       to={`/${item.type}/${item.id}`}
     >
       <div className="flex flex-row gap-3">
-        {item.type === "file" ? (
-          <IconFile className="text-accent-foreground/80 size-4" />
-        ) : (
-          <IconPencil className="text-accent-foreground/80 size-4" />
-        )}
-        <div className="text-accent-foreground/80 text-sm font-normal">
+        <div className="w-5">
+          {item.type === "file" ? (
+            <IconFile className="text-accent-foreground/80 size-4" />
+          ) : (
+            <IconPencil className="text-accent-foreground/80 size-4" />
+          )}
+        </div>
+        <div className="text-accent-foreground/80 w-12 text-sm font-normal">
           {item.smallId}
         </div>
         <div className="text-accent-foreground text-sm font-medium">
@@ -220,44 +259,5 @@ const ProjectRow = observer(function ProjectRow({
         </div>
       </div>
     </Link>
-  );
-});
-
-const ProjectColumn = observer(function ProjectColumn() {
-  return (
-    <div className="h-full w-[350px] min-w-[350px] max-w-[350px] overflow-hidden rounded-md border">
-      <div className="from-accent/30 to-accent/10 h-full bg-gradient-to-b">
-        <div className="flex flex-row items-center gap-3 p-3">
-          <Icon123 className="size-6 rounded-sm border p-1" />
-          <span className="text-sm font-semibold">Project name</span>
-        </div>
-        <div className="scrollbar-thin h-full overflow-y-auto">
-          <div className="flex flex-col gap-3 px-3 py-1">
-            <span className="text-sm font-medium text-gray-700">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </span>
-          </div>
-          <div className="w-full border-b py-2" />
-          <div className="flex flex-col gap-3 p-3">
-            <div className="flex flex-row items-center gap-2">
-              <IconSubtask className="size-4 text-gray-700" />
-              <span className="text-sm font-medium">Priority tasks</span>
-            </div>
-            <div className="bg-accent/30 h-[300px] w-full"></div>
-          </div>
-          <div className="w-full border-b" />
-          <div className="flex flex-col gap-3 p-3">
-            <div className="flex flex-row items-center gap-2">
-              <IconFile className="size-4 text-gray-700" />
-              <span className="text-sm font-medium">Latests documents</span>
-            </div>
-            <div className="bg-accent/30 h-[200px] w-full"></div>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 });

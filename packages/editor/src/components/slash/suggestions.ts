@@ -100,8 +100,18 @@ export const allSuggestions = [
         title: "Sketch",
         searchTerms: ["sketch"],
         icon: IconPencil,
-        disabled: true,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {}
+        command: ({ editor, range }: { editor: Editor; range: Range }) => {
+          editor.chain().focus().deleteRange(range).run();
+          editor
+            .chain()
+            .focus()
+            .setNode("tldraw", {
+              id: "LEn1laM1KF"
+            })
+            .run();
+
+          console.log(editor.getHTML());
+        }
       }
     ]
   },

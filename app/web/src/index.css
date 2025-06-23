@@ -215,3 +215,11 @@
 .fc-col-header-cell {
   border-bottom: none !important;
 }
+
+.tl-watermark_SEE-LICENSE {
+  display: none !important;
+}
+
+.tl-container__focused {
+  border: none !important;
+}

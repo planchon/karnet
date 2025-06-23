@@ -92,6 +92,7 @@ import {
 
 import { allSuggestions } from "../../slash/suggestions";
 import { Shortcut } from "../../shortcut/shortcut";
+import { TldrawNode } from "../../tldraw/TldrawNode";
 
 type Props = {
   id: string;
@@ -164,16 +165,15 @@ export function SimpleEditor({ id }: Props) {
       Placeholder.configure({
         placeholder: ({ node }) => {
           if (node.type.name === "heading") {
-            console.log("heading");
             return "Heading";
           }
           if (node.type.name === "paragraph") {
-            console.log("paragraph");
             return "Write something (or / to open commands)...";
           }
           return "";
         }
-      })
+      }),
+      TldrawNode
     ]
   });
 

@@ -37,6 +37,9 @@ function Draw({ id, callback }: DrawProps) {
         overrides={overrides}
         persistenceKey={`p6n-${id}-draw`}
         onMount={(e) => {
+          e.user.updateUserPreferences({
+            isSnapMode: true
+          });
           e.updateInstanceState({
             isGridMode: true
           });

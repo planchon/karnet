@@ -1,10 +1,8 @@
 import { Navigate, Route, Routes } from "react-router";
 import { DrawPage } from "../pages/sketch";
-import { AgendaPage } from "../pages/agenda";
-import { DocumentPage } from "../pages/document";
 import { GeneralOutlet } from "./outlet/general.outlet";
 import { ChatPage } from "../pages/chat";
-import { ProjectPage } from "@/pages/project";
+import { DocumentView } from "@/pages/view/document.view";
 import { TaskPage } from "@/pages/task";
 import { useEffect } from "react";
 import { useSettings } from "@/hooks/useStores";
@@ -33,7 +31,7 @@ export const Router = () => {
         <Route path="/file">
           <Route path=":id" index element={<FilePage />} />
         </Route>
-        <Route path="/document" element={<ProjectPage />} />
+        <Route path="/document" element={<DocumentView />} />
         <Route path="/" index element={<Navigate to={`/file/infinite`} />} />
       </Route>
     </Routes>
