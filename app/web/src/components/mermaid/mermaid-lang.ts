@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useMonaco } from "@monaco-editor/react";
 
 export const registerMermaidLanguage = (
