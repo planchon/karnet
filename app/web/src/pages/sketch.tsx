@@ -27,62 +27,9 @@ const SketchHeader = observer(function SketchHeader({
             sketch.setName(e.target.value);
           }}
         />
-        <div className="flex flex-row items-center gap-2 pl-2">
-          {/* <TooltipWrapper
-              tooltip={{
-                title: "All projects",
-                side: "bottom",
-                shortcut: ["1"]
-              }}
-            >
-              <Button variant="outline" size="sm">
-                <IconCloud className="size-3" />
-                <span className="text-xs">Frame 1</span>
-              </Button>
-            </TooltipWrapper>
-            <TooltipWrapper
-              tooltip={{
-                title: "Brume filter",
-                side: "bottom",
-                shortcut: ["2"]
-              }}
-            >
-              <Button variant="outline" size="sm">
-                <IconCube className="size-3" />
-                <span className="text-xs">Frame 2</span>
-              </Button>
-            </TooltipWrapper>
-            <TooltipWrapper
-              tooltip={{
-                title: "Stratumn filter",
-                side: "bottom",
-                shortcut: ["3"]
-              }}
-            >
-              <Button variant="outline" size="sm">
-                <IconBlocks className="size-3" />
-                <span className="text-xs">Frame 3</span>
-              </Button>
-            </TooltipWrapper> */}
-        </div>
+        <div className="flex flex-row items-center gap-2 pl-2"></div>
       </div>
       <div className="flex h-full flex-row items-center justify-center gap-2 pr-4">
-        {/* <TooltipWrapper
-            tooltip={{
-              title: "Create a project",
-              side: "left",
-              shortcut: ["n"]
-            }}
-          >
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => commands.toggleProject()}
-            >
-              <IconPlus className="size-3" />
-              <span className="text-xs">New project</span>
-            </Button>
-          </TooltipWrapper> */}
         <Button variant="outline" size="sm">
           <IconAdjustmentsHorizontal className="size-3" />
           <span className="text-xs">Infos</span>

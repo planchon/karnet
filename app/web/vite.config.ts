@@ -10,7 +10,7 @@ export default defineConfig({
     alias: {
       "@editor": path.resolve(__dirname, "./src/components/editor"),
       "@draw": path.resolve(__dirname, "./src/components/draw"),
-      "@ui": path.resolve(__dirname, "./src/components/ui"),
+      "@ui": path.resolve(__dirname, "./src/primitive/ui"),
       "@": path.resolve(__dirname, "./src")
     }
   }

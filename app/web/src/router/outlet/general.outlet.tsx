@@ -38,6 +38,7 @@ export function GeneralOutlet() {
   useEffect(() => {
     rootStore.sketchesStore.load();
     rootStore.documentStore.load();
+    rootStore.mermaidStore.load();
     setIsLoading(false);
   }, []);
 
