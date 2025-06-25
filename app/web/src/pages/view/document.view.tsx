@@ -1,6 +1,6 @@
-import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
+import { TooltipWrapper } from "@/primitive/super-ui/tooltip-wrapper";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/primitive/ui/button";
 import {
   Icon123,
   IconBlocks,
@@ -18,8 +18,8 @@ import {
 } from "@tabler/icons-react";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Label } from "@/components/super-ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/primitive/ui/avatar";
+import { Label } from "@/primitive/super-ui/label";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useStores } from "@/hooks/useStores";
@@ -32,7 +32,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger
-} from "@/components/ui/context-menu";
+} from "@/primitive/ui/context-menu";
 
 type ViewItem = {
   id: string;

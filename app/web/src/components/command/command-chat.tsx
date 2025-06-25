@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent } from "@/primitive/ui/dialog";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useCommands } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";

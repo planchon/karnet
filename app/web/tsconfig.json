@@ -7,6 +7,9 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      "@editor/*": ["src/components/editor/*"],
+      "@draw/*": ["src/components/draw/*"],
+      "@ui/*": ["src/primitive/ui/*"],
       "@/*": ["src/*"]
     }
   },

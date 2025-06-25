@@ -1,11 +1,20 @@
-import { Dialog, DialogContent, DialogFooter } from "../ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
+import { Dialog, DialogContent, DialogFooter } from "@/primitive/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger
+} from "@/primitive/ui/select";
 import { IconCalendar, IconChevronRight, IconLabel } from "@tabler/icons-react";
 import { useShortcut } from "@/hooks/useShortcut";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { Button } from "../ui/button";
-import { Switch } from "../ui/switch";
-import { DateTimePicker } from "../super-ui/date-time-picker";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from "@/primitive/ui/tooltip";
+import { Button } from "@/primitive/ui/button";
+import { Switch } from "@/primitive/ui/switch";
+import { DateTimePicker } from "../../primitive/super-ui/date-time-picker";
 import { useCommands } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
 import usePreventAutoFocus from "@/hooks/usePreventAutoFocus";

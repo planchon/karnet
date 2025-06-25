@@ -7,7 +7,7 @@ import {
   CommandItem,
   CommandShortcut,
   CommandDialog
-} from "../ui/command";
+} from "@/primitive/ui/command";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useNavigate } from "react-router";
 import {

@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/navbar/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/primitive/ui/sidebar";
 import { Outlet, useNavigate } from "react-router";
 import { useLinkShortcut, useShortcut } from "@/hooks/useShortcut";
 import { HelpComponent } from "@/components/help/help.comp";

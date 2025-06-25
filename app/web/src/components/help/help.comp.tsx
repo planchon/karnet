@@ -5,12 +5,12 @@ import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle
-} from "../ui/drawer";
+} from "@/primitive/ui/drawer";
 import { useShortcut } from "@/hooks/useShortcut";
 import { X } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Shortcut } from "../ui/shortcut";
+import { Button } from "@/primitive/ui/button";
+import { Input } from "@/primitive/ui/input";
+import { Shortcut } from "@/primitive/ui/shortcut";
 import { useCommands } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
 

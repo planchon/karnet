@@ -1,12 +1,12 @@
-import { SimpleEditor } from "@poltion/editor";
-import "../../../../packages/editor/src/styles/_variables.scss";
-import "../../../../packages/editor/src/styles/_keyframe-animations.scss";
+import { SimpleEditor } from "@editor/editor/editor";
 import { observer } from "mobx-react";
 import { useParams } from "react-router";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/primitive/ui/button";
+import { Input } from "@/primitive/ui/input";
 import { useStores } from "@/hooks/useStores";
+import "@editor/styles/_variables.scss";
+import "@editor/styles/_keyframe-animations.scss";
 
 export const FilePage = observer(function FilePage() {
   const { id } = useParams();

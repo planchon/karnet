@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MessageInput } from "@/components/ui/message-input";
+import { MessageInput } from "@/primitive/ui/message-input";
 import { ChatInput } from "@/components/chat/chat-input";
 import { observer } from "mobx-react";
 

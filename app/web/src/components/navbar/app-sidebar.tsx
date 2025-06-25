@@ -15,7 +15,7 @@ import {
 import { NavDocuments } from "@/components/navbar/nav-documents";
 import { NavMain } from "@/components/navbar/nav-main";
 import { NavSecondary } from "@/components/navbar/nav-secondary";
-import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent } from "@/primitive/ui/sidebar";
 
 import { SidebarHeader } from "./nav-header";
 import { useCommands } from "@/hooks/useShortcut";

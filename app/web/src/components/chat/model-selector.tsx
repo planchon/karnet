@@ -4,7 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from "../ui/select";
+} from "@/primitive/ui/select";
 
 export function ModelSelector() {
   return (

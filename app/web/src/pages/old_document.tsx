@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/primitive/ui/button";
 import {
   IconBlocks,
   IconCheck,
@@ -19,20 +19,20 @@ import {
   IconTrash
 } from "@tabler/icons-react";
 import { Icon } from "@radix-ui/react-select";
-import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { TooltipWrapper } from "@/primitive/super-ui/tooltip-wrapper";
+import { Checkbox } from "@/primitive/ui/checkbox";
+import { Avatar, AvatarFallback, AvatarImage } from "@/primitive/ui/avatar";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent
-} from "@/components/ui/tooltip";
+} from "@/primitive/ui/tooltip";
 import {
   ContextMenu,
   ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem
-} from "@/components/ui/context-menu";
+} from "@/primitive/ui/context-menu";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
 

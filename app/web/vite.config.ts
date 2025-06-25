@@ -8,6 +8,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      "@editor": path.resolve(__dirname, "./src/components/editor"),
+      "@draw": path.resolve(__dirname, "./src/components/draw"),
+      "@ui": path.resolve(__dirname, "./src/components/ui"),
       "@": path.resolve(__dirname, "./src")
     }
   }

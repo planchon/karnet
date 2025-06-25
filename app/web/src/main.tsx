@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import { Router } from "./router/router";
 import "./index.css";
-import { TooltipProvider } from "./components/ui/tooltip";
+import { TooltipProvider } from "./primitive/ui/tooltip";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

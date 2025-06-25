@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
-import { MessageInput } from "../ui/message-input";
-import { ChatForm } from "../ui/chat";
+import { MessageInput } from "@/primitive/ui/message-input";
+import { ChatForm } from "@/primitive/ui/chat";
 
 export function ChatInput() {
   const [value, setValue] = useState("");

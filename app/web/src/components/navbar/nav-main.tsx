@@ -4,8 +4,8 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu
-} from "@/components/ui/sidebar";
-import { SuperLink } from "../super-ui/link";
+} from "@/primitive/ui/sidebar";
+import { SuperLink } from "../../primitive/super-ui/link";
 
 export function NavMain({
   items

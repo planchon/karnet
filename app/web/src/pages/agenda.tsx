@@ -9,12 +9,12 @@ import {
   SlotLabelContentArg
 } from "@fullcalendar/core/index.js";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/primitive/ui/button";
 import { IconCube } from "@tabler/icons-react";
 import { IconCloud } from "@tabler/icons-react";
 import { IconBlocks } from "@tabler/icons-react";
 import { IconPlus } from "@tabler/icons-react";
-import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
+import { TooltipWrapper } from "@/primitive/super-ui/tooltip-wrapper";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
 

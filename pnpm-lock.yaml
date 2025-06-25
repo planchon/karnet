@@ -62,6 +62,9 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@19.1.0)
+      '@floating-ui/react':
+        specifier: ^0.27.8
+        version: 0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fullcalendar/core':
         specifier: ^6.1.17
         version: 6.1.17
@@ -77,12 +80,9 @@ importers:
       '@fullcalendar/timegrid':
         specifier: ^6.1.17
         version: 6.1.17(@fullcalendar/core@6.1.17)
-      '@poltion/draw':
+      '@poltion/slash-tiptap':
         specifier: workspace:*
-        version: link:../../packages/draw
-      '@poltion/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
+        version: link:../../packages/slash-tiptap
       '@radix-ui/react-avatar':
         specifier: ^1.1.10
         version: 1.1.10(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -143,6 +143,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.7
         version: 1.2.7(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tabler/icons':
+        specifier: ^3.34.0
+        version: 3.34.0
       '@tabler/icons-react':
         specifier: ^3.33.0
         version: 3.33.0(react@19.1.0)
@@ -152,6 +155,57 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tiptap/core':
+        specifier: ^2.22.3
+        version: 2.22.3(@tiptap/pm@2.14.0)
+      '@tiptap/extension-collaboration':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(y-prosemirror@1.3.5(prosemirror-model@1.25.1)(prosemirror-state@1.4.3)(prosemirror-view@1.39.3)(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27))
+      '@tiptap/extension-highlight':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-image':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-link':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
+      '@tiptap/extension-placeholder':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
+      '@tiptap/extension-subscript':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-superscript':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-task-item':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
+      '@tiptap/extension-task-list':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-text-align':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-typography':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-underline':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/pm':
+        specifier: ^2.14.0
+        version: 2.14.0
+      '@tiptap/react':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tiptap/starter-kit':
+        specifier: ^2.14.0
+        version: 2.14.0
+      '@tiptap/suggestion':
+        specifier: ^2.14.0
+        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
       class-validator:
         specifier: ^0.14.2
         version: 0.14.2
@@ -227,9 +281,18 @@ importers:
       tailwindcss:
         specifier: ^4.1.7
         version: 4.1.7
+      tldraw:
+        specifier: ^3.13.1
+        version: 3.13.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vaul:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      y-indexeddb:
+        specifier: ^9.0.12
+        version: 9.0.12(yjs@13.6.27)
+      yjs:
+        specifier: ^13.6.27
+        version: 13.6.27
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -276,9 +339,6 @@ importers:
       tailwind-scrollbar:
         specifier: ^4.0.2
         version: 4.0.2(react@19.1.0)(tailwindcss@4.1.7)
-      tldraw:
-        specifier: ^3.13.1
-        version: 3.13.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       tw-animate-css:
         specifier: ^1.3.0
         version: 1.3.0
@@ -291,167 +351,6 @@ importers:
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.0)(sass@1.89.1)(yaml@2.8.0)
-
-  packages/draw:
-    dependencies:
-      tldraw:
-        specifier: ^3.13.1
-        version: 3.13.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-    devDependencies:
-      '@poltion/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@poltion/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/react':
-        specifier: ^19.0.0
-        version: 19.1.5
-      react:
-        specifier: 'catalog:'
-        version: 19.1.0
-      react-dom:
-        specifier: 'catalog:'
-        version: 19.1.0(react@19.1.0)
-
-  packages/editor:
-    dependencies:
-      '@floating-ui/react':
-        specifier: ^0.27.8
-        version: 0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@poltion/draw':
-        specifier: workspace:*
-        version: link:../draw
-      '@poltion/slash-tiptap':
-        specifier: workspace:*
-        version: link:../slash-tiptap
-      '@radix-ui/react-dropdown-menu':
-        specifier: ^2.1.15
-        version: 2.1.15(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-toggle':
-        specifier: ^1.1.9
-        version: 1.1.9(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-toggle-group':
-        specifier: ^1.1.10
-        version: 1.1.10(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@tabler/icons':
-        specifier: ^3.34.0
-        version: 3.34.0
-      '@tabler/icons-react':
-        specifier: ^3.33.0
-        version: 3.33.0(react@19.1.0)
-      '@tiptap/core':
-        specifier: ^2.22.3
-        version: 2.22.3(@tiptap/pm@2.14.0)
-      '@tiptap/extension-collaboration':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(y-prosemirror@1.3.5(prosemirror-model@1.25.1)(prosemirror-state@1.4.3)(prosemirror-view@1.39.3)(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27))
-      '@tiptap/extension-highlight':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/extension-image':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/extension-link':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-placeholder':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-subscript':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/extension-superscript':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/extension-task-item':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-task-list':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/extension-text-align':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/extension-typography':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/extension-underline':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
-      '@tiptap/pm':
-        specifier: ^2.14.0
-        version: 2.14.0
-      '@tiptap/react':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@tiptap/starter-kit':
-        specifier: ^2.14.0
-        version: 2.14.0
-      '@tiptap/suggestion':
-        specifier: ^2.14.0
-        version: 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      react:
-        specifier: 'catalog:'
-        version: 19.1.0
-      react-dom:
-        specifier: 'catalog:'
-        version: 19.1.0(react@19.1.0)
-      tailwind-merge:
-        specifier: ^2.6.0
-        version: 2.6.0
-      y-indexeddb:
-        specifier: ^9.0.12
-        version: 9.0.12(yjs@13.6.27)
-      yjs:
-        specifier: ^13.6.27
-        version: 13.6.27
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.25.0
-        version: 9.27.0
-      '@poltion/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@poltion/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/react':
-        specifier: ^19.1.2
-        version: 19.1.5
-      '@types/react-dom':
-        specifier: ^19.1.2
-        version: 19.1.5(@types/react@19.1.5)
-      '@vitejs/plugin-react':
-        specifier: ^4.4.1
-        version: 4.5.0(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.0)(sass@1.89.1)(yaml@2.8.0))
-      esbuild-sass-plugin:
-        specifier: ^3.3.1
-        version: 3.3.1(esbuild@0.25.4)(sass-embedded@1.89.0)
-      eslint:
-        specifier: ^9.25.0
-        version: 9.27.0(jiti@2.4.2)
-      eslint-plugin-react-hooks:
-        specifier: ^5.2.0
-        version: 5.2.0(eslint@9.27.0(jiti@2.4.2))
-      eslint-plugin-react-refresh:
-        specifier: ^0.4.19
-        version: 0.4.20(eslint@9.27.0(jiti@2.4.2))
-      globals:
-        specifier: ^16.0.0
-        version: 16.1.0
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
-      typescript-eslint:
-        specifier: ^8.30.1
-        version: 8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3)
 
   packages/eslint-config:
     devDependencies:
@@ -2159,28 +2058,13 @@ packages:
     resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
     engines: {node: '>=12'}
 
-  '@tiptap/core@2.14.0':
-    resolution: {integrity: sha512-MBSMzGYRFlwYCocvx3dU7zpCBSDQ0qWByNtStaEzuBUgzCJ6wn2DP/xG0cMcLmE3Ia0VLM4nwbLOAAvBXOtylA==}
-    peerDependencies:
-      '@tiptap/pm': ^2.7.0
-
   '@tiptap/core@2.22.3':
     resolution: {integrity: sha512-czyBPXZG/ZFyObZEF1kyusGf58Ai3X8TnaxlUUn3gqLLWPy0idXZg85NETCidzi/gAxWxL9j6Pcy+zwS4pbZYQ==}
     peerDependencies:
       '@tiptap/pm': ^2.7.0
 
-  '@tiptap/extension-blockquote@2.12.0':
-    resolution: {integrity: sha512-XUC2A77YAPMJS2SqZ2S62IGcUH8gZ7cdhoWlYQb1pR4ZzXFByeKDJPxfYeAePSiuI01YGrlzgY2c6Ncx/DtO0A==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-blockquote@2.14.0':
     resolution: {integrity: sha512-AwqPP0jLYNioKxakiVw0vlfH/ceGFbV+SGoqBbPSGFPRdSbHhxHDNBlTtiThmT3N2PiVwXAD9xislJV+WY4GUA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
-  '@tiptap/extension-bold@2.12.0':
-    resolution: {integrity: sha512-lAUtoLDLRc5ofD2I9MFY6MQ7d1qBLLqS1rvpwaPjOaoQb/GPVnaHj9qXYG0SY9K3erMtto48bMFpAcscjZHzZQ==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
@@ -2189,33 +2073,16 @@ packages:
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/extension-bubble-menu@2.12.0':
-    resolution: {integrity: sha512-DYijoE0igV0Oi+ZppFsp2UrQsM/4HZtmmpD78BJM9zfCbd1YvAUIxmzmXr8uqU18OHd1uQy+/zvuNoUNYyw67g==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-
   '@tiptap/extension-bubble-menu@2.14.0':
     resolution: {integrity: sha512-sN15n0RjPh+2Asvxs7l47hVEvX6c0aPempU8QQWcPUlHoGf1D/XkyHXy6GWVPSxZ5Rj5uAwgKvhHsG/FJ/YGKQ==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
 
-  '@tiptap/extension-bullet-list@2.12.0':
-    resolution: {integrity: sha512-YTCjztB8MaIpwyxFYr81H4+LdKCq1VlaSXQyrPdB44mVdhhRqc46BYQb8/B//XE3UIu3X2QWFjwrqRlUq6vUiw==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-bullet-list@2.14.0':
     resolution: {integrity: sha512-SWnL4bP8Mm/mWN42AMQNoqYE0V6LgSBTVsHwwAki2wIUQdr9HyoAnohvHy3IME56NMwoyZyo+Mzl45wOqUxziA==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
-
-  '@tiptap/extension-code-block@2.12.0':
-    resolution: {integrity: sha512-1D7cYAjgxEFHdfC/35Ooi4GqWKB5sszbW8iI7N16XILNln26xb0d5KflXqYrwr9CN/ZnZoCl2o6YsP7xEObcZA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
 
   '@tiptap/extension-code-block@2.14.0':
     resolution: {integrity: sha512-LRYYZeh8U2XgfTsJ4houB9s9cVRt7PRfVa4MaCeOYKfowVOKQh67yV5oom8Azk9XrMPkPxDmMmdPAEPxeVYFvw==}
@@ -2240,30 +2107,13 @@ packages:
       '@tiptap/pm': ^2.7.0
       y-prosemirror: ^1.2.11
 
-  '@tiptap/extension-document@2.12.0':
-    resolution: {integrity: sha512-sA1Q+mxDIv0Y3qQTBkYGwknNbDcGFiJ/fyAFholXpqbrcRx3GavwR/o0chBdsJZlFht0x7AWGwUYWvIo7wYilA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-document@2.14.0':
     resolution: {integrity: sha512-qwEgpPIJ3AgXdEtRTr88hODbXRdt14VAwLj27PTSqexB5V7Ra1Jy7iQDhqRwBCoUomVywBsWYxkSuDisSRG+9w==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/extension-dropcursor@2.12.0':
-    resolution: {integrity: sha512-zcZSOXFj+7LVnmdPWTfKr5AoxYIzFPFlLJe35AdTQC5IhkljLn1Exct8I30ZREojX/00hKYsO7JJmePS6TEVlQ==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-
   '@tiptap/extension-dropcursor@2.14.0':
     resolution: {integrity: sha512-FIh5cdPuoPKvZ0GqSKhzMZGixm05ac3hSgqhMNCBZmXX459qBUI9CvDl/uzSnY9koBDeLVV3HYMthWQQLSXl9A==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-
-  '@tiptap/extension-floating-menu@2.12.0':
-    resolution: {integrity: sha512-BYpyZx/56KCDksWuJJbhki/uNgt9sACuSSZFH5AN1yS1ISD+EzIxqf6Pzzv8QCoNJ+KcRNVaZsOlOFaJGoyzag==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
@@ -2274,30 +2124,14 @@ packages:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
 
-  '@tiptap/extension-gapcursor@2.12.0':
-    resolution: {integrity: sha512-k8ji5v9YKn7bNjo8UtI9hEfXfl4tKUp1hpJOEmUxGJQa3LIwrwSbReupUTnHszGQelzxikS/l1xO9P0TIGwRoA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-
   '@tiptap/extension-gapcursor@2.14.0':
     resolution: {integrity: sha512-as+SqC39FRshw4Fm1XVlrdSXveiusf5xiC4nuefLmXsUxO7Yx67x8jS0/VQbxWTLHZ6R1YEW8prLtnxGmVLCAQ==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
 
-  '@tiptap/extension-hard-break@2.12.0':
-    resolution: {integrity: sha512-08MNS2PK5DzdnAfqXn4krmJ/xebKmWpRpYqqN5EM8AvetYKlAJyTVSpo0ZUeGbZ3EZiPm9djgSnrLqpFUDjRCg==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-hard-break@2.14.0':
     resolution: {integrity: sha512-A8c8n8881iBq3AusNqibh6Hloybr+FgYdg4Lg4jNxbbEaL0WhyLFge1bWlGVpbHXFqdv5YldMUAu6Rop3FhNvw==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
-  '@tiptap/extension-heading@2.12.0':
-    resolution: {integrity: sha512-9DfES4Wd5TX1foI70N9sAL+35NN1UHrtzDYN2+dTHupnmKir9RaMXyZcbkUb4aDVzYrGxIqxJzHBVkquKIlTrw==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
@@ -2306,30 +2140,13 @@ packages:
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/extension-highlight@2.12.0':
-    resolution: {integrity: sha512-dQNaDXslN9ion0NgVVOOKJNS3MP8Lnx9xT01mDa/R9Qdulh7xmK6n8O2GCb86TnjX1OyZURx+fEK/WLM8oKK+A==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-highlight@2.14.0':
     resolution: {integrity: sha512-21eouZEuCBFrpGeefnnU9yJ1SH32L9gSlT9MOJXBSXCX5HFskNLdN8Q4cQSyRXSt6r5kEz1GG5a4I805/U2TMQ==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/extension-history@2.12.0':
-    resolution: {integrity: sha512-+B9CAf2BFURC6mQiM1OQtahVTzdEOEgT/UUNlRZkeeBc0K5of3dr6UdBqaoaMAefja3jx5PqiQ7mhUBAjSt6AA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-
   '@tiptap/extension-history@2.14.0':
     resolution: {integrity: sha512-/qnOHQFCEPfkb3caykqd+sqzEC2gx30EQB/mM7+5kIG7CQy7XXaGjFAEaqzE1xJ783Q2E7GVk4JxWM+3NhYSLw==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-
-  '@tiptap/extension-horizontal-rule@2.12.0':
-    resolution: {integrity: sha512-Vi2+6RIehDSpoJn/7PDuOieUj7W7WrEb4wBxK9TG8PDscihR0mehhhzm/K2xhH4TN48iPJGRsjDFrFjTbXmcnw==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
@@ -2345,21 +2162,10 @@ packages:
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/extension-italic@2.12.0':
-    resolution: {integrity: sha512-JKcXK3LmEsmxNzEq5e06rPUGMRLUxmJ2mYtBY4NlJ6yLM9XMDljtgeTnWT0ySLYmfINSFTkX4S7WIRbpl9l4pw==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-italic@2.14.0':
     resolution: {integrity: sha512-yEw2S+smoVR8DMYQMAWckVW2Sstf7z5+GBZ8zm8NMGhMKb1JFCPZUv5KTTIPnq7ZrKuuZHvjN9+Ef1dRYD8T2A==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
-
-  '@tiptap/extension-link@2.12.0':
-    resolution: {integrity: sha512-N6f78F2onvcL8FAwFOJexOF02UwGETLjQ7cCguhBe/w7vtx7aX8/f+IlaSGY/pIcWyEQpoC28ciM0+QsrJRr1A==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
 
   '@tiptap/extension-link@2.14.0':
     resolution: {integrity: sha512-fsqW7eRD2xoD6xy7eFrNPAdIuZ3eicA4jKC45Vcft/Xky0DJoIehlVBLxsPbfmv3f27EBrtPkg5+msLXkLyzJA==}
@@ -2367,28 +2173,13 @@ packages:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
 
-  '@tiptap/extension-list-item@2.12.0':
-    resolution: {integrity: sha512-4YwZooC8HP+gPxs6YrkB1ayggyYbgVvJx/rWBT6lKSW2MVVg8QXi1zAcSI3MhIhHmqDysXXFPL8JURlbeGjaFA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-list-item@2.14.0':
     resolution: {integrity: sha512-t1jXDPEd82sC6vZVE/12/CB52uuiydCIcRfwdh21xNgBMckToKO9S0K6XEp4ROtrKQdlIH2JDVPfpUBvVrYN8Q==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/extension-ordered-list@2.12.0':
-    resolution: {integrity: sha512-1ys0e/oqk09oXxrB1WzAx5EntK/QreObG/V1yhgihGm429fxHMsxzIYN6dKAYxx0YOPQG7qEZRrrPuWU70Ms7g==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-ordered-list@2.14.0':
     resolution: {integrity: sha512-QUZcyuW9AKvSfpFHcGmbyRCqxcpY0VNf0xipEtogxbA+JDDw3ZSPqU1dUgz9wk00RahPTwNDdY5aVjdQ5N4N9Q==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
-  '@tiptap/extension-paragraph@2.12.0':
-    resolution: {integrity: sha512-QNK5cgewCunWFxpLlbvvoO1rrLgEtNKxiY79fctP9toV+e59R+1i1Q9lXC1O5mOfDgVxCb6uFDMsqmKhFjpPog==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
@@ -2402,11 +2193,6 @@ packages:
     peerDependencies:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
-
-  '@tiptap/extension-strike@2.12.0':
-    resolution: {integrity: sha512-nBaa5YtBsLJPZFfSs36sBz4Zgi/c8b3MsmS/Az8uXaHb0R9yPewOVUMDIQbxMct8SXUlIo9VtKlOL+mVJ3Nkpw==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
 
   '@tiptap/extension-strike@2.14.0':
     resolution: {integrity: sha512-rD5d/IL3XPfBOrHRHxt+b+0X1jbIbWONGiad/3sX0ZYQD3PandtCWboH40r/J5tFksebuY12dVYyYQKgLpDBOQ==}
@@ -2439,18 +2225,8 @@ packages:
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/extension-text-style@2.12.0':
-    resolution: {integrity: sha512-Pxwt23ZlvbQUahV0PvHy8Ej6IAuKR1FvHobUvwP3T8AiY7hob66fWRe7tQbESzSAzm5Vv2xkvyHeU8vekMTezA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
   '@tiptap/extension-text-style@2.14.0':
     resolution: {integrity: sha512-dl0oi2i0rjLpBqTf4wGy6SLidvPpjxLcmX727pwJlCklkFJVDf8wSFeD4ddxJXiD2Rwef0D/lkcwXSY73CoDcA==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-
-  '@tiptap/extension-text@2.12.0':
-    resolution: {integrity: sha512-0ytN9V1tZYTXdiYDQg4FB2SQ56JAJC9r/65snefb9ztl+gZzDrIvih7CflHs1ic9PgyjexfMLeH+VzuMccNyZw==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
@@ -2469,19 +2245,8 @@ packages:
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
-  '@tiptap/pm@2.12.0':
-    resolution: {integrity: sha512-TNzVwpeNzFfHAcYTOKqX9iU4fRxliyoZrCnERR+RRzeg7gWrXrCLubQt1WEx0sojMAfznshSL3M5HGsYjEbYwA==}
-
   '@tiptap/pm@2.14.0':
     resolution: {integrity: sha512-cnsfaIlvTFCDtLP/A2Fd3LmpttgY0O/tuTM2fC71vetONz83wUTYT+aD9uvxdX0GkSocoh840b0TsEazbBxhpA==}
-
-  '@tiptap/react@2.12.0':
-    resolution: {integrity: sha512-D+PR+4kJO9h8AB/7XyQ/Anw8tqeS2ecv5QemBOCHi9JlMAjytauUrj6IfFBO9RbsCowlBjW5GnSpFhzpk2Gghg==}
-    peerDependencies:
-      '@tiptap/core': ^2.7.0
-      '@tiptap/pm': ^2.7.0
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
 
   '@tiptap/react@2.14.0':
     resolution: {integrity: sha512-6mtksbT2+EWXFLdHVFag9PSoh0GXPmL97Cm+4sJoyECUmBkAyoErapAccmZIljyMaVIHBYpYkNdp9Pw1B73ezw==}
@@ -2490,9 +2255,6 @@ packages:
       '@tiptap/pm': ^2.7.0
       react: ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  '@tiptap/starter-kit@2.12.0':
-    resolution: {integrity: sha512-wlcEEtexd6u0gbR311/OFZnbtRWU97DUsY6/GsSQzN4rqZ7Ra6YbfHEN5Lutu+I/anomK8vKy8k9NyvfY5Hllg==}
 
   '@tiptap/starter-kit@2.14.0':
     resolution: {integrity: sha512-Z1bKAfHl14quRI3McmdU+bs675jp6/iexEQTI9M9oHa6l3McFF38g9N3xRpPPX02MX83DghsUPupndUW/yJvEQ==}
@@ -3288,12 +3050,6 @@ packages:
   es-to-primitive@1.3.0:
     resolution: {integrity: sha512-w+5mJ3GuFL+NjVtJlvydShqE1eN3h3PbI7/5LAsYJP/2qtuMXjfL2LpHSRqo4b4eSF5K/DH1JXKUAHSB2UW50g==}
     engines: {node: '>= 0.4'}
-
-  esbuild-sass-plugin@3.3.1:
-    resolution: {integrity: sha512-SnO1ls+d52n6j8gRRpjexXI8MsHEaumS0IdDHaYM29Y6gakzZYMls6i9ql9+AWMSQk/eryndmUpXEgT34QrX1A==}
-    peerDependencies:
-      esbuild: '>=0.20.1'
-      sass-embedded: ^1.71.1
 
   esbuild@0.25.4:
     resolution: {integrity: sha512-8pgjLUcUjcgDg+2Q4NYXnPbo/vncAY4UmyaCm0jZevERqCHZIaWwdJHkf8XQtu4AxSKCdvrUbT0XUr1IdZzI8Q==}
@@ -5001,11 +4757,6 @@ packages:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
 
-  resolve@1.22.10:
-    resolution: {integrity: sha512-NPRy+/ncIMeDlTAsuqwKIiferiawhefFJtkNSW0qZJEqMEb+qBt/77B/jGeeek+F0uOeN05CDa6HXbbIgtVX4w==}
-    engines: {node: '>= 0.4'}
-    hasBin: true
-
   resolve@2.0.0-next.5:
     resolution: {integrity: sha512-U7WjGVG9sH8tvjW5SmGbQuui75FiyjAX72HX15DwBBwF9dNiQZRQAg9nnPhYy+TUnE0+VcrttuvNI8oSxZcocA==}
     hasBin: true
@@ -5038,9 +4789,6 @@ packages:
   safe-array-concat@1.1.3:
     resolution: {integrity: sha512-AURm5f0jYEOydBj7VQlVvDrjeFgthDdEF5H1dP+6mNpoXOMo1quQqJ4wvJDyRZ9+pO3kGWoOdmV08cSv2aJV6Q==}
     engines: {node: '>=0.4'}
-
-  safe-identifier@0.4.2:
-    resolution: {integrity: sha512-6pNbSMW6OhAi9j+N8V+U715yBQsaWJ7eyEUaOrawX+isg5ZxhUlV1NipNtgaKHmFGiABwt+ZF04Ii+3Xjkg+8w==}
 
   safe-push-apply@1.0.0:
     resolution: {integrity: sha512-iKE9w/Z7xCzUMIZqdBsp6pEQvwuEebH4vdpjcDWnyzaI6yl6O9FHvVpmGelvEHNsoY6wGblkxR6Zty/h00WiSA==}
@@ -7545,45 +7293,17 @@ snapshots:
 
   '@tanstack/table-core@8.21.3': {}
 
-  '@tiptap/core@2.14.0(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/pm': 2.12.0
-
-  '@tiptap/core@2.14.0(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/pm': 2.14.0
-
   '@tiptap/core@2.22.3(@tiptap/pm@2.14.0)':
     dependencies:
       '@tiptap/pm': 2.14.0
-
-  '@tiptap/extension-blockquote@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
 
   '@tiptap/extension-blockquote@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
 
-  '@tiptap/extension-bold@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-bold@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/extension-bubble-menu@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      tippy.js: 6.3.7
-
-  '@tiptap/extension-bubble-menu@2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.14.0
-      tippy.js: 6.3.7
 
   '@tiptap/extension-bubble-menu@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
@@ -7591,27 +7311,18 @@ snapshots:
       '@tiptap/pm': 2.14.0
       tippy.js: 6.3.7
 
-  '@tiptap/extension-bullet-list@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-bullet-list@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/extension-code-block@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.14.0
 
   '@tiptap/extension-code-block@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
       '@tiptap/pm': 2.14.0
 
-  '@tiptap/extension-code@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
+  '@tiptap/extension-code@2.12.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
+      '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
 
   '@tiptap/extension-code@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
@@ -7623,35 +7334,14 @@ snapshots:
       '@tiptap/pm': 2.14.0
       y-prosemirror: 1.3.5(prosemirror-model@1.25.1)(prosemirror-state@1.4.3)(prosemirror-view@1.39.3)(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
 
-  '@tiptap/extension-document@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-document@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/extension-dropcursor@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.14.0
 
   '@tiptap/extension-dropcursor@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
       '@tiptap/pm': 2.14.0
-
-  '@tiptap/extension-floating-menu@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      tippy.js: 6.3.7
-
-  '@tiptap/extension-floating-menu@2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.14.0
-      tippy.js: 6.3.7
 
   '@tiptap/extension-floating-menu@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
@@ -7659,53 +7349,26 @@ snapshots:
       '@tiptap/pm': 2.14.0
       tippy.js: 6.3.7
 
-  '@tiptap/extension-gapcursor@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.14.0
-
   '@tiptap/extension-gapcursor@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
       '@tiptap/pm': 2.14.0
 
-  '@tiptap/extension-hard-break@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-hard-break@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/extension-heading@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
 
   '@tiptap/extension-heading@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
 
-  '@tiptap/extension-highlight@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-highlight@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
 
-  '@tiptap/extension-history@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.14.0
-
   '@tiptap/extension-history@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-      '@tiptap/pm': 2.14.0
-
-  '@tiptap/extension-horizontal-rule@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
       '@tiptap/pm': 2.14.0
 
   '@tiptap/extension-horizontal-rule@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
@@ -7717,19 +7380,9 @@ snapshots:
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
 
-  '@tiptap/extension-italic@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-italic@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/extension-link@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      linkifyjs: 4.3.1
 
   '@tiptap/extension-link@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)':
     dependencies:
@@ -7737,25 +7390,13 @@ snapshots:
       '@tiptap/pm': 2.14.0
       linkifyjs: 4.3.1
 
-  '@tiptap/extension-list-item@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-list-item@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
 
-  '@tiptap/extension-ordered-list@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-ordered-list@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/extension-paragraph@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
 
   '@tiptap/extension-paragraph@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
@@ -7765,10 +7406,6 @@ snapshots:
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
       '@tiptap/pm': 2.14.0
-
-  '@tiptap/extension-strike@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
 
   '@tiptap/extension-strike@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
@@ -7795,17 +7432,9 @@ snapshots:
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
 
-  '@tiptap/extension-text-style@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-
   '@tiptap/extension-text-style@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/extension-text@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
 
   '@tiptap/extension-text@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
@@ -7818,27 +7447,6 @@ snapshots:
   '@tiptap/extension-underline@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
-
-  '@tiptap/pm@2.12.0':
-    dependencies:
-      prosemirror-changeset: 2.3.0
-      prosemirror-collab: 1.3.1
-      prosemirror-commands: 1.7.1
-      prosemirror-dropcursor: 1.8.2
-      prosemirror-gapcursor: 1.3.2
-      prosemirror-history: 1.4.1
-      prosemirror-inputrules: 1.5.0
-      prosemirror-keymap: 1.2.3
-      prosemirror-markdown: 1.13.2
-      prosemirror-menu: 1.2.5
-      prosemirror-model: 1.25.1
-      prosemirror-schema-basic: 1.2.4
-      prosemirror-schema-list: 1.5.1
-      prosemirror-state: 1.4.3
-      prosemirror-tables: 1.7.1
-      prosemirror-trailing-node: 3.0.0(prosemirror-model@1.25.1)(prosemirror-state@1.4.3)(prosemirror-view@1.39.3)
-      prosemirror-transform: 1.10.4
-      prosemirror-view: 1.39.3
 
   '@tiptap/pm@2.14.0':
     dependencies:
@@ -7861,30 +7469,6 @@ snapshots:
       prosemirror-transform: 1.10.4
       prosemirror-view: 1.39.3
 
-  '@tiptap/react@2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/extension-bubble-menu': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
-      '@tiptap/extension-floating-menu': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      '@types/use-sync-external-store': 0.0.6
-      fast-deep-equal: 3.1.3
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      use-sync-external-store: 1.5.0(react@19.1.0)
-
-  '@tiptap/react@2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/extension-bubble-menu': 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-floating-menu': 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)
-      '@tiptap/pm': 2.14.0
-      '@types/use-sync-external-store': 0.0.6
-      fast-deep-equal: 3.1.3
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      use-sync-external-store: 1.5.0(react@19.1.0)
-
   '@tiptap/react@2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
@@ -7896,30 +7480,6 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       use-sync-external-store: 1.5.0(react@19.1.0)
-
-  '@tiptap/starter-kit@2.12.0':
-    dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.14.0)
-      '@tiptap/extension-blockquote': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-bold': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-bullet-list': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-code': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-code-block': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-document': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-dropcursor': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-gapcursor': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-hard-break': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-heading': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-history': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-horizontal-rule': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)
-      '@tiptap/extension-italic': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-list-item': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-ordered-list': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-paragraph': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-strike': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-text': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-text-style': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/pm': 2.14.0
 
   '@tiptap/starter-kit@2.14.0':
     dependencies:
@@ -7952,9 +7512,9 @@ snapshots:
 
   '@tldraw/editor@3.13.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.14.0)
+      '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
       '@tiptap/pm': 2.14.0
-      '@tiptap/react': 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tiptap/react': 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tldraw/state': 3.13.1
       '@tldraw/state-react': 3.13.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tldraw/store': 3.13.1(react@19.1.0)
@@ -8842,14 +8402,6 @@ snapshots:
       is-callable: 1.2.7
       is-date-object: 1.1.0
       is-symbol: 1.1.1
-
-  esbuild-sass-plugin@3.3.1(esbuild@0.25.4)(sass-embedded@1.89.0):
-    dependencies:
-      esbuild: 0.25.4
-      resolve: 1.22.10
-      safe-identifier: 0.4.2
-      sass: 1.89.1
-      sass-embedded: 1.89.0
 
   esbuild@0.25.4:
     optionalDependencies:
@@ -10846,12 +10398,6 @@ snapshots:
 
   resolve-from@5.0.0: {}
 
-  resolve@1.22.10:
-    dependencies:
-      is-core-module: 2.16.1
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
-
   resolve@2.0.0-next.5:
     dependencies:
       is-core-module: 2.16.1
@@ -10910,8 +10456,6 @@ snapshots:
       get-intrinsic: 1.3.0
       has-symbols: 1.1.0
       isarray: 2.0.5
-
-  safe-identifier@0.4.2: {}
 
   safe-push-apply@1.0.0:
     dependencies:
@@ -11025,6 +10569,7 @@ snapshots:
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
+    optional: true
 
   scheduler@0.26.0: {}
 
@@ -11342,13 +10887,13 @@ snapshots:
 
   tldraw@3.13.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
-      '@tiptap/core': 2.14.0(@tiptap/pm@2.12.0)
-      '@tiptap/extension-code': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-highlight': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))
-      '@tiptap/extension-link': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)
-      '@tiptap/pm': 2.12.0
-      '@tiptap/react': 2.12.0(@tiptap/core@2.14.0(@tiptap/pm@2.12.0))(@tiptap/pm@2.12.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@tiptap/starter-kit': 2.12.0
+      '@tiptap/core': 2.22.3(@tiptap/pm@2.14.0)
+      '@tiptap/extension-code': 2.12.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-highlight': 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))
+      '@tiptap/extension-link': 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
+      '@tiptap/pm': 2.14.0
+      '@tiptap/react': 2.14.0(@tiptap/core@2.22.3(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tiptap/starter-kit': 2.14.0
       '@tldraw/editor': 3.13.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tldraw/store': 3.13.1(react@19.1.0)
       classnames: 2.5.1

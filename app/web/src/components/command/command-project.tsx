@@ -1,16 +1,16 @@
-import { Dialog, DialogContent, DialogFooter } from "../ui/dialog";
-import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogFooter } from "@/primitive/ui/dialog";
+import { Button } from "@/primitive/ui/button";
 import { useShortcut } from "@/hooks/useShortcut";
-import { Switch } from "../ui/switch";
-import { Tooltip, TooltipContent } from "../ui/tooltip";
-import { TooltipTrigger } from "../ui/tooltip";
+import { Switch } from "@/primitive/ui/switch";
+import { Tooltip, TooltipContent } from "@/primitive/ui/tooltip";
+import { TooltipTrigger } from "@/primitive/ui/tooltip";
 import { IconLabel } from "@tabler/icons-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger
-} from "../super-ui/select";
+} from "../../primitive/super-ui/select";
 import { useCommands } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
 

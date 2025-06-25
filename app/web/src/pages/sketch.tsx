@@ -1,17 +1,11 @@
-import { TooltipWrapper } from "@/components/super-ui/tooltip-wrapper";
 import { useStores } from "@/hooks/useStores";
-import { Draw } from "@poltion/draw";
-import {
-  IconCloud,
-  IconCube,
-  IconBlocks,
-  IconAdjustmentsHorizontal
-} from "@tabler/icons-react";
+import { Draw } from "@draw/draw";
+import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { observer } from "mobx-react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/primitive/ui/button";
+import { Input } from "@/primitive/ui/input";
 import { cn } from "@/lib/utils";
 import { Sketch } from "@/models/sketch.model";
 
