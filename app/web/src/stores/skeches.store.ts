@@ -1,4 +1,4 @@
-import { Sketch } from "@/models/sketch.model";
+import { SketchModel } from "@/models/sketch.model";
 import { RootStore } from "./root.store";
 import { AbstractStore } from "./abstract.store";
 import { z } from "zod";
@@ -7,7 +7,7 @@ const ALL_SKETCHES_KEY = "p6n-all-sketches";
 
 const sketchArraySchema = z.array(z.string());
 
-export class SketchesStore extends AbstractStore<Sketch> {
+export class SketchesStore extends AbstractStore<SketchModel> {
   store_key = ALL_SKETCHES_KEY;
 
   constructor(rootStore: RootStore) {
@@ -15,15 +15,15 @@ export class SketchesStore extends AbstractStore<Sketch> {
     this.rootStore = rootStore;
   }
 
-  loadInMemory(id: string | undefined): Sketch {
+  loadInMemory(id: string | undefined): SketchModel {
     if (id === undefined) throw new Error("Id is undefined");
-    const sketch = new Sketch({ id });
+    const sketch = new SketchModel({ id });
     console.log("load in memory sketch", sketch);
     return sketch;
   }
 
-  createNewModel(id: string): Sketch {
-    const sketch = new Sketch({ id });
+  createNewModel(id: string): SketchModel {
+    const sketch = new SketchModel({ id });
     sketch.smallId = `SKT-${Object.keys(this._models).length + 1}`;
     sketch.save();
     this._models[id] = sketch;

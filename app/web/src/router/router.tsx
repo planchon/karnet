@@ -7,7 +7,7 @@ import { TaskPage } from "@/pages/task";
 import { useEffect } from "react";
 import { useSettings } from "@/hooks/useStores";
 import { FilePage } from "@/pages/file";
-import { MermaidPage } from "@/pages/mermaid";
+import { DiagramPage } from "@/pages/diagram";
 
 export const Router = () => {
   const settings = useSettings();
@@ -26,8 +26,8 @@ export const Router = () => {
         {/* <Route path="/agenda" element={<AgendaPage />} /> */}
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/task" element={<TaskPage />} />
-        <Route path="/mermaid">
-          <Route path=":id" element={<MermaidPage />} />
+        <Route path="/diagram">
+          <Route path=":id" element={<DiagramPage />} />
         </Route>
         <Route path="/sketch">
           <Route path=":id" element={<DrawPage />} />
@@ -36,7 +36,7 @@ export const Router = () => {
           <Route path=":id" index element={<FilePage />} />
         </Route>
         <Route path="/document" element={<DocumentView />} />
-        <Route path="/" index element={<Navigate to={`/file/infinite`} />} />
+        <Route path="/" index element={<Navigate to={`/document`} />} />
       </Route>
     </Routes>
   );

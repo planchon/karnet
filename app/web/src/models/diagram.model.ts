@@ -2,18 +2,25 @@ import { makeObservable, observable, reaction } from "mobx";
 import { AbstractModel } from "./abstract.model";
 import { IsString, IsNotEmpty } from "class-validator";
 
-// this model is only used to store the metadata of the document
-// everything else is stored in the document itself
-// tiptap is storing the content by itself
-export class DocumentModel extends AbstractModel {
+export class DiagramModel extends AbstractModel {
   @IsString()
   @IsNotEmpty()
-  name: string = "Default document name";
+  content: string = `sequenceDiagram
+    Alice->John: Hello John, how are you?
+    Note over Alice,John: A typical interaction
+    John-->Alice: How are you?
+    Alice->John: Great!
+  `;
 
-  constructor(props: Partial<DocumentModel> & { id: string }) {
+  @IsString()
+  @IsNotEmpty()
+  name: string = "Diagram name";
+
+  constructor(props: Partial<DiagramModel> & { id: string }) {
     super(props);
 
     makeObservable(this, {
+      content: observable,
       name: observable
     });
 
@@ -36,7 +43,11 @@ export class DocumentModel extends AbstractModel {
     };
   }
 
+  setName(name: string) {
+    this.name = name;
+  }
+
   _id() {
-    return `p6n-file-metadata-${this.id}`;
+    return `p6n-diagram-${this.id}`;
   }
 }

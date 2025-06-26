@@ -5,12 +5,12 @@ import { action, makeObservable, observable, reaction } from "mobx";
 // this model is only used to store the metadata of the sketch
 // everything else is stored in the sketch itself
 // tldraw is storing the content by itself
-export class Sketch extends AbstractModel {
+export class SketchModel extends AbstractModel {
   @IsString()
   @IsNotEmpty()
   name: string = "Untitled sketch";
 
-  constructor(props: Partial<Sketch> & { id: string }) {
+  constructor(props: Partial<SketchModel> & { id: string }) {
     super(props);
 
     makeObservable(this, {

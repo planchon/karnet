@@ -38,7 +38,7 @@ export function GeneralOutlet() {
   useEffect(() => {
     rootStore.sketchesStore.load();
     rootStore.documentStore.load();
-    rootStore.mermaidStore.load();
+    rootStore.diagramStore.load();
     setIsLoading(false);
   }, []);
 

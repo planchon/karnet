@@ -3,7 +3,7 @@ import { SettingsStore } from "./settings.store";
 import { CommandStore } from "./command.store";
 import { DocumentStore } from "./document.store";
 import { SketchesStore } from "./skeches.store";
-import { MermaidStore } from "./mermaid.store";
+import { DiagramStore } from "./diagram.store";
 
 export class RootStore {
   userStore: UserStore;
@@ -11,7 +11,7 @@ export class RootStore {
   commandStore: CommandStore;
   documentStore: DocumentStore;
   sketchesStore: SketchesStore;
-  mermaidStore: MermaidStore;
+  diagramStore: DiagramStore;
 
   constructor() {
     this.userStore = new UserStore(this);
@@ -19,7 +19,7 @@ export class RootStore {
     this.commandStore = new CommandStore(this);
     this.documentStore = new DocumentStore(this);
     this.sketchesStore = new SketchesStore(this);
-    this.mermaidStore = new MermaidStore(this);
+    this.diagramStore = new DiagramStore(this);
   }
 }
 

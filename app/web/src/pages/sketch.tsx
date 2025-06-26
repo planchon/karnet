@@ -7,12 +7,12 @@ import { useParams } from "react-router";
 import { Button } from "@/primitive/ui/button";
 import { Input } from "@/primitive/ui/input";
 import { cn } from "@/lib/utils";
-import { Sketch } from "@/models/sketch.model";
+import { SketchModel } from "@/models/sketch.model";
 
 const SketchHeader = observer(function SketchHeader({
   sketch
 }: {
-  sketch: Sketch;
+  sketch: SketchModel;
 }) {
   return (
     <div className="flex h-10 w-full items-center justify-between border-b">

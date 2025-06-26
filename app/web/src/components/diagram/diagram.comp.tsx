@@ -1,27 +1,34 @@
 import { observer } from "mobx-react";
-import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor from "@monaco-editor/react";
 import { Input } from "@ui/input";
 import { cn } from "@/lib/utils";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { Button } from "@ui/button";
-import { useRef, useState } from "react";
 import { MermaidDiagram } from "@lightenna/react-mermaid-diagram";
 import { registerMermaidLanguage } from "./mermaid-lang";
 import { useStores } from "@/hooks/useStores";
 // @ts-ignore
 import { initVimMode } from "monaco-vim";
+import { DiagramModel } from "@/models/diagram.model";
 
-const MermaidHeader = observer(function MermaidHeader() {
+const DiagramHeader = observer(function DiagramHeader({
+  diagram
+}: {
+  diagram: DiagramModel;
+}) {
   return (
     <div className="flex h-10 w-full items-center justify-between border-b">
-      <div className="flex h-full select-none flex-row items-center justify-center gap-2 pl-4">
+      <div className="flex h-full w-full select-none flex-row items-center justify-center gap-2 pl-4">
         <Input
           className={cn(
             "w-full border-none font-medium focus:border-transparent focus:!ring-0"
           )}
           placeholder="Drawing name"
+          value={diagram.name}
+          onChange={(e) => {
+            diagram.setName(e.target.value);
+          }}
         />
-        <div className="flex flex-row items-center gap-2 pl-2"></div>
       </div>
       <div className="flex h-full flex-row items-center justify-center gap-2 pr-4">
         <Button variant="outline" size="sm">
@@ -33,18 +40,18 @@ const MermaidHeader = observer(function MermaidHeader() {
   );
 });
 
-const MermaidEditor = observer(function MermaidEditor({ id }: { id: string }) {
-  const { mermaidStore } = useStores();
+const DiagramEditor = observer(function DiagramEditor({ id }: { id: string }) {
+  const { diagramStore } = useStores();
 
-  const mermaid = mermaidStore.getById(id);
+  const diagram = diagramStore.getById(id);
 
-  if (!mermaid) {
+  if (!diagram) {
     return null;
   }
 
   return (
     <div className="h-full w-full">
-      <MermaidHeader />
+      <DiagramHeader diagram={diagram} />
       <div className="flex h-full w-full flex-row">
         <div className="h-full w-full">
           <div className="h-[calc(100%-60px)] w-full border-b border-r">
@@ -59,9 +66,9 @@ const MermaidEditor = observer(function MermaidEditor({ id }: { id: string }) {
                 initVimMode(editor, document.getElementById("status"));
               }}
               options={{ minimap: { enabled: false } }}
-              value={mermaid.content}
+              value={diagram.content}
               onChange={(value) => {
-                mermaid.content = value || "";
+                diagram.content = value || "";
               }}
             />
           </div>
@@ -72,7 +79,7 @@ const MermaidEditor = observer(function MermaidEditor({ id }: { id: string }) {
         </div>
         <div className="flex h-full w-full">
           <MermaidDiagram className="h-full w-full p-10">
-            {mermaid.content}
+            {diagram.content}
           </MermaidDiagram>
         </div>
       </div>
@@ -80,4 +87,4 @@ const MermaidEditor = observer(function MermaidEditor({ id }: { id: string }) {
   );
 });
 
-export default MermaidEditor;
+export default DiagramEditor;

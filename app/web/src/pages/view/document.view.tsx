@@ -14,14 +14,15 @@ import {
   IconPencil,
   IconPaint,
   IconPalette,
-  IconTrash
+  IconTrash,
+  IconChartDots3
 } from "@tabler/icons-react";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/primitive/ui/avatar";
 import { Label } from "@/primitive/super-ui/label";
 import { useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import { useStores } from "@/hooks/useStores";
 import { data, Link, useNavigate } from "react-router";
 import {
@@ -39,7 +40,7 @@ type ViewItem = {
   smallId: string;
   name: string;
   createdAt: Date;
-  type: "file" | "sketch";
+  type: "file" | "sketch" | "diagram";
 };
 
 export const DocumentView = observer(function DocumentView() {
@@ -51,8 +52,9 @@ export const DocumentView = observer(function DocumentView() {
 
   const [selectDocumentIndex, setSelectDocumentIndex] = useState<number>(-1);
   const [hoverMode, setHoverMode] = useState<"hover" | "keyboard">("hover");
+  const navigate = useNavigate();
 
-  const { documentStore, sketchesStore } = useStores();
+  const { documentStore, sketchesStore, diagramStore } = useStores();
 
   const documents = Object.values(documentStore._models).map((doc) => ({
     id: doc.id,
@@ -70,7 +72,15 @@ export const DocumentView = observer(function DocumentView() {
     type: "sketch" as const
   }));
 
-  const data: ViewItem[] = [...documents, ...sketches];
+  const diagrams = Object.values(diagramStore._models).map((diagram) => ({
+    id: diagram.id,
+    smallId: diagram.smallId,
+    name: diagram.name,
+    createdAt: diagram.createdAt,
+    type: "diagram" as const
+  }));
+
+  const data: ViewItem[] = [...documents, ...sketches, ...diagrams];
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -200,13 +210,35 @@ export const DocumentView = observer(function DocumentView() {
               <span className="text-xs">Create</span>
             </ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-44">
-              <ContextMenuItem>
+              <ContextMenuItem
+                onClick={() => {
+                  const id = generateId();
+                  const document = documentStore.createNewModel(id);
+                  navigate(`/document/${document.id}`);
+                }}
+              >
                 <IconFile className="size-4" />
                 <span className="text-xs">File</span>
               </ContextMenuItem>
-              <ContextMenuItem>
+              <ContextMenuItem
+                onClick={() => {
+                  const id = generateId();
+                  const sketch = sketchesStore.createNewModel(id);
+                  navigate(`/sketch/${sketch.id}`);
+                }}
+              >
                 <IconPencil className="size-4" />
                 <span className="text-xs">Sketch</span>
+              </ContextMenuItem>
+              <ContextMenuItem
+                onClick={() => {
+                  const id = generateId();
+                  const diagram = diagramStore.createNewModel(id);
+                  navigate(`/diagram/${diagram.id}`);
+                }}
+              >
+                <IconChartDots3 className="size-4" />
+                <span className="text-xs">Diagram</span>
               </ContextMenuItem>
             </ContextMenuSubContent>
           </ContextMenuSub>
@@ -237,8 +269,10 @@ const DocumentRow = observer(function DocumentRow({
         <div className="w-5">
           {item.type === "file" ? (
             <IconFile className="text-accent-foreground/80 size-4" />
+          ) : item.type === "sketch" ? (
+            <IconPalette className="text-accent-foreground/80 size-4" />
           ) : (
-            <IconPencil className="text-accent-foreground/80 size-4" />
+            <IconChartDots3 className="text-accent-foreground/80 size-4" />
           )}
         </div>
         <div className="text-accent-foreground/80 w-12 text-sm font-normal">
