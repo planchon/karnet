@@ -40,6 +40,8 @@ function Draw({ id, callback }: DrawProps) {
           e.user.updateUserPreferences({
             isSnapMode: true
           });
+          e.zoomToFit();
+          e.zoomOut();
           e.updateInstanceState({
             isGridMode: true
           });

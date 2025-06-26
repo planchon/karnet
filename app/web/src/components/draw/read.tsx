@@ -18,6 +18,9 @@ export function Read({ id }: { id: string }) {
             isReadonly: true
           });
           e.zoomToFit();
+          e.setCameraOptions({
+            isLocked: true
+          });
         }}
       />
     </div>

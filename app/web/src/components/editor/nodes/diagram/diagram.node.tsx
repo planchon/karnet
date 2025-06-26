@@ -2,9 +2,12 @@ import { MermaidDiagram } from "@lightenna/react-mermaid-diagram";
 import { mergeAttributes, Node } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
 import { useStores } from "@/hooks/useStores";
+import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
-const Component = (props: any) => {
+const Component = observer((props: any) => {
   const { diagramStore } = useStores();
+  const navigate = useNavigate();
 
   const id = props.node.attrs.id;
   if (!id) {
@@ -18,19 +21,25 @@ const Component = (props: any) => {
   }
 
   return (
-    <NodeViewWrapper className="border-border flex h-[400px] w-full select-none flex-col items-center justify-center overflow-hidden rounded border">
-      <MermaidDiagram className="w-3/4 select-none" disableJs>
-        {diagram.content}
-      </MermaidDiagram>
+    <NodeViewWrapper className="border-border flex h-[400px] w-full select-none overflow-hidden rounded border">
+      <div
+        onDoubleClick={() => {
+          navigate(`/diagram/${id}`);
+        }}
+        className="flex h-full w-full cursor-pointer items-center justify-center"
+      >
+        <MermaidDiagram className="w-3/4 select-none">
+          {diagram.content}
+        </MermaidDiagram>
+      </div>
     </NodeViewWrapper>
   );
-};
+});
 
 export const DiagramNode = Node.create({
   name: "diagram",
   group: "block",
-  content: "text*",
-  atom: true,
+
   addAttributes() {
     return {
       id: {
