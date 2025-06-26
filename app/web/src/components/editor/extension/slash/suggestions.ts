@@ -1,4 +1,5 @@
 import {
+  IconChartDots3,
   IconCode,
   IconH1,
   IconH2,
@@ -110,6 +111,25 @@ export const allSuggestions = [
             .chain()
             .focus()
             .setNode("tldraw", {
+              id
+            })
+            .run();
+        }
+      },
+      {
+        title: "Diagram",
+        searchTerms: ["diagram"],
+        icon: IconChartDots3,
+        command: ({ editor, range }: { editor: Editor; range: Range }) => {
+          const allDiagrams = localStorage.getItem("p6n-all-diagrams");
+          if (!allDiagrams) return;
+          const diagrams = JSON.parse(allDiagrams);
+          const id = diagrams[0];
+          editor.chain().focus().deleteRange(range).run();
+          editor
+            .chain()
+            .focus()
+            .setNode("diagram", {
               id
             })
             .run();

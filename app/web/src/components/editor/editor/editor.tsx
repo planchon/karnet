@@ -55,6 +55,7 @@ import {
 import { allSuggestions } from "@editor/extension/slash/suggestions";
 import { Shortcut } from "@editor/extension/shortcut/shortcut";
 import { TldrawNode } from "@editor/nodes/tldraw/TldrawNode";
+import { DiagramNode } from "@editor/nodes/diagram/diagram.node";
 
 type Props = {
   id: string;
@@ -135,7 +136,8 @@ export function SimpleEditor({ id }: Props) {
           return "";
         }
       }),
-      TldrawNode
+      TldrawNode,
+      DiagramNode
     ]
   });
 
