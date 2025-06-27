@@ -25,19 +25,19 @@ export function GeneralOutlet() {
 
   useShortcut("c+f", () => {
     const id = generateId();
-    const document = rootStore.documentStore.createNewModel(id);
+    const document = rootStore.paperStore.createModel(id);
     navigate(`/file/${id}`);
   });
 
   useShortcut("c+s", () => {
     const id = generateId();
-    const sketch = rootStore.sketchesStore.createNewModel(id);
+    const sketch = rootStore.sketchesStore.createModel(id);
     navigate(`/sketch/${id}`);
   });
 
   useEffect(() => {
     rootStore.sketchesStore.load();
-    rootStore.documentStore.load();
+    rootStore.paperStore.load();
     rootStore.diagramStore.load();
     setIsLoading(false);
   }, []);

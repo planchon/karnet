@@ -33,6 +33,10 @@ export class SettingsModel extends AbstractModel {
     };
   }
 
+  getSmallId(id: number): string {
+    return `SETT-${id}`;
+  }
+
   _id() {
     return "p6n-settings";
   }

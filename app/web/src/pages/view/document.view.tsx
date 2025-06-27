@@ -40,7 +40,7 @@ type ViewItem = {
   smallId: string;
   name: string;
   createdAt: Date;
-  type: "file" | "sketch" | "diagram";
+  type: "paper" | "sketch" | "diagram";
 };
 
 export const DocumentView = observer(function DocumentView() {
@@ -54,14 +54,14 @@ export const DocumentView = observer(function DocumentView() {
   const [hoverMode, setHoverMode] = useState<"hover" | "keyboard">("hover");
   const navigate = useNavigate();
 
-  const { documentStore, sketchesStore, diagramStore } = useStores();
+  const { paperStore, sketchesStore, diagramStore } = useStores();
 
-  const documents = Object.values(documentStore._models).map((doc) => ({
+  const documents = Object.values(paperStore._models).map((doc) => ({
     id: doc.id,
     smallId: doc.smallId,
     name: doc.name,
     createdAt: doc.createdAt,
-    type: "file" as const
+    type: "paper" as const
   }));
 
   const sketches = Object.values(sketchesStore._models).map((sketch) => ({
@@ -213,8 +213,8 @@ export const DocumentView = observer(function DocumentView() {
               <ContextMenuItem
                 onClick={() => {
                   const id = generateId();
-                  const document = documentStore.createNewModel(id);
-                  navigate(`/document/${document.id}`);
+                  const document = paperStore.createModel(id);
+                  navigate(`/paper/${document.id}`);
                 }}
               >
                 <IconFile className="size-4" />
@@ -223,7 +223,7 @@ export const DocumentView = observer(function DocumentView() {
               <ContextMenuItem
                 onClick={() => {
                   const id = generateId();
-                  const sketch = sketchesStore.createNewModel(id);
+                  const sketch = sketchesStore.createModel(id);
                   navigate(`/sketch/${sketch.id}`);
                 }}
               >
@@ -233,7 +233,7 @@ export const DocumentView = observer(function DocumentView() {
               <ContextMenuItem
                 onClick={() => {
                   const id = generateId();
-                  const diagram = diagramStore.createNewModel(id);
+                  const diagram = diagramStore.createModel(id);
                   navigate(`/diagram/${diagram.id}`);
                 }}
               >
@@ -267,7 +267,7 @@ const DocumentRow = observer(function DocumentRow({
     >
       <div className="flex flex-row gap-3">
         <div className="w-5">
-          {item.type === "file" ? (
+          {item.type === "paper" ? (
             <IconFile className="text-accent-foreground/80 size-4" />
           ) : item.type === "sketch" ? (
             <IconPalette className="text-accent-foreground/80 size-4" />
@@ -275,7 +275,7 @@ const DocumentRow = observer(function DocumentRow({
             <IconChartDots3 className="text-accent-foreground/80 size-4" />
           )}
         </div>
-        <div className="text-accent-foreground/80 w-12 text-sm font-normal">
+        <div className="text-accent-foreground/80 w-16 text-sm font-normal">
           {item.smallId}
         </div>
         <div className="text-accent-foreground text-sm font-medium">

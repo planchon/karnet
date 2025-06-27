@@ -9,6 +9,8 @@ const sketchArraySchema = z.array(z.string());
 
 export class SketchesStore extends AbstractStore<SketchModel> {
   store_key = ALL_SKETCHES_KEY;
+  store_name = "sketch";
+  smallId = "SKCH";
 
   constructor(rootStore: RootStore) {
     super(rootStore);

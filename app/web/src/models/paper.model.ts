@@ -5,12 +5,16 @@ import { IsString, IsNotEmpty } from "class-validator";
 // this model is only used to store the metadata of the document
 // everything else is stored in the document itself
 // tiptap is storing the content by itself
-export class DocumentModel extends AbstractModel {
+export class PaperModel extends AbstractModel {
   @IsString()
   @IsNotEmpty()
-  name: string = "Default document name";
+  name: string = "Default paper name";
 
-  constructor(props: Partial<DocumentModel> & { id: string }) {
+  constructor(
+    props: Partial<PaperModel> & {
+      id: string;
+    }
+  ) {
     super(props);
 
     makeObservable(this, {
@@ -36,7 +40,11 @@ export class DocumentModel extends AbstractModel {
     };
   }
 
+  getSmallId(id: number): string {
+    return `DOCS-${id}`;
+  }
+
   _id() {
-    return `p6n-file-metadata-${this.id}`;
+    return `p6n-paper-metadata-${this.id}`;
   }
 }

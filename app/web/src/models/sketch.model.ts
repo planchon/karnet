@@ -35,6 +35,10 @@ export class SketchModel extends AbstractModel {
     return `p6n-sketch-metadata-${this.id}`;
   }
 
+  getSmallId(id: number): string {
+    return `SKCH-${id}`;
+  }
+
   toJSON() {
     return {
       ...this

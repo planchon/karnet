@@ -8,11 +8,11 @@ import { useStores } from "@/hooks/useStores";
 import "@editor/styles/_variables.scss";
 import "@editor/styles/_keyframe-animations.scss";
 
-export const FilePage = observer(function FilePage() {
+export const PaperPage = observer(function PaperPage() {
   const { id } = useParams();
-  const { documentStore } = useStores();
+  const { paperStore } = useStores();
 
-  const document = documentStore.getById(id);
+  const paper = paperStore.getById(id);
 
   if (!id) {
     return <div>No id</div>;
@@ -25,9 +25,9 @@ export const FilePage = observer(function FilePage() {
           <Input
             className="w-full border-none font-medium focus:border-transparent focus:!ring-0"
             placeholder="Document name"
-            value={document.name}
+            value={paper.name}
             onChange={(e) => {
-              document.name = e.target.value;
+              paper.name = e.target.value;
             }}
           />
         </div>

@@ -85,7 +85,7 @@ export const CommandK = observer(function CommandK() {
         name: "Go to documents",
         shortcut: "g+d",
         action: () => {
-          navigate("/document");
+          navigate("/file");
         },
         icon: ArrowRight
       },
@@ -130,7 +130,7 @@ export const CommandK = observer(function CommandK() {
         shortcut: "c+f",
         action: () => {
           const id = generateId();
-          store.documentStore.createNewModel(id);
+          store.paperStore.createModel(id);
           navigate(`/file/${id}`);
         },
         icon: FilePlus
@@ -154,7 +154,7 @@ export const CommandK = observer(function CommandK() {
         shortcut: "c+s",
         action: () => {
           const id = generateId();
-          store.sketchesStore.createNewModel(id);
+          store.sketchesStore.createModel(id);
           navigate(`/sketch/${id}`);
         },
         icon: Brush

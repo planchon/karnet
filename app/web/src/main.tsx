@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router";
 import { Router } from "./router/router";
 import "./index.css";
 import { TooltipProvider } from "./primitive/ui/tooltip";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById("root")!).render(
       disableHoverableContent
     >
       <BrowserRouter>
+        <Toaster richColors position="bottom-right" />
         <Router />
       </BrowserRouter>
     </TooltipProvider>

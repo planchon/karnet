@@ -23,6 +23,10 @@ export class UserModel extends AbstractModel {
     return "p6n-user";
   }
 
+  getSmallId(id: number): string {
+    return `USER-${id}`;
+  }
+
   toJSON() {
     return {
       ...this

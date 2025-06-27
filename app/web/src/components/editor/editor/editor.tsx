@@ -155,7 +155,7 @@ export function SimpleEditor({ id }: Props) {
   React.useEffect(() => {
     if (!id || !editor) return;
 
-    const key = `p6n-file-${id}`;
+    const key = `p6n-paper-${id}`;
     const data = localStorage.getItem(key);
     if (data) {
       editor.commands.setContent(JSON.parse(data));

@@ -21,7 +21,7 @@ const Component = observer((props: any) => {
   }
 
   return (
-    <NodeViewWrapper className="border-border flex h-[400px] w-full select-none overflow-hidden rounded border">
+    <NodeViewWrapper className="border-border my-4 flex h-[400px] w-full select-none overflow-hidden rounded border">
       <div
         onDoubleClick={() => {
           navigate(`/diagram/${id}`);

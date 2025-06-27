@@ -1,7 +1,7 @@
 import { UserStore } from "./user.store";
 import { SettingsStore } from "./settings.store";
 import { CommandStore } from "./command.store";
-import { DocumentStore } from "./document.store";
+import { PaperStore } from "./paper.store";
 import { SketchesStore } from "./skeches.store";
 import { DiagramStore } from "./diagram.store";
 
@@ -9,7 +9,7 @@ export class RootStore {
   userStore: UserStore;
   settingsStore: SettingsStore;
   commandStore: CommandStore;
-  documentStore: DocumentStore;
+  paperStore: PaperStore;
   sketchesStore: SketchesStore;
   diagramStore: DiagramStore;
 
@@ -17,7 +17,7 @@ export class RootStore {
     this.userStore = new UserStore(this);
     this.settingsStore = new SettingsStore(this);
     this.commandStore = new CommandStore(this);
-    this.documentStore = new DocumentStore(this);
+    this.paperStore = new PaperStore(this);
     this.sketchesStore = new SketchesStore(this);
     this.diagramStore = new DiagramStore(this);
   }

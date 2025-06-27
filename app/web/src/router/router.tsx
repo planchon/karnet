@@ -6,7 +6,7 @@ import { DocumentView } from "@/pages/view/document.view";
 import { TaskPage } from "@/pages/task";
 import { useEffect } from "react";
 import { useSettings } from "@/hooks/useStores";
-import { FilePage } from "@/pages/file";
+import { PaperPage } from "@/pages/paper";
 import { DiagramPage } from "@/pages/diagram";
 
 export const Router = () => {
@@ -32,8 +32,8 @@ export const Router = () => {
         <Route path="/sketch">
           <Route path=":id" element={<DrawPage />} />
         </Route>
-        <Route path="/file">
-          <Route path=":id" index element={<FilePage />} />
+        <Route path="/paper">
+          <Route path=":id" index element={<PaperPage />} />
         </Route>
         <Route path="/document" element={<DocumentView />} />
         <Route path="/" index element={<Navigate to={`/document`} />} />

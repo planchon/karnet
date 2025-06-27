@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { AbstractStore } from "./abstract.store";
 import { RootStore } from "./root.store";
-import { DocumentModel } from "@/models/document.model";
+import { PaperModel } from "@/models/paper.model";
 
-const ALL_DOCUMENTS_KEY = "p6n-all-documents";
+const ALL_PAPERS_KEY = "p6n-all-papers";
 
 const documentMetadataSchema = z.object({
   id: z.string()
@@ -11,20 +11,22 @@ const documentMetadataSchema = z.object({
 
 const documentMetadataArraySchema = z.array(documentMetadataSchema);
 
-export class DocumentStore extends AbstractStore<DocumentModel> {
-  store_key = ALL_DOCUMENTS_KEY;
+export class PaperStore extends AbstractStore<PaperModel> {
+  store_key = ALL_PAPERS_KEY;
+  store_name = "paper";
+  smallId = "DOCS";
 
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
 
-  loadInMemory(id: string | undefined): DocumentModel {
+  loadInMemory(id: string | undefined): PaperModel {
     if (id === undefined) throw new Error("Id is undefined");
-    return new DocumentModel({ id });
+    return new PaperModel({ id });
   }
 
-  createNewModel(id: string): DocumentModel {
-    const document = new DocumentModel({ id });
+  createNewModel(id: string): PaperModel {
+    const document = new PaperModel({ id });
     document.smallId = `DOC-${Object.keys(this._models).length + 1}`;
     document.save();
     this._models[id] = document;

@@ -43,6 +43,10 @@ export class DiagramModel extends AbstractModel {
     };
   }
 
+  getSmallId(id: number): string {
+    return `DIAG-${id}`;
+  }
+
   setName(name: string) {
     this.name = name;
   }

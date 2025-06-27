@@ -1,3 +1,4 @@
+import { rootStore } from "@/stores/root.store";
 import {
   IconChartDots3,
   IconCode,
@@ -12,6 +13,7 @@ import {
   IconTable
 } from "@tabler/icons-react";
 import { type Editor, type Range } from "@tiptap/react";
+import { toast } from "sonner";
 
 export const allSuggestions = [
   {
@@ -102,17 +104,16 @@ export const allSuggestions = [
         searchTerms: ["sketch"],
         icon: IconPencil,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          const allSketches = localStorage.getItem("p6n-all-sketches");
-          if (!allSketches) return;
-          const sketches = JSON.parse(allSketches);
-          const id = sketches[0];
+          const id = Object.values(rootStore.sketchesStore._models)[0]?.id;
+          if (!id) {
+            console.debug("No sketch found");
+            return;
+          }
           editor.chain().focus().deleteRange(range).run();
           editor
             .chain()
             .focus()
-            .setNode("tldraw", {
-              id
-            })
+            .insertContent(`<tldraw id="${id}"></tldraw>`)
             .run();
         }
       },
@@ -121,17 +122,16 @@ export const allSuggestions = [
         searchTerms: ["diagram"],
         icon: IconChartDots3,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          const allDiagrams = localStorage.getItem("p6n-all-diagrams");
-          if (!allDiagrams) return;
-          const diagrams = JSON.parse(allDiagrams);
-          const id = diagrams[0];
+          const id = Object.values(rootStore.diagramStore._models)[0]?.id;
+          if (!id) {
+            console.debug("No diagram found");
+            return;
+          }
           editor.chain().focus().deleteRange(range).run();
           editor
             .chain()
             .focus()
-            .setNode("diagram", {
-              id
-            })
+            .insertContent(`<diagram id="${id}"></diagram>`)
             .run();
         }
       }

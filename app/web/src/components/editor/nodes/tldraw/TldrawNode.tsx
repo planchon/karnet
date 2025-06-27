@@ -11,7 +11,7 @@ const Component = (props: any) => {
   }
 
   return (
-    <NodeViewWrapper className="border-border h-[400px] w-full select-none overflow-hidden rounded border">
+    <NodeViewWrapper className="border-border my-4 h-[400px] w-full cursor-pointer select-none overflow-hidden rounded border">
       <div
         onDoubleClick={() => {
           navigate(`/sketch/${id}`);

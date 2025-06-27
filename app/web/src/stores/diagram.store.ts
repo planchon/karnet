@@ -6,6 +6,8 @@ const ALL_DIAGRAMS_KEY = "p6n-all-diagrams";
 
 export class DiagramStore extends AbstractStore<DiagramModel> {
   store_key = ALL_DIAGRAMS_KEY;
+  store_name = "diagram";
+  smallId = "DIAG";
 
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -18,7 +20,6 @@ export class DiagramStore extends AbstractStore<DiagramModel> {
 
   createNewModel(id: string): DiagramModel {
     const diagram = new DiagramModel({ id });
-    diagram.smallId = `MRM-${Object.keys(this._models).length + 1}`;
     diagram.save();
     this._models[id] = diagram;
     this.save();

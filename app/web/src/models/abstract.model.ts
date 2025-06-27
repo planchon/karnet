@@ -46,7 +46,11 @@ export abstract class AbstractModel {
   @IsNotEmpty()
   key: string = `p6n-models-${this.model_name}-${this.id}`;
 
-  constructor(props: Partial<AbstractModel> & { id: string }) {
+  constructor(
+    props: Partial<AbstractModel> & {
+      id: string;
+    }
+  ) {
     // assign ids
     Object.assign(this, props);
   }
@@ -55,6 +59,7 @@ export abstract class AbstractModel {
     return validateClassValidator(this);
   }
 
+  abstract getSmallId(id: number): string;
   abstract toJSON(): unknown;
   abstract _id(): string;
 
@@ -62,7 +67,8 @@ export abstract class AbstractModel {
   load() {
     const serialized = localStorage.getItem(this._id());
     if (!serialized) {
-      console.error("No model found in local storage", this._id());
+      console.debug("No model found in local storage", this._id());
+      this.save();
       return;
     }
     const parsed = JSON.parse(serialized);
