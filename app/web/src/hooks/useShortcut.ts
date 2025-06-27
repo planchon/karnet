@@ -1,4 +1,5 @@
 import { CommandsModels } from "@/models/command.model";
+import posthog from "posthog-js";
 import {
   useCallback,
   useRef,
@@ -69,6 +70,10 @@ export const useShortcut = (
           // Run handler if the modifier(s) + key have both been pressed
           if (keyArray.every((k) => getModifier(k)) && finalKey === event.key) {
             event.preventDefault();
+            posthog.capture("shortcut_used", {
+              shortcut: shortcut,
+              event: event.key
+            });
             return callbackRef.current(event);
           }
         } else {
@@ -80,6 +85,10 @@ export const useShortcut = (
               keyCombo.length === keyArray.length - 1
             ) {
               // Run handler if the sequence is complete, then reset it
+              posthog.capture("shortcut_used", {
+                shortcut: shortcut,
+                event: event.key
+              });
               callbackRef.current(event);
               event.stopPropagation();
               event.preventDefault();
@@ -99,6 +108,10 @@ export const useShortcut = (
       // Single key shortcuts (e.g. pressing D)
       if (shortcut === event.key) {
         event.stopPropagation();
+        posthog.capture("shortcut_used", {
+          shortcut: shortcut,
+          event: event.key
+        });
         return callbackRef.current(event);
       }
     },

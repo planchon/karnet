@@ -255,8 +255,6 @@ const DocumentRow = observer(function DocumentRow({
   isSelected: boolean;
   item: ViewItem;
 }) {
-  const navigate = useNavigate();
-
   return (
     <Link
       className={cn(

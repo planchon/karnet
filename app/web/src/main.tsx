@@ -5,18 +5,37 @@ import { Router } from "./router/router";
 import "./index.css";
 import { TooltipProvider } from "./primitive/ui/tooltip";
 import { Toaster } from "sonner";
+import * as Sentry from "@sentry/react";
+import { PostHogProvider } from "posthog-js/react";
+
+Sentry.init({
+  dsn: "https://1f36c7292465425931c5885022604bb0@o4509537188249600.ingest.de.sentry.io/4509572668457040",
+  sendDefaultPii: true,
+  integrations: [Sentry.replayIntegration()],
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0
+});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TooltipProvider
-      delayDuration={800}
-      skipDelayDuration={1000}
-      disableHoverableContent
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      options={{
+        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+        capture_exceptions: true,
+        debug: import.meta.env.MODE === "development"
+      }}
     >
-      <BrowserRouter>
-        <Toaster richColors position="bottom-right" />
-        <Router />
-      </BrowserRouter>
-    </TooltipProvider>
+      <TooltipProvider
+        delayDuration={800}
+        skipDelayDuration={1000}
+        disableHoverableContent
+      >
+        <BrowserRouter>
+          <Toaster richColors position="bottom-right" />
+          <Router />
+        </BrowserRouter>
+      </TooltipProvider>
+    </PostHogProvider>
   </StrictMode>
 );

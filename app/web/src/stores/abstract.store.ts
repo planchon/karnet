@@ -2,6 +2,7 @@ import { AbstractModel } from "@/models/abstract.model";
 import { makeObservable, observable } from "mobx";
 import { RootStore } from "./root.store";
 import { IsObject, IsString } from "class-validator";
+import posthog from "posthog-js";
 
 export abstract class AbstractStore<T extends AbstractModel> {
   rootStore: RootStore;
@@ -27,6 +28,10 @@ export abstract class AbstractStore<T extends AbstractModel> {
   abstract createNewModel(id: string): T;
 
   createModel(id: string): T {
+    posthog.capture("create_model", {
+      model: this.store_name,
+      id
+    });
     const model = this.loadInMemory(id);
     model.smallId = model.getSmallId(this.getLength() + 1);
     this._models[id] = model;
@@ -80,6 +85,10 @@ export abstract class AbstractStore<T extends AbstractModel> {
     console.debug(
       `[store:${this.store_name}] loaded (${Object.keys(this._models).length} models)`
     );
+    posthog.capture("load_models", {
+      model: this.store_name,
+      count: Object.keys(this._models).length
+    });
     console.groupEnd();
   }
 
