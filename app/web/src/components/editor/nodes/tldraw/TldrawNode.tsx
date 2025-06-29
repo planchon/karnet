@@ -1,4 +1,4 @@
-import { mergeAttributes, Node } from "@tiptap/core";
+import { mergeAttributes, Node, Editor } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
 import { Read } from "@draw/read";
 import { useNavigate } from "react-router";
@@ -18,14 +18,33 @@ import {
 } from "@ui/command";
 import { cn } from "@/lib/utils";
 
-const Component = (props: any) => {
-  const id = props.node.attrs.id;
+const Component = ({
+  node,
+  editor,
+  getPos
+}: {
+  node: any;
+  editor: Editor;
+  getPos: () => number;
+}) => {
+  const id = node.attrs.id;
   const { sketchesStore } = useStores();
   const navigate = useNavigate();
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedSketch, setSelectedSketch] = useState<SketchModel | null>(
     sketchesStore.getById(id)
   );
+
+  const handleSelectSketch = (sketch: SketchModel) => {
+    setSelectedSketch(sketch);
+    setPopoverOpen(false);
+    const view = editor.view;
+    view.dispatch(
+      view.state.tr.setNodeMarkup(getPos(), undefined, {
+        id: sketch.id
+      })
+    );
+  };
 
   if (!id) {
     return null;
@@ -68,8 +87,7 @@ const Component = (props: any) => {
                         key={sketch.id}
                         value={sketch.id}
                         onSelect={() => {
-                          setSelectedSketch(sketch);
-                          setPopoverOpen(false);
+                          handleSelectSketch(sketch);
                         }}
                         disabled={selectedSketch?.id === sketch.id}
                       >
