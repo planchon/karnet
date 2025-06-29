@@ -103,6 +103,10 @@ export abstract class AbstractStore<T extends AbstractModel> {
     });
   }
 
+  allModels(): T[] {
+    return Object.values(this._models);
+  }
+
   save() {
     console.group(`[store:${this.store_name}] saving`);
 
