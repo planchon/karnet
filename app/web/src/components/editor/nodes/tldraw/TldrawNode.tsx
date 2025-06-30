@@ -1,5 +1,9 @@
 import { mergeAttributes, Node, Editor } from "@tiptap/core";
-import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
+import {
+  NodeViewWrapper,
+  ReactNodeViewRenderer,
+  useEditorState
+} from "@tiptap/react";
 import { Read } from "@draw/read";
 import { useNavigate } from "react-router";
 import { useState } from "react";
@@ -28,79 +32,44 @@ const Component = ({
   getPos: () => number;
 }) => {
   const id = node.attrs.id;
-  const { sketchesStore } = useStores();
   const navigate = useNavigate();
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const [selectedSketch, setSelectedSketch] = useState<SketchModel | null>(
-    sketchesStore.getById(id)
-  );
 
-  const handleSelectSketch = (sketch: SketchModel) => {
-    setSelectedSketch(sketch);
-    setPopoverOpen(false);
-    const view = editor.view;
-    view.dispatch(
-      view.state.tr.setNodeMarkup(getPos(), undefined, {
-        id: sketch.id
-      })
-    );
-  };
+  const isSelected = useEditorState({
+    editor,
+    selector: (state) => {
+      const selectedContent = state.editor.state.selection
+        .content()
+        .content.toJSON();
+
+      if (selectedContent && selectedContent.length == 1) {
+        const node = selectedContent[0];
+        if (node.type === "tldraw") {
+          return node.attrs["id"] === id;
+        }
+      }
+
+      return false;
+    }
+  });
 
   if (!id) {
     return null;
   }
 
   return (
-    <NodeViewWrapper className="border-border group my-4 h-[400px] w-full cursor-pointer select-none overflow-hidden rounded border">
+    <NodeViewWrapper
+      className={cn(
+        "border-border my-4 h-[400px] w-full cursor-pointer select-none overflow-hidden rounded border",
+        isSelected && "border-accent-foreground"
+      )}
+    >
       <div
         onDoubleClick={() => {
           navigate(`/sketch/${id}`);
         }}
         className="h-full w-full select-auto"
       >
-        <div
-          className={cn(
-            "absolute z-[1000] hidden p-2 group-hover:block",
-            popoverOpen && "block"
-          )}
-        >
-          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-            <PopoverTrigger>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={popoverOpen}
-                className="w-[150px] justify-between"
-              >
-                <span>{selectedSketch?.name || "Select a sketch"}</span>
-                <IconChevronDown />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="p-0">
-              <Command>
-                <CommandInput placeholder="Search a sketch" />
-                <CommandList>
-                  <CommandEmpty>No sketch found</CommandEmpty>
-                  <CommandGroup>
-                    {sketchesStore.allModels().map((sketch) => (
-                      <CommandItem
-                        key={sketch.id}
-                        value={sketch.id}
-                        onSelect={() => {
-                          handleSelectSketch(sketch);
-                        }}
-                        disabled={selectedSketch?.id === sketch.id}
-                      >
-                        {sketch.name}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-        {selectedSketch && <Read id={selectedSketch.id} />}
+        <Read id={id} />
       </div>
     </NodeViewWrapper>
   );

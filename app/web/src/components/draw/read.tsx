@@ -4,6 +4,7 @@ export function Read({ id }: { id: string }) {
   return (
     <div className="h-full w-full">
       <Tldraw
+        key={id}
         components={{
           MenuPanel: null,
           Grid: null,
