@@ -56,6 +56,8 @@ import { allSuggestions } from "@editor/extension/slash/suggestions";
 import { Shortcut } from "@editor/extension/shortcut/shortcut";
 import { TldrawNode } from "@editor/nodes/tldraw/TldrawNode";
 import { DiagramNode } from "@editor/nodes/diagram/diagram.node";
+import { SketchMenu } from "@editor/extension/bubble-menu/tldraw-menu";
+import { DiagramMenu } from "@editor/extension/bubble-menu/diagram-menu";
 
 type Props = {
   id: string;
@@ -195,6 +197,8 @@ export function SimpleEditor({ id }: Props) {
       <SlashCmdProvider>
         <div className="content-wrapper">
           <BubbleMenuComp editor={editor} />
+          <SketchMenu editor={editor} />
+          <DiagramMenu editor={editor} />
           <EditorContent
             editor={editor}
             role="presentation"

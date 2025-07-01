@@ -4,32 +4,15 @@ import {
   isTextSelection,
   useEditorState
 } from "@tiptap/react";
-import { ToggleGroup, ToggleGroupItem } from "@/primitive/ui/toggle-group";
 import { BoldIcon } from "../../icons/bold-icon";
 import { ItalicIcon } from "../../icons/italic-icon";
 import { UnderlineIcon } from "../../icons/underline-icon";
 import { LinkIcon } from "../../icons/link-icon";
 import { Code2Icon } from "../../icons/code2-icon";
 import { StrikeIcon } from "../../icons/strike-icon";
-import { ImagePlusIcon } from "../../icons/image-plus-icon";
 import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectValue,
-  SelectTrigger,
-  SelectItem,
-  SelectContent
-} from "@/primitive/super-ui/select";
-import { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger
-} from "@ui/dropdown-menu";
-import { PlusIcon } from "lucide-react";
 import { Button } from "@ui/button";
-import { IconChartDots3, IconChevronDown } from "@tabler/icons-react";
+import { IconChevronDown } from "@tabler/icons-react";
 import { useStores } from "@/hooks/useStores";
 import {
   Command,
@@ -47,6 +30,7 @@ import {
 import { consoleLoggingIntegration } from "@sentry/react";
 import { SketchModel } from "@/models/sketch.model";
 import { DiagramModel } from "@/models/diagram.model";
+import { useCallback } from "react";
 
 const actionsList = [
   {
@@ -128,43 +112,22 @@ export const isTextSelected = ({ editor }: { editor: Editor }) => {
 };
 
 export function BubbleMenuComp({ editor }: { editor: Editor }) {
-  const actions = actionsList.filter((action) => action.isActive(editor));
-  const { diagramStore, sketchesStore } = useStores();
+  const shouldShow = useCallback(() => {
+    const customNodes = ["tldraw", "diagram"];
 
-  const state = useEditorState({
-    editor,
-    selector: (state) => {
-      const selectedContent = state.editor.state.selection
-        .content()
-        .content.toJSON();
-
-      if (selectedContent && selectedContent.length == 1) {
-        const node = selectedContent[0];
-        if (node.type === "diagram") {
-          return { diagram: true, diagramId: node.attrs["id"] };
-        }
-        if (node.type === "tldraw") {
-          return { tldraw: true, tldrawId: node.attrs["id"] };
-        }
-      }
-
-      return {};
+    if (customNodes.some((node) => editor.isActive(node))) {
+      return false;
     }
-  });
 
-  const range = useEditorState({
-    editor,
-    selector: (state) => {
-      return state.editor.state.selection;
-    }
-  });
+    return isTextSelected({ editor });
+  }, [editor]);
 
   return (
     <BubbleMenu
-      shouldShow={({ editor }) => {
-        return isTextSelected({ editor });
-      }}
+      shouldShow={shouldShow}
       editor={editor}
+      updateDelay={0}
+      pluginKey="textMenu"
       tippyOptions={{ duration: 0 }}
     >
       <div
@@ -184,98 +147,6 @@ export function BubbleMenuComp({ editor }: { editor: Editor }) {
               <action.icon />
             </Button>
           ))}
-          {state.diagram && (
-            <Popover>
-              <PopoverTrigger>
-                <Button
-                  variant="ghost"
-                  role="combobox"
-                  className="justify-between rounded-l-none"
-                >
-                  <span className="max-w-[100px] truncate">
-                    {diagramStore.getById(state.diagramId)?.name}
-                  </span>
-                  <IconChevronDown />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="mt-2 rounded-md border p-0 shadow">
-                <Command
-                  defaultValue={diagramStore.getById(state.diagramId)?.name}
-                >
-                  <CommandInput placeholder="Search a diagram" />
-                  <CommandList className="mb-0">
-                    <CommandEmpty>No diagram found</CommandEmpty>
-                    <CommandGroup>
-                      {diagramStore.allModels().map((diagram) => (
-                        <CommandItem
-                          key={diagram.name}
-                          value={diagram.name}
-                          onSelect={() => {
-                            editor
-                              .chain()
-                              .focus()
-                              .deleteCurrentNode()
-                              .insertContent(
-                                `<diagram id="${diagram.id}"></diagram>`
-                              )
-                              .run();
-                          }}
-                        >
-                          {diagram.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          )}
-          {state.tldraw && (
-            <Popover>
-              <PopoverTrigger>
-                <Button
-                  variant="ghost"
-                  role="combobox"
-                  className="justify-between rounded-l-none"
-                >
-                  <span className="max-w-[100px] truncate">
-                    {sketchesStore.getById(state.tldrawId)?.name}
-                  </span>
-                  <IconChevronDown />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="mt-2 rounded-md border p-0 shadow">
-                <Command
-                  defaultValue={sketchesStore.getById(state.tldrawId)?.name}
-                >
-                  <CommandInput placeholder="Search a sketch" />
-                  <CommandList className="mb-0">
-                    <CommandEmpty>No sketch found</CommandEmpty>
-                    <CommandGroup>
-                      {sketchesStore.allModels().map((sketch) => (
-                        <CommandItem
-                          key={sketch.name}
-                          value={sketch.name}
-                          onSelect={() => {
-                            editor
-                              .chain()
-                              .focus()
-                              .deleteCurrentNode()
-                              .insertContent(
-                                `<tldraw id="${sketch.id}"></tldraw>`
-                              )
-                              .run();
-                          }}
-                        >
-                          {sketch.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          )}
         </div>
       </div>
     </BubbleMenu>
