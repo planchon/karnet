@@ -1,3 +1,4 @@
+import { generateId } from "@/lib/utils";
 import { rootStore } from "@/stores/root.store";
 import {
   IconChartDots3,
@@ -122,11 +123,14 @@ export const allSuggestions = [
             console.debug("No sketch found");
             return;
           }
+          const nodeUniqueId = generateId();
           editor.chain().focus().deleteRange(range).run();
           editor
             .chain()
             .focus()
-            .insertContent(`<tldraw id="${id}"></tldraw>`)
+            .insertContent(
+              `<tldraw id="${id}" nodeUniqueId="${nodeUniqueId}"></tldraw>`
+            )
             .run();
           posthog.capture("file_create_sketch");
         }
@@ -141,11 +145,14 @@ export const allSuggestions = [
             console.debug("No diagram found");
             return;
           }
+          const nodeUniqueId = generateId();
           editor.chain().focus().deleteRange(range).run();
           editor
             .chain()
             .focus()
-            .insertContent(`<diagram id="${id}"></diagram>`)
+            .insertContent(
+              `<diagram id="${id}" nodeUniqueId="${nodeUniqueId}"></diagram>`
+            )
             .run();
           posthog.capture("file_create_diagram");
         }

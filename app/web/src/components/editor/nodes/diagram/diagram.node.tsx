@@ -8,11 +8,12 @@ import {
 import { useStores } from "@/hooks/useStores";
 import { observer } from "mobx-react";
 import { useNavigate } from "react-router";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 
 const Component = observer(
   ({ editor, node }: { editor: Editor; node: any }) => {
     const id = node.attrs.id;
+    const nodeUniqueId = node.attrs.nodeUniqueId;
     const { diagramStore } = useStores();
     const navigate = useNavigate();
 
@@ -25,9 +26,7 @@ const Component = observer(
 
         if (selectedContent && selectedContent.length == 1) {
           const node = selectedContent[0];
-          if (node.type === "diagram") {
-            return node.attrs["id"] === id;
-          }
+          return node.attrs["nodeUniqueId"] === nodeUniqueId;
         }
 
         return false;
@@ -77,6 +76,9 @@ export const DiagramNode = Node.create({
   addAttributes() {
     return {
       id: {
+        default: null
+      },
+      nodeUniqueId: {
         default: null
       }
     };

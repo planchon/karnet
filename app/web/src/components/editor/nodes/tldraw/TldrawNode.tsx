@@ -6,21 +6,7 @@ import {
 } from "@tiptap/react";
 import { Read } from "@draw/read";
 import { useNavigate } from "react-router";
-import { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
-import { Button } from "@ui/button";
-import { SketchModel } from "@/models/sketch.model";
-import { IconChevronDown } from "@tabler/icons-react";
-import { useStores } from "@/hooks/useStores";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandItem,
-  CommandGroup
-} from "@ui/command";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 
 const Component = ({
   node,
@@ -32,6 +18,7 @@ const Component = ({
   getPos: () => number;
 }) => {
   const id = node.attrs.id;
+  const nodeUniqueId = node.attrs.nodeUniqueId;
   const navigate = useNavigate();
 
   const isSelected = useEditorState({
@@ -43,9 +30,7 @@ const Component = ({
 
       if (selectedContent && selectedContent.length == 1) {
         const node = selectedContent[0];
-        if (node.type === "tldraw") {
-          return node.attrs["id"] === id;
-        }
+        return node.attrs["nodeUniqueId"] === nodeUniqueId;
       }
 
       return false;
@@ -82,6 +67,9 @@ export const TldrawNode = Node.create({
   addAttributes() {
     return {
       id: {
+        default: null
+      },
+      nodeUniqueId: {
         default: null
       }
     };

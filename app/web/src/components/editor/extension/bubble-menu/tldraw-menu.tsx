@@ -1,5 +1,5 @@
 import { BubbleMenu, Editor, useEditorState } from "@tiptap/react";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import { useStores } from "@/hooks/useStores";
 import { observer } from "mobx-react";
 import { Popover, PopoverTrigger, PopoverContent } from "@ui/popover";
@@ -79,12 +79,13 @@ export const SketchMenu = ({ editor }: { editor: Editor }) => {
                           key={sketch.name}
                           value={sketch.name}
                           onSelect={() => {
+                            const nodeUniqueId = generateId();
                             editor
                               .chain()
                               .focus()
                               .deleteCurrentNode()
                               .insertContent(
-                                `<tldraw id="${sketch.id}"></tldraw>`
+                                `<tldraw id="${sketch.id}" nodeUniqueId="${nodeUniqueId}"></tldraw>`
                               )
                               .run();
                           }}

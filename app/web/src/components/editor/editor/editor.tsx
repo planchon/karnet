@@ -58,6 +58,8 @@ import { TldrawNode } from "@editor/nodes/tldraw/TldrawNode";
 import { DiagramNode } from "@editor/nodes/diagram/diagram.node";
 import { SketchMenu } from "@editor/extension/bubble-menu/tldraw-menu";
 import { DiagramMenu } from "@editor/extension/bubble-menu/diagram-menu";
+import { useStores } from "@/hooks/useStores";
+import { throttle } from "lodash";
 
 type Props = {
   id: string;
@@ -68,6 +70,8 @@ let doc = new Y.Doc();
 const suggestions = allSuggestions.flatMap((group) => group.items);
 
 export function SimpleEditor({ id }: Props) {
+  const { paperStore } = useStores();
+
   const isMobile = useMobile();
   const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
@@ -157,28 +161,30 @@ export function SimpleEditor({ id }: Props) {
   React.useEffect(() => {
     if (!id || !editor) return;
 
-    const key = `p6n-paper-${id}`;
-    const data = localStorage.getItem(key);
-    if (data) {
-      editor.commands.setContent(JSON.parse(data));
+    const paper = paperStore.getById(id);
+
+    if (paper) {
+      editor.commands.setContent(paper.getContent() as any);
     } else {
       editor.commands.setContent("");
     }
 
-    editor.on("update", () => {
-      // throttle
-      const timeout = setTimeout(() => {
-        const data = editor.getJSON();
-        localStorage.setItem(key, JSON.stringify(data));
-      }, 100);
+    const save = throttle(() => {
+      if (paper) {
+        paper.setContent(editor.getJSON());
+      } else {
+        console.error("Paper not found while saving");
+      }
+    }, 300);
 
-      return () => clearTimeout(timeout);
+    editor.on("update", () => {
+      save();
     });
 
     return () => {
       editor.off("update");
     };
-  }, [id, editor]);
+  }, [id, editor, paperStore]);
 
   React.useEffect(() => {
     document.addEventListener("keydown", (e) => {

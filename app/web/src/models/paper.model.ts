@@ -1,4 +1,4 @@
-import { makeObservable, observable, reaction } from "mobx";
+import { action, makeObservable, observable, reaction, toJS } from "mobx";
 import { AbstractModel } from "./abstract.model";
 import { IsString, IsNotEmpty } from "class-validator";
 
@@ -10,6 +10,11 @@ export class PaperModel extends AbstractModel {
   @IsNotEmpty()
   name: string = "Default paper name";
 
+  content: unknown = {
+    type: "doc",
+    content: []
+  };
+
   constructor(
     props: Partial<PaperModel> & {
       id: string;
@@ -18,30 +23,50 @@ export class PaperModel extends AbstractModel {
     super(props);
 
     makeObservable(this, {
-      name: observable
+      name: observable,
+      content: observable,
+      setContent: action,
+      getContent: action
     });
 
     this.load();
 
     reaction(
-      () => this.toJSON(),
+      () => this.name,
       () => {
         this.save();
       },
       {
-        delay: 1000
+        delay: 100
+      }
+    );
+
+    reaction(
+      () => this.content,
+      () => {
+        console.log("saving other");
+        this.save();
+      },
+      {
+        delay: 500
       }
     );
   }
 
   toJSON() {
-    return {
-      ...this
-    };
+    return toJS(this);
   }
 
   getSmallId(id: number): string {
     return `DOCS-${id}`;
+  }
+
+  setContent(content: unknown) {
+    this.content = content;
+  }
+
+  getContent() {
+    return toJS(this.content);
   }
 
   _id() {
