@@ -1,9 +1,19 @@
-import { Tldraw } from "tldraw";
+import { Tldraw, TLEditorSnapshot } from "tldraw";
+import { useStores } from "@/hooks/useStores";
 
 export function Read({ id }: { id: string }) {
+  const { sketchesStore } = useStores();
+  const sketch = sketchesStore.getById(id);
+
+  if (!sketch) {
+    return null;
+  }
+
   return (
-    <div className="h-full w-full">
+    <div className="relative h-full w-full">
+      <div className="absolute left-0 top-0 z-[12] h-full w-full" />
       <Tldraw
+        className="z-10 h-full w-full"
         key={id}
         components={{
           MenuPanel: null,
@@ -13,7 +23,7 @@ export function Read({ id }: { id: string }) {
           ZoomMenu: null
         }}
         tools={[]}
-        persistenceKey={`p6n-${id}-draw`}
+        snapshot={sketch.getSnapshot() as TLEditorSnapshot}
         onMount={(e) => {
           e.updateInstanceState({
             isReadonly: true

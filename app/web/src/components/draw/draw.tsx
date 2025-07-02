@@ -1,7 +1,20 @@
-import { Editor, Tldraw, TLUiComponents, TLUiOverrides } from "tldraw";
+import {
+  createTLStore,
+  Editor,
+  getSnapshot,
+  loadSnapshot,
+  Tldraw,
+  TLEditorSnapshot,
+  TLUiComponents,
+  TLUiOverrides,
+  useEditor
+} from "tldraw";
+import { throttle } from "lodash";
 import { Grid } from "./grid";
 import { Toolbar } from "./toolbar";
 import "tldraw/tldraw.css";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useStores } from "@/hooks/useStores";
 
 const components: TLUiComponents & { Grid: typeof Grid } = {
   MenuPanel: null,
@@ -30,18 +43,48 @@ const overrides: TLUiOverrides = {
 };
 
 function Draw({ id, callback }: DrawProps) {
+  const store = useMemo(() => createTLStore(), []);
+  const { sketchesStore } = useStores();
+
+  const sketch = sketchesStore.getById(id);
+
+  useLayoutEffect(() => {
+    if (!sketch) {
+      return;
+    }
+
+    loadSnapshot(store, sketch.getSnapshot() as TLEditorSnapshot);
+
+    const cleanUp = store.listen(
+      throttle(() => {
+        const snapshot = getSnapshot(store);
+        sketch.setContent(snapshot);
+      }, 500),
+      {
+        source: "user",
+        scope: "document"
+      }
+    );
+
+    return () => {
+      cleanUp();
+    };
+  }, [sketch]);
+
+  if (!sketch) {
+    return null;
+  }
+
   return (
-    <div className="h-full w-full">
+    <div className="relative h-full w-full">
       <Tldraw
         components={components}
         overrides={overrides}
-        persistenceKey={`p6n-${id}-draw`}
+        store={store}
         onMount={(e) => {
           e.user.updateUserPreferences({
             isSnapMode: true
           });
-          e.zoomToFit();
-          e.zoomOut();
           e.updateInstanceState({
             isGridMode: true
           });
