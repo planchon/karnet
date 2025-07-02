@@ -1,5 +1,5 @@
-import data from "@/mocks/text";
 import message4 from "@/mocks/message4.md?raw";
+import message2 from "@/mocks/message2.md?raw";
 
 export const messages = [
   {
@@ -11,7 +11,7 @@ export const messages = [
   {
     id: "2",
     sender: "assistant" as const,
-    content: data,
+    content: message2,
     timestamp: new Date()
   },
   {

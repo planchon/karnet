@@ -1,9 +1,12 @@
+import { Copy } from "lucide-react";
 import { isValidElement, memo, ReactNode } from "react";
+import { Button } from "@ui/button";
 import ShikiHighlighter, {
   isInlineCode,
   useShikiHighlighter,
   type Element
 } from "react-shiki";
+import { IconDownload } from "@tabler/icons-react";
 
 type CodeMarkdownProps = {
   className?: string | undefined;
@@ -41,10 +44,9 @@ export const CodeMarkdown = memo(
     const highlightedCode = useShikiHighlighter(
       code,
       "javascript",
-      "one-dark-pro",
+      "one-dark",
       {
-        delay: 150,
-        showLineNumbers: true
+        delay: 150
       }
     );
 
@@ -53,10 +55,20 @@ export const CodeMarkdown = memo(
     }
 
     return (
-      <div className="shiki not-prose bg-chat-accent text-secondary-foreground relative text-sm font-[450] [&_pre]:overflow-auto [&_pre]:px-[1em] [&_pre]:py-[1em]">
-        <span className="text-muted-foreground/85 absolute right-3 top-2 text-xs tracking-tighter">
-          javascript
-        </span>
+      <div className="shiki not-prose bg-chat-accent rounded-4xl text-secondary-foreground relative py-2 text-sm font-[450] [&_pre]:overflow-auto [&_pre]:px-[1em] [&_pre]:py-[1em]">
+        <div className="bg-accent-foreground flex h-full w-full items-center justify-between rounded-t-md p-1">
+          <span className="text-muted pl-2 text-xs tracking-tighter">
+            javascript
+          </span>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon">
+              <IconDownload className="text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon">
+              <Copy className="text-muted-foreground" />
+            </Button>
+          </div>
+        </div>
         {highlightedCode}
       </div>
     );

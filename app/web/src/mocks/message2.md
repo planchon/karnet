@@ -1,4 +1,4 @@
-export default `Okay, here's a comprehensive Markdown text demonstrating almost all the common components and some popular extensions.
+Okay, here's a comprehensive Markdown text demonstrating almost all the common components and some popular extensions.
 
 ---
 
@@ -13,19 +13,22 @@ This document serves as a comprehensive demonstration of various Markdown compon
 Markdown supports six levels of headings.
 
 # H1: Largest Heading
+
 ## H2: Second Largest
+
 ### H3: Third Largest
+
 #### H4: Fourth Largest
+
 ##### H5: Fifth Largest
+
 ###### H6: Smallest Heading
 
 You can also use an alternative syntax for H1 and H2:
 
-Alternative H1
-==============
+# Alternative H1
 
-Alternative H2
---------------
+## Alternative H2
 
 ---
 
@@ -43,20 +46,20 @@ This is another paragraph. It's separated from the one above by a blank line.
 
 ### Emphasis
 
-*   *Italic* using asterisks
-*   _Italic_ using underscores
-*   **Bold** using double asterisks
-*   __Bold__ using double underscores
-*   ***Bold and Italic*** using triple asterisks
-*   ___Bold and Italic___ using triple underscores
+- _Italic_ using asterisks
+- _Italic_ using underscores
+- **Bold** using double asterisks
+- **Bold** using double underscores
+- **_Bold and Italic_** using triple asterisks
+- **_Bold and Italic_** using triple underscores
 
 ### Strikethrough (GFM)
 
-*   ~~Strikethrough~~ text.
+- ~~Strikethrough~~ text.
 
 ### Code
 
-todo inline
+- `Inline code` snippets are useful for referencing code within a sentence.
 
 ### Blockquotes
 
@@ -64,6 +67,7 @@ todo inline
 > It can span multiple lines.
 >
 > > Nested blockquotes are also possible.
+> >
 > > > Very deep.
 
 ---
@@ -72,13 +76,13 @@ todo inline
 
 ### Unordered Lists (Bullet Lists)
 
-*   Item 1
-    *   Nested Item 1.1
-    *   Nested Item 1.2
-        *   Even deeper
-*   Item 2
-    -   Using a hyphen
-    +   Using a plus sign
+- Item 1
+  - Nested Item 1.1
+  - Nested Item 1.2
+    - Even deeper
+- Item 2
+  - Using a hyphen
+  * Using a plus sign
 
 ### Ordered Lists (Numbered Lists)
 
@@ -90,16 +94,50 @@ todo inline
 3.  Third item
 
 You can also use different numbers, Markdown will still render them correctly:
+
 1.  Apple
-8.  Banana
+2.  Banana
 3.  Cherry
+
+---
+
+## 5. Code Blocks
+
+### Fenced Code Blocks (Preferred for highlighting)
+
+```python
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+print(factorial(5)) # Outputs 120
+```
+
+```javascript
+// JavaScript example
+const greet = (name) => {
+  console.log(`Hello, ${name}!`);
+};
+
+greet("World");
+```
+
+### Indented Code Blocks (Older style, less common now)
+
+    This is an indented code block.
+    It must be indented by at least 4 spaces or 1 tab.
+        This line is indented even further.
+
+---
 
 ## 6. Links
 
-*   [Regular Link](https://www.example.com "Optional Title")
-*   [Link with relative path](/path/to/page)
-*   <https://www.autolink.com> (Autolink)
-*   <mailto:example@example.com> (Autolink email)
+- [Regular Link](https://www.example.com "Optional Title")
+- [Link with relative path](/path/to/page)
+- <https://www.autolink.com> (Autolink)
+- <mailto:example@example.com> (Autolink email)
 
 ### Reference-style Links
 
@@ -118,8 +156,8 @@ Visit [Example Website].
 
 ## 7. Images
 
-*   ![Alt text for the image](https://via.placeholder.com/150 "Optional Image Title")
-*   ![Another image alt text](/path/to/image.jpg)
+- ![Alt text for the image](https://via.placeholder.com/150 "Optional Image Title")
+- ![Another image alt text](/path/to/image.jpg)
 
 ### Reference-style Images
 
@@ -135,35 +173,46 @@ Three or more hyphens, asterisks, or underscores can create a horizontal rule.
 
 ---
 
-***
+---
 
-___
+---
 
 ---
 
 ## 9. Tables (GFM)
 
-| Header 1 | Header 2 | Header 3 |
-| :------- | :------: | -------: |
-| Left     | Center   | Right    |
-| Cell 1   | Cell 2   | Cell 3   |
+| Header 1          |   Header 2   |                     Header 3 |
+| :---------------- | :----------: | ---------------------------: |
+| Left              |    Center    |                        Right |
+| Cell 1            |    Cell 2    |                       Cell 3 |
 | Long text content | More content | Even more content that wraps |
 
 ---
 
 ## 10. Task Lists (GFM)
 
-*   [x] Completed task
-*   [ ] Incomplete task
-    *   [x] Sub-task completed
-    *   [ ] Sub-task incomplete
-*   [ ] Another incomplete task
+- [x] Completed task
+- [ ] Incomplete task
+  - [x] Sub-task completed
+  - [ ] Sub-task incomplete
+- [ ] Another incomplete task
 
 ---
 
 ## 11. Front Matter (Common in static site generators like Jekyll, Hugo)
 
-*(Note: Front matter itself is not rendered by the Markdown engine; it's parsed by the static site generator or application that consumes the Markdown file.)*
+```yaml
+---
+title: "My Awesome Post"
+author: "John Doe"
+date: "2023-10-27"
+tags:
+  - markdown
+  - showcase
+---
+```
+
+_(Note: Front matter itself is not rendered by the Markdown engine; it's parsed by the static site generator or application that consumes the Markdown file.)_
 
 ---
 
@@ -174,7 +223,8 @@ Here's some text with a footnote reference.[^note1]
 And here's another one.[^note2]
 
 [^note1]: This is the first footnote.
-[^note2]: This is the second footnote, which can be quite long and span multiple lines. It can also contain other Markdown elements like **bold text** or even 
+
+[^note2]: This is the second footnote, which can be quite long and span multiple lines. It can also contain other Markdown elements like **bold text** or even `inline code`.
 
 ---
 
@@ -193,10 +243,10 @@ Term 2
 
 If you need to use a Markdown special character literally, precede it with a backslash.
 
-*   \* Not an italic \*
-*   \`This is not code\`
-*   \# Not a heading \#
-*   \[Not a link\]\(url\)
+- \* Not an italic \*
+- \`This is not code\`
+- \# Not a heading \#
+- \[Not a link\]\(url\)
 
 ---
 
@@ -215,4 +265,3 @@ Markdown is often seen as a superset of HTML, meaning you can embed raw HTML.
 ---
 
 This document covers most of the widely used Markdown syntax elements. Remember that the exact rendering might vary slightly depending on the Markdown engine or platform you are using.
-`;
