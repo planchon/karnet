@@ -321,7 +321,7 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
     };
 
     return (
-      <form ref={ref} onSubmit={onSubmit} className={className}>
+      <form ref={ref} onSubmit={onSubmit} className={cn(className, "h-[94px]")}>
         {children({ files, setFiles })}
       </form>
     );

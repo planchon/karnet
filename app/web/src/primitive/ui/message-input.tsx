@@ -227,8 +227,8 @@ export function MessageInput({
             onPaste={onPaste}
             onKeyDown={onKeyDown}
             className={cn(
-              "border-input bg-background ring-offset-background placeholder:text-muted-foreground z-10 min-h-24 w-full grow resize-none rounded-xl border p-3 pr-24 text-sm transition-[border] disabled:cursor-not-allowed disabled:opacity-50",
-              showFileList && "pb-16",
+              "border-input bg-background ring-offset-background placeholder:text-muted-foreground z-10 min-h-24 w-full grow resize-none rounded-t-xl border p-3 pr-24 text-sm transition-[border] disabled:cursor-not-allowed disabled:opacity-50",
+              showFileList && "pb-0",
               className
             )}
             {...(props.allowAttachments

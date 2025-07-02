@@ -3,6 +3,10 @@ import { MessageInput } from "@/primitive/ui/message-input";
 import { ChatInput } from "@/components/chat/chat-input";
 import { observer } from "mobx-react";
 
+import { messages as messagesMock } from "@/mocks/messages";
+import { UserMessage } from "@/components/messages/user-message.comp";
+import { ComputerMessage } from "@/components/messages/computer-message.comp";
+
 interface Message {
   id: string;
   content: string;
@@ -11,7 +15,7 @@ interface Message {
 }
 
 export const ChatPage = observer(function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(messagesMock);
 
   const handleSubmit = (message: string) => {
     const newMessage: Message = {
@@ -41,31 +45,19 @@ export const ChatPage = observer(function ChatPage() {
 
   return (
     <div className="flex h-full w-full flex-col">
-      {/* Messages container */}
       <div className="flex-1 overflow-y-auto p-4">
-        <div className="mx-auto max-w-3xl space-y-4">
+        <div className="mx-auto max-w-4xl space-y-4">
           {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${
-                message.sender === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div
-                className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                  message.sender === "user"
-                    ? "bg-[rgb(162,59,103)] text-white"
-                    : "bg-muted"
-                }`}
-              >
-                {message.content}
-              </div>
+            <div key={message.id}>
+              {message.sender === "user" ? (
+                <UserMessage content={message.content} />
+              ) : (
+                <ComputerMessage content={message.content} />
+              )}
             </div>
           ))}
         </div>
       </div>
-
-      {/* Chat input */}
       <ChatInput />
     </div>
   );
