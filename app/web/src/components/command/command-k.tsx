@@ -25,6 +25,7 @@ import {
   Icon123,
   IconHelpCircle,
   IconInfinity,
+  IconLink,
   IconListDetails,
   IconTextPlus
 } from "@tabler/icons-react";
@@ -238,6 +239,14 @@ export const CommandK = observer(function CommandK() {
           settings.setTheme("light");
         },
         icon: Sun
+      },
+      {
+        name: `${settings.disableLinks ? "Enable" : "Disable"} links`,
+        shortcut: "",
+        action: () => {
+          settings.setDisableLinks(!settings.disableLinks);
+        },
+        icon: IconLink
       }
     ]
   };

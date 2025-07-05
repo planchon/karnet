@@ -6,8 +6,9 @@ import {
   SidebarMenu
 } from "@/primitive/ui/sidebar";
 import { SuperLink } from "../../primitive/super-ui/link";
+import { observer } from "mobx-react";
 
-export function NavMain({
+export const NavMain = observer(function NavMain({
   items
 }: {
   items: {
@@ -42,4 +43,4 @@ export function NavMain({
       </SidebarGroupContent>
     </SidebarGroup>
   );
-}
+});

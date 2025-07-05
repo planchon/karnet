@@ -52,6 +52,13 @@ export const useShortcut = (
 
       // Don't enable shortcuts in inputs unless explicitly declared
       if (options.disableTextInputs && isTextInput && !event.bypassTextInput) {
+        if (
+          ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(
+            event.key
+          )
+        ) {
+          return;
+        }
         return event.stopPropagation();
       }
 
@@ -70,10 +77,8 @@ export const useShortcut = (
           // Run handler if the modifier(s) + key have both been pressed
           if (keyArray.every((k) => getModifier(k)) && finalKey === event.key) {
             event.preventDefault();
-            posthog.capture("shortcut_used", {
-              shortcut: shortcut,
-              event: event.key
-            });
+            event.stopPropagation();
+            console.log("shortcut", shortcut, event.key);
             return callbackRef.current(event);
           }
         } else {
@@ -85,13 +90,10 @@ export const useShortcut = (
               keyCombo.length === keyArray.length - 1
             ) {
               // Run handler if the sequence is complete, then reset it
-              posthog.capture("shortcut_used", {
-                shortcut: shortcut,
-                event: event.key
-              });
               callbackRef.current(event);
               event.stopPropagation();
               event.preventDefault();
+              console.log("shortcut 2", shortcut, event.key);
               return setKeyCombo([]);
             }
 
@@ -108,10 +110,7 @@ export const useShortcut = (
       // Single key shortcuts (e.g. pressing D)
       if (shortcut === event.key) {
         event.stopPropagation();
-        posthog.capture("shortcut_used", {
-          shortcut: shortcut,
-          event: event.key
-        });
+        console.log("shortcut 3", shortcut, event.key);
         return callbackRef.current(event);
       }
     },
@@ -119,10 +118,10 @@ export const useShortcut = (
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown, true);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown, true);
     };
   }, [handleKeyDown]);
 };

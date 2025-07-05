@@ -23,6 +23,14 @@ export function GeneralOutlet() {
   useLinkShortcut("g+f", `/document?type=file`);
   useLinkShortcut("g+s", `/document?type=sketch`);
 
+  useShortcut("Control+o", () => {
+    navigate(-1);
+  });
+
+  useShortcut("Command+o", () => {
+    navigate(-1);
+  });
+
   useShortcut("c+f", () => {
     const id = generateId();
     const document = rootStore.paperStore.createModel(id);

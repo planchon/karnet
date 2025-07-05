@@ -2,11 +2,12 @@ import { SettingsModel } from "@/models/settings.model";
 import { AbstractStore } from "./abstract.store";
 import { RootStore } from "./root.store";
 import { AnonymousUserId } from "./user.store";
-import { makeObservable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 
 // we have one setting per user
 // settings id = user id
 export class SettingsStore extends AbstractStore<SettingsModel> {
+  // disable all the link in the app. ONLY USE SHORTCUTS
   constructor(rootStore: RootStore) {
     super(rootStore);
 

@@ -1,5 +1,5 @@
 import { TooltipWrapper } from "@/primitive/super-ui/tooltip-wrapper";
-import { useState } from "react";
+import { Key, useRef, useState } from "react";
 import { Button } from "@/primitive/ui/button";
 import {
   Icon123,
@@ -23,7 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/primitive/ui/avatar";
 import { Label } from "@/primitive/super-ui/label";
 import { useEffect } from "react";
 import { cn, generateId } from "@/lib/utils";
-import { useStores } from "@/hooks/useStores";
+import { useSettings, useStores } from "@/hooks/useStores";
 import { data, Link, useNavigate } from "react-router";
 import {
   ContextMenu,
@@ -43,18 +43,26 @@ type ViewItem = {
   type: "paper" | "sketch" | "diagram";
 };
 
+type NavigationMode = "keyboard" | "mouse";
+
+const UP_KEYS = ["ArrowUp", "ArrowLeft", "k"] as const satisfies Key[];
+const DOWN_KEYS = ["ArrowDown", "ArrowRight", "j"] as const satisfies Key[];
+
 export const DocumentView = observer(function DocumentView() {
+  const { paperStore, sketchesStore, diagramStore } = useStores();
   const commands = useCommands();
+  const settings = useSettings();
+  const navigate = useNavigate();
 
   useShortcut("n", () => {
     commands.toggleProject();
   });
 
-  const [selectDocumentIndex, setSelectDocumentIndex] = useState<number>(-1);
-  const [hoverMode, setHoverMode] = useState<"hover" | "keyboard">("hover");
-  const navigate = useNavigate();
-
-  const { paperStore, sketchesStore, diagramStore } = useStores();
+  const lastHoveredElement = useRef<HTMLElement | null>(null);
+  const [navigationMode, setNavigationMode] =
+    useState<NavigationMode>("keyboard");
+  const [selectedDocumentIndex, setSelectedDocumentIndex] = useState<number>(0);
+  const documentViewRef = useRef<HTMLDivElement>(null);
 
   const documents = Object.values(paperStore._models).map((doc) => ({
     id: doc.id,
@@ -82,33 +90,82 @@ export const DocumentView = observer(function DocumentView() {
 
   const data: ViewItem[] = [...documents, ...sketches, ...diagrams];
 
+  console.log("data", data.length);
+
+  const updateDocumentIndex = (index: number) => {
+    setSelectedDocumentIndex(index);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    setNavigationMode("keyboard");
+    const lastIndexFromHover =
+      lastHoveredElement.current?.getAttribute("data-list-index");
+    lastHoveredElement.current = null;
+
+    let lastIndex = selectedDocumentIndex;
+
+    // the mouse when hovering something
+    if (lastIndexFromHover) {
+      lastIndex = parseInt(lastIndexFromHover);
+    }
+
+    if (UP_KEYS.includes(e.key as any)) {
+      let newValue = lastIndex - 1;
+
+      if (newValue < 0) {
+        newValue = data.length - 1;
+      }
+
+      updateDocumentIndex(newValue);
+    }
+
+    if (DOWN_KEYS.includes(e.key as any)) {
+      let newValue = lastIndex + 1;
+
+      if (newValue >= data.length) {
+        newValue = 0;
+      }
+
+      updateDocumentIndex(newValue);
+    }
+
+    if (e.key === "Enter") {
+      const document = data[selectedDocumentIndex];
+      if (document) {
+        navigate(`/${document.type}/${document.id}`);
+      }
+    }
+  };
+
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      setHoverMode("keyboard");
-      if (e.key === "ArrowUp") {
-        if (selectDocumentIndex === -1) {
-          setSelectDocumentIndex(data.length - 1);
-        } else {
-          setSelectDocumentIndex((prev) => prev - 1);
-        }
-      }
-      if (e.key === "ArrowDown") {
-        setSelectDocumentIndex((prev) => prev + 1);
-      }
-      if (e.key === "Escape") {
-        setSelectDocumentIndex(-1);
-      }
+    const handleMouseMove = (e: MouseEvent) => {
+      setNavigationMode("mouse");
+      lastHoveredElement.current = e.target as HTMLElement;
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    documentViewRef.current?.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      documentViewRef.current?.removeEventListener(
+        "keydown",
+        handleKeyDown,
+        true
+      );
+      document.removeEventListener("mousemove", handleMouseMove);
     };
+  }, [selectedDocumentIndex]);
+
+  useEffect(() => {
+    documentViewRef.current?.focus();
   }, []);
 
   return (
-    <div className="h-full w-full">
+    <div
+      className="h-full w-full focus:outline-none"
+      ref={documentViewRef}
+      tabIndex={1}
+    >
       <div className="flex h-10 w-full items-center justify-between border-b">
         <div className="flex h-full select-none flex-row items-center justify-center gap-2 pl-4">
           <span className="text-sm font-medium">Documents</span>
@@ -152,22 +209,6 @@ export const DocumentView = observer(function DocumentView() {
           </div>
         </div>
         <div className="flex h-full flex-row items-center justify-center gap-2 pr-4">
-          {/* <TooltipWrapper
-            tooltip={{
-              title: "Create a project",
-              side: "left",
-              shortcut: ["n"]
-            }}
-          >
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => commands.toggleProject()}
-            >
-              <IconPlus className="size-3" />
-              <span className="text-xs">New project</span>
-            </Button>
-          </TooltipWrapper> */}
           <Button variant="outline" size="sm">
             <IconAdjustmentsHorizontal className="size-3" />
             <span className="text-xs">Display</span>
@@ -178,19 +219,21 @@ export const DocumentView = observer(function DocumentView() {
         <ContextMenuTrigger>
           <div className="scrollbar-thin h-full w-full overflow-y-auto">
             <ContextMenu>
-              <ContextMenuTrigger
-                className="flex w-full flex-col"
-                onMouseEnter={() => setHoverMode("hover")}
-              >
+              <ContextMenuTrigger className="flex w-full flex-col">
                 {data.map((item, index) => (
                   <DocumentRow
-                    key={index}
+                    className={cn(
+                      selectedDocumentIndex === index &&
+                        (navigationMode === "keyboard" || settings.disableLinks)
+                        ? "bg-accent/50"
+                        : "",
+                      navigationMode === "mouse" &&
+                        "hover:bg-accent/50 cursor-pointer"
+                    )}
+                    key={item.id}
+                    listIndex={index}
                     item={item}
-                    isSelected={
-                      hoverMode === "keyboard"
-                        ? Math.abs(selectDocumentIndex % data.length) === index
-                        : false
-                    }
+                    // isSelected={hoverMode === "keyboard"}
                   />
                 ))}
               </ContextMenuTrigger>
@@ -249,19 +292,26 @@ export const DocumentView = observer(function DocumentView() {
 });
 
 const DocumentRow = observer(function DocumentRow({
-  isSelected,
-  item
+  className,
+  item,
+  listIndex
 }: {
-  isSelected: boolean;
+  className?: string;
   item: ViewItem;
+  listIndex: number;
 }) {
+  const settings = useSettings();
   return (
     <Link
       className={cn(
-        "hover:bg-accent/50 flex h-10 w-full cursor-pointer select-none items-center justify-between px-5 py-2",
-        isSelected && "bg-accent/50"
+        "flex h-10 w-full select-none items-center justify-between px-5 py-2",
+        className,
+        settings.disableLinks && "pointer-events-none select-none"
       )}
       to={`/${item.type}/${item.id}`}
+      key={item.id}
+      data-document-id={item.id}
+      data-list-index={listIndex}
     >
       <div className="flex flex-row gap-3">
         <div className="w-5">

@@ -4,6 +4,7 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/primitive/ui/button";
+import { useSettings } from "@/hooks/useStores";
 
 function Calendar({
   className,
@@ -11,10 +12,15 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: React.ComponentProps<typeof DayPicker>) {
+  const settings = useSettings();
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn(
+        "p-3",
+        className,
+        settings.disableLinks && "pointer-events-none select-none"
+      )}
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
         month: "flex flex-col gap-4",

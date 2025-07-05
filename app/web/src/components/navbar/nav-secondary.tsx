@@ -26,8 +26,8 @@ export function NavSecondary({
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
+            <SidebarMenuItem key={item.title} tabIndex={100}>
+              <SidebarMenuButton asChild tabIndex={100}>
                 <a onClick={item.action}>
                   <item.icon />
                   <span>{item.title}</span>

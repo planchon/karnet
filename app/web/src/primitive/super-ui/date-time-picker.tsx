@@ -13,8 +13,10 @@ import {
 } from "@/primitive/ui/popover";
 import { ScrollArea, ScrollBar } from "@/primitive/ui/scroll-area";
 import { CalendarIcon } from "lucide-react";
+import { useSettings } from "@/hooks/useStores";
 
 export function DateTimePicker({ tabIndex }: { tabIndex?: number }) {
+  const settings = useSettings();
   const [date, setDate] = React.useState<Date>();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -54,7 +56,8 @@ export function DateTimePicker({ tabIndex }: { tabIndex?: number }) {
           variant="outline"
           className={cn(
             "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
+            settings.disableLinks && "pointer-events-none select-none"
           )}
           tabIndex={tabIndex}
         >

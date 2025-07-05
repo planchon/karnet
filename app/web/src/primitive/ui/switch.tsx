@@ -2,16 +2,19 @@ import * as React from "react";
 import * as SwitchPrimitive from "@radix-ui/react-switch";
 
 import { cn } from "@/lib/utils";
+import { useSettings } from "@/hooks/useStores";
 
 function Switch({
   className,
   ...props
 }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
+  const settings = useSettings();
   return (
     <SwitchPrimitive.Root
       data-slot="switch"
       className={cn(
         "data-[state=checked]:bg-primary data-[state=unchecked]:bg-input focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 shadow-xs peer inline-flex h-[1rem] w-7 shrink-0 items-center rounded-full border border-transparent outline-none transition-all focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+        settings.disableLinks && "pointer-events-none",
         className
       )}
       {...props}

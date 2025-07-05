@@ -28,6 +28,10 @@ export const CreateEventCommand = observer(function CreateEventCommand() {
     commands.toggleEvent();
   });
 
+  const onSubmit = () => {
+    alert("submit");
+  };
+
   return (
     <Dialog open={commands.eventOpen} onOpenChange={commands.toggleEvent}>
       <DialogContent className="min-w-[700px] p-0" {...preventAutoFocus}>

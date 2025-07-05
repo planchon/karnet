@@ -25,13 +25,13 @@ createRoot(document.getElementById("root")!).render(
         capture_exceptions: true
       }}
     >
+      <Toaster richColors position="bottom-right" />
       <TooltipProvider
         delayDuration={800}
         skipDelayDuration={1000}
         disableHoverableContent
       >
         <BrowserRouter>
-          <Toaster richColors position="bottom-right" />
           <Router />
         </BrowserRouter>
       </TooltipProvider>

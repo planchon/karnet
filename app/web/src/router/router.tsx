@@ -8,9 +8,13 @@ import { useEffect } from "react";
 import { useSettings } from "@/hooks/useStores";
 import { PaperPage } from "@/pages/paper";
 import { DiagramPage } from "@/pages/diagram";
+import { useAntiRageClick } from "@/components/help/shortcut-remember";
+import { useShortcut } from "@/hooks/useShortcut";
 
 export const Router = () => {
   const settings = useSettings();
+
+  useAntiRageClick();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
