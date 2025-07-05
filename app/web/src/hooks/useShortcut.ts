@@ -78,7 +78,6 @@ export const useShortcut = (
           if (keyArray.every((k) => getModifier(k)) && finalKey === event.key) {
             event.preventDefault();
             event.stopPropagation();
-            console.log("shortcut", shortcut, event.key);
             return callbackRef.current(event);
           }
         } else {
@@ -93,7 +92,6 @@ export const useShortcut = (
               callbackRef.current(event);
               event.stopPropagation();
               event.preventDefault();
-              console.log("shortcut 2", shortcut, event.key);
               return setKeyCombo([]);
             }
 
@@ -110,7 +108,6 @@ export const useShortcut = (
       // Single key shortcuts (e.g. pressing D)
       if (shortcut === event.key) {
         event.stopPropagation();
-        console.log("shortcut 3", shortcut, event.key);
         return callbackRef.current(event);
       }
     },

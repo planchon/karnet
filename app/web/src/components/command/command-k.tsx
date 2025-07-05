@@ -266,7 +266,19 @@ export const CommandK = observer(function CommandK() {
   return (
     <CommandDialog
       open={commands.commandKOpen}
-      onOpenChange={commands.toggleCommandK}
+      onOpenChange={(open) => {
+        commands.toggleCommandK();
+        if (!open) {
+          if (commands.lastFocus) {
+            const element = document.getElementById(commands.lastFocus);
+            if (element) {
+              setTimeout(() => {
+                element.focus();
+              }, 0);
+            }
+          }
+        }
+      }}
       className="min-w-[700px]"
     >
       <CommandInput placeholder="Type a command or search..." />
@@ -281,6 +293,14 @@ export const CommandK = observer(function CommandK() {
                 onSelect={() => {
                   item.action();
                   commands.toggleCommandK();
+                  if (commands.lastFocus) {
+                    const element = document.getElementById(commands.lastFocus);
+                    if (element) {
+                      setTimeout(() => {
+                        element.focus();
+                      }, 0);
+                    }
+                  }
                 }}
               >
                 {item.icon && <item.icon className="ml-1" />}

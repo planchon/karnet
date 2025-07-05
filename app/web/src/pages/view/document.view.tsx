@@ -90,8 +90,6 @@ export const DocumentView = observer(function DocumentView() {
 
   const data: ViewItem[] = [...documents, ...sketches, ...diagrams];
 
-  console.log("data", data.length);
-
   const updateDocumentIndex = (index: number) => {
     setSelectedDocumentIndex(index);
   };
@@ -158,13 +156,15 @@ export const DocumentView = observer(function DocumentView() {
 
   useEffect(() => {
     documentViewRef.current?.focus();
+    commands.lastFocus = "document-view";
   }, []);
 
   return (
     <div
       className="h-full w-full focus:outline-none"
       ref={documentViewRef}
-      tabIndex={1}
+      tabIndex={0}
+      id="document-view"
     >
       <div className="flex h-10 w-full items-center justify-between border-b">
         <div className="flex h-full select-none flex-row items-center justify-center gap-2 pl-4">

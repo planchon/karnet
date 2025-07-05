@@ -8,6 +8,8 @@ export class CommandsModels {
   taskOpen: boolean = false;
   projectOpen: boolean = false;
 
+  lastFocus: string | null = null;
+
   constructor(props: Partial<CommandsModels>) {
     Object.assign(this, props);
 
