@@ -15,7 +15,8 @@ import {
   IconPaint,
   IconPalette,
   IconTrash,
-  IconChartDots3
+  IconChartDots3,
+  IconSearch
 } from "@tabler/icons-react";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { observer } from "mobx-react";
@@ -34,6 +35,8 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger
 } from "@/primitive/ui/context-menu";
+import { Input } from "@ui/input";
+import { Shortcut } from "@ui/shortcut";
 
 type ViewItem = {
   id: string;
@@ -43,7 +46,7 @@ type ViewItem = {
   type: "paper" | "sketch" | "diagram";
 };
 
-type NavigationMode = "keyboard" | "mouse";
+type NavigationMode = "keyboard" | "mouse" | "focus";
 
 const UP_KEYS = ["ArrowUp", "ArrowLeft", "k"] as const satisfies Key[];
 const DOWN_KEYS = ["ArrowDown", "ArrowRight", "j"] as const satisfies Key[];
@@ -59,6 +62,8 @@ export const DocumentView = observer(function DocumentView() {
   });
 
   const lastHoveredElement = useRef<HTMLElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+
   const [navigationMode, setNavigationMode] =
     useState<NavigationMode>("keyboard");
   const [selectedDocumentIndex, setSelectedDocumentIndex] = useState<number>(0);
@@ -94,6 +99,12 @@ export const DocumentView = observer(function DocumentView() {
     setSelectedDocumentIndex(index);
   };
 
+  useShortcut("/", (e) => {
+    searchInputRef.current?.focus();
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
   const handleKeyDown = (e: KeyboardEvent) => {
     setNavigationMode("keyboard");
     const lastIndexFromHover =
@@ -128,10 +139,24 @@ export const DocumentView = observer(function DocumentView() {
     }
 
     if (e.key === "Enter") {
-      const document = data[selectedDocumentIndex];
-      if (document) {
-        navigate(`/${document.type}/${document.id}`);
+      if (document.activeElement === documentViewRef.current) {
+        const documentref = data[selectedDocumentIndex];
+        if (documentref) {
+          navigate(`/${documentref.type}/${documentref.id}`);
+        }
       }
+    }
+
+    if (e.key === "Escape") {
+      updateDocumentIndex(-1);
+    }
+  };
+
+  const handleSearchInput = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setNavigationMode("keyboard");
+      documentViewRef.current?.focus();
+      e.stopPropagation();
     }
   };
 
@@ -141,14 +166,23 @@ export const DocumentView = observer(function DocumentView() {
       lastHoveredElement.current = e.target as HTMLElement;
     };
 
-    documentViewRef.current?.addEventListener("keydown", handleKeyDown, true);
+    searchInputRef.current?.addEventListener("keydown", handleSearchInput, {
+      capture: false
+    });
+    documentViewRef.current?.addEventListener("keydown", handleKeyDown, {
+      capture: false
+    });
+
     document.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      documentViewRef.current?.removeEventListener(
+      documentViewRef.current?.removeEventListener("keydown", handleKeyDown, {
+        capture: false
+      });
+      searchInputRef.current?.removeEventListener(
         "keydown",
-        handleKeyDown,
-        true
+        handleSearchInput,
+        { capture: false }
       );
       document.removeEventListener("mousemove", handleMouseMove);
     };
@@ -177,7 +211,7 @@ export const DocumentView = observer(function DocumentView() {
                 shortcut: ["1"]
               }}
             >
-              <Button variant="outline" size="sm">
+              <Button size="sm" variant="outline" asDiv>
                 <IconCloud className="size-3" />
                 <span className="text-xs">All projects</span>
               </Button>
@@ -189,7 +223,7 @@ export const DocumentView = observer(function DocumentView() {
                 shortcut: ["2"]
               }}
             >
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" asDiv>
                 <IconCube className="size-3" />
                 <span className="text-xs">Brume</span>
               </Button>
@@ -201,7 +235,7 @@ export const DocumentView = observer(function DocumentView() {
                 shortcut: ["3"]
               }}
             >
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" asDiv>
                 <IconBlocks className="size-3" />
                 <span className="text-xs">Stratumn</span>
               </Button>
@@ -213,6 +247,17 @@ export const DocumentView = observer(function DocumentView() {
             <IconAdjustmentsHorizontal className="size-3" />
             <span className="text-xs">Display</span>
           </Button>
+          <div className="focus-within:ring-accent-foreground/30 focus-within:border-accent-foreground/50 focus-within:ring-3 focus-within:border-1 flex h-6 w-40 items-center justify-between rounded-sm border pr-[3px]">
+            <Input
+              ref={searchInputRef}
+              className="h-6 w-full rounded-sm border-none text-xs shadow-none placeholder:text-xs focus:outline-none focus:!ring-0"
+              placeholder="Search"
+              onChange={(e) => {}}
+            />
+            <span className="text-accent-foreground/50 flex aspect-square h-[18px] w-[18px] select-none items-center justify-center rounded-[4px] border text-center font-mono text-[12px]">
+              /
+            </span>
+          </div>
         </div>
       </div>
       <ContextMenu>
@@ -222,7 +267,13 @@ export const DocumentView = observer(function DocumentView() {
               <ContextMenuTrigger className="flex w-full flex-col">
                 {data.map((item, index) => (
                   <DocumentRow
+                    onFocus={() => {
+                      setNavigationMode("focus");
+                      setSelectedDocumentIndex(index);
+                    }}
                     className={cn(
+                      "focus:outline-none",
+                      navigationMode === "focus" && "focus:bg-accent/50",
                       selectedDocumentIndex === index &&
                         (navigationMode === "keyboard" || settings.disableLinks)
                         ? "bg-accent/50"
@@ -233,7 +284,6 @@ export const DocumentView = observer(function DocumentView() {
                     key={item.id}
                     listIndex={index}
                     item={item}
-                    // isSelected={hoverMode === "keyboard"}
                   />
                 ))}
               </ContextMenuTrigger>
@@ -294,12 +344,13 @@ export const DocumentView = observer(function DocumentView() {
 const DocumentRow = observer(function DocumentRow({
   className,
   item,
-  listIndex
+  listIndex,
+  ...props
 }: {
   className?: string;
   item: ViewItem;
   listIndex: number;
-}) {
+} & React.ComponentProps<"a">) {
   const settings = useSettings();
   return (
     <Link
@@ -312,6 +363,7 @@ const DocumentRow = observer(function DocumentRow({
       key={item.id}
       data-document-id={item.id}
       data-list-index={listIndex}
+      {...props}
     >
       <div className="flex flex-row gap-3">
         <div className="w-5">

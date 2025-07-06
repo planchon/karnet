@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router";
 import { Router } from "./router/router";
 import "./index.css";
 import { TooltipProvider } from "./primitive/ui/tooltip";
-import { Toaster } from "sonner";
+import { Toaster } from "./primitive/ui/sonner";
 import * as Sentry from "@sentry/react";
 import { PostHogProvider } from "posthog-js/react";
 

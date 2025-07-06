@@ -62,7 +62,7 @@ export const SuperLink = observer(function SuperLink({
                   )}
                 />
               )}
-              <span className="truncate">{title}</span>
+              <span className="truncate">{title}</span>{" "}
             </SidebarMenuButton>
           </SidebarMenuItem>{" "}
         </TooltipWrapper>

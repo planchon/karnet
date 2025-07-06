@@ -41,16 +41,20 @@ function Button({
   variant,
   size,
   asChild = false,
+  asDiv = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    asDiv?: boolean;
   }) {
   const settings = useSettings();
-  const Comp = asChild ? Slot : "button";
+  const Comp = asChild ? Slot : asDiv ? "div" : "button";
 
   return (
+    // @ts-ignore
     <Comp
+      tabIndex={0}
       data-slot="button"
       className={cn(
         buttonVariants({ variant, size, className }),

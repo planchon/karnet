@@ -53,9 +53,14 @@ export const useShortcut = (
       // Don't enable shortcuts in inputs unless explicitly declared
       if (options.disableTextInputs && isTextInput && !event.bypassTextInput) {
         if (
-          ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(
-            event.key
-          )
+          [
+            "ArrowUp",
+            "ArrowDown",
+            "ArrowLeft",
+            "ArrowRight",
+            "Enter",
+            "Escape"
+          ].includes(event.key)
         ) {
           return;
         }
