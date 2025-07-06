@@ -9,7 +9,7 @@ import { useSettings } from "@/hooks/useStores";
 import { PaperPage } from "@/pages/paper";
 import { DiagramPage } from "@/pages/diagram";
 import { useAntiRageClick } from "@/components/help/shortcut-remember";
-import { useShortcut } from "@/hooks/useShortcut";
+import { DocumentViewComp } from "@/pages/view/document-view-comp.view";
 
 export const Router = () => {
   const settings = useSettings();
@@ -40,6 +40,7 @@ export const Router = () => {
           <Route path=":id" index element={<PaperPage />} />
         </Route>
         <Route path="/document" element={<DocumentView />} />
+        <Route path="/document-comp" element={<DocumentViewComp />} />
         <Route path="/" index element={<Navigate to={`/document`} />} />
       </Route>
     </Routes>

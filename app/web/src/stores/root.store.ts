@@ -4,22 +4,32 @@ import { CommandStore } from "./command.store";
 import { PaperStore } from "./paper.store";
 import { SketchesStore } from "./skeches.store";
 import { DiagramStore } from "./diagram.store";
+import { ViewStore } from "./view.store";
 
 export class RootStore {
-  userStore: UserStore;
-  settingsStore: SettingsStore;
-  commandStore: CommandStore;
+  // data store
   paperStore: PaperStore;
   sketchesStore: SketchesStore;
   diagramStore: DiagramStore;
+  userStore: UserStore;
+
+  // filter over the data store
+  viewStore: ViewStore;
+
+  // non persistent store
+  settingsStore: SettingsStore;
+  commandStore: CommandStore;
 
   constructor() {
-    this.userStore = new UserStore(this);
-    this.settingsStore = new SettingsStore(this);
-    this.commandStore = new CommandStore(this);
     this.paperStore = new PaperStore(this);
     this.sketchesStore = new SketchesStore(this);
     this.diagramStore = new DiagramStore(this);
+    this.userStore = new UserStore(this);
+
+    this.viewStore = new ViewStore(this);
+
+    this.settingsStore = new SettingsStore(this);
+    this.commandStore = new CommandStore(this);
   }
 }
 

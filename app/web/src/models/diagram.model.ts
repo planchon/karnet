@@ -3,6 +3,8 @@ import { AbstractModel } from "./abstract.model";
 import { IsString, IsNotEmpty } from "class-validator";
 
 export class DiagramModel extends AbstractModel {
+  type = "diagram" as const;
+
   @IsString()
   @IsNotEmpty()
   content: string = `sequenceDiagram
@@ -11,10 +13,6 @@ export class DiagramModel extends AbstractModel {
     John-->Alice: How are you?
     Alice->John: Great!
   `;
-
-  @IsString()
-  @IsNotEmpty()
-  name: string = "Diagram name";
 
   constructor(props: Partial<DiagramModel> & { id: string }) {
     super(props);

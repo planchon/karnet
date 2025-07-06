@@ -1,14 +1,13 @@
 import { action, makeObservable, observable, reaction, toJS } from "mobx";
 import { AbstractModel } from "./abstract.model";
-import { IsString, IsNotEmpty } from "class-validator";
 
 // this model is only used to store the metadata of the document
 // everything else is stored in the document itself
 // tiptap is storing the content by itself
 export class PaperModel extends AbstractModel {
-  @IsString()
-  @IsNotEmpty()
-  name: string = "Default paper name";
+  type = "paper" as const;
+
+  paper_text: string = "";
 
   content: unknown = {
     type: "doc",

@@ -78,9 +78,7 @@ const emptySnapshot = {
 // everything else is stored in the sketch itself
 // tldraw is storing the content by itself
 export class SketchModel extends AbstractModel {
-  @IsString()
-  @IsNotEmpty()
-  name: string = "Untitled sketch";
+  type = "sketch" as const;
 
   content: unknown = emptySnapshot;
 

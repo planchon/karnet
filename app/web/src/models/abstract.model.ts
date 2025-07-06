@@ -9,6 +9,7 @@ import {
   validateSync as validateClassValidator,
   ValidationError
 } from "class-validator";
+import { ViewItem } from "@/view/abstract.view";
 
 declare global {
   interface Window {
@@ -18,7 +19,7 @@ declare global {
 
 window.DEBUG = true;
 
-export abstract class AbstractModel {
+export abstract class AbstractModel implements ViewItem {
   @Length(21)
   @IsString()
   @IsNotEmpty()
@@ -45,6 +46,13 @@ export abstract class AbstractModel {
   @IsString()
   @IsNotEmpty()
   key: string = `p6n-models-${this.model_name}-${this.id}`;
+
+  @IsString()
+  name: string = "";
+
+  @IsString()
+  @IsNotEmpty()
+  type: string = "abstract";
 
   constructor(
     props: Partial<AbstractModel> & {
