@@ -14,7 +14,7 @@ export type ViewItem = {
 export abstract class AbstractView<T extends ViewItem> {
   rootStore: RootStore;
 
-  bodyRef: React.RefObject<HTMLDivElement> | null = null;
+  bodyRef: React.RefObject<HTMLDivElement | null> | null = null;
   searchInputRef: React.RefObject<HTMLInputElement | null> | null = null;
 
   query: string = "";

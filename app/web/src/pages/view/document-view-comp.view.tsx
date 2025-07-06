@@ -3,7 +3,13 @@ import { View } from "@/components/view/view-item-table.comp";
 import { PaperModel } from "@/models/paper.model";
 import { SketchModel } from "@/models/sketch.model";
 import { DiagramModel } from "@/models/diagram.model";
-import { IconChartDots3, IconFile, IconPalette } from "@tabler/icons-react";
+import {
+  IconCalendar,
+  IconChartDots3,
+  IconFile,
+  IconPalette
+} from "@tabler/icons-react";
+import { Label } from "@/primitive/super-ui/label";
 
 export const DocumentViewComp = () => {
   const { viewStore } = useStores();
@@ -35,6 +41,16 @@ export const DocumentViewComp = () => {
                 {item.name}
               </div>
             </View.Item.Infos>
+            <View.Item.Spacer />
+            <View.Item.Labels>
+              <Label
+                label="test"
+                icon={IconCalendar}
+                className="bg-background"
+              />
+            </View.Item.Labels>
+            <View.Item.Date />
+            <View.Item.Author />
           </View.Item.Line>
         )}
       </View.Body>

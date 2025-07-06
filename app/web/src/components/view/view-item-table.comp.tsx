@@ -5,8 +5,10 @@ import { cn } from "@/lib/utils";
 import { TooltipWrapper } from "@/primitive/super-ui/tooltip-wrapper";
 import { AbstractView, ViewItem as ViewItemType } from "@/view/abstract.view";
 import { Icon, IconProps } from "@tabler/icons-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
+import { observer } from "mobx-react";
 import React, { JSX, useRef } from "react";
 import { Link } from "react-router";
 
@@ -18,48 +20,56 @@ const ViewContextProvider = ViewContext[0];
 
 const useViewContext = ViewContext[1];
 
-const ViewRoot = <R extends ViewItemType, T extends AbstractView<R>>({
-  children,
-  viewModel
-}: {
-  children: React.ReactNode;
-  viewModel: T;
-}) => {
-  return (
-    <ViewContextProvider viewModel={viewModel}>
-      <div
-        id="table-view-body"
-        tabIndex={0}
-        className="h-full w-full focus:outline-none"
-        ref={viewModel.bodyRef}
-      >
-        {children}
+const ViewRoot = observer(
+  <R extends ViewItemType, T extends AbstractView<R>>({
+    children,
+    viewModel
+  }: {
+    children: React.ReactNode;
+    viewModel: T;
+  }) => {
+    const bodyRef = useRef<HTMLDivElement>(null);
+
+    viewModel.bodyRef = bodyRef;
+
+    return (
+      <ViewContextProvider viewModel={viewModel}>
+        <div
+          id="table-view-body"
+          tabIndex={0}
+          className="h-full w-full focus:outline-none"
+          ref={bodyRef}
+        >
+          {children}
+        </div>
+      </ViewContextProvider>
+    );
+  }
+);
+
+const ViewBody = observer(
+  <R extends ViewItemType, T extends AbstractView<R>>({
+    children
+  }: {
+    children: (item: R) => JSX.Element;
+  }) => {
+    const { viewModel } = useViewContext("ViewBody");
+
+    const data = viewModel.getItems();
+
+    return (
+      <div className="flex flex-col">
+        {data.map((item: R, index: number) => {
+          return (
+            <__ViewItem item={item} listIndex={index} key={item.id}>
+              {children}
+            </__ViewItem>
+          );
+        })}
       </div>
-    </ViewContextProvider>
-  );
-};
-
-const ViewBody = <R extends ViewItemType, T extends AbstractView<R>>({
-  children
-}: {
-  children: (item: R) => JSX.Element;
-}) => {
-  const { viewModel } = useViewContext("ViewBody");
-
-  const data = viewModel.getItems();
-
-  return (
-    <div className="flex flex-col">
-      {data.map((item: R, index: number) => {
-        return (
-          <__ViewItem item={item} listIndex={index} key={item.id}>
-            {children}
-          </__ViewItem>
-        );
-      })}
-    </div>
-  );
-};
+    );
+  }
+);
 
 const [LocalItemContextProvider, useLocalItemContext] = createContext<{
   item: ViewItemType;
@@ -97,8 +107,8 @@ const ViewItemLine = ({
   return (
     <Link
       className={cn(
-        "flex h-10 w-full select-none items-center justify-between px-5 py-2",
-        "hover:bg-accent-foreground/10",
+        "flex h-10 w-full select-none items-center justify-between gap-x-2 px-5 py-2",
+        "hover:bg-accent-foreground/5",
         className,
         settings.disableLinks && "pointer-events-none select-none"
       )}
@@ -137,27 +147,50 @@ const ViewItemSmallId = () => {
   );
 };
 
-// HEADER COMPONENTS
+const ViewItemLabels = ({ children }: { children: React.ReactNode }) => {
+  return <div className="flex flex-row items-center gap-2">{children}</div>;
+};
 
-const ViewHeaderBody = ({ children }: { children: React.ReactNode }) => {
+const ViewItemDate = () => {
+  return <div className="text-accent-foreground/70 text-[12px]">Mer 24.06</div>;
+};
+
+const ViewItemAuthor = () => {
   return (
-    <div className="flex h-10 w-full items-center justify-between border-b">
-      <div className="flex h-full w-full select-none flex-row items-center justify-between gap-2 px-4">
-        {children}
-      </div>
+    <div>
+      <Avatar className="size-5">
+        <AvatarImage src="https://github.com/planchon.png" />
+        <AvatarFallback>CN</AvatarFallback>
+      </Avatar>
     </div>
   );
 };
 
-const ViewHeaderTitle = ({ children }: { children: React.ReactNode }) => {
-  return <span className="text-sm font-medium">{children}</span>;
-};
+// HEADER COMPONENTS
+
+const ViewHeaderBody = observer(
+  ({ children }: { children: React.ReactNode }) => {
+    return (
+      <div className="flex h-10 w-full items-center justify-between border-b">
+        <div className="flex h-full w-full select-none flex-row items-center justify-between gap-2 px-4">
+          {children}
+        </div>
+      </div>
+    );
+  }
+);
+
+const ViewHeaderTitle = observer(
+  ({ children }: { children: React.ReactNode }) => {
+    return <span className="text-sm font-medium">{children}</span>;
+  }
+);
 
 const ViewHeaderSpacer = () => {
   return <div className="flex-1" />;
 };
 
-const ViewHeaderSearch = ({}: {}) => {
+const ViewHeaderSearch = observer(({}: {}) => {
   const { viewModel } = useViewContext("ViewHeaderSearch");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -191,27 +224,29 @@ const ViewHeaderSearch = ({}: {}) => {
       </span>
     </div>
   );
-};
+});
 
-const ViewHeaderPossibilities = ({
-  name,
-  shortcut,
-  children
-}: {
-  name: string;
-  shortcut: string[];
-  children: React.ReactNode;
-}) => {
-  return (
-    <div className="flex flex-row items-center gap-2">
-      <TooltipWrapper tooltip={{ title: name, side: "bottom", shortcut }}>
-        <Button size="sm" variant="outline" asDiv>
-          {children}
-        </Button>
-      </TooltipWrapper>
-    </div>
-  );
-};
+const ViewHeaderPossibilities = observer(
+  ({
+    name,
+    shortcut,
+    children
+  }: {
+    name: string;
+    shortcut: string[];
+    children: React.ReactNode;
+  }) => {
+    return (
+      <div className="flex flex-row items-center gap-2">
+        <TooltipWrapper tooltip={{ title: name, side: "bottom", shortcut }}>
+          <Button size="sm" variant="outline" asDiv>
+            {children}
+          </Button>
+        </TooltipWrapper>
+      </div>
+    );
+  }
+);
 
 export const View = {
   Header: {
@@ -225,7 +260,11 @@ export const View = {
     Line: ViewItemLine,
     Infos: ViewItemInfos,
     Icon: ViewItemIcon,
-    SmallId: ViewItemSmallId
+    SmallId: ViewItemSmallId,
+    Spacer: ViewHeaderSpacer,
+    Labels: ViewItemLabels,
+    Author: ViewItemAuthor,
+    Date: ViewItemDate
   },
   Root: ViewRoot,
   Body: ViewBody
