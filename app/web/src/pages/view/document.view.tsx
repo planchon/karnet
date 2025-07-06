@@ -68,6 +68,7 @@ export const DocumentView = observer(function DocumentView() {
     useState<NavigationMode>("keyboard");
   const [selectedDocumentIndex, setSelectedDocumentIndex] = useState<number>(0);
   const documentViewRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const documents = Object.values(paperStore._models).map((doc) => ({
     id: doc.id,
@@ -95,11 +96,21 @@ export const DocumentView = observer(function DocumentView() {
 
   const data: ViewItem[] = [...documents, ...sketches, ...diagrams];
 
+  const filteredData = data.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const updateDocumentIndex = (index: number) => {
     setSelectedDocumentIndex(index);
   };
 
   useShortcut("/", (e) => {
+    searchInputRef.current?.focus();
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  useShortcut("Control+f", (e) => {
     searchInputRef.current?.focus();
     e.preventDefault();
     e.stopPropagation();
@@ -122,7 +133,7 @@ export const DocumentView = observer(function DocumentView() {
       let newValue = lastIndex - 1;
 
       if (newValue < 0) {
-        newValue = data.length - 1;
+        newValue = filteredData.length - 1;
       }
 
       updateDocumentIndex(newValue);
@@ -131,7 +142,7 @@ export const DocumentView = observer(function DocumentView() {
     if (DOWN_KEYS.includes(e.key as any)) {
       let newValue = lastIndex + 1;
 
-      if (newValue >= data.length) {
+      if (newValue >= filteredData.length) {
         newValue = 0;
       }
 
@@ -148,12 +159,13 @@ export const DocumentView = observer(function DocumentView() {
     }
 
     if (e.key === "Escape") {
+      setSearchQuery("");
       updateDocumentIndex(-1);
     }
   };
 
   const handleSearchInput = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
+    if (e.key === "Escape" || e.key === "Enter") {
       setNavigationMode("keyboard");
       documentViewRef.current?.focus();
       e.stopPropagation();
@@ -252,7 +264,10 @@ export const DocumentView = observer(function DocumentView() {
               ref={searchInputRef}
               className="h-6 w-full rounded-sm border-none text-xs shadow-none placeholder:text-xs focus:outline-none focus:!ring-0"
               placeholder="Search"
-              onChange={(e) => {}}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
             />
             <span className="text-accent-foreground/50 flex aspect-square h-[18px] w-[18px] select-none items-center justify-center rounded-[4px] border text-center font-mono text-[12px]">
               /
@@ -265,7 +280,7 @@ export const DocumentView = observer(function DocumentView() {
           <div className="scrollbar-thin h-full w-full overflow-y-auto">
             <ContextMenu>
               <ContextMenuTrigger className="flex w-full flex-col">
-                {data.map((item, index) => (
+                {filteredData.map((item, index) => (
                   <DocumentRow
                     onFocus={() => {
                       setNavigationMode("focus");

@@ -120,10 +120,12 @@ export const useShortcut = (
   );
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown, true);
+    window.addEventListener("keydown", handleKeyDown, { capture: false });
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown, true);
+      window.removeEventListener("keydown", handleKeyDown, {
+        capture: false
+      });
     };
   }, [handleKeyDown]);
 };
