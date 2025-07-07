@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { observer } from "mobx-react";
-import React, { JSX, useRef } from "react";
+import React, { JSX, useEffect, useRef } from "react";
 import { Link } from "react-router";
 
 const ViewContext = createContext<{
@@ -31,6 +31,31 @@ const ViewRoot = observer(
     const bodyRef = useRef<HTMLDivElement>(null);
 
     viewModel.bodyRef = bodyRef;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+
+    function handleMouseMove(e: MouseEvent) {
+      viewModel.setLastHoveredElement(e.target as HTMLElement);
+    }
+
+    useEffect(() => {
+      bodyRef.current?.addEventListener("keydown", handleKeyDown, {
+        capture: true
+      });
+      document.addEventListener("mousemove", handleMouseMove);
+
+      return () => {
+        bodyRef.current?.removeEventListener("keydown", handleKeyDown, {
+          capture: true
+        });
+        document.removeEventListener("mousemove", handleMouseMove);
+      };
+    }, []);
 
     return (
       <ViewContextProvider viewModel={viewModel}>

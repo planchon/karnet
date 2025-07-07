@@ -17,6 +17,12 @@ export abstract class AbstractView<T extends ViewItem> {
   bodyRef: React.RefObject<HTMLDivElement | null> | null = null;
   searchInputRef: React.RefObject<HTMLInputElement | null> | null = null;
 
+  _lastHoveredElement: HTMLElement | null = null;
+  _lastHoveredIndex: number | null = null;
+  _lastHoveredDocumentId: string | null = null;
+
+  _selectedIndex: number = -1;
+
   query: string = "";
 
   constructor(rootStore: RootStore) {
@@ -77,4 +83,52 @@ export abstract class AbstractView<T extends ViewItem> {
    * @returns the grouped items
    */
   abstract groupBy(items: T[]): Record<string, T[]>;
+
+  /*
+   * @param element - the element to set as last hovered element
+   */
+  setLastHoveredElement(element: HTMLElement) {
+    this._lastHoveredElement = element;
+    this._lastHoveredIndex = Number(element.getAttribute("data-list-index"));
+    this._lastHoveredDocumentId = element.getAttribute("data-document-id");
+  }
+
+  getLastIndex() {
+    // if the user is hovering an element, use the last hovered index
+    const lastIndexFromHover = this._lastHoveredIndex;
+    if (lastIndexFromHover) {
+      this._lastHoveredElement = null;
+      return Number(lastIndexFromHover);
+    }
+
+    // otherwise, use the last selected index
+    // if no index is selected, use the first index
+    if (this._selectedIndex === -1) {
+      this._selectedIndex = 0;
+    }
+
+    return this._selectedIndex;
+  }
+
+  goDown() {
+    let tmpIndex = this.getLastIndex();
+    tmpIndex++;
+
+    if (tmpIndex >= this.getItems().length) {
+      tmpIndex = 0;
+    }
+
+    this._selectedIndex = tmpIndex;
+  }
+
+  goUp() {
+    let tmpIndex = this.getLastIndex();
+    tmpIndex--;
+
+    if (tmpIndex < 0) {
+      tmpIndex = this.getItems().length - 1;
+    }
+
+    this._selectedIndex = tmpIndex;
+  }
 }
