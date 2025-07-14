@@ -27,9 +27,9 @@ export class PaperStore extends AbstractStore<PaperModel> {
 
   createNewModel(id: string): PaperModel {
     const document = new PaperModel({ id });
-    document.smallId = `DOC-${Object.keys(this._models).length + 1}`;
+    document.smallId = `DOC-${this.getLength() + 1}`;
     document.save();
-    this._models[id] = document;
+    this.setModel(id, document);
     this.save();
     return document;
   }

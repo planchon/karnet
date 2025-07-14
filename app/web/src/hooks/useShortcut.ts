@@ -1,13 +1,12 @@
-import { CommandsModels } from "@/models/command.model";
-import posthog from "posthog-js";
 import {
   useCallback,
-  useRef,
+  useEffect,
   useLayoutEffect,
-  useState,
-  useEffect
+  useRef,
+  useState
 } from "react";
 import { useNavigate } from "react-router";
+import { CommandsModels } from "@/models/command.model";
 
 export const useShortcut = (
   shortcut: string,
@@ -23,6 +22,7 @@ export const useShortcut = (
 
   const handleKeyDown = useCallback(
     // the bypass is used in the rich text editor
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: its ok
     (event: KeyboardEvent & { bypassTextInput?: boolean }) => {
       const isTextInput =
         event.target instanceof HTMLTextAreaElement ||
@@ -90,7 +90,7 @@ export const useShortcut = (
           if (keyArray[keyCombo.length] === event.key) {
             // Handle final key in the sequence
             if (
-              keyArray[keyArray.length - 1] === event.key &&
+              keyArray.at(keyArray.length - 1) === event.key &&
               keyCombo.length === keyArray.length - 1
             ) {
               // Run handler if the sequence is complete, then reset it
@@ -116,7 +116,7 @@ export const useShortcut = (
         return callbackRef.current(event);
       }
     },
-    [keyCombo.length]
+    [keyCombo.length, options.disableTextInputs, shortcut]
   );
 
   useEffect(() => {

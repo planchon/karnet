@@ -107,17 +107,12 @@
     "zod-class": "^0.0.18"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.0",
-    "@poltion/eslint-config": "workspace:*",
     "@poltion/typescript-config": "workspace:*",
     "@types/lodash": "^4.17.20",
     "@types/node": "^22.15.29",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
-    "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "sass-embedded": "^1.89.0",
     "tailwind-scrollbar": "^4.0.2",

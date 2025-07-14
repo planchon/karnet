@@ -15,7 +15,7 @@ export class UserStore extends AbstractStore<UserModel> {
       name: "Anonymous",
       email: "anonymous@example.com"
     });
-    this._models[AnonymousUserId] = anonymousUser;
+    this.setModel(AnonymousUserId, anonymousUser);
 
     makeObservable(this, {});
   }

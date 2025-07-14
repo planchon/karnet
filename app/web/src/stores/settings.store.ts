@@ -1,8 +1,8 @@
-import { SettingsModel } from "@/models/settings.model";
-import { AbstractStore } from "./abstract.store";
-import { RootStore } from "./root.store";
-import { AnonymousUserId } from "./user.store";
-import { action, makeObservable, observable } from "mobx";
+import { makeObservable } from 'mobx';
+import { SettingsModel } from '@/models/settings.model';
+import { AbstractStore } from './abstract.store';
+import type { RootStore } from './root.store';
+import { AnonymousUserId } from './user.store';
 
 // we have one setting per user
 // settings id = user id
@@ -17,15 +17,20 @@ export class SettingsStore extends AbstractStore<SettingsModel> {
   }
 
   // this store do not store ids
-  getById(id: string | undefined): SettingsModel {
+  getById(_id: string | undefined): SettingsModel {
     return {} as SettingsModel;
   }
 
-  setById(id: string, model: SettingsModel): void {}
+  setById(_id: string, _model: SettingsModel): void {
+    return;
+  }
 
-  loadInMemory(id: string | undefined): SettingsModel {
-    if (id === undefined) throw new Error("Id is undefined");
-    return new SettingsModel({ id });
+  loadInMemory(_id: string | undefined): SettingsModel {
+    if (_id === undefined) {
+      throw new Error('Id is undefined');
+    }
+
+    return new SettingsModel({ id: _id });
   }
 
   // this should always return a value
@@ -33,18 +38,18 @@ export class SettingsStore extends AbstractStore<SettingsModel> {
   // then we get the setting model for the user from remote
   // meaning that the settings is always available
   getCurrent = (): SettingsModel => {
-    return this._models[AnonymousUserId] as SettingsModel;
+    return this.getById(AnonymousUserId) as SettingsModel;
   };
 
   seed() {
     const anonymousSettings = new SettingsModel({
-      id: "anonymous",
-      theme: "light"
+      id: 'anonymous',
+      theme: 'light',
     });
-    this._models[AnonymousUserId] = anonymousSettings;
+    this.setModel(AnonymousUserId, anonymousSettings);
   }
 
-  createNewModel(id: string): SettingsModel {
-    throw new Error("Settings model is not creatable");
+  createNewModel(_id: string): SettingsModel {
+    throw new Error('Settings model is not creatable');
   }
 }

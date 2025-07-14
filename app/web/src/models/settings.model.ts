@@ -1,17 +1,17 @@
-import { action, makeObservable, observable, reaction } from "mobx";
-import { AbstractModel } from "./abstract.model";
-import posthog from "posthog-js";
+import { action, makeObservable, observable, reaction } from 'mobx';
+import posthog from 'posthog-js';
+import { AbstractModel } from './abstract.model';
 
 export const Theme = {
-  LIGHT: "light",
-  DARK: "dark"
+  LIGHT: 'light',
+  DARK: 'dark',
 } as const;
 
 export type ThemeType = (typeof Theme)[keyof typeof Theme];
 
 export class SettingsModel extends AbstractModel {
-  theme: ThemeType = "light";
-  disableLinks: boolean = false;
+  theme: ThemeType = 'light';
+  disableLinks = false;
 
   constructor(props: Partial<SettingsModel> & { id: string }) {
     super(props);
@@ -20,20 +20,20 @@ export class SettingsModel extends AbstractModel {
       theme: observable,
       setTheme: action,
       disableLinks: observable,
-      setDisableLinks: action
+      setDisableLinks: action,
     });
 
     reaction(
       () => this.theme,
       (theme) => {
-        document.documentElement.classList.toggle("dark", theme === "dark");
+        document.documentElement.classList.toggle('dark', theme === 'dark');
       }
     );
   }
 
   toJSON() {
     return {
-      ...this
+      ...this,
     };
   }
 
@@ -42,7 +42,7 @@ export class SettingsModel extends AbstractModel {
   }
 
   _id() {
-    return "p6n-settings";
+    return 'p6n-settings';
   }
 
   setTheme = (theme: ThemeType) => {
@@ -50,7 +50,7 @@ export class SettingsModel extends AbstractModel {
   };
 
   setDisableLinks(disableLinks: boolean) {
-    posthog.capture("disable_links", { disableLinks });
+    posthog.capture('disable_links', { disableLinks });
     this.disableLinks = disableLinks;
   }
 }

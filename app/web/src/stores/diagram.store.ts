@@ -21,7 +21,7 @@ export class DiagramStore extends AbstractStore<DiagramModel> {
   createNewModel(id: string): DiagramModel {
     const diagram = new DiagramModel({ id });
     diagram.save();
-    this._models[id] = diagram;
+    this.setModel(id, diagram);
     this.save();
     return diagram;
   }

@@ -1,5 +1,5 @@
-import { SettingsModel } from "@/models/settings.model";
-import { rootStore } from "@/stores/root.store";
+import type { SettingsModel } from '@/models/settings.model';
+import { rootStore } from '@/stores/root.store';
 
 export const useStores = () => {
   return rootStore;

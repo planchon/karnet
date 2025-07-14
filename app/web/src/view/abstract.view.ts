@@ -1,5 +1,5 @@
-import { AbstractModel } from "@/models/abstract.model";
-import { RootStore } from "@/stores/root.store";
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
+import type { RootStore } from '@/stores/root.store';
 
 export type ViewItem = {
   id: string;
@@ -17,16 +17,47 @@ export abstract class AbstractView<T extends ViewItem> {
   bodyRef: React.RefObject<HTMLDivElement | null> | null = null;
   searchInputRef: React.RefObject<HTMLInputElement | null> | null = null;
 
-  _lastHoveredElement: HTMLElement | null = null;
   _lastHoveredIndex: number | null = null;
   _lastHoveredDocumentId: string | null = null;
 
-  _selectedIndex: number = -1;
+  _selectedIndex = -1;
 
-  query: string = "";
+  query: string;
+
+  renderableItems: T[] = [];
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
+    this.query = '';
+
+    makeObservable(this, {
+      _selectedIndex: observable,
+      query: observable,
+      setSearchQuery: action,
+      setSelectedIndex: action,
+      search: action,
+      getItems: computed,
+      getAllItems: computed,
+      renderableItems: observable,
+      computeRenderableItems: action,
+    });
+
+    reaction(
+      () => this.query,
+      () => {
+        this.computeRenderableItems();
+      }
+    );
+
+    reaction(
+      () => this.getAllItems,
+      () => {
+        this.computeRenderableItems();
+      },
+      {
+        delay: 25,
+      }
+    );
   }
 
   setSearchQuery(query: string) {
@@ -36,20 +67,22 @@ export abstract class AbstractView<T extends ViewItem> {
   /*
    * @returns the all the possible items to display in the view
    */
-  abstract getAllItems(): T[];
+  abstract get getAllItems(): T[];
+
+  computeRenderableItems() {
+    const allItems = this.getAllItems;
+    const searchedItems = this.search(allItems);
+    const filteredItems = this.filterBy(searchedItems);
+    const orderedItems = this.orderBy(filteredItems);
+    this.renderableItems = orderedItems;
+  }
 
   /*
    * @returns the items to display in the view
    * @note this is the items that are currently displayed in the view (after filters, search, etc.)
    */
-  getItems(): T[] {
-    const allItems = this.getAllItems();
-
-    const searchedItems = this.search(allItems);
-    const filteredItems = this.filterBy(searchedItems);
-    const orderedItems = this.orderBy(filteredItems);
-
-    return orderedItems;
+  get getItems(): T[] {
+    return this.renderableItems;
   }
 
   /*
@@ -85,26 +118,52 @@ export abstract class AbstractView<T extends ViewItem> {
   abstract groupBy(items: T[]): Record<string, T[]>;
 
   /*
+   * @returns the selected index
+   */
+  getSelectedIndex() {
+    return this._selectedIndex;
+  }
+
+  /*
+   * @param index - the index to set as selected
+   */
+  setSelectedIndex(_index: number) {
+    let index = _index;
+    // -1 is the exception
+    if (index === -1) {
+      this._selectedIndex = -1;
+      return;
+    }
+
+    if (index > this.getItems.length) {
+      console.error('index is greater than the number of items');
+      index = this.getItems.length - 1;
+    }
+
+    if (index < 0) {
+      console.error('index is less than 0');
+      index = 0;
+    }
+
+    this._selectedIndex = index;
+
+    return this._selectedIndex;
+  }
+
+  /*
    * @param element - the element to set as last hovered element
    */
   setLastHoveredElement(element: HTMLElement) {
-    this._lastHoveredElement = element;
-    this._lastHoveredIndex = Number(element.getAttribute("data-list-index"));
-    this._lastHoveredDocumentId = element.getAttribute("data-document-id");
+    this._lastHoveredIndex = Number(element.getAttribute('data-list-index'));
+    this._lastHoveredDocumentId = element.getAttribute('data-document-id');
   }
 
   getLastIndex() {
     // if the user is hovering an element, use the last hovered index
     const lastIndexFromHover = this._lastHoveredIndex;
     if (lastIndexFromHover) {
-      this._lastHoveredElement = null;
+      this._lastHoveredIndex = null;
       return Number(lastIndexFromHover);
-    }
-
-    // otherwise, use the last selected index
-    // if no index is selected, use the first index
-    if (this._selectedIndex === -1) {
-      this._selectedIndex = 0;
     }
 
     return this._selectedIndex;
@@ -113,12 +172,11 @@ export abstract class AbstractView<T extends ViewItem> {
   goDown() {
     let tmpIndex = this.getLastIndex();
     tmpIndex++;
-
-    if (tmpIndex >= this.getItems().length) {
+    if (tmpIndex >= this.getItems.length) {
       tmpIndex = 0;
     }
 
-    this._selectedIndex = tmpIndex;
+    this.setSelectedIndex(tmpIndex);
   }
 
   goUp() {
@@ -126,9 +184,15 @@ export abstract class AbstractView<T extends ViewItem> {
     tmpIndex--;
 
     if (tmpIndex < 0) {
-      tmpIndex = this.getItems().length - 1;
+      tmpIndex = this.getItems.length - 1;
     }
 
-    this._selectedIndex = tmpIndex;
+    this.setSelectedIndex(tmpIndex);
+  }
+
+  currentItem() {
+    const index = this.getSelectedIndex();
+
+    return this.getItems[index];
   }
 }

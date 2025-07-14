@@ -26,9 +26,9 @@ export class SketchesStore extends AbstractStore<SketchModel> {
 
   createNewModel(id: string): SketchModel {
     const sketch = new SketchModel({ id });
-    sketch.smallId = `SKT-${Object.keys(this._models).length + 1}`;
+    sketch.smallId = `SKT-${this.getLength() + 1}`;
     sketch.save();
-    this._models[id] = sketch;
+    this.setModel(id, sketch);
     this.save();
     return sketch;
   }

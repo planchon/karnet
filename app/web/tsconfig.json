@@ -3,6 +3,8 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "strict": true,
+    "strictNullChecks": true,
     "target": "ES2023",
     "outDir": "dist",
     "baseUrl": ".",
