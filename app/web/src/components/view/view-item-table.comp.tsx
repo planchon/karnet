@@ -1,6 +1,11 @@
 import type { IconProps } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 import { Button } from "@ui/button";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuTrigger,
+} from "@ui/context-menu";
 import { Input } from "@ui/input";
 import { observer } from "mobx-react";
 import React, { type JSX, type Key, useEffect, useRef, useState } from "react";
@@ -8,7 +13,7 @@ import { Link, useNavigate } from "react-router";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useSettings } from "@/hooks/useStores";
 import { createContext } from "@/lib/create-context";
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
 import { TooltipWrapper } from "@/primitive/super-ui/tooltip-wrapper";
 import type {
 	AbstractView,
@@ -80,14 +85,15 @@ const ViewRoot = observer(
 		function handleKeyDown(e: KeyboardEvent) {
 			setNavigationMode("keyboard");
 
-			if (document.activeElement === viewModel.searchInputRef?.current) {
-				if (ESCAPE_KEYS.includes(e.key)) {
-					resetFocus();
-				}
-				return;
+			if (ESCAPE_KEYS.includes(e.key)) {
+				resetFocus();
 			}
 
 			if (UP_KEYS.includes(e.key)) {
+				if (e.metaKey || e.ctrlKey) {
+					return;
+				}
+
 				viewModel.goUp();
 				e.preventDefault();
 				e.stopPropagation();
@@ -95,6 +101,10 @@ const ViewRoot = observer(
 			}
 
 			if (DOWN_KEYS.includes(e.key)) {
+				if (e.metaKey || e.ctrlKey) {
+					return;
+				}
+
 				viewModel.goDown();
 				e.preventDefault();
 				e.stopPropagation();
@@ -104,7 +114,7 @@ const ViewRoot = observer(
 			if (e.key === "Enter") {
 				const item = viewModel.currentItem();
 				if (item) {
-					navigate(`/${item.type}/${item.id}`);
+					navigate(`/${item.type}/${item.smallId}/${slugify(item.name)}`);
 				}
 			}
 		}
@@ -161,7 +171,51 @@ const ViewRoot = observer(
 	},
 );
 
-const ViewBody = observer(
+const ViewItemsRoot = observer(
+	({
+		children,
+	}: {
+		children: [
+			React.ReactElement<typeof ViewItemsList>,
+			React.ReactElement<typeof ViewItemContextMenu>,
+		];
+	}) => {
+		// find the component with id = view-items-list
+		const list = children.filter((c) => {
+			return c.type === ViewItemsList;
+		});
+		// find the component with id = view-item-context-menu
+		const menu = children.filter((c) => {
+			return c.type === ViewItemsContextMenu;
+		});
+
+		if (list.length !== 1) {
+			throw new Error("ViewItemsRoot must have a ViewItemsList");
+		}
+
+		if (menu.length !== 1) {
+			throw new Error("ViewItemsRoot must have a ViewItemContextMenu");
+		}
+
+		return (
+			<div className="h-full w-full">
+				<div className="flex flex-col overflow-y-auto" id="view-body">
+					{list}
+				</div>
+				<div className="h-full w-full ">
+					<ContextMenu>
+						<ContextMenuTrigger>
+							<div className="h-full w-full"></div>
+						</ContextMenuTrigger>
+						{menu}
+					</ContextMenu>
+				</div>
+			</div>
+		);
+	},
+);
+
+const ViewItemsList = observer(
 	<R extends ViewItemType>({
 		children,
 	}: {
@@ -172,7 +226,7 @@ const ViewBody = observer(
 		const data = viewModel.getItems;
 
 		return (
-			<div className="flex flex-col overflow-y-auto" id="view-body">
+			<div className="flex flex-col overflow-y-auto" id="view-items-list">
 				{data.map((item: R, index: number) => {
 					return (
 						<__ViewItem item={item} key={item.id} listIndex={index}>
@@ -180,8 +234,17 @@ const ViewBody = observer(
 						</__ViewItem>
 					);
 				})}
-				<div className="h-10 w-full" />
 			</div>
+		);
+	},
+);
+
+const ViewItemsContextMenu = observer(
+	({ children }: { children: React.ReactNode }) => {
+		return (
+			<ContextMenuContent className="w-48 overflow-hidden">
+				{children}
+			</ContextMenuContent>
 		);
 	},
 );
@@ -216,7 +279,7 @@ const ViewItemLine = observer(
 		...props
 	}: {
 		className?: string;
-		children: React.ReactNode;
+		children: React.ReactElement[];
 	}) => {
 		const settings = useSettings();
 
@@ -225,34 +288,51 @@ const ViewItemLine = observer(
 
 		const isSelected = listIndex === viewModel._selectedIndex;
 
+		const everythingElse = children.filter((c) => {
+			if (c === null || c === undefined) {
+				return false;
+			}
+
+			return c.type !== ViewItemContextMenu;
+		});
+
+		const contextMenu = children.filter((c) => {
+			return c.type === ViewItemContextMenu;
+		});
+
 		return (
-			<Link
-				id={`view-item-line-${item.id}`}
-				className={cn(
-					"flex h-10 w-full select-none items-center justify-between gap-x-2 px-5 py-2 focus:outline-none",
-					navigation.mode === "mouse" &&
-						"cursor-pointer hover:bg-accent-foreground/10",
-					navigation.mode === "keyboard" &&
-						isSelected &&
-						"bg-accent-foreground/10",
-					navigation.mode === "focus" &&
-						isSelected &&
-						"bg-accent-foreground/10",
-					settings.disableLinks && "pointer-events-none select-none",
-					className,
-				)}
-				data-document-id={item.id}
-				data-list-index={listIndex}
-				key={item.id}
-				onFocus={() => {
-					navigation.setMode("focus");
-					viewModel.setSelectedIndex(listIndex);
-				}}
-				to={`/${item.type}/${item.id}`}
-				{...props}
-			>
-				{children}
-			</Link>
+			<ContextMenu>
+				<ContextMenuTrigger>
+					<Link
+						id={`view-item-line-${item.smallId}`}
+						className={cn(
+							"flex h-10 w-full select-none items-center justify-between gap-x-2 px-5 py-2 focus:outline-none",
+							navigation.mode === "mouse" &&
+								"cursor-pointer hover:bg-accent-foreground/10",
+							navigation.mode === "keyboard" &&
+								isSelected &&
+								"bg-accent-foreground/10",
+							navigation.mode === "focus" &&
+								isSelected &&
+								"bg-accent-foreground/10",
+							settings.disableLinks && "pointer-events-none select-none",
+							className,
+						)}
+						data-document-id={item.id}
+						data-list-index={listIndex}
+						key={item.id}
+						onFocus={() => {
+							navigation.setMode("focus");
+							viewModel.setSelectedIndex(listIndex);
+						}}
+						to={`/${item.type}/${item.smallId}/${slugify(item.name)}`}
+						{...props}
+					>
+						{everythingElse}
+					</Link>
+				</ContextMenuTrigger>
+				{contextMenu}
+			</ContextMenu>
 		);
 	},
 );
@@ -314,6 +394,16 @@ const ViewItemAuthor = () => {
 		</div>
 	);
 };
+
+const ViewItemContextMenu = observer(
+	({ children }: { children: React.ReactNode }) => {
+		return (
+			<ContextMenuContent className="w-48 overflow-hidden">
+				{children}
+			</ContextMenuContent>
+		);
+	},
+);
 
 // HEADER COMPONENTS
 
@@ -415,7 +505,12 @@ export const View = {
 		Labels: ViewItemLabels,
 		Author: ViewItemAuthor,
 		Date: ViewItemDate,
+		ContextMenu: ViewItemContextMenu,
 	},
 	Root: ViewRoot,
-	Body: ViewBody,
+	Items: {
+		Root: ViewItemsRoot,
+		List: ViewItemsList,
+		Menu: ViewItemsContextMenu,
+	},
 };
