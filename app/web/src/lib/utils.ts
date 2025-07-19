@@ -11,8 +11,10 @@ export function generateId() {
 }
 
 export function slugify(text: string) {
-	return text
+	const slug = text
 		.toLowerCase()
 		.replace(/ /g, "-")
 		.replace(/[^a-z0-9-]/g, "");
+
+	return slug.length > 0 ? slug : "untitled";
 }

@@ -20,7 +20,7 @@ import {
 	ContextMenuSubTrigger,
 } from "@ui/context-menu";
 import { Link } from "react-router";
-import { View } from "@/components/view/view-item-table.comp";
+import { View } from "@/components/view/table";
 import { useStores } from "@/hooks/useStores";
 import type { DiagramModel } from "@/models/diagram.model";
 import type { PaperModel } from "@/models/paper.model";
@@ -68,15 +68,17 @@ export const DocumentView = () => {
 								)}
 							</View.Item.Infos>
 							<View.Item.Spacer />
-							<View.Item.Labels>
-								<Label
-									className="bg-background"
-									icon={IconCalendar}
-									label="test"
-								/>
-							</View.Item.Labels>
-							<View.Item.Date />
-							<View.Item.Author />
+							<View.Item.Tags>
+								<View.Item.Labels>
+									<Label
+										className="bg-background"
+										icon={IconCalendar}
+										label="test"
+									/>
+								</View.Item.Labels>
+								<View.Item.Date />
+								<View.Item.Author />
+							</View.Item.Tags>
 							<View.Item.ContextMenu>
 								<ContextMenuItem>
 									<IconPencil className="mr-2" />
