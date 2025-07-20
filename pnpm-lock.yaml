@@ -415,8 +415,8 @@ importers:
         specifier: ^19.1.8
         version: 19.1.8
       '@xstate/store':
-        specifier: ^3.8.2
-        version: 3.8.2(react@19.1.0)
+        specifier: ^2.6.0
+        version: 2.6.2(react@19.1.0)
       cmdk:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2899,10 +2899,10 @@ packages:
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
 
-  '@xstate/store@3.8.2':
-    resolution: {integrity: sha512-vq/hgHXRRnzNyjZhgoya2EMM4sEV7XhSAOaSX5oAeDdrl+w4Kx+ZdGM3dpjxk769TqTHQ3zMMfWrcFaPO5JCBg==}
+  '@xstate/store@2.6.2':
+    resolution: {integrity: sha512-zznGTWU+tmhbD0UUxPLy5FmxvceBNyMsN1Tuy7UMJAH9NuaQWj4/B2L+EcO6FxI2b2CNyzk1PL5mZ8cDpBFpMw==}
     peerDependencies:
-      react: ^18.2.0 || ^19.0.0
+      react: ^18.2.0 || ^19.0.0-0
       solid-js: ^1.7.6
     peerDependenciesMeta:
       react:
@@ -8723,7 +8723,7 @@ snapshots:
       loupe: 3.1.4
       tinyrainbow: 2.0.0
 
-  '@xstate/store@3.8.2(react@19.1.0)':
+  '@xstate/store@2.6.2(react@19.1.0)':
     optionalDependencies:
       react: 19.1.0
 

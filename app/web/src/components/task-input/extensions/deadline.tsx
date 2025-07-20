@@ -105,7 +105,7 @@ export const DeadlineNode = Node.create({
 			HTMLAttributes,
 			{
 				level: 1,
-				class: `mx-1 px-[4px] pb-[2px] py-[1px] bg-slate-200/70 rounded-xs`,
+				class: `mx-1 px-[4px] pb-[2px] py-[1px] ml-1 bg-slate-200/70 rounded-xs`,
 			},
 		);
 
@@ -129,20 +129,21 @@ export const DeadlineNode = Node.create({
 					find: value.regex,
 					handler: ({ range, chain, match }) => {
 						const input = match[0];
+						let newRange = range;
 
 						if (input.startsWith("p")) {
-							range = {
+							newRange = {
 								from: range.from + 2,
 								to: range.to,
 							};
 						}
 
 						chain()
-							.insertContentAt(range, {
+							.insertContentAt(newRange, {
 								type: this.name,
 								attrs: {
 									date: input,
-									labelRender: input,
+									labelRender: input.trim(),
 									type: value.label,
 								},
 							})

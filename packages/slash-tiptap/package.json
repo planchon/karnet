@@ -21,7 +21,7 @@
 		"@tiptap/pm": "^3.0.7",
 		"@tiptap/react": "^3.0.7",
 		"@tiptap/suggestion": "^3.0.7",
-		"@xstate/store": "^3.8.2",
+		"@xstate/store": "^2.6.0",
 		"cmdk": "^1.1.1",
 		"react": "catalog:",
 		"@types/react": "^19.1.8",
