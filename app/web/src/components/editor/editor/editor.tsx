@@ -19,7 +19,6 @@ import {
 import { StarterKit } from "@tiptap/starter-kit";
 import * as React from "react";
 // --- Custom Extensions ---
-import { Link } from "../extension/link/link-extension";
 import { Selection } from "../extension/select/selection-extension";
 import { TrailingNode } from "../extension/trailing/trailing-node-extension";
 
@@ -125,7 +124,6 @@ export function SimpleEditor({ id }: Props) {
 				onError: (error) => console.error("Upload failed:", error),
 			}),
 			TrailingNode,
-			Link.configure({ openOnClick: false }),
 			Collaboration.configure({
 				document: doc,
 			}),
