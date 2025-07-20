@@ -50,6 +50,7 @@ export function GeneralOutlet() {
 		rootStore.sketchesStore.load();
 		rootStore.paperStore.load();
 		rootStore.diagramStore.load();
+		rootStore.taskStore.load();
 
 		console.timeEnd("loading stores");
 		console.groupEnd();

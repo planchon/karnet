@@ -51,7 +51,13 @@ export const useShortcut = (
       }
 
       // Don't enable shortcuts in inputs unless explicitly declared
-      if (options.disableTextInputs && isTextInput && !event.bypassTextInput) {
+      if (
+        options.disableTextInputs &&
+        isTextInput &&
+        !event.bypassTextInput &&
+        shortcut !== "Control+Enter" &&
+        shortcut !== "Command+Enter"
+      ) {
         if (
           [
             "ArrowUp",

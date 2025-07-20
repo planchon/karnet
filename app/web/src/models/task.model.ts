@@ -1,45 +1,101 @@
-import { makeObservable, observable } from "mobx";
-import { AbstractModel } from "@/models/abstract.model";
+import { makeObservable, observable, reaction } from 'mobx';
+import { allPossibleMatches } from '@/components/task-input/extensions/deadline';
+import { AbstractModel } from '@/models/abstract.model';
 
 export class TaskModel extends AbstractModel {
-	type = "task" as const;
+  type = 'task' as const;
 
-	completed = false;
-	completedAt: Date | null = null;
+  completed = false;
+  completedAt: Date | null = null;
 
-	targetDate: Date | null = null;
+  targetDate: Date | null = null;
 
-	title: string = "";
+  title = '';
+  priority: number | null = null;
+  deadline: string | null = null;
 
-	constructor(props: Partial<TaskModel> & { id: string }) {
-		super(props);
+  constructor(props: Partial<TaskModel> & { id: string }) {
+    super(props);
 
-		makeObservable(this, {
-			title: observable,
-			completed: observable,
-			completedAt: observable,
-			targetDate: observable,
-		});
-	}
+    makeObservable(this, {
+      title: observable,
+      completed: observable,
+      completedAt: observable,
+      targetDate: observable,
+    });
 
-	getSmallId(id: number): string {
-		return `TASK-${id}`;
-	}
+    this.load();
 
-	toJSON(): unknown {
-		return {
-			id: this.id,
-			name: this.name,
-			completed: this.completed,
-		};
-	}
+    reaction(
+      () => this.toJSON(),
+      () => {
+        this.save();
+      },
+      {
+        delay: 1000,
+      }
+    );
+  }
 
-	_id(): string {
-		return `p6n-task-metadata-${this.id}`;
-	}
+  getSmallId(id: number): string {
+    return `TASK-${id}`;
+  }
 
-	check() {
-		this.completed = true;
-		this.completedAt = new Date();
-	}
+  toJSON(): unknown {
+    return {
+      id: this.id,
+      name: this.name,
+      deadline: this.deadline,
+      priority: this.priority,
+      title: this.title,
+      completed: this.completed,
+    };
+  }
+
+  _id(): string {
+    return `p6n-task-metadata-${this.id}`;
+  }
+
+  check() {
+    this.completed = true;
+    this.completedAt = new Date();
+  }
+
+  setTitle(title: string | undefined) {
+    if (!title) {
+      this.title = '';
+      return;
+    }
+
+    let tmpTitle = title;
+
+    if (this.deadline) {
+      tmpTitle = tmpTitle.replaceAll(` ${this.deadline}`, '');
+    }
+
+    if (this.priority) {
+      tmpTitle = tmpTitle.replaceAll(` p${this.priority}`, '');
+    }
+
+    this.title = tmpTitle.trim();
+    console.log('title', this.title);
+  }
+
+  setDeadline(deadline: string | undefined) {
+    if (!deadline) {
+      this.deadline = null;
+      return;
+    }
+
+    this.deadline = deadline;
+  }
+
+  setPriority(priority: number | undefined) {
+    if (!priority) {
+      this.priority = null;
+      return;
+    }
+
+    this.priority = priority;
+  }
 }

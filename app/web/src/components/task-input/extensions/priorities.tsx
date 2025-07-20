@@ -1,88 +1,95 @@
-import { InputRule, mergeAttributes, Node } from "@tiptap/core";
+import { InputRule, mergeAttributes, Node } from '@tiptap/core';
 
 const regex = /(^|\s)p(\d+)$/;
 
-export const PriorityNode = Node.create({
-	name: "priority",
-	inline: true,
-	group: "inline",
-	selectable: false,
+type PriorityNodeOptions = {
+  onPriorityChange: (value: string) => void;
+};
 
-	addAttributes() {
-		return {
-			level: {
-				default: 1,
-			},
-		};
-	},
+export const PriorityNode = Node.create<PriorityNodeOptions>({
+  name: 'priority',
+  inline: true,
+  group: 'inline',
+  selectable: false,
 
-	parseHTML() {
-		return [
-			{
-				tag: "span[data-priority]",
-			},
-		];
-	},
+  addAttributes() {
+    return {
+      level: {
+        default: 1,
+      },
+    };
+  },
 
-	renderHTML({ node, HTMLAttributes }) {
-		const level = parseInt(node.attrs.level || "1");
+  parseHTML() {
+    return [
+      {
+        tag: 'span[data-priority]',
+      },
+    ];
+  },
 
-		let color = "";
+  renderHTML({ node, HTMLAttributes }) {
+    const level = Number.parseInt(node.attrs.level || '1', 10);
 
-		switch (level) {
-			case 0:
-				color = "bg-stone-300";
-				break;
-			case 1:
-				color = "bg-red-300";
-				break;
-			case 2:
-				color = "bg-yellow-300";
-				break;
-			case 3:
-				color = "bg-green-300";
-				break;
-			default:
-				color = "bg-gray-200";
-		}
+    let color = '';
 
-		const attributes = mergeAttributes(
-			this.options.HTMLAttributes,
-			HTMLAttributes,
-			{
-				level: 1,
-				class: `font-normal px-[3px] pb-[2px] py-[1px] ml-1 ${color} rounded-xs`,
-			},
-		);
+    switch (level) {
+      case 0:
+        color = 'bg-stone-300';
+        break;
+      case 1:
+        color = 'bg-red-300';
+        break;
+      case 2:
+        color = 'bg-yellow-300';
+        break;
+      case 3:
+        color = 'bg-green-300';
+        break;
+      default:
+        color = 'bg-gray-200';
+    }
 
-		return ["span", attributes, `p${node.attrs.level}`];
-	},
+    const attributes = mergeAttributes(
+      this.options.HTMLAttributes,
+      HTMLAttributes,
+      {
+        level: 1,
+        class: `font-normal px-[3px] pb-[2px] py-[1px] ml-1 ${color} rounded-xs`,
+      }
+    );
 
-	renderText({ node }) {
-		return `p${node.attrs.level}`;
-	},
+    return ['span', attributes, `p${level}`];
+  },
 
-	addInputRules() {
-		const rules: InputRule[] = [];
+  renderText({ node }) {
+    const level = Number.parseInt(node.attrs.level || '1', 10);
+    return ` p${level}`;
+  },
 
-		rules.push(
-			new InputRule({
-				find: regex,
-				handler: ({ range, match, chain }) => {
-					const [, , level] = match;
+  addInputRules() {
+    const rules: InputRule[] = [];
 
-					chain()
-						.insertContentAt(range, {
-							type: this.name,
-							attrs: {
-								level,
-							},
-						})
-						.run();
-				},
-			}),
-		);
+    rules.push(
+      new InputRule({
+        find: regex,
+        handler: ({ range, match, chain }) => {
+          const [, , level] = match;
 
-		return rules;
-	},
+          chain()
+            .insertContentAt(range, {
+              type: this.name,
+              attrs: {
+                level,
+              },
+            })
+            .run();
+
+          this.options.onPriorityChange(level);
+        },
+      })
+    );
+
+    return rules;
+  },
 });
