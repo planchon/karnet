@@ -1,17 +1,27 @@
-import Document from '@tiptap/extension-document';
-import Paragraph from '@tiptap/extension-paragraph';
-import Text from '@tiptap/extension-text';
-import { TextStyleKit } from '@tiptap/extension-text-style';
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
 
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, Node, useEditor } from "@tiptap/react";
+import { DeadlineNode } from "./extensions/deadline";
+import { PriorityNode } from "./extensions/priorities";
 
 export function TaskInputComp() {
-  const editor = useEditor({
-    immediatelyRender: false,
-    extensions: [Document, Paragraph, Text, TextStyleKit],
-    autofocus: 'start',
-    content: 'je suis un test <span class-name="text-red-500">red</span>',
-  });
+	const editor = useEditor({
+		immediatelyRender: false,
+		extensions: [
+			Node.create({
+				name: "oneLine",
+				topNode: true,
+				content: "block",
+			}),
+			Paragraph,
+			Text,
+			PriorityNode,
+			DeadlineNode,
+		],
+		autofocus: "start",
+		content: "",
+	});
 
-  return <EditorContent className="w-full" editor={editor} />;
+	return <EditorContent className="w-full" editor={editor} />;
 }

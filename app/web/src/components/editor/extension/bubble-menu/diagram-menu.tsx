@@ -1,5 +1,6 @@
 import { IconChevronDown } from "@tabler/icons-react";
-import { BubbleMenu, type Editor, useEditorState } from "@tiptap/react";
+import { type Editor, useEditorState } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import { Button } from "@ui/button";
 import {
 	Command,
@@ -43,7 +44,6 @@ export const DiagramMenu = observer(({ editor }: { editor: Editor }) => {
 	return (
 		<BubbleMenu
 			editor={editor}
-			tippyOptions={{ duration: 0 }}
 			shouldShow={shouldShow}
 			updateDelay={0}
 			pluginKey="diagramMenu"
