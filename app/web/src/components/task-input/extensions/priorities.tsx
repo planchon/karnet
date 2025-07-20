@@ -51,6 +51,7 @@ export const PriorityNode = Node.create<PriorityNodeOptions>({
     }
 
     const attributes = mergeAttributes(
+      // @ts-expect-error
       this.options.HTMLAttributes,
       HTMLAttributes,
       {
@@ -85,7 +86,9 @@ export const PriorityNode = Node.create<PriorityNodeOptions>({
             })
             .run();
 
-          this.options.onPriorityChange(level);
+          if (level) {
+            this.options.onPriorityChange(level);
+          }
         },
       })
     );

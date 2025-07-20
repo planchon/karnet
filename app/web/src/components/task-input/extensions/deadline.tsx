@@ -1,5 +1,4 @@
 import { InputRule, mergeAttributes, Node } from '@tiptap/core';
-import { Plugin } from '@tiptap/pm/state';
 
 // perfect date match
 const dateRegex = /(^|\s)(\d{1,2}\/\d{2})$/g;
@@ -99,6 +98,7 @@ export const DeadlineNode = Node.create<DeadlineNodeOptions>({
 
   renderHTML({ node, HTMLAttributes }) {
     const attributes = mergeAttributes(
+      // @ts-expect-error
       this.options.HTMLAttributes,
       HTMLAttributes,
       {
@@ -113,22 +113,6 @@ export const DeadlineNode = Node.create<DeadlineNodeOptions>({
 
   renderText({ node }) {
     return ` ${node.attrs.labelRender}`;
-  },
-
-  addProseMirrorPlugins() {
-    return [
-      new Plugin({
-        appendTransaction: (transactions, oldState, newState) => {
-          const tr = transactions[0];
-
-          if (tr?.docChanged) {
-            oldState.doc.no;
-          }
-
-          return null;
-        },
-      }),
-    ];
   },
 
   addInputRules() {
