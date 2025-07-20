@@ -1,31 +1,47 @@
 import { makeAutoObservable } from "mobx";
-import { RootStore } from "./root.store";
 import { DocumentView } from "@/view/document.view";
+import { TaskView } from "@/view/task.view";
+import type { RootStore } from "./root.store";
 
 export class ViewStore {
-  rootStore: RootStore;
+		rootStore: RootStore;
 
-  documentView: Record<string | "default", DocumentView>;
+		documentView: Record<string | "default", DocumentView>;
+		taskView: Record<string | "default", TaskView>;
 
-  constructor(rootStore: RootStore) {
-    this.rootStore = rootStore;
+		constructor(rootStore: RootStore) {
+			this.rootStore = rootStore;
 
-    this.documentView = {
-      default: new DocumentView(this.rootStore)
-    };
+			this.documentView = {
+				default: new DocumentView(this.rootStore),
+			};
 
-    makeAutoObservable(this);
-  }
+			this.taskView = {
+				default: new TaskView(this.rootStore),
+			};
 
-  // get a document view by its id
-  // its view may have different filters, order or display options
-  getDocumentView(id: string = "default") {
-    let existingView = this.documentView[id];
+			makeAutoObservable(this);
+		}
 
-    if (!existingView) {
-      throw new Error(`View with id ${id} not found`);
-    }
+		// get a document view by its id
+		// its view may have different filters, order or display options
+		getDocumentView(id: string = "default") {
+			const existingView = this.documentView[id];
 
-    return existingView;
-  }
-}
+			if (!existingView) {
+				throw new Error(`View with id ${id} not found`);
+			}
+
+			return existingView;
+		}
+
+		getTaskView(id: string = "default") {
+			const existingView = this.taskView[id];
+
+			if (!existingView) {
+				throw new Error(`View with id ${id} not found`);
+			}
+
+			return existingView;
+		}
+	}
