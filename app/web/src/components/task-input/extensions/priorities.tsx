@@ -1,9 +1,12 @@
 import { InputRule, mergeAttributes, Node } from '@tiptap/core';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { createOnNodeDeletePlugin } from './node-delete';
 
 const regex = /(^|\s)p(\d+)$/;
 
 type PriorityNodeOptions = {
   onPriorityChange: (value: string) => void;
+  onNodeDelete?: (deletedNode: ProseMirrorNode) => void;
 };
 
 export const PriorityNode = Node.create<PriorityNodeOptions>({
@@ -35,16 +38,16 @@ export const PriorityNode = Node.create<PriorityNodeOptions>({
 
     switch (level) {
       case 0:
-        color = 'bg-stone-300';
+        color = 'bg-stone-200';
         break;
       case 1:
-        color = 'bg-red-300';
+        color = 'bg-red-200';
         break;
       case 2:
-        color = 'bg-yellow-300';
+        color = 'bg-yellow-200';
         break;
       case 3:
-        color = 'bg-green-300';
+        color = 'bg-green-200';
         break;
       default:
         color = 'bg-gray-200';
@@ -74,11 +77,34 @@ export const PriorityNode = Node.create<PriorityNodeOptions>({
     rules.push(
       new InputRule({
         find: regex,
-        handler: ({ range, match, chain }) => {
+        handler: ({ range, match, chain, state }) => {
           const [, , level] = match;
 
+          let deleted = false;
+
+          state.doc.descendants((node, pos) => {
+            if (node.type.name === this.name) {
+              deleted = true;
+              chain()
+                .deleteRange({
+                  from: pos,
+                  to: pos + node.nodeSize,
+                })
+                .run();
+            }
+          });
+
+          let newRange = range;
+
+          if (deleted) {
+            newRange = {
+              from: range.from - 1,
+              to: range.to,
+            };
+          }
+
           chain()
-            .insertContentAt(range, {
+            .insertContentAt(newRange, {
               type: this.name,
               attrs: {
                 level,
@@ -94,5 +120,9 @@ export const PriorityNode = Node.create<PriorityNodeOptions>({
     );
 
     return rules;
+  },
+
+  addProseMirrorPlugins() {
+    return [createOnNodeDeletePlugin(this.name, this.options.onNodeDelete)];
   },
 });

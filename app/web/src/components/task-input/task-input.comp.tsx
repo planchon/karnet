@@ -10,8 +10,8 @@ export function TaskInputComp({
   onPriorityChange,
   onValueChange,
 }: {
-  onDeadlineChange: (value: string) => void;
-  onPriorityChange: (value: string) => void;
+  onDeadlineChange: (value: string | undefined) => void;
+  onPriorityChange: (value: string | undefined) => void;
   onValueChange: (value: string) => void;
 }) {
   const editor = useEditor({
@@ -26,9 +26,15 @@ export function TaskInputComp({
       Text,
       PriorityNode.configure({
         onPriorityChange,
+        onNodeDelete: () => {
+          onPriorityChange(undefined);
+        },
       }),
       DeadlineNode.configure({
         onDeadlineChange,
+        onNodeDelete: () => {
+          onDeadlineChange(undefined);
+        },
       }),
     ],
     autofocus: 'start',

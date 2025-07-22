@@ -1,4 +1,8 @@
 import { InputRule, mergeAttributes, Node } from '@tiptap/core';
+import {
+  createOnNodeDeletePlugin,
+  type NodeWithDeleteOptions,
+} from './node-delete';
 
 // perfect date match
 const dateRegex = /(^|\s)(\d{1,2}\/\d{2})$/g;
@@ -64,7 +68,7 @@ export const allPossibleMatches = {
   },
 };
 
-type DeadlineNodeOptions = {
+type DeadlineNodeOptions = NodeWithDeleteOptions & {
   onDeadlineChange: (value: string) => void;
 };
 
@@ -103,8 +107,7 @@ export const DeadlineNode = Node.create<DeadlineNodeOptions>({
       HTMLAttributes,
       {
         level: 1,
-        class:
-          'mx-1 px-[4px] pb-[2px] py-[1px] ml-1 bg-slate-200/70 rounded-xs',
+        class: 'mx-1 px-[4px] pb-[2px] py-[1px] ml-1 bg-slate-200 rounded-xs',
       }
     );
 
@@ -126,13 +129,34 @@ export const DeadlineNode = Node.create<DeadlineNodeOptions>({
       rules.push(
         new InputRule({
           find: value.regex,
-          handler: ({ range, chain, match }) => {
+          handler: ({ range, chain, match, state }) => {
             const input = match[0];
             let newRange = range;
 
             if (input.startsWith('p')) {
               newRange = {
                 from: range.from + 2,
+                to: range.to,
+              };
+            }
+
+            let deleted = false;
+
+            state.doc.descendants((node, pos) => {
+              if (node.type.name === this.name) {
+                deleted = true;
+                chain()
+                  .deleteRange({
+                    from: pos,
+                    to: pos + node.nodeSize,
+                  })
+                  .run();
+              }
+            });
+
+            if (deleted) {
+              newRange = {
+                from: range.from - 1,
                 to: range.to,
               };
             }
@@ -155,5 +179,9 @@ export const DeadlineNode = Node.create<DeadlineNodeOptions>({
     }
 
     return rules;
+  },
+
+  addProseMirrorPlugins() {
+    return [createOnNodeDeletePlugin(this.name, this.options.onNodeDelete)];
   },
 });

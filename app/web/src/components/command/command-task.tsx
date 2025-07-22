@@ -69,15 +69,23 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     setTags([...tags, value]);
   };
 
-  const onPriorityChange = (value: string) => {
-    console.log(value);
+  const onPriorityChange = (value: string | undefined) => {
+    if (!value) {
+      setPriority(undefined);
+      return;
+    }
 
     const priorityNumber = Number.parseInt(value, 10);
     console.log(priorityNumber);
     setPriority(priorityNumber);
   };
 
-  const onDeadlineChange = (value: string) => {
+  const onDeadlineChange = (value: string | undefined) => {
+    if (!value) {
+      setDeadline(undefined);
+      return;
+    }
+
     setDeadline(value);
   };
 
@@ -197,7 +205,11 @@ const TaskPriority = observer(function TaskPriorityComp({
           value={priority?.toString() || ''}
         >
           <SelectTrigger
-            className={cn('pl-1', !priority && 'w-7')}
+            className={cn(
+              'pl-1',
+              !priority && 'w-7',
+              priority && 'gap-x-[5px] pr-2'
+            )}
             showChevron={false}
             size="sm"
             tabIndex={-1}
@@ -248,12 +260,16 @@ const Deadline = observer(function DeadlineComp({
       <TooltipTrigger autoFocus={false}>
         <Select onValueChange={onDeadlineChange} value={deadline}>
           <SelectTrigger
-            className={cn('pl-1', !deadline && 'w-7')}
+            className={cn(
+              'pl-1',
+              !deadline && 'w-7',
+              deadline && 'gap-x-[5px] pr-2'
+            )}
             showChevron={false}
             size="sm"
             tabIndex={-1}
           >
-            <IconCalendar className="size-4 text-accent-foreground/60" />
+            <IconCalendar className="ml-[1px] size-4 text-accent-foreground/60" />
             {deadline && (
               <span className="text-accent-foreground/80 text-xs">
                 {deadline}
