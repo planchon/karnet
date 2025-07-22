@@ -1,12 +1,11 @@
 import { InputRule, mergeAttributes, Node } from '@tiptap/core';
-import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { createOnNodeDeletePlugin } from './node-delete';
 
 const regex = /(^|\s)p(\d+)$/;
 
 type PriorityNodeOptions = {
   onPriorityChange: (value: string) => void;
-  onNodeDelete?: (deletedNode: ProseMirrorNode) => void;
+  onNodeDelete?: () => void;
 };
 
 export const PriorityNode = Node.create<PriorityNodeOptions>({

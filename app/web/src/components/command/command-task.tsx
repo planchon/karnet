@@ -6,13 +6,11 @@ import {
   IconCalendar,
   IconLabel,
 } from '@tabler/icons-react';
-import { SelectValue } from '@ui/select';
 import { observer } from 'mobx-react';
 import { useState } from 'react';
 import usePreventAutoFocus from '@/hooks/usePreventAutoFocus';
 import { useCommands, useShortcut } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
-import { createContext } from '@/lib/create-context';
 import { cn, generateId } from '@/lib/utils';
 import { Button } from '@/primitive/ui/button';
 import { Dialog, DialogContent, DialogFooter } from '@/primitive/ui/dialog';
