@@ -5,12 +5,8 @@ import {
   IconAntennaBars5,
   IconCalendar,
   IconCalendarClock,
-  IconCalendarEvent,
-  IconCalendarMonth,
-  IconCalendarWeek,
   IconCopy,
   IconId,
-  IconLink,
   IconPencil,
   IconPlus,
   IconTrash,
@@ -28,6 +24,7 @@ import { View } from '@/components/view/table';
 import { useCommands } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
 import type { TaskModel } from '@/models/task.model';
+import { Label } from '@/primitive/super-ui/label';
 import { Priority } from '@/primitive/super-ui/priority';
 
 export const TaskView = observer(() => {
@@ -58,6 +55,13 @@ export const TaskView = observer(() => {
               </View.Item.Infos>
               <View.Item.Spacer />
               <View.Item.Tags>
+                {item.deadlineLabel && (
+                  <Label
+                    className="bg-background"
+                    icon={IconCalendar}
+                    label={item.deadlineLabel}
+                  />
+                )}
                 <View.Item.Author />
                 <View.Item.Date />
               </View.Item.Tags>
@@ -113,20 +117,36 @@ export const TaskView = observer(() => {
                     <span>Deadline</span>
                   </ContextMenuSubTrigger>
                   <ContextMenuSubContent>
-                    <ContextMenuItem>
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setDeadline('Tomorrow');
+                      }}
+                    >
                       <IconCalendarClock className="mr-2" />
-                      <span>Demain</span>
+                      <span>Tomorrow</span>
                     </ContextMenuItem>
-                    <ContextMenuItem>
-                      <IconCalendarEvent className="mr-2" />
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setDeadline('2 days');
+                      }}
+                    >
+                      <IconCalendarClock className="mr-2" />
                       <span>2 days</span>
                     </ContextMenuItem>
-                    <ContextMenuItem>
-                      <IconCalendarWeek className="mr-2" />
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setDeadline('End of week');
+                      }}
+                    >
+                      <IconCalendarClock className="mr-2" />
                       <span>End of week</span>
                     </ContextMenuItem>
-                    <ContextMenuItem>
-                      <IconCalendarMonth className="mr-2" />
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setDeadline('Next week');
+                      }}
+                    >
+                      <IconCalendarClock className="mr-2" />
                       <span>Next week</span>
                     </ContextMenuItem>
                   </ContextMenuSubContent>

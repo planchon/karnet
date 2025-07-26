@@ -11,7 +11,9 @@ export class TaskModel extends AbstractModel {
 
   title = '';
   priority: number | null = null;
-  deadline: string | null = null;
+
+  deadlineLabel: string | null = null;
+  deadlineDate: Date | null = null;
 
   constructor(props: Partial<TaskModel> & { id: string }) {
     super(props);
@@ -22,7 +24,8 @@ export class TaskModel extends AbstractModel {
       completedAt: observable,
       targetDate: observable,
       priority: observable,
-      deadline: observable,
+      deadlineLabel: observable,
+      deadlineDate: observable,
       setTitle: action,
       setDeadline: action,
       setPriority: action,
@@ -49,7 +52,8 @@ export class TaskModel extends AbstractModel {
     return {
       id: this.id,
       name: this.name,
-      deadline: this.deadline,
+      deadlineLabel: this.deadlineLabel,
+      deadlineDate: this.deadlineDate,
       priority: this.priority,
       title: this.title,
       completed: this.completed,
@@ -73,8 +77,8 @@ export class TaskModel extends AbstractModel {
 
     let tmpTitle = title;
 
-    if (this.deadline) {
-      tmpTitle = tmpTitle.replaceAll(` ${this.deadline}`, '');
+    if (this.deadlineLabel) {
+      tmpTitle = tmpTitle.replaceAll(` ${this.deadlineLabel}`, '');
     }
 
     if (this.priority) {
@@ -87,11 +91,11 @@ export class TaskModel extends AbstractModel {
 
   setDeadline(deadline: string | undefined) {
     if (!deadline) {
-      this.deadline = null;
+      this.deadlineLabel = null;
       return;
     }
 
-    this.deadline = deadline;
+    this.deadlineLabel = deadline;
   }
 
   setPriority(priority: number | undefined) {

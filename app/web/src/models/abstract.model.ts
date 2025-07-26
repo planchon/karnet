@@ -7,8 +7,6 @@ import {
   type ValidationError,
   validateSync as validateClassValidator,
 } from 'class-validator';
-import superjson from 'superjson';
-import { generateId } from '@/lib/utils';
 import type { ViewItem } from '@/view/abstract.view';
 
 declare global {
