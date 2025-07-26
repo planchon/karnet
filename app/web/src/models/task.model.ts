@@ -1,5 +1,4 @@
-import { makeObservable, observable, reaction } from 'mobx';
-import { allPossibleMatches } from '@/components/task-input/extensions/deadline';
+import { action, makeObservable, observable, reaction } from 'mobx';
 import { AbstractModel } from '@/models/abstract.model';
 
 export class TaskModel extends AbstractModel {
@@ -22,6 +21,11 @@ export class TaskModel extends AbstractModel {
       completed: observable,
       completedAt: observable,
       targetDate: observable,
+      priority: observable,
+      deadline: observable,
+      setTitle: action,
+      setDeadline: action,
+      setPriority: action,
     });
 
     this.load();

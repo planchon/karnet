@@ -1,11 +1,36 @@
-import { IconPlus } from '@tabler/icons-react';
-import { ContextMenuItem } from '@ui/context-menu';
+import {
+  IconAntennaBars2,
+  IconAntennaBars3,
+  IconAntennaBars4,
+  IconAntennaBars5,
+  IconCalendar,
+  IconCalendarClock,
+  IconCalendarEvent,
+  IconCalendarMonth,
+  IconCalendarWeek,
+  IconCopy,
+  IconId,
+  IconLink,
+  IconPencil,
+  IconPlus,
+  IconTrash,
+} from '@tabler/icons-react';
+import {
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+} from '@ui/context-menu';
+import { observer } from 'mobx-react';
 import { View } from '@/components/view/table';
 import { useCommands } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
 import type { TaskModel } from '@/models/task.model';
+import { Priority } from '@/primitive/super-ui/priority';
 
-export const TaskView = () => {
+export const TaskView = observer(() => {
   const { viewStore } = useStores();
   const view = viewStore.getTaskView();
   const commands = useCommands();
@@ -23,6 +48,7 @@ export const TaskView = () => {
             <View.Item.Line isLink={false}>
               <View.Item.Checkbox />
               <View.Item.Infos>
+                <Priority priority={item.priority} />
                 <View.Item.SmallId />
                 {item.title && (
                   <div className="font-medium text-accent-foreground text-sm">
@@ -35,6 +61,98 @@ export const TaskView = () => {
                 <View.Item.Author />
                 <View.Item.Date />
               </View.Item.Tags>
+              <View.Item.ContextMenu>
+                <ContextMenuItem>
+                  <IconPencil className="mr-2" />
+                  <span>Edit</span>
+                </ContextMenuItem>
+                <ContextMenuSeparator />
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger>
+                    <IconAntennaBars4 className="mr-4" />
+                    <span>Priority</span>
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent>
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setPriority(1);
+                      }}
+                    >
+                      <IconAntennaBars5 className="mr-2" />
+                      <span>Priority 1</span>
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setPriority(2);
+                      }}
+                    >
+                      <IconAntennaBars4 className="mr-2" />
+                      <span>Priority 2</span>
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setPriority(3);
+                      }}
+                    >
+                      <IconAntennaBars3 className="mr-2" />
+                      <span>Priority 3</span>
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                      onSelect={() => {
+                        item.setPriority(4);
+                      }}
+                    >
+                      <IconAntennaBars2 className="mr-2" />
+                      <span>Priority 4</span>
+                    </ContextMenuItem>
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger>
+                    <IconCalendar className="mr-4" />
+                    <span>Deadline</span>
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent>
+                    <ContextMenuItem>
+                      <IconCalendarClock className="mr-2" />
+                      <span>Demain</span>
+                    </ContextMenuItem>
+                    <ContextMenuItem>
+                      <IconCalendarEvent className="mr-2" />
+                      <span>2 days</span>
+                    </ContextMenuItem>
+                    <ContextMenuItem>
+                      <IconCalendarWeek className="mr-2" />
+                      <span>End of week</span>
+                    </ContextMenuItem>
+                    <ContextMenuItem>
+                      <IconCalendarMonth className="mr-2" />
+                      <span>Next week</span>
+                    </ContextMenuItem>
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+                <ContextMenuSeparator />
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger>
+                    <IconCopy className="mr-4" />
+                    <span>Copy</span>
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent>
+                    <ContextMenuItem>
+                      <IconId className="mr-2" />
+                      <span>Copy ID</span>
+                      <ContextMenuShortcut>
+                        <span>⌘.</span>
+                      </ContextMenuShortcut>
+                    </ContextMenuItem>
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+                <ContextMenuSeparator />
+                <ContextMenuItem>
+                  <IconTrash className="mr-2 text-destructive" />
+                  <span className="text-destructive">Delete</span>
+                </ContextMenuItem>
+              </View.Item.ContextMenu>
             </View.Item.Line>
           )}
         </View.Items.List>
@@ -51,4 +169,4 @@ export const TaskView = () => {
       </View.Items.Root>
     </View.Root>
   );
-};
+});

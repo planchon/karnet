@@ -1,15 +1,15 @@
-import superjson from "superjson";
-import { generateId } from "@/lib/utils";
 import {
-  IsNotEmpty,
-  IsString,
   IsDate,
+  IsNotEmpty,
   IsOptional,
+  IsString,
   Length,
+  type ValidationError,
   validateSync as validateClassValidator,
-  ValidationError
-} from "class-validator";
-import { ViewItem } from "@/view/abstract.view";
+} from 'class-validator';
+import superjson from 'superjson';
+import { generateId } from '@/lib/utils';
+import type { ViewItem } from '@/view/abstract.view';
 
 declare global {
   interface Window {
@@ -23,11 +23,11 @@ export abstract class AbstractModel implements ViewItem {
   @Length(21)
   @IsString()
   @IsNotEmpty()
-  id: string = "no_id";
+  id = 'no_id';
 
   @IsString()
   @IsNotEmpty()
-  smallId: string = "";
+  smallId = '';
 
   @IsDate()
   createdAt: Date = new Date();
@@ -45,14 +45,14 @@ export abstract class AbstractModel implements ViewItem {
 
   @IsString()
   @IsNotEmpty()
-  key: string = `p6n-models-${this.model_name}-${this.id}`;
+  key = `p6n-models-${this.model_name}-${this.id}`;
 
   @IsString()
-  name: string = "";
+  name = '';
 
   @IsString()
   @IsNotEmpty()
-  type: string = "abstract";
+  type = 'abstract';
 
   constructor(
     props: Partial<AbstractModel> & {
@@ -75,7 +75,7 @@ export abstract class AbstractModel implements ViewItem {
   load() {
     const serialized = localStorage.getItem(this._id());
     if (!serialized) {
-      console.debug("No model found in local storage", this._id());
+      console.debug('No model found in local storage', this._id());
       this.save();
       return;
     }
@@ -85,7 +85,7 @@ export abstract class AbstractModel implements ViewItem {
   }
 
   save() {
-    console.log("saving model", this._id());
+    console.log('saving model', this._id());
     localStorage.setItem(this._id(), JSON.stringify(this.toJSON()));
   }
 }

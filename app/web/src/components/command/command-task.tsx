@@ -11,6 +11,7 @@ import { useState } from 'react';
 import usePreventAutoFocus from '@/hooks/usePreventAutoFocus';
 import { useCommands, useShortcut } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
+import { useResetFocus } from '@/lib/focus-manager';
 import { cn, generateId } from '@/lib/utils';
 import { Button } from '@/primitive/ui/button';
 import { Dialog, DialogContent, DialogFooter } from '@/primitive/ui/dialog';
@@ -37,6 +38,7 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
   const [tags, setTags] = useState<string[]>([]);
 
   const preventAutoFocus = usePreventAutoFocus();
+  const resetFocus = useResetFocus();
 
   useShortcut('c+t', () => {
     commands.toggleTask();
@@ -56,11 +58,13 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
   useShortcut('Control+Enter', () => {
     commands.toggleTask();
     createTask();
+    reset();
   });
 
   useShortcut('Command+Enter', () => {
     commands.toggleTask();
     createTask();
+    reset();
   });
 
   const onTagChange = (value: string) => {
@@ -74,7 +78,6 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     }
 
     const priorityNumber = Number.parseInt(value, 10);
-    console.log(priorityNumber);
     setPriority(priorityNumber);
   };
 
@@ -92,8 +95,21 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     setTask(value);
   };
 
+  const reset = () => {
+    setTask('');
+    setPriority(undefined);
+    setDeadline(undefined);
+    setTags([]);
+    resetFocus();
+  };
+
+  const onToggleChange = () => {
+    commands.toggleTask();
+    reset();
+  };
+
   return (
-    <Dialog onOpenChange={commands.toggleTask} open={commands.taskOpen}>
+    <Dialog onOpenChange={onToggleChange} open={commands.taskOpen}>
       <DialogContent className="min-w-[700px] p-0" {...preventAutoFocus}>
         <div className="flex w-full flex-col gap-3 p-3 pb-0">
           <div className="flex items-center gap-2">
