@@ -40,7 +40,7 @@ export const Status = (props: { status: TaskStatus }) => {
       stroke: 'rgb(240, 191, 0)',
       strokeWidth: 4,
       strokeDasharray: '11.309733552923255 22.61946710584651',
-      strokeDashoffset: 5.654_866_776_461_628,
+      strokeDashoffset: 5.21,
       r: 2,
       cx: 7,
       cy: 7,
