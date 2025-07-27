@@ -63,7 +63,8 @@ export class TaskModel extends AbstractModel {
       deadlineDate: this.deadlineDate,
       priority: this.priority,
       title: this.title,
-      completed: this.completed
+      completed: this.completed,
+      status: this.status,
     };
   }
 
