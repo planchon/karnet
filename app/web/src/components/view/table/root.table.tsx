@@ -5,13 +5,14 @@ import { useShortcut } from '@/hooks/useShortcut';
 import { createContext } from '@/lib/create-context';
 import { useSetFocusElement } from '@/lib/focus-manager';
 import { slugify } from '@/lib/utils';
+import { TaskModel } from '@/models/task.model';
 import type {
   AbstractView,
   ViewItem as ViewItemType,
 } from '@/view/abstract.view';
 
-const UP_KEYS = ['ArrowUp', 'ArrowLeft', 'k'] satisfies Key[];
-const DOWN_KEYS = ['ArrowDown', 'ArrowRight', 'j'] satisfies Key[];
+const UP_KEYS = ['ArrowUp', 'ArrowLeft', 'k', 'K'] satisfies Key[];
+const DOWN_KEYS = ['ArrowDown', 'ArrowRight', 'j', 'J'] satisfies Key[];
 const ESCAPE_KEYS = ['Escape'] satisfies Key[];
 
 const ViewContext = createContext<{
@@ -73,6 +74,13 @@ export const ViewRoot = observer(
       }
     }
 
+    function tryCheckItem(forceTrue?: boolean) {
+      const item = viewModel.currentItem();
+      if (item) {
+        viewModel.checkItem(item, forceTrue);
+      }
+    }
+
     function handleKeyDown(e: KeyboardEvent) {
       setNavigationMode('keyboard');
 
@@ -86,8 +94,37 @@ export const ViewRoot = observer(
         }
 
         viewModel.goUp();
+
+        if (e.shiftKey) {
+          tryCheckItem();
+        }
+
         e.preventDefault();
         e.stopPropagation();
+      }
+
+      if (e.key === 'x') {
+        tryCheckItem();
+      }
+
+      if (e.key === 'd') {
+        const item = viewModel.currentItem();
+
+        if (item instanceof TaskModel) {
+          switch (item.status) {
+            case 'done':
+              item.setStatus('todo');
+              item.setCompleted();
+              break;
+            case 'in_progress':
+              item.setStatus('done');
+              break;
+            case 'todo':
+              item.setStatus('in_progress');
+              break;
+            default:
+          }
+        }
       }
 
       if (DOWN_KEYS.includes(e.key)) {
@@ -96,6 +133,11 @@ export const ViewRoot = observer(
         }
 
         viewModel.goDown();
+
+        if (e.shiftKey) {
+          tryCheckItem();
+        }
+
         e.preventDefault();
         e.stopPropagation();
       }

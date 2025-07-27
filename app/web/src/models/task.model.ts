@@ -15,6 +15,8 @@ export class TaskModel extends AbstractModel {
   deadlineLabel: string | null = null;
   deadlineDate: Date | null = null;
 
+  status: 'todo' | 'in_progress' | 'done' = 'todo';
+
   constructor(props: Partial<TaskModel> & { id: string }) {
     super(props);
 
@@ -29,6 +31,9 @@ export class TaskModel extends AbstractModel {
       setTitle: action,
       setDeadline: action,
       setPriority: action,
+      setCompleted: action,
+      status: observable,
+      setStatus: action,
     });
 
     this.load();
@@ -64,9 +69,19 @@ export class TaskModel extends AbstractModel {
     return `p6n-task-metadata-${this.id}`;
   }
 
-  check() {
+  setCompleted() {
+    if (this.completed) {
+      this.completed = false;
+      this.completedAt = null;
+      return;
+    }
+
     this.completed = true;
     this.completedAt = new Date();
+  }
+
+  setStatus(status: 'todo' | 'in_progress' | 'done') {
+    this.status = status;
   }
 
   setTitle(title: string | undefined) {

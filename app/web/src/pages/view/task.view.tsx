@@ -46,6 +46,7 @@ export const TaskView = observer(() => {
               <View.Item.Checkbox />
               <View.Item.Infos>
                 <Priority priority={item.priority} />
+                <View.Item.Status />
                 <View.Item.SmallId />
                 {item.title && (
                   <div className="font-medium text-accent-foreground text-sm">

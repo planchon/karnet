@@ -4,44 +4,44 @@ import { TaskView } from "@/view/task.view";
 import type { RootStore } from "./root.store";
 
 export class ViewStore {
-		rootStore: RootStore;
+  rootStore: RootStore;
 
-		documentView: Record<string | "default", DocumentView>;
-		taskView: Record<string | "default", TaskView>;
+  documentView: Record<string | 'default', DocumentView>;
+  taskView: Record<string | 'default', TaskView>;
 
-		constructor(rootStore: RootStore) {
-			this.rootStore = rootStore;
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
 
-			this.documentView = {
-				default: new DocumentView(this.rootStore),
-			};
+    this.documentView = {
+      default: new DocumentView(this.rootStore),
+    };
 
-			this.taskView = {
-				default: new TaskView(this.rootStore),
-			};
+    this.taskView = {
+      default: new TaskView(this.rootStore),
+    };
 
-			makeAutoObservable(this);
-		}
+    makeAutoObservable(this);
+  }
 
-		// get a document view by its id
-		// its view may have different filters, order or display options
-		getDocumentView(id: string = "default") {
-			const existingView = this.documentView[id];
+  // get a document view by its id
+  // its view may have different filters, order or display options
+  getDocumentView(id = 'default') {
+    const existingView = this.documentView[id];
 
-			if (!existingView) {
-				throw new Error(`View with id ${id} not found`);
-			}
+    if (!existingView) {
+      throw new Error(`View with id ${id} not found`);
+    }
 
-			return existingView;
-		}
+    return existingView;
+  }
 
-		getTaskView(id: string = "default") {
-			const existingView = this.taskView[id];
+  getTaskView(id = 'default') {
+    const existingView = this.taskView[id];
 
-			if (!existingView) {
-				throw new Error(`View with id ${id} not found`);
-			}
+    if (!existingView) {
+      throw new Error(`View with id ${id} not found`);
+    }
 
-			return existingView;
-		}
-	}
+    return existingView;
+  }
+}

@@ -11,6 +11,8 @@ import React from 'react';
 import { Link } from 'react-router';
 import { useSettings } from '@/hooks/useStores';
 import { cn, slugify } from '@/lib/utils';
+import { TaskModel } from '@/models/task.model';
+import { Status } from '@/primitive/status';
 import { useLocalItemContext } from './items.table';
 import { useViewContext } from './root.table';
 
@@ -29,8 +31,6 @@ export const ViewItemLine = observer(
 
     const { item, listIndex } = useLocalItemContext('ViewItemLine');
     const { viewModel, navigation } = useViewContext('ViewItemLine');
-
-    const isSelected = listIndex === viewModel._selectedIndex;
 
     const everythingElse = children.filter((c) => {
       if (c === null || c === undefined) {
@@ -51,15 +51,8 @@ export const ViewItemLine = observer(
         <ContextMenuTrigger>
           <Component
             className={cn(
-              'z-10 flex h-10 w-full select-none items-center justify-between py-2 pr-5 pl-3 hover:cursor-pointer focus:outline-none',
-              navigation.mode === 'mouse' &&
-                'cursor-pointer hover:bg-accent-foreground/10',
-              navigation.mode === 'keyboard' &&
-                isSelected &&
-                'bg-accent-foreground/10',
-              navigation.mode === 'focus' &&
-                isSelected &&
-                'bg-accent-foreground/10',
+              'z-50 flex h-10 w-full select-none items-center justify-between bg-transparent py-2 pr-5 pl-3 hover:cursor-pointer focus:outline-none',
+              navigation.mode === 'mouse' && 'cursor-pointer',
               settings.disableLinks && 'pointer-events-none select-none',
               className
             )}
@@ -69,6 +62,9 @@ export const ViewItemLine = observer(
             key={item.id}
             onFocus={() => {
               navigation.setMode('focus');
+              viewModel.setSelectedIndex(listIndex);
+            }}
+            onMouseEnter={() => {
               viewModel.setSelectedIndex(listIndex);
             }}
             to={`/${item.type}/${item.smallId}/${slugify(item.name)}`}
@@ -85,7 +81,10 @@ export const ViewItemLine = observer(
 
 export const ViewItemInfos = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex flex-row items-center gap-3 pl-1" id="view-item-infos">
+    <div
+      className="z-50 flex flex-row items-center gap-3 pl-1"
+      id="view-item-infos"
+    >
       {children}
     </div>
   );
@@ -93,7 +92,7 @@ export const ViewItemInfos = ({ children }: { children: React.ReactNode }) => {
 
 export const ViewItemTags = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex flex-row items-center gap-3" id="view-item-tags">
+    <div className="z-50 flex flex-row items-center gap-3" id="view-item-tags">
       {children}
     </div>
   );
@@ -159,15 +158,32 @@ export const ViewItemContextMenu = observer(
   }
 );
 
-export const ViewItemCheckbox = () => {
+export const ViewItemCheckbox = observer(() => {
+  const { item } = useLocalItemContext('ViewItemCheckbox');
+  const { viewModel } = useViewContext('ViewItemCheckbox');
+
+  const isChecked = viewModel.isItemChecked(item);
+
   return (
     <div className="group z-[1000] flex size-8 items-center justify-center transition-all duration-300">
       <Checkbox
+        checked={isChecked}
         className="size-4 group-hover:border-accent-foreground/50"
         onClick={(e) => {
+          viewModel.checkItem(item);
           e.stopPropagation();
         }}
       />
     </div>
   );
-};
+});
+
+export const ViewItemStatus = observer(() => {
+  const { item } = useLocalItemContext('ViewItemStatus');
+
+  if (!(item instanceof TaskModel)) {
+    throw new Error('Item is not a TaskModel');
+  }
+
+  return <Status status={item.status} />;
+});
