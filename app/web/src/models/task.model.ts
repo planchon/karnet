@@ -1,6 +1,8 @@
 import { action, makeObservable, observable, reaction } from 'mobx';
 import { AbstractModel } from '@/models/abstract.model';
 
+export type TaskStatus = 'todo' | 'in_progress' | 'done';
+
 export class TaskModel extends AbstractModel {
   type = 'task' as const;
 
@@ -15,7 +17,7 @@ export class TaskModel extends AbstractModel {
   deadlineLabel: string | null = null;
   deadlineDate: Date | null = null;
 
-  status: 'todo' | 'in_progress' | 'done' = 'todo';
+  status: TaskStatus = 'todo';
 
   constructor(props: Partial<TaskModel> & { id: string }) {
     super(props);

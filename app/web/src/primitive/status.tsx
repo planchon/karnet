@@ -1,101 +1,129 @@
-export const Status = (props: { status: 'todo' | 'in_progress' | 'done' }) => {
-  const todo = (
-    <>
-      <circle
-        cx="7"
-        cy="7"
-        fill="none"
-        r="6"
-        stroke="lch(68.75% 3.577 260.65)"
-        stroke-dasharray="1.4 1.74"
-        stroke-dashoffset="0.65"
-        stroke-width="1.5"
-      />
-      <circle
-        className="progress"
-        cx="7"
-        cy="7"
-        fill="none"
-        r="2"
-        stroke="lch(68.75% 3.577 260.65)"
-        stroke-dasharray="11.309733552923255 22.61946710584651"
-        stroke-dashoffset="11.309733552923255"
-        stroke-width="4"
-        transform="rotate(-90 7 7)"
-      />
-    </>
-  );
+import { motion } from 'framer-motion';
+import type { TaskStatus } from '@/models/task.model';
 
-  const inProgress = (
-    <>
-      <circle
-        cx="7"
-        cy="7"
-        fill="none"
-        r="6"
-        stroke="lch(80% 90 85)"
-        stroke-dasharray="3.14 0"
-        stroke-dashoffset="-0.7"
-        stroke-width="1.5"
-      />
-      <circle
-        className="progress"
-        cx="7"
-        cy="7"
-        fill="none"
-        r="2"
-        stroke="lch(80% 90 85)"
-        stroke-dasharray="11.309733552923255 22.61946710584651"
-        stroke-dashoffset="5.654866776461628"
-        stroke-width="4"
-        transform="rotate(-90 7 7)"
-      />
-    </>
-  );
+export const Status = (props: { status: TaskStatus }) => {
+  const backlog = {
+    circle1: {
+      stroke: 'rgb(164, 168, 174)',
+      strokeWidth: 1.5,
+      strokeDasharray: '1.4 1.74',
+      strokeDashoffset: 0.65,
+      cx: 7,
+      cy: 7,
+      r: 6,
+      fill: 'none',
+    },
+    circle2: {
+      stroke: 'rgb(164, 168, 174)',
+      strokeWidth: 4,
+      strokeDasharray: '11.309733552923255 22.61946710584651',
+      strokeDashoffset: 12,
+      cx: 7,
+      cy: 7,
+      r: 2,
+      fill: 'none',
+    },
+  };
 
-  const done = (
-    <>
-      <circle
-        cx="7"
-        cy="7"
-        fill="none"
-        r="6"
-        stroke="lch(48% 59.31 288.43)"
-        stroke-dasharray="3.14 0"
-        stroke-dashoffset="-0.7"
-        stroke-width="1.5"
-      />
-      <circle
-        className="progress"
-        cx="7"
-        cy="7"
-        fill="none"
-        r="3"
-        stroke="lch(48% 59.31 288.43)"
-        stroke-dasharray="18.84955592153876 37.69911184307752"
-        stroke-dashoffset="0"
-        stroke-width="6"
-        transform="rotate(-90 7 7)"
-      />
-      <path
-        d="M10.951 4.24896C11.283 4.58091 11.283 5.11909 10.951 5.45104L5.95104 10.451C5.61909 10.783 5.0809 10.783 4.74896 10.451L2.74896 8.45104C2.41701 8.11909 2.41701 7.5809 2.74896 7.24896C3.0809 6.91701 3.61909 6.91701 3.95104 7.24896L5.35 8.64792L9.74896 4.24896C10.0809 3.91701 10.6191 3.91701 10.951 4.24896Z"
-        fill="lch(99 0 282.863)"
-        stroke="none"
-      />
-    </>
-  );
+  const inProgress = {
+    circle1: {
+      stroke: 'rgb(240, 191, 0)',
+      strokeWidth: 1.5,
+      strokeDasharray: '3.14 0',
+      strokeDashoffset: -0.7,
+      cx: 7,
+      cy: 7,
+      r: 6,
+      fill: 'none',
+    },
+    circle2: {
+      stroke: 'rgb(240, 191, 0)',
+      strokeWidth: 4,
+      strokeDasharray: '11.309733552923255 22.61946710584651',
+      strokeDashoffset: 5.654_866_776_461_628,
+      r: 2,
+      cx: 7,
+      cy: 7,
+      fill: 'none',
+    },
+  };
+
+  const done = {
+    circle1: {
+      stroke: 'rgb(48, 166, 109)',
+      strokeWidth: 1.5,
+      strokeDasharray: '3.14 0',
+      strokeDashoffset: '-0.7',
+      cx: 7,
+      cy: 7,
+      r: 6,
+      fill: 'none',
+    },
+    circle2: {
+      stroke: 'rgb(48, 166, 109)',
+      strokeWidth: 6,
+      strokeDasharray: '18.84955592153876 37.69911184307752',
+      strokeDashoffset: '0',
+      fill: 'none',
+      r: 3,
+      cx: 7,
+      cy: 7,
+    },
+  };
+
+  const status = props.status || 'backlog';
+
+  const animateMap: Record<TaskStatus, any> = {
+    todo: backlog,
+    in_progress: inProgress,
+    done,
+  };
 
   return (
-    <svg
-      className="color-override transition-all duration-300"
-      fill="none"
+    <motion.svg
+      aria-label="Status"
       height="14"
+      role="img"
       viewBox="0 0 14 14"
       width="14"
     >
-      {props.status === 'done' && done}
-      {props.status === 'in_progress' && inProgress}
-      {props.status === 'todo' && todo}
-    </svg>
+      <motion.circle
+        animate={animateMap[status]?.circle1}
+        transition={{
+          duration: 0.3,
+          ease: 'easeOut',
+        }}
+      />
+      <motion.circle
+        animate={animateMap[status]?.circle2}
+        transform="rotate(-90 7 7)"
+        transition={{
+          duration: 0.3,
+          ease: 'easeOut',
+        }}
+      />
+      {status === 'done' && (
+        <motion.path
+          animate={{
+            fill: 'white',
+            scale: 0.9,
+          }}
+          d="M10.951 4.24896C11.283 4.58091 11.283 5.11909 10.951 5.45104L5.95104 10.451C5.61909 10.783 5.0809 10.783 4.74896 10.451L2.74896 8.45104C2.41701 8.11909 2.41701 7.5809 2.74896 7.24896C3.0809 6.91701 3.61909 6.91701 3.95104 7.24896L5.35 8.64792L9.74896 4.24896C10.0809 3.91701 10.6191 3.91701 10.951 4.24896Z"
+          exit={{
+            fill: 'none',
+            scale: 0,
+          }}
+          initial={{
+            fill: 'none',
+            scale: 0,
+          }}
+          stroke="none"
+          transition={{
+            duration: 0.2,
+            ease: 'easeOut',
+          }}
+        />
+      )}
+    </motion.svg>
   );
 };

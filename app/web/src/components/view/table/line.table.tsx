@@ -51,8 +51,7 @@ export const ViewItemLine = observer(
         <ContextMenuTrigger>
           <Component
             className={cn(
-              'z-50 flex h-10 w-full select-none items-center justify-between bg-transparent py-2 pr-5 pl-3 hover:cursor-pointer focus:outline-none',
-              navigation.mode === 'mouse' && 'cursor-pointer',
+              'z-50 flex h-10 w-full select-none items-center justify-between bg-transparent py-2 pr-5 pl-3 focus:outline-none',
               settings.disableLinks && 'pointer-events-none select-none',
               className
             )}
@@ -65,7 +64,9 @@ export const ViewItemLine = observer(
               viewModel.setSelectedIndex(listIndex);
             }}
             onMouseEnter={() => {
-              viewModel.setSelectedIndex(listIndex);
+              if (navigation.mode === 'mouse') {
+                viewModel.setSelectedIndex(listIndex);
+              }
             }}
             to={`/${item.type}/${item.smallId}/${slugify(item.name)}`}
             {...props}
@@ -165,16 +166,19 @@ export const ViewItemCheckbox = observer(() => {
   const isChecked = viewModel.isItemChecked(item);
 
   return (
-    <div className="group z-[1000] flex size-8 items-center justify-center transition-all duration-300">
+    <button
+      className="group z-[1000] flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
+      onClick={(e) => {
+        viewModel.checkItem(item);
+        e.stopPropagation();
+      }}
+      type="button"
+    >
       <Checkbox
         checked={isChecked}
         className="size-4 group-hover:border-accent-foreground/50"
-        onClick={(e) => {
-          viewModel.checkItem(item);
-          e.stopPropagation();
-        }}
       />
-    </div>
+    </button>
   );
 });
 
