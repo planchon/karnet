@@ -100,9 +100,24 @@ export const ViewItemsList = observer(
           )}
           {data.map((item: R, index: number) => {
             return (
-              <__ViewItem item={item} key={item.id} listIndex={index}>
-                {children}
-              </__ViewItem>
+              <motion.div
+                animate={{
+                  opacity: 1,
+                }}
+                initial={{
+                  opacity: 0,
+                }}
+                key={item.id}
+                transition={{
+                  duration: 0.15,
+                  delay: index * 0.025,
+                  ease: 'easeOut',
+                }}
+              >
+                <__ViewItem item={item} key={item.id} listIndex={index}>
+                  {children}
+                </__ViewItem>
+              </motion.div>
             );
           })}
         </div>

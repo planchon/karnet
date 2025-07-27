@@ -1,23 +1,23 @@
-import { action, makeObservable, observable, reaction } from 'mobx';
-import { AbstractModel } from '@/models/abstract.model';
+import { action, makeObservable, observable, reaction } from "mobx";
+import { AbstractModel } from "@/models/abstract.model";
 
-export type TaskStatus = 'todo' | 'in_progress' | 'done';
+export type TaskStatus = "todo" | "in_progress" | "done";
 
 export class TaskModel extends AbstractModel {
-  type = 'task' as const;
+  type = "task" as const;
 
   completed = false;
   completedAt: Date | null = null;
 
   targetDate: Date | null = null;
 
-  title = '';
+  title = "";
   priority: number | null = null;
 
   deadlineLabel: string | null = null;
   deadlineDate: Date | null = null;
 
-  status: TaskStatus = 'todo';
+  status: TaskStatus = "todo";
 
   constructor(props: Partial<TaskModel> & { id: string }) {
     super(props);
@@ -35,7 +35,7 @@ export class TaskModel extends AbstractModel {
       setPriority: action,
       setCompleted: action,
       status: observable,
-      setStatus: action,
+      setStatus: action
     });
 
     this.load();
@@ -46,7 +46,7 @@ export class TaskModel extends AbstractModel {
         this.save();
       },
       {
-        delay: 1000,
+        delay: 1000
       }
     );
   }
@@ -63,7 +63,7 @@ export class TaskModel extends AbstractModel {
       deadlineDate: this.deadlineDate,
       priority: this.priority,
       title: this.title,
-      completed: this.completed,
+      completed: this.completed
     };
   }
 
@@ -82,28 +82,27 @@ export class TaskModel extends AbstractModel {
     this.completedAt = new Date();
   }
 
-  setStatus(status: 'todo' | 'in_progress' | 'done') {
+  setStatus(status: "todo" | "in_progress" | "done") {
     this.status = status;
   }
 
   setTitle(title: string | undefined) {
     if (!title) {
-      this.title = '';
+      this.title = "";
       return;
     }
 
     let tmpTitle = title;
 
     if (this.deadlineLabel) {
-      tmpTitle = tmpTitle.replaceAll(` ${this.deadlineLabel}`, '');
+      tmpTitle = tmpTitle.replaceAll(` ${this.deadlineLabel}`, "");
     }
 
     if (this.priority) {
-      tmpTitle = tmpTitle.replaceAll(` p${this.priority}`, '');
+      tmpTitle = tmpTitle.replaceAll(` p${this.priority}`, "");
     }
 
     this.title = tmpTitle.trim();
-    console.log('title', this.title);
   }
 
   setDeadline(deadline: string | undefined) {

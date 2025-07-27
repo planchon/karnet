@@ -107,26 +107,6 @@ export const ViewRoot = observer(
         tryCheckItem();
       }
 
-      if (e.key === 'd') {
-        const item = viewModel.currentItem();
-
-        if (item instanceof TaskModel) {
-          switch (item.status) {
-            case 'done':
-              item.setStatus('todo');
-              item.setCompleted();
-              break;
-            case 'in_progress':
-              item.setStatus('done');
-              break;
-            case 'todo':
-              item.setStatus('in_progress');
-              break;
-            default:
-          }
-        }
-      }
-
       if (DOWN_KEYS.includes(e.key)) {
         if (e.metaKey || e.ctrlKey) {
           return;

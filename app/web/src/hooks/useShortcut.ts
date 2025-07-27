@@ -11,7 +11,7 @@ import { CommandsModels } from "@/models/command.model";
 export const useShortcut = (
   shortcut: string,
   callback: (event: KeyboardEvent) => void,
-  options = { disableTextInputs: true }
+  options = { disableTextInputs: true, capture: true }
 ) => {
   const callbackRef = useRef(callback);
   const [keyCombo, setKeyCombo] = useState<string[]>([]);
@@ -100,9 +100,10 @@ export const useShortcut = (
               keyCombo.length === keyArray.length - 1
             ) {
               // Run handler if the sequence is complete, then reset it
-              callbackRef.current(event);
               event.stopPropagation();
               event.preventDefault();
+
+              callbackRef.current(event);
               return setKeyCombo([]);
             }
 
@@ -126,17 +127,19 @@ export const useShortcut = (
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown, { capture: false });
+    window.addEventListener("keydown", handleKeyDown, options.capture);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown, {
-        capture: false
-      });
+      window.removeEventListener("keydown", handleKeyDown, options.capture);
     };
   }, [handleKeyDown]);
 };
 
-export const useLinkShortcut = (shortcut: string, link: string) => {
+export const useLinkShortcut = (
+  shortcut: string,
+  link: string,
+  capture: boolean = false
+) => {
   const navigate = useNavigate();
 
   useShortcut(shortcut, () => {

@@ -21,9 +21,9 @@ import {
 } from '@ui/context-menu';
 import { observer } from 'mobx-react';
 import { View } from '@/components/view/table';
-import { useCommands } from '@/hooks/useShortcut';
+import { useCommands, useShortcut } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
-import type { TaskModel } from '@/models/task.model';
+import { TaskModel } from '@/models/task.model';
 import { Label } from '@/primitive/super-ui/label';
 import { Priority } from '@/primitive/super-ui/priority';
 
@@ -31,6 +31,33 @@ export const TaskView = observer(() => {
   const { viewStore } = useStores();
   const view = viewStore.getTaskView();
   const commands = useCommands();
+
+  useShortcut('v', () => {
+    const item = view.currentItem();
+
+    if (item instanceof TaskModel) {
+      switch (item.status) {
+        case 'done':
+          item.setStatus('todo');
+          item.setCompleted();
+          break;
+        case 'in_progress':
+          item.setStatus('done');
+          break;
+        case 'todo':
+          item.setStatus('in_progress');
+          break;
+      }
+    }
+  });
+
+  useShortcut('f', () => {
+    const item = view.currentItem();
+    if (item instanceof TaskModel) {
+      const priority = item.priority ?? 5;
+      item.setPriority(priority - 1);
+    }
+  });
 
   return (
     <View.Root viewModel={view}>
