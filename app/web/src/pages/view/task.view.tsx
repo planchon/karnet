@@ -24,8 +24,8 @@ import { View } from '@/components/view/table';
 import { useCommands, useShortcut } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
 import { TaskModel } from '@/models/task.model';
+import { Priority } from '@/primitive/priority';
 import { Label } from '@/primitive/super-ui/label';
-import { Priority } from '@/primitive/super-ui/priority';
 
 export const TaskView = observer(() => {
   const { viewStore } = useStores();
@@ -47,6 +47,8 @@ export const TaskView = observer(() => {
         case 'todo':
           item.setStatus('in_progress');
           break;
+        default:
+          break;
       }
     }
   });
@@ -54,8 +56,20 @@ export const TaskView = observer(() => {
   useShortcut('f', () => {
     const item = view.currentItem();
     if (item instanceof TaskModel) {
-      const priority = item.priority ?? 5;
-      item.setPriority(priority - 1);
+      let prio = item.priority;
+
+      if (!prio) {
+        item.setPriority(5);
+        return;
+      }
+
+      prio -= 1;
+      if (prio === 0) {
+        item.setPriority(5);
+        return;
+      }
+
+      item.setPriority(prio);
     }
   });
 
@@ -72,7 +86,7 @@ export const TaskView = observer(() => {
             <View.Item.Line isLink={false}>
               <View.Item.Checkbox />
               <View.Item.Infos>
-                <Priority priority={item.priority} />
+                <Priority priority={item.priority ?? 4} />
                 <View.Item.Status />
                 <View.Item.SmallId />
                 {item.title && (

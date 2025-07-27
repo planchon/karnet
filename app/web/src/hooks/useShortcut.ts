@@ -127,19 +127,15 @@ export const useShortcut = (
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown, options.capture);
+    window.addEventListener('keydown', handleKeyDown, options.capture);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown, options.capture);
+      window.removeEventListener('keydown', handleKeyDown, options.capture);
     };
-  }, [handleKeyDown]);
+  }, [handleKeyDown, options.capture]);
 };
 
-export const useLinkShortcut = (
-  shortcut: string,
-  link: string,
-  capture: boolean = false
-) => {
+export const useLinkShortcut = (shortcut: string, link: string) => {
   const navigate = useNavigate();
 
   useShortcut(shortcut, () => {
