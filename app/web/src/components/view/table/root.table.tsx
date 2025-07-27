@@ -1,159 +1,183 @@
-import { observer } from "mobx-react";
-import { type Key, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
-import { useShortcut } from "@/hooks/useShortcut";
-import { createContext } from "@/lib/create-context";
-import { slugify } from "@/lib/utils";
+import { observer } from 'mobx-react';
+import { type Key, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useShortcut } from '@/hooks/useShortcut';
+import { createContext } from '@/lib/create-context';
+import { useSetFocusElement } from '@/lib/focus-manager';
+import { slugify } from '@/lib/utils';
+import { TaskModel } from '@/models/task.model';
 import type {
-	AbstractView,
-	ViewItem as ViewItemType,
-} from "@/view/abstract.view";
+  AbstractView,
+  ViewItem as ViewItemType,
+} from '@/view/abstract.view';
 
-const UP_KEYS = ["ArrowUp", "ArrowLeft", "k"] satisfies Key[];
-const DOWN_KEYS = ["ArrowDown", "ArrowRight", "j"] satisfies Key[];
-const ESCAPE_KEYS = ["Escape"] satisfies Key[];
+const UP_KEYS = ['ArrowUp', 'ArrowLeft', 'k', 'K'] satisfies Key[];
+const DOWN_KEYS = ['ArrowDown', 'ArrowRight', 'j', 'J'] satisfies Key[];
+const ESCAPE_KEYS = ['Escape'] satisfies Key[];
 
 const ViewContext = createContext<{
-	viewModel: AbstractView<any>;
-	navigation: {
-		mode: "keyboard" | "mouse" | "focus";
-		setMode: (mode: "keyboard" | "mouse" | "focus") => void;
-	};
-}>("ViewContext");
+  viewModel: AbstractView<any>;
+  navigation: {
+    mode: 'keyboard' | 'mouse' | 'focus';
+    setMode: (mode: 'keyboard' | 'mouse' | 'focus') => void;
+  };
+}>('ViewContext');
 
 export const ViewContextProvider = ViewContext[0];
 
 export const useViewContext = ViewContext[1];
 
 export const ViewRoot = observer(
-	<R extends ViewItemType, T extends AbstractView<R>>({
-		children,
-		viewModel,
-	}: {
-		children: React.ReactNode;
-		viewModel: T;
-	}) => {
-		const bodyRef = useRef<HTMLDivElement>(null);
-		const navigate = useNavigate();
+  <R extends ViewItemType, T extends AbstractView<R>>({
+    children,
+    viewModel,
+  }: {
+    children: React.ReactNode;
+    viewModel: T;
+  }) => {
+    const bodyRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
+    useSetFocusElement(bodyRef.current);
 
-		const [navigationMode, setNavigationMode] = useState<
-			"keyboard" | "mouse" | "focus"
-		>("mouse");
+    const [navigationMode, setNavigationMode] = useState<
+      'keyboard' | 'mouse' | 'focus'
+    >('mouse');
 
-		function searchHandler(e: KeyboardEvent) {
-			viewModel.searchInputRef?.current?.focus();
-			viewModel.setSelectedIndex(-1);
-			e.preventDefault();
-			e.stopPropagation();
-		}
+    function searchHandler(e: KeyboardEvent) {
+      viewModel.searchInputRef?.current?.focus();
+      viewModel.setSelectedIndex(-1);
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-		useShortcut("Command+f", searchHandler);
-		useShortcut("Control+f", searchHandler);
-		useShortcut("/", searchHandler);
+    useShortcut('Command+f', searchHandler);
+    useShortcut('Control+f', searchHandler);
+    useShortcut('/', searchHandler);
 
-		useShortcut("Escape", resetFocus);
+    useShortcut('Escape', resetFocus);
 
-		viewModel.bodyRef = bodyRef;
+    viewModel.bodyRef = bodyRef;
 
-		function resetFocus() {
-			viewModel.setSelectedIndex(-1);
+    function resetFocus() {
+      viewModel.setSelectedIndex(-1);
 
-			if (viewModel.searchInputRef?.current) {
-				viewModel.searchInputRef.current.blur();
-			} else {
-				console.warn("no search input ref in table view");
-			}
+      if (viewModel.searchInputRef?.current) {
+        viewModel.searchInputRef.current.blur();
+      } else {
+        console.warn('no search input ref in table view');
+      }
 
-			if (viewModel.bodyRef?.current) {
-				viewModel.bodyRef.current.focus();
-			} else {
-				console.warn("no body ref in table view");
-			}
-		}
+      if (viewModel.bodyRef?.current) {
+        viewModel.bodyRef.current.focus();
+      } else {
+        console.warn('no body ref in table view');
+      }
+    }
 
-		function handleKeyDown(e: KeyboardEvent) {
-			setNavigationMode("keyboard");
+    function tryCheckItem(forceTrue?: boolean) {
+      const item = viewModel.currentItem();
+      if (item) {
+        viewModel.checkItem(item, forceTrue);
+      }
+    }
 
-			if (ESCAPE_KEYS.includes(e.key)) {
-				resetFocus();
-			}
+    function handleKeyDown(e: KeyboardEvent) {
+      setNavigationMode('keyboard');
 
-			if (UP_KEYS.includes(e.key)) {
-				if (e.metaKey || e.ctrlKey) {
-					return;
-				}
+      if (ESCAPE_KEYS.includes(e.key)) {
+        resetFocus();
+      }
 
-				viewModel.goUp();
-				e.preventDefault();
-				e.stopPropagation();
-			}
+      if (UP_KEYS.includes(e.key)) {
+        if (e.metaKey || e.ctrlKey) {
+          return;
+        }
 
-			if (DOWN_KEYS.includes(e.key)) {
-				if (e.metaKey || e.ctrlKey) {
-					return;
-				}
+        viewModel.goUp();
 
-				viewModel.goDown();
-				e.preventDefault();
-				e.stopPropagation();
-			}
+        if (e.shiftKey) {
+          tryCheckItem();
+        }
 
-			if (e.key === "Enter") {
-				const item = viewModel.currentItem();
-				if (item) {
-					navigate(`/${item.type}/${item.smallId}/${slugify(item.name)}`);
-				}
-			}
-		}
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
-		useEffect(() => {
-			function handleMouseMove(e: MouseEvent) {
-				setNavigationMode("mouse");
-				viewModel.setLastHoveredElement(e.target as HTMLElement);
-			}
+      if (e.key === 'x') {
+        tryCheckItem();
+      }
 
-			if (!bodyRef.current) {
-				throw new Error("No body ref in table view");
-			}
+      if (DOWN_KEYS.includes(e.key)) {
+        if (e.metaKey || e.ctrlKey) {
+          return;
+        }
 
-			bodyRef.current.focus();
+        viewModel.goDown();
 
-			bodyRef.current.addEventListener("keydown", handleKeyDown, {
-				capture: true,
-			});
+        if (e.shiftKey) {
+          tryCheckItem();
+        }
 
-			document.addEventListener("mousemove", handleMouseMove);
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
-			return () => {
-				if (!bodyRef.current) {
-					return;
-				}
+      if (e.key === 'Enter') {
+        const item = viewModel.currentItem();
+        if (item) {
+          navigate(`/${item.type}/${item.smallId}/${slugify(item.name)}`);
+        }
+      }
+    }
 
-				bodyRef.current.removeEventListener("keydown", handleKeyDown, {
-					capture: true,
-				});
+    useEffect(() => {
+      function handleMouseMove(e: MouseEvent) {
+        setNavigationMode('mouse');
+        viewModel.setLastHoveredElement(e.target as HTMLElement);
+      }
 
-				document.removeEventListener("mousemove", handleMouseMove);
-			};
-		}, []);
+      if (!bodyRef.current) {
+        throw new Error('No body ref in table view');
+      }
 
-		return (
-			<div
-				className="h-full w-full focus:outline-none"
-				id="view-root"
-				tabIndex={-1} // make the div focusable (to be able to use the keyboard)
-				ref={bodyRef}
-			>
-				<ViewContextProvider
-					navigation={{
-						mode: navigationMode,
-						setMode: setNavigationMode,
-					}}
-					viewModel={viewModel}
-				>
-					{children}
-				</ViewContextProvider>
-			</div>
-		);
-	},
+      bodyRef.current.focus();
+
+      bodyRef.current.addEventListener('keydown', handleKeyDown, {
+        capture: true,
+      });
+
+      document.addEventListener('mousemove', handleMouseMove);
+
+      return () => {
+        if (!bodyRef.current) {
+          return;
+        }
+
+        bodyRef.current.removeEventListener('keydown', handleKeyDown, {
+          capture: true,
+        });
+
+        document.removeEventListener('mousemove', handleMouseMove);
+      };
+    }, []);
+
+    return (
+      <div
+        className="h-full w-full focus:outline-none"
+        id="view-root"
+        ref={bodyRef} // make the div focusable (to be able to use the keyboard)
+        tabIndex={-1}
+      >
+        <ViewContextProvider
+          navigation={{
+            mode: navigationMode,
+            setMode: setNavigationMode,
+          }}
+          viewModel={viewModel}
+        >
+          {children}
+        </ViewContextProvider>
+      </div>
+    );
+  }
 );

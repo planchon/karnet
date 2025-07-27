@@ -1,45 +1,126 @@
-import { makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, reaction } from "mobx";
 import { AbstractModel } from "@/models/abstract.model";
 
+export type TaskStatus = "todo" | "in_progress" | "done";
+
 export class TaskModel extends AbstractModel {
-	type = "task" as const;
+  type = "task" as const;
 
-	completed = false;
-	completedAt: Date | null = null;
+  completed = false;
+  completedAt: Date | null = null;
 
-	targetDate: Date | null = null;
+  targetDate: Date | null = null;
 
-	title: string = "";
+  title = "";
+  priority: number | null = null;
 
-	constructor(props: Partial<TaskModel> & { id: string }) {
-		super(props);
+  deadlineLabel: string | null = null;
+  deadlineDate: Date | null = null;
 
-		makeObservable(this, {
-			title: observable,
-			completed: observable,
-			completedAt: observable,
-			targetDate: observable,
-		});
-	}
+  status: TaskStatus = "todo";
 
-	getSmallId(id: number): string {
-		return `TASK-${id}`;
-	}
+  constructor(props: Partial<TaskModel> & { id: string }) {
+    super(props);
 
-	toJSON(): unknown {
-		return {
-			id: this.id,
-			name: this.name,
-			completed: this.completed,
-		};
-	}
+    makeObservable(this, {
+      title: observable,
+      completed: observable,
+      completedAt: observable,
+      targetDate: observable,
+      priority: observable,
+      deadlineLabel: observable,
+      deadlineDate: observable,
+      setTitle: action,
+      setDeadline: action,
+      setPriority: action,
+      setCompleted: action,
+      status: observable,
+      setStatus: action
+    });
 
-	_id(): string {
-		return `p6n-task-metadata-${this.id}`;
-	}
+    this.load();
 
-	check() {
-		this.completed = true;
-		this.completedAt = new Date();
-	}
+    reaction(
+      () => this.toJSON(),
+      () => {
+        this.save();
+      },
+      {
+        delay: 1000
+      }
+    );
+  }
+
+  getSmallId(id: number): string {
+    return `TASK-${id}`;
+  }
+
+  toJSON(): unknown {
+    return {
+      id: this.id,
+      name: this.name,
+      deadlineLabel: this.deadlineLabel,
+      deadlineDate: this.deadlineDate,
+      priority: this.priority,
+      title: this.title,
+      completed: this.completed,
+      status: this.status,
+    };
+  }
+
+  _id(): string {
+    return `p6n-task-metadata-${this.id}`;
+  }
+
+  setCompleted() {
+    if (this.completed) {
+      this.completed = false;
+      this.completedAt = null;
+      return;
+    }
+
+    this.completed = true;
+    this.completedAt = new Date();
+  }
+
+  setStatus(status: "todo" | "in_progress" | "done") {
+    this.status = status;
+  }
+
+  setTitle(title: string | undefined) {
+    if (!title) {
+      this.title = "";
+      return;
+    }
+
+    let tmpTitle = title;
+
+    if (this.deadlineLabel) {
+      tmpTitle = tmpTitle.replaceAll(` ${this.deadlineLabel}`, "");
+    }
+
+    if (this.priority) {
+      tmpTitle = tmpTitle.replaceAll(` p${this.priority}`, "");
+    }
+
+    this.title = tmpTitle.trim();
+  }
+
+  setDeadline(deadline: string | undefined) {
+    if (!deadline) {
+      this.deadlineLabel = null;
+      return;
+    }
+
+    this.deadlineLabel = deadline;
+  }
+
+  setPriority(priority: number | undefined) {
+    if (!priority) {
+      this.priority = null;
+      return;
+    }
+
+    this.priority = priority;
+  }
 }

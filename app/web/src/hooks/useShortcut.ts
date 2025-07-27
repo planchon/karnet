@@ -11,7 +11,7 @@ import { CommandsModels } from "@/models/command.model";
 export const useShortcut = (
   shortcut: string,
   callback: (event: KeyboardEvent) => void,
-  options = { disableTextInputs: true }
+  options = { disableTextInputs: true, capture: true }
 ) => {
   const callbackRef = useRef(callback);
   const [keyCombo, setKeyCombo] = useState<string[]>([]);
@@ -51,7 +51,13 @@ export const useShortcut = (
       }
 
       // Don't enable shortcuts in inputs unless explicitly declared
-      if (options.disableTextInputs && isTextInput && !event.bypassTextInput) {
+      if (
+        options.disableTextInputs &&
+        isTextInput &&
+        !event.bypassTextInput &&
+        shortcut !== "Control+Enter" &&
+        shortcut !== "Command+Enter"
+      ) {
         if (
           [
             "ArrowUp",
@@ -94,9 +100,10 @@ export const useShortcut = (
               keyCombo.length === keyArray.length - 1
             ) {
               // Run handler if the sequence is complete, then reset it
-              callbackRef.current(event);
               event.stopPropagation();
               event.preventDefault();
+
+              callbackRef.current(event);
               return setKeyCombo([]);
             }
 
@@ -120,14 +127,12 @@ export const useShortcut = (
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown, { capture: false });
+    window.addEventListener('keydown', handleKeyDown, options.capture);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown, {
-        capture: false
-      });
+      window.removeEventListener('keydown', handleKeyDown, options.capture);
     };
-  }, [handleKeyDown]);
+  }, [handleKeyDown, options.capture]);
 };
 
 export const useLinkShortcut = (shortcut: string, link: string) => {

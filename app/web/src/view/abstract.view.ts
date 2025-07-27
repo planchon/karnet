@@ -26,6 +26,8 @@ export abstract class AbstractView<T extends ViewItem> {
 
   renderableItems: T[] = [];
 
+  checkedItems: Map<string, boolean> = new Map();
+
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     this.query = '';
@@ -40,6 +42,8 @@ export abstract class AbstractView<T extends ViewItem> {
       getAllItems: computed,
       renderableItems: observable,
       computeRenderableItems: action,
+      checkedItems: observable,
+      checkItem: action,
     });
 
     reaction(
@@ -74,6 +78,7 @@ export abstract class AbstractView<T extends ViewItem> {
     const searchedItems = this.search(allItems);
     const filteredItems = this.filterBy(searchedItems);
     const orderedItems = this.orderBy(filteredItems);
+
     this.renderableItems = orderedItems;
   }
 
@@ -194,5 +199,24 @@ export abstract class AbstractView<T extends ViewItem> {
     const index = this.getSelectedIndex();
 
     return this.getItems[index];
+  }
+
+  checkItem(item: T, forceTrue?: boolean) {
+    const isChecked = this.checkedItems.get(item.id);
+
+    if (forceTrue) {
+      this.checkedItems.set(item.id, true);
+      return;
+    }
+
+    if (isChecked) {
+      this.checkedItems.delete(item.id);
+    } else {
+      this.checkedItems.set(item.id, true);
+    }
+  }
+
+  isItemChecked(item: T) {
+    return this.checkedItems.get(item.id) ?? false;
   }
 }
