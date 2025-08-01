@@ -39,7 +39,7 @@ export const Router = () => {
         </Route>
         <Route path="/paper">
           <Route element={<NewPaperPage />} path="new" />
-          <Route element={<PaperPage />} index path=":smallId/:any?" />
+          <Route element={<PaperPage />} path=":smallId/:any?" />
         </Route>
         <Route element={<DocumentView />} path="/document" />
         <Route element={<Navigate to={'/document'} />} index path="/" />
