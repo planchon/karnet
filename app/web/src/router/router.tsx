@@ -31,15 +31,15 @@ export const Router = () => {
         <Route element={<TaskView />} path="/task" />
         <Route path="/diagram">
           <Route element={<NewDiagramPage />} path="new" />
-          <Route element={<DiagramPage />} path=":smallId/:any" />
+          <Route element={<DiagramPage />} path=":smallId/:any?" />
         </Route>
         <Route path="/sketch">
           <Route element={<NewSketchPage />} path="new" />
-          <Route element={<DrawPage />} path=":smallId/:any" />
+          <Route element={<DrawPage />} path=":smallId/:any?" />
         </Route>
         <Route path="/paper">
           <Route element={<NewPaperPage />} path="new" />
-          <Route element={<PaperPage />} index path=":smallId/:any" />
+          <Route element={<PaperPage />} index path=":smallId/:any?" />
         </Route>
         <Route element={<DocumentView />} path="/document" />
         <Route element={<Navigate to={'/document'} />} index path="/" />

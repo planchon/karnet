@@ -16,5 +16,5 @@ export function slugify(text: string) {
 		.replace(/ /g, "-")
 		.replace(/[^a-z0-9-]/g, "");
 
-	return slug.length > 0 ? slug : "untitled";
+	return slug.length > 0 ? slug : '';
 }

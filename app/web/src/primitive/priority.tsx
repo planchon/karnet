@@ -9,8 +9,6 @@ export const Priority = ({ priority }: { priority: number }) => {
     ease: 'easeOut',
   };
 
-  console.log(priority);
-
   return (
     <motion.svg
       aria-label="Priority"
