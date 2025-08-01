@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { useAntiRageClick } from '@/components/help/shortcut-remember';
 import { useSettings } from '@/hooks/useStores';
-import { DiagramPage, NewDiagramPage } from '@/pages/diagram';
-import { NewPaperPage, PaperPage } from '@/pages/paper';
+import { DiagramPage } from '@/pages/diagram';
+import { PaperPage } from '@/pages/paper';
 import { DocumentView } from '@/pages/view/document.view';
 import { TaskView } from '@/pages/view/task.view';
 import { ChatPage } from '../pages/chat';
-import { DrawPage, NewSketchPage } from '../pages/sketch';
+import { DrawPage } from '../pages/sketch';
 import { GeneralOutlet } from './outlet/general.outlet';
 
 export const Router = () => {
@@ -30,15 +30,12 @@ export const Router = () => {
         <Route element={<ChatPage />} path="/chat" />
         <Route element={<TaskView />} path="/task" />
         <Route path="/diagram">
-          <Route element={<NewDiagramPage />} path="new" />
           <Route element={<DiagramPage />} path=":smallId/:any?" />
         </Route>
         <Route path="/sketch">
-          <Route element={<NewSketchPage />} path="new" />
           <Route element={<DrawPage />} path=":smallId/:any?" />
         </Route>
         <Route path="/paper">
-          <Route element={<NewPaperPage />} path="new" />
           <Route element={<PaperPage />} path=":smallId/:any?" />
         </Route>
         <Route element={<DocumentView />} path="/document" />

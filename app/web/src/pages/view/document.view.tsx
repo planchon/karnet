@@ -19,9 +19,10 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
 } from '@ui/context-menu';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 import { View } from '@/components/view/table';
 import { useStores } from '@/hooks/useStores';
+import { generateId } from '@/lib/utils';
 import type { DiagramModel } from '@/models/diagram.model';
 import type { PaperModel } from '@/models/paper.model';
 import type { SketchModel } from '@/models/sketch.model';
@@ -30,6 +31,8 @@ import { Label } from '@/primitive/super-ui/label';
 export const DocumentView = () => {
   const { viewStore } = useStores();
   const view = viewStore.getDocumentView();
+  const { paperStore, sketchesStore, diagramStore } = useStores();
+  const navigate = useNavigate();
 
   return (
     <View.Root viewModel={view}>
@@ -128,22 +131,46 @@ export const DocumentView = () => {
             </ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-40">
               <ContextMenuItem asChild>
-                <Link to="/paper/new">
+                <button
+                  className="w-full"
+                  onClick={() => {
+                    const id = generateId();
+                    const paper = paperStore.createModel(id);
+                    navigate(`/paper/${paper.smallId}`);
+                  }}
+                  type="button"
+                >
                   <IconFile className="mr-4" />
                   Papers
-                </Link>
+                </button>
               </ContextMenuItem>
               <ContextMenuItem asChild>
-                <Link to="/diagram/new">
+                <button
+                  className="w-full"
+                  onClick={() => {
+                    const id = generateId();
+                    const diagram = diagramStore.createModel(id);
+                    navigate(`/diagram/${diagram.smallId}`);
+                  }}
+                  type="button"
+                >
                   <IconChartDots3 className="mr-4" />
                   Diagram
-                </Link>
+                </button>
               </ContextMenuItem>
               <ContextMenuItem asChild>
-                <Link to="/sketch/new">
+                <button
+                  className="w-full"
+                  onClick={() => {
+                    const id = generateId();
+                    const sketch = sketchesStore.createModel(id);
+                    navigate(`/sketch/${sketch.smallId}`);
+                  }}
+                  type="button"
+                >
                   <IconPalette className="mr-4" />
                   Sketch
-                </Link>
+                </button>
               </ContextMenuItem>
             </ContextMenuSubContent>
           </ContextMenuSub>
