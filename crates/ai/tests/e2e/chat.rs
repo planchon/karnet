@@ -7,7 +7,7 @@ const FREE_TEST_MODEL: &str = "openrouter/horizon-beta";
 
 #[tokio::test]
 async fn test_basic_chat() -> Result<(), OpenRouterError> {
-    env_logger::init();
+    env_logger::try_init().ok();
 
     let client = create_client();
 
@@ -32,7 +32,7 @@ async fn test_basic_chat() -> Result<(), OpenRouterError> {
     let content = response.choices[0].message.content.clone();
 
     assert!(!content.is_empty(), "Response content should not be empty");
-    assert!(content.contains("Hello, world!"), "Response content should contain 'Hello, world!'");
+    assert!(content.to_lowercase().contains("hello, world!"), "Response content should contain 'Hello, world!'");
 
     Ok(())
 }

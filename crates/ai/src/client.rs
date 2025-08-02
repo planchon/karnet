@@ -10,11 +10,20 @@ pub struct OpenRouterClient {
 
 impl OpenRouterClient {
     pub fn new(api_key: String) -> Self {
+        Self::with_base_url(api_key, "https://openrouter.ai/api/v1".to_string())
+    }
+
+    pub fn with_base_url(api_key: String, base_url: String) -> Self {
         Self {
-            base_url: "https://openrouter.ai/api/v1".to_string(),
+            base_url,
             api_key,
             app_title: None,
         }
+    }
+
+    pub fn with_app_title(mut self, app_title: String) -> Self {
+        self.app_title = Some(app_title);
+        self
     }
 
     pub async fn send_chat_completion(&self, request: ChatCompletionRequest) -> Result<ChatCompletionResponse, OpenRouterError> {
