@@ -6,7 +6,13 @@ const SingleShortcut = ({ shortcut }: { shortcut: string }) => {
   );
 };
 
-export const Shortcut = ({ shortcut }: { shortcut: string[] }) => {
+export const Shortcut = ({
+  shortcut,
+  nothen
+}: {
+  shortcut: string[];
+  nothen?: boolean;
+}) => {
   if (shortcut.length === 1) {
     return <SingleShortcut shortcut={shortcut[0]!} />;
   }
@@ -15,7 +21,7 @@ export const Shortcut = ({ shortcut }: { shortcut: string[] }) => {
     return (
       <div className="flex items-center justify-center gap-1">
         <SingleShortcut shortcut={shortcut[0]!} />
-        <span className="text-muted-foreground text-xs">then</span>
+        {!nothen && <span className="text-muted-foreground text-xs">then</span>}
         <SingleShortcut shortcut={shortcut[1]!} />
       </div>
     );
@@ -25,7 +31,7 @@ export const Shortcut = ({ shortcut }: { shortcut: string[] }) => {
     return (
       <div className="flex justify-center gap-1">
         <SingleShortcut shortcut={`${shortcut[0]!}+${shortcut[1]!}`} />
-        <span className="text-muted-foreground text-xs">then</span>
+        {!nothen && <span className="text-muted-foreground text-xs">then</span>}
         <SingleShortcut shortcut={shortcut[2]!} />
       </div>
     );
