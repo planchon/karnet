@@ -20,7 +20,7 @@ import { rootStore } from "@/stores/root.store";
 
 export const allSuggestions = [
 	{
-		group: "headings",
+		group: "Headings",
 		items: [
 			{
 				title: "Heading 1",
@@ -64,7 +64,7 @@ export const allSuggestions = [
 		],
 	},
 	{
-		group: "lists",
+		group: "Lists",
 		items: [
 			{
 				title: "Bullet List",
@@ -93,7 +93,7 @@ export const allSuggestions = [
 		],
 	},
 	{
-		group: "media",
+		group: "Media",
 		items: [
 			{
 				title: "Image",
@@ -147,7 +147,7 @@ export const allSuggestions = [
 		],
 	},
 	{
-		group: "others",
+		group: "Others",
 		items: [
 			{
 				title: "Code",
@@ -204,6 +204,7 @@ export const SlashSuggestions = (props: ModelSuggestionComponentProps) => {
 		document.addEventListener(
 			"keydown",
 			(event) => {
+				console.log("keydown slash suggestions", event);
 				if (navigationKeys.includes(event.key)) {
 					// prevent default behavior of the key
 					event.preventDefault();
