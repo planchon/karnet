@@ -12,8 +12,6 @@ import {
 	IconTable,
 } from "@tabler/icons-react";
 import type { Editor, Range } from "@tiptap/react";
-import posthog from "posthog-js";
-import { toast } from "sonner";
 import { generateId } from "@/lib/utils";
 import { rootStore } from "@/stores/root.store";
 
@@ -26,15 +24,7 @@ export const allSuggestions = [
 				searchTerms: ["h1"],
 				icon: IconH1,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					editor
-						.chain()
-						.focus()
-						.deleteRange(range)
-						.toggleHeading({ level: 1 })
-						.run();
-					posthog.capture("file_create_heading", {
-						level: 1,
-					});
+					editor.chain().focus().deleteRange(range).toggleHeading({ level: 1 }).run();
 				},
 			},
 			{
@@ -42,15 +32,7 @@ export const allSuggestions = [
 				searchTerms: ["h2"],
 				icon: IconH2,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					editor
-						.chain()
-						.focus()
-						.deleteRange(range)
-						.toggleHeading({ level: 2 })
-						.run();
-					posthog.capture("file_create_heading", {
-						level: 2,
-					});
+					editor.chain().focus().deleteRange(range).toggleHeading({ level: 2 }).run();
 				},
 			},
 			{
@@ -58,15 +40,7 @@ export const allSuggestions = [
 				searchTerms: ["h3"],
 				icon: IconH3,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					editor
-						.chain()
-						.focus()
-						.deleteRange(range)
-						.toggleHeading({ level: 3 })
-						.run();
-					posthog.capture("file_create_heading", {
-						level: 3,
-					});
+					editor.chain().focus().deleteRange(range).toggleHeading({ level: 3 }).run();
 				},
 			},
 		],
@@ -80,7 +54,6 @@ export const allSuggestions = [
 				icon: IconListCheck,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).toggleBulletList().run();
-					posthog.capture("file_create_bullet_list");
 				},
 			},
 			{
@@ -89,7 +62,6 @@ export const allSuggestions = [
 				icon: IconListNumbers,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).toggleOrderedList().run();
-					posthog.capture("file_create_ordered_list");
 				},
 			},
 			{
@@ -98,7 +70,6 @@ export const allSuggestions = [
 				icon: IconListCheck,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).toggleTaskList().run();
-					posthog.capture("file_create_task_list");
 				},
 			},
 		],
@@ -132,7 +103,6 @@ export const allSuggestions = [
 							`<tldraw id="${id}" nodeUniqueId="${nodeUniqueId}"></tldraw>`,
 						)
 						.run();
-					posthog.capture("file_create_sketch");
 				},
 			},
 			{
@@ -154,7 +124,6 @@ export const allSuggestions = [
 							`<diagram id="${id}" nodeUniqueId="${nodeUniqueId}"></diagram>`,
 						)
 						.run();
-					posthog.capture("file_create_diagram");
 				},
 			},
 		],
@@ -169,7 +138,6 @@ export const allSuggestions = [
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).run();
 					editor.chain().focus().setCodeBlock().run();
-					posthog.capture("file_create_code_block");
 				},
 			},
 			{
@@ -179,7 +147,6 @@ export const allSuggestions = [
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).run();
 					editor.chain().focus().setBlockquote().run();
-					posthog.capture("file_create_blockquote");
 				},
 			},
 			{

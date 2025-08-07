@@ -28,7 +28,7 @@ importers:
         version: 2.29.5
       '@commitlint/cli':
         specifier: ^19.8.0
-        version: 19.8.1(@types/node@24.0.15)(typescript@5.8.3)
+        version: 19.8.1(@types/node@24.0.15)(typescript@5.9.2)
       '@commitlint/config-conventional':
         specifier: ^19.8.0
         version: 19.8.1
@@ -46,7 +46,7 @@ importers:
         version: 0.6.14(prettier@3.6.2)
       tsup:
         specifier: ^8.4.0
-        version: 8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.0)
+        version: 8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.0)
       turbo:
         specifier: ^2.5.0
         version: 2.5.5
@@ -259,7 +259,7 @@ importers:
         version: 4.1.0
       framer-motion:
         specifier: ^12.23.6
-        version: 12.23.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 12.23.9(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       js-md5:
         specifier: ^0.8.3
         version: 0.8.3
@@ -308,6 +308,9 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.1.0(react@19.1.0)
+      react-icons:
+        specifier: ^5.5.0
+        version: 5.5.0(react@19.1.0)
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.1.8)(react@19.1.0)
@@ -444,10 +447,10 @@ importers:
         version: 24.0.15
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.0)
+        version: 8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.0)
       typescript:
         specifier: latest
-        version: 5.8.3
+        version: 5.9.2
 
   packages/typescript-config: {}
 
@@ -3717,20 +3720,6 @@ packages:
   fractional-indexing-jittered@0.9.1:
     resolution: {integrity: sha512-qyzDZ7JXWf/yZT2rQDpQwFBbIaZS2o+zb0s740vqreXQ6bFQPd8tAy4D1gGN0CUeIcnNHjuvb0EaLnqHhGV/PA==}
 
-  framer-motion@12.23.6:
-    resolution: {integrity: sha512-dsJ389QImVE3lQvM8Mnk99/j8tiZDM/7706PCqvkQ8sSCnpmWxsgX+g0lj7r5OBVL0U36pIecCTBoIWcM2RuKw==}
-    peerDependencies:
-      '@emotion/is-prop-valid': '*'
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      '@emotion/is-prop-valid':
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-
   framer-motion@12.23.9:
     resolution: {integrity: sha512-TqEHXj8LWfQSKqfdr5Y4mYltYLw96deu6/K9kGDd+ysqRJPNwF9nb5mZcrLmybHbU7gcJ+HQar41U3UTGanbbQ==}
     peerDependencies:
@@ -4569,9 +4558,6 @@ packages:
     peerDependencies:
       monaco-editor: '*'
 
-  motion-dom@12.23.6:
-    resolution: {integrity: sha512-G2w6Nw7ZOVSzcQmsdLc0doMe64O/Sbuc2bVAbgMz6oP/6/pRStKRiVRV4bQfHp5AHYAKEGhEdVHTM+R3FDgi5w==}
-
   motion-dom@12.23.9:
     resolution: {integrity: sha512-6Sv++iWS8XMFCgU1qwKj9l4xuC47Hp4+2jvPfyTXkqDg2tTzSgX6nWKD4kNFXk0k7llO59LZTPuJigza4A2K1A==}
 
@@ -5046,6 +5032,11 @@ packages:
     resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
     peerDependencies:
       react: ^19.1.0
+
+  react-icons@5.5.0:
+    resolution: {integrity: sha512-MEFcXdkP3dLo8uumGI5xN3lDFNsRtrjbOEKDLD7yv76v4wpnEq2Lt2qeHaQOr34I/wPN3s3+N08WkQ+CW37Xiw==}
+    peerDependencies:
+      react: '*'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -5714,6 +5705,11 @@ packages:
 
   typescript@5.8.3:
     resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  typescript@5.9.2:
+    resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -6403,11 +6399,11 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
-  '@commitlint/cli@19.8.1(@types/node@24.0.15)(typescript@5.8.3)':
+  '@commitlint/cli@19.8.1(@types/node@24.0.15)(typescript@5.9.2)':
     dependencies:
       '@commitlint/format': 19.8.1
       '@commitlint/lint': 19.8.1
-      '@commitlint/load': 19.8.1(@types/node@24.0.15)(typescript@5.8.3)
+      '@commitlint/load': 19.8.1(@types/node@24.0.15)(typescript@5.9.2)
       '@commitlint/read': 19.8.1
       '@commitlint/types': 19.8.1
       tinyexec: 1.0.1
@@ -6454,15 +6450,15 @@ snapshots:
       '@commitlint/rules': 19.8.1
       '@commitlint/types': 19.8.1
 
-  '@commitlint/load@19.8.1(@types/node@24.0.15)(typescript@5.8.3)':
+  '@commitlint/load@19.8.1(@types/node@24.0.15)(typescript@5.9.2)':
     dependencies:
       '@commitlint/config-validator': 19.8.1
       '@commitlint/execute-rule': 19.8.1
       '@commitlint/resolve-extends': 19.8.1
       '@commitlint/types': 19.8.1
       chalk: 5.4.1
-      cosmiconfig: 9.0.0(typescript@5.8.3)
-      cosmiconfig-typescript-loader: 6.1.0(@types/node@24.0.15)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3)
+      cosmiconfig: 9.0.0(typescript@5.9.2)
+      cosmiconfig-typescript-loader: 6.1.0(@types/node@24.0.15)(cosmiconfig@9.0.0(typescript@5.9.2))(typescript@5.9.2)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -9067,21 +9063,21 @@ snapshots:
     dependencies:
       layout-base: 2.0.1
 
-  cosmiconfig-typescript-loader@6.1.0(@types/node@24.0.15)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3):
+  cosmiconfig-typescript-loader@6.1.0(@types/node@24.0.15)(cosmiconfig@9.0.0(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
       '@types/node': 24.0.15
-      cosmiconfig: 9.0.0(typescript@5.8.3)
+      cosmiconfig: 9.0.0(typescript@5.9.2)
       jiti: 2.4.2
-      typescript: 5.8.3
+      typescript: 5.9.2
 
-  cosmiconfig@9.0.0(typescript@5.8.3):
+  cosmiconfig@9.0.0(typescript@5.9.2):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.8.3
+      typescript: 5.9.2
 
   crelt@1.0.6: {}
 
@@ -9590,15 +9586,6 @@ snapshots:
       signal-exit: 4.1.0
 
   fractional-indexing-jittered@0.9.1: {}
-
-  framer-motion@12.23.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
-    dependencies:
-      motion-dom: 12.23.6
-      motion-utils: 12.23.6
-      tslib: 2.8.1
-    optionalDependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
 
   framer-motion@12.23.9(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
@@ -10601,10 +10588,6 @@ snapshots:
     dependencies:
       monaco-editor: 0.52.2
 
-  motion-dom@12.23.6:
-    dependencies:
-      motion-utils: 12.23.6
-
   motion-dom@12.23.9:
     dependencies:
       motion-utils: 12.23.6
@@ -11057,6 +11040,10 @@ snapshots:
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
+
+  react-icons@5.5.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   react-is@16.13.1: {}
 
@@ -11664,7 +11651,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.0):
+  tsup@8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.0):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.8)
       cac: 6.7.14
@@ -11685,7 +11672,7 @@ snapshots:
       tree-kill: 1.2.2
     optionalDependencies:
       postcss: 8.5.6
-      typescript: 5.8.3
+      typescript: 5.9.2
     transitivePeerDependencies:
       - jiti
       - supports-color
@@ -11741,6 +11728,8 @@ snapshots:
   typescript@5.6.1-rc: {}
 
   typescript@5.8.3: {}
+
+  typescript@5.9.2: {}
 
   uc.micro@2.1.0: {}
 
