@@ -12,6 +12,9 @@ import {
 	IconTable,
 } from "@tabler/icons-react";
 import type { Editor, Range } from "@tiptap/react";
+import { Command, CommandGroup, CommandItem, CommandList, CommandSeparator } from "@ui/command";
+import { Command as Cmd } from "cmdk";
+import { useEffect, useRef, useState } from "react";
 import { generateId } from "@/lib/utils";
 import { rootStore } from "@/stores/root.store";
 
@@ -24,7 +27,12 @@ export const allSuggestions = [
 				searchTerms: ["h1"],
 				icon: IconH1,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					editor.chain().focus().deleteRange(range).toggleHeading({ level: 1 }).run();
+					editor
+						.chain()
+						.focus()
+						.deleteRange(range)
+						.toggleHeading({ level: 1 })
+						.run();
 				},
 			},
 			{
@@ -32,7 +40,12 @@ export const allSuggestions = [
 				searchTerms: ["h2"],
 				icon: IconH2,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					editor.chain().focus().deleteRange(range).toggleHeading({ level: 2 }).run();
+					editor
+						.chain()
+						.focus()
+						.deleteRange(range)
+						.toggleHeading({ level: 2 })
+						.run();
 				},
 			},
 			{
@@ -40,7 +53,12 @@ export const allSuggestions = [
 				searchTerms: ["h3"],
 				icon: IconH3,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					editor.chain().focus().deleteRange(range).toggleHeading({ level: 3 }).run();
+					editor
+						.chain()
+						.focus()
+						.deleteRange(range)
+						.toggleHeading({ level: 3 })
+						.run();
 				},
 			},
 		],
@@ -159,3 +177,98 @@ export const allSuggestions = [
 		],
 	},
 ];
+
+export const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
+
+interface ModelSuggestionComponentProps {
+	query: string;
+	range: Range;
+	editor: Editor;
+}
+
+export const SlashSuggestions = (props: ModelSuggestionComponentProps) => {
+	const [query, setQuery] = useState("");
+	const ref = useRef<HTMLDivElement>(null);
+
+	const onChange = (query: string) => {
+		setQuery(query);
+	};
+
+	useEffect(() => {
+		setQuery(props.query);
+	}, [props.query]);
+
+	useEffect(() => {
+		const abortController = new AbortController();
+
+		document.addEventListener(
+			"keydown",
+			(event) => {
+				if (navigationKeys.includes(event.key)) {
+					// prevent default behavior of the key
+					event.preventDefault();
+
+					if (ref.current) {
+						// dispatch the keydown event to the slash command
+						ref.current.dispatchEvent(
+							new KeyboardEvent("keydown", {
+								key: event.key,
+								cancelable: true,
+								bubbles: true,
+							}),
+						);
+
+						return false;
+					}
+				}
+			},
+			{
+				signal: abortController.signal,
+			},
+		);
+
+		return () => {
+			abortController.abort();
+		};
+	}, []);
+
+	return (
+		<Command
+			className="min-w-[200px] border"
+			ref={ref}
+			onKeyDown={(e) => e.stopPropagation()}
+		>
+			<Cmd.Input
+				value={query}
+				onValueChange={onChange}
+				style={{ display: "none" }}
+			/>
+			<CommandList>
+				{allSuggestions.map((model, index) => (
+					<CommandGroup
+						key={model.group}
+						value={model.group}
+						heading={model.group}
+					>
+						{model.items.map((item) => (
+							<CommandItem
+								key={item.title}
+								value={item.title}
+								onSelect={() => {
+									alert("select");
+									item.command({ editor: props.editor, range: props.range });
+								}}
+							>
+								<item.icon />
+								{item.title}
+							</CommandItem>
+						))}
+						{index !== allSuggestions.length - 1 && (
+							<CommandSeparator className="mt-1" />
+						)}
+					</CommandGroup>
+				))}
+			</CommandList>
+		</Command>
+	);
+};

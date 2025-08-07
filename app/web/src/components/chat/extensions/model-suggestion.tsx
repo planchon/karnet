@@ -1,4 +1,13 @@
 import type { Editor, Range } from "@tiptap/react";
+import {
+	Command,
+	CommandGroup,
+	CommandItem,
+	CommandList,
+	CommandSeparator,
+} from "@ui/command";
+import { Command as Cmd } from "cmdk";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineOpenAI } from "react-icons/ai";
 import { RiAnthropicFill } from "react-icons/ri";
 
@@ -68,3 +77,99 @@ export const modelSuggestion = [
 		],
 	},
 ];
+
+export const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
+
+interface ModelSuggestionComponentProps {
+	query: string;
+	range: Range;
+	editor: Editor;
+}
+
+export const ModelSuggestionComponent = (
+	props: ModelSuggestionComponentProps,
+) => {
+	const [query, setQuery] = useState("");
+	const ref = useRef<HTMLDivElement>(null);
+
+	const onChange = (query: string) => {
+		setQuery(query);
+	};
+
+	useEffect(() => {
+		setQuery(props.query);
+	}, [props.query]);
+
+	useEffect(() => {
+		const abortController = new AbortController();
+
+		document.addEventListener(
+			"keydown",
+			(event) => {
+				if (navigationKeys.includes(event.key)) {
+					// prevent default behavior of the key
+					event.preventDefault();
+
+					if (ref.current) {
+						// dispatch the keydown event to the slash command
+						ref.current.dispatchEvent(
+							new KeyboardEvent("keydown", {
+								key: event.key,
+								cancelable: true,
+								bubbles: true,
+							}),
+						);
+
+						return false;
+					}
+				}
+			},
+			{
+				signal: abortController.signal,
+			},
+		);
+
+		return () => {
+			abortController.abort();
+		};
+	}, []);
+
+	return (
+		<Command
+			className="min-w-[200px] border"
+			ref={ref}
+			onKeyDown={(e) => e.stopPropagation()}
+		>
+			<Cmd.Input
+				value={query}
+				onValueChange={onChange}
+				style={{ display: "none" }}
+			/>
+			<CommandList>
+				{modelSuggestion.map((model, index) => (
+					<CommandGroup
+						key={model.group}
+						value={model.group}
+						heading={model.group}
+					>
+						{model.items.map((item) => (
+							<CommandItem
+								key={item.title}
+								value={item.title}
+								onSelect={() => {
+									item.command({ editor: props.editor, range: props.range });
+								}}
+							>
+								<item.icon />
+								{item.title}
+							</CommandItem>
+						))}
+						{index !== modelSuggestion.length - 1 && (
+							<CommandSeparator className="mt-1" />
+						)}
+					</CommandGroup>
+				))}
+			</CommandList>
+		</Command>
+	);
+};
