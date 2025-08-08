@@ -225,7 +225,7 @@
 }
 
 /* Target paragraph elements that are NOT the first child of their parent */
-.tiptap.ProseMirror p:not(:first-child) {
+.tiptap.ProseMirror p {
 	margin-top: 3px; /* Or whatever desired spacing you want between paragraphs */
 	font-size: 13px;
 	font-weight: 400;

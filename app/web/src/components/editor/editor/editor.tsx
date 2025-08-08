@@ -46,7 +46,10 @@ import { DiagramMenu } from "@editor/extension/bubble-menu/diagram-menu";
 import { SketchMenu } from "@editor/extension/bubble-menu/tldraw-menu";
 import { Shortcut } from "@editor/extension/shortcut/shortcut";
 import { SlashCommand } from "@editor/extension/slash/slash-extension";
-import { allSuggestions } from "@editor/extension/slash/suggestions";
+import {
+	allSuggestions,
+	navigationKeys,
+} from "@editor/extension/slash/suggestions";
 import { DiagramNode } from "@editor/nodes/diagram/diagram.node";
 import { TldrawNode } from "@editor/nodes/tldraw/TldrawNode";
 import Collaboration from "@tiptap/extension-collaboration";
@@ -83,6 +86,18 @@ export function SimpleEditor({ id }: Props) {
 				autocorrect: "off",
 				autocapitalize: "off",
 				"aria-label": "Main content area, start typing to enter text.",
+			},
+			handleDOMEvents: {
+				keydown: (_, v) => {
+					if (navigationKeys.includes(v.key)) {
+						const slashCommand = document.getElementById(
+							"SLASH_EXTENSION_DOM_ID",
+						);
+						if (slashCommand) {
+							return true;
+						}
+					}
+				},
 			},
 		},
 		extensions: [

@@ -245,6 +245,7 @@ export const SlashSuggestions = (props: ModelSuggestionComponentProps) => {
 			className="min-w-[200px] border"
 			ref={ref}
 			onKeyDown={(e) => e.stopPropagation()}
+			id="SLASH_EXTENSION_DOM_ID"
 		>
 			<Cmd.Input
 				value={query}
@@ -260,7 +261,6 @@ export const SlashSuggestions = (props: ModelSuggestionComponentProps) => {
 								key={item.title}
 								value={item.title}
 								onSelect={() => {
-									alert("select");
 									item.command({ editor: props.editor, range: props.range });
 								}}
 							>
