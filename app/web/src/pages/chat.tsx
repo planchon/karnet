@@ -10,11 +10,9 @@ import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { Chat } from "@/components/chat";
 import { RewriteEnter } from "@/components/chat/extensions/enter";
-import { modelSuggestion } from "@/components/chat/extensions/model-suggestion";
 import { MultipleTextualCommands } from "@/components/chat/extensions/textual-commands";
 import { ComputerMessage } from "@/components/messages/computer-message.comp";
 import { UserMessage } from "@/components/messages/user-message.comp";
-import { cn } from "@/lib/utils";
 import { messages as messagesMock } from "@/mocks/messages";
 
 interface Message {
@@ -23,10 +21,6 @@ interface Message {
 	sender: "user" | "assistant";
 	timestamp: Date;
 }
-
-const modelSuggestionProcessed = modelSuggestion.flatMap(
-	(group) => group.items,
-);
 
 export const ChatPage = observer(function ChatPage() {
 	const [messages, setMessages] = useState<Message[]>(messagesMock);
