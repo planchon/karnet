@@ -8,7 +8,6 @@ import { CreateTaskCommand } from "@/components/command/command-task";
 import { HelpComponent } from "@/components/help/help.comp";
 import { AppSidebar } from "@/components/navbar/app-sidebar";
 import { useLinkShortcut, useShortcut } from "@/hooks/useShortcut";
-import { generateId } from "@/lib/utils";
 import { SidebarInset, SidebarProvider } from "@/primitive/ui/sidebar";
 import { rootStore } from "@/stores/root.store";
 
@@ -18,7 +17,10 @@ export function GeneralOutlet() {
 
   useLinkShortcut("g+a", "/agenda");
   useLinkShortcut("g+t", "/task");
+
   useLinkShortcut("g+c", "/chat");
+  useLinkShortcut("c+c", "/chat");
+
   useLinkShortcut("g+d", "/document");
   useLinkShortcut("g+f", "/document?type=file");
   useLinkShortcut("g+s", "/document?type=sketch");
@@ -29,18 +31,6 @@ export function GeneralOutlet() {
 
   useShortcut("Command+o", () => {
     navigate(-1);
-  });
-
-  useShortcut("c+f", () => {
-    const id = generateId();
-    rootStore.paperStore.createModel(id);
-    navigate(`/file/${id}`);
-  });
-
-  useShortcut("c+s", () => {
-    const id = generateId();
-    rootStore.sketchesStore.createModel(id);
-    navigate(`/sketch/${id}`);
   });
 
   useEffect(() => {
