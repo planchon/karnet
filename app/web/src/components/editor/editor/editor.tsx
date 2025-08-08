@@ -126,11 +126,6 @@ export function SimpleEditor({ id }: Props) {
 		],
 	});
 
-	const bodyRect = useCursorVisibility({
-		editor,
-		overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
-	});
-
 	React.useEffect(() => {
 		if (!isMobile && mobileView !== "main") {
 			setMobileView("main");

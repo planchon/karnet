@@ -1,6 +1,7 @@
 import type { Editor, Range } from "@tiptap/react";
 import {
 	Command,
+	CommandEmpty,
 	CommandGroup,
 	CommandItem,
 	CommandList,
@@ -119,7 +120,8 @@ export const ToolsSuggestionComponent = (
 				onValueChange={onChange}
 				style={{ display: "none" }}
 			/>
-			<CommandList>
+			<CommandEmpty>No results.</CommandEmpty>
+			<CommandList className="max-h-[300px] overflow-y-auto scrollbar-thin">
 				{ToolsSuggestion.map((tool, index) => (
 					<CommandGroup
 						key={tool.group}

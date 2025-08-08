@@ -1,3 +1,4 @@
+import { MCP } from "@lobehub/icons";
 import { IconAssembly, IconBrain } from "@tabler/icons-react";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -189,7 +190,7 @@ export const ChatMCPSelect = observer(function ChatMCPSelect({
 					size="sm"
 					className="h-6 px-2 text-gray-700 outline-none ring-0"
 				>
-					<IconAssembly className="size-4" />
+					<MCP className="size-4" />
 					{value ? getRenderingName(value) : "MCP"}
 					<Shortcut shortcut={["S"]} nothen />
 				</Button>

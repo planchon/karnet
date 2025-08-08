@@ -22,6 +22,7 @@
     "@fullcalendar/react": "^6.1.18",
     "@fullcalendar/timegrid": "^6.1.18",
     "@lightenna/react-mermaid-diagram": "^1.0.21",
+    "@lobehub/icons": "^2.25.0",
     "@monaco-editor/react": "^4.7.0",
     "@poltion/slash-tiptap": "workspace:*",
     "@radix-ui/react-avatar": "^1.1.10",

@@ -12,7 +12,14 @@ import {
 	IconTable,
 } from "@tabler/icons-react";
 import type { Editor, Range } from "@tiptap/react";
-import { Command, CommandGroup, CommandItem, CommandList, CommandSeparator } from "@ui/command";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandItem,
+	CommandList,
+	CommandSeparator,
+} from "@ui/command";
 import { Command as Cmd } from "cmdk";
 import { useEffect, useRef, useState } from "react";
 import { generateId } from "@/lib/utils";
@@ -244,13 +251,10 @@ export const SlashSuggestions = (props: ModelSuggestionComponentProps) => {
 				onValueChange={onChange}
 				style={{ display: "none" }}
 			/>
-			<CommandList>
+			<CommandEmpty>No results.</CommandEmpty>
+			<CommandList className="max-h-[300px] overflow-y-auto scrollbar-thin">
 				{allSuggestions.map((model, index) => (
-					<CommandGroup
-						key={model.group}
-						value={model.group}
-						heading={model.group}
-					>
+					<CommandGroup key={model.group} value={model.group}>
 						{model.items.map((item) => (
 							<CommandItem
 								key={item.title}
