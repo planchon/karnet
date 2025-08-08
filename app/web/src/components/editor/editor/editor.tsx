@@ -45,15 +45,13 @@ import "./editor.scss";
 import { DiagramMenu } from "@editor/extension/bubble-menu/diagram-menu";
 import { SketchMenu } from "@editor/extension/bubble-menu/tldraw-menu";
 import { Shortcut } from "@editor/extension/shortcut/shortcut";
-import { allSuggestions } from "@editor/extension/slash/suggestions";
+import { SlashCommand } from "@editor/extension/slash/slash-extension";
+import {
+	allSuggestions,
+	navigationKeys,
+} from "@editor/extension/slash/suggestions";
 import { DiagramNode } from "@editor/nodes/diagram/diagram.node";
 import { TldrawNode } from "@editor/nodes/tldraw/TldrawNode";
-import {
-	enableKeyboardNavigation,
-	Slash,
-	SlashCmd,
-	SlashCmdProvider,
-} from "@poltion/slash-tiptap";
 import Collaboration from "@tiptap/extension-collaboration";
 import { throttle } from "lodash";
 import * as Y from "yjs";
@@ -91,18 +89,18 @@ export function SimpleEditor({ id }: Props) {
 			},
 			handleDOMEvents: {
 				keydown: (_, v) => {
-					return enableKeyboardNavigation(v);
+					if (navigationKeys.includes(v.key)) {
+						const slashCommand = document.getElementById(
+							"SLASH_EXTENSION_DOM_ID",
+						);
+						if (slashCommand) {
+							return true;
+						}
+					}
 				},
 			},
 		},
 		extensions: [
-			// @ts-ignore
-			Slash.configure({
-				suggestion: {
-					// @ts-ignore
-					items: () => suggestions,
-				},
-			}),
 			Shortcut,
 			StarterKit.configure({}),
 			TextAlign.configure({ types: ["heading", "paragraph"] }),
@@ -114,7 +112,7 @@ export function SimpleEditor({ id }: Props) {
 			Typography,
 			Superscript,
 			Subscript,
-
+			SlashCommand,
 			Selection,
 			ImageUploadNode.configure({
 				accept: "image/*",
@@ -141,11 +139,6 @@ export function SimpleEditor({ id }: Props) {
 			TldrawNode,
 			DiagramNode,
 		],
-	});
-
-	const bodyRect = useCursorVisibility({
-		editor,
-		overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
 	});
 
 	React.useEffect(() => {
@@ -196,61 +189,16 @@ export function SimpleEditor({ id }: Props) {
 
 	return (
 		<EditorContext.Provider value={{ editor }}>
-			<SlashCmdProvider>
-				<div className="content-wrapper">
-					<BubbleMenuComp editor={editor} />
-					<SketchMenu editor={editor} />
-					<DiagramMenu editor={editor} />
-					<EditorContent
-						editor={editor}
-						role="presentation"
-						className="simple-editor-content"
-					/>
-					{/* @ts-ignore */}
-					<SlashCmd.Root editor={editor}>
-						<SlashCmd.Cmd
-							className="bg-background z-50 h-auto w-[200px] rounded-md border transition-all"
-							loop
-						>
-							<SlashCmd.Empty>No commands available</SlashCmd.Empty>
-							<SlashCmd.List>
-								{allSuggestions.map((group, groupIndex) => (
-									<>
-										<SlashCmd.Group className="p-1">
-											{group.items.map((item) => (
-												<SlashCmd.Item
-													value={item.title}
-													onCommand={(val) => {
-														// @ts-ignore
-														item.command(val);
-													}}
-													disabled={item.disabled}
-													className={cn(
-														"aria-selected:bg-sidebar-accent flex w-full cursor-pointer items-center space-x-2 rounded-sm p-2 text-left text-sm",
-														item.disabled && "opacity-50",
-													)}
-													key={item.title}
-												>
-													<div className="flex items-center space-x-2">
-														<item.icon className="h-4 w-4" />
-														<p className="text-sm font-medium">{item.title}</p>
-													</div>
-												</SlashCmd.Item>
-											))}
-										</SlashCmd.Group>
-										<SlashCmd.Group>
-											{groupIndex < allSuggestions.length - 1 &&
-												group.items.length > 0 && (
-													<SlashCmd.Separator className="bg-border h-[1px] w-full" />
-												)}
-										</SlashCmd.Group>
-									</>
-								))}
-							</SlashCmd.List>
-						</SlashCmd.Cmd>
-					</SlashCmd.Root>
-				</div>
-			</SlashCmdProvider>
+			<div className="content-wrapper">
+				<BubbleMenuComp editor={editor} />
+				<SketchMenu editor={editor} />
+				<DiagramMenu editor={editor} />
+				<EditorContent
+					editor={editor}
+					role="presentation"
+					className="simple-editor-content"
+				/>
+			</div>
 		</EditorContext.Provider>
 	);
 }

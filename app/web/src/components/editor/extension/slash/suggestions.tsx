@@ -12,14 +12,22 @@ import {
 	IconTable,
 } from "@tabler/icons-react";
 import type { Editor, Range } from "@tiptap/react";
-import posthog from "posthog-js";
-import { toast } from "sonner";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandItem,
+	CommandList,
+	CommandSeparator,
+} from "@ui/command";
+import { Command as Cmd } from "cmdk";
+import { useEffect, useRef, useState } from "react";
 import { generateId } from "@/lib/utils";
 import { rootStore } from "@/stores/root.store";
 
 export const allSuggestions = [
 	{
-		group: "headings",
+		group: "Headings",
 		items: [
 			{
 				title: "Heading 1",
@@ -32,9 +40,6 @@ export const allSuggestions = [
 						.deleteRange(range)
 						.toggleHeading({ level: 1 })
 						.run();
-					posthog.capture("file_create_heading", {
-						level: 1,
-					});
 				},
 			},
 			{
@@ -48,9 +53,6 @@ export const allSuggestions = [
 						.deleteRange(range)
 						.toggleHeading({ level: 2 })
 						.run();
-					posthog.capture("file_create_heading", {
-						level: 2,
-					});
 				},
 			},
 			{
@@ -64,15 +66,12 @@ export const allSuggestions = [
 						.deleteRange(range)
 						.toggleHeading({ level: 3 })
 						.run();
-					posthog.capture("file_create_heading", {
-						level: 3,
-					});
 				},
 			},
 		],
 	},
 	{
-		group: "lists",
+		group: "Lists",
 		items: [
 			{
 				title: "Bullet List",
@@ -80,7 +79,6 @@ export const allSuggestions = [
 				icon: IconListCheck,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).toggleBulletList().run();
-					posthog.capture("file_create_bullet_list");
 				},
 			},
 			{
@@ -89,7 +87,6 @@ export const allSuggestions = [
 				icon: IconListNumbers,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).toggleOrderedList().run();
-					posthog.capture("file_create_ordered_list");
 				},
 			},
 			{
@@ -98,13 +95,12 @@ export const allSuggestions = [
 				icon: IconListCheck,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).toggleTaskList().run();
-					posthog.capture("file_create_task_list");
 				},
 			},
 		],
 	},
 	{
-		group: "media",
+		group: "Media",
 		items: [
 			{
 				title: "Image",
@@ -132,7 +128,6 @@ export const allSuggestions = [
 							`<tldraw id="${id}" nodeUniqueId="${nodeUniqueId}"></tldraw>`,
 						)
 						.run();
-					posthog.capture("file_create_sketch");
 				},
 			},
 			{
@@ -154,13 +149,12 @@ export const allSuggestions = [
 							`<diagram id="${id}" nodeUniqueId="${nodeUniqueId}"></diagram>`,
 						)
 						.run();
-					posthog.capture("file_create_diagram");
 				},
 			},
 		],
 	},
 	{
-		group: "others",
+		group: "Others",
 		items: [
 			{
 				title: "Code",
@@ -169,7 +163,6 @@ export const allSuggestions = [
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).run();
 					editor.chain().focus().setCodeBlock().run();
-					posthog.capture("file_create_code_block");
 				},
 			},
 			{
@@ -179,7 +172,6 @@ export const allSuggestions = [
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
 					editor.chain().focus().deleteRange(range).run();
 					editor.chain().focus().setBlockquote().run();
-					posthog.capture("file_create_blockquote");
 				},
 			},
 			{
@@ -192,3 +184,96 @@ export const allSuggestions = [
 		],
 	},
 ];
+
+export const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
+
+interface ModelSuggestionComponentProps {
+	query: string;
+	range: Range;
+	editor: Editor;
+}
+
+export const SlashSuggestions = (props: ModelSuggestionComponentProps) => {
+	const [query, setQuery] = useState("");
+	const ref = useRef<HTMLDivElement>(null);
+
+	const onChange = (query: string) => {
+		setQuery(query);
+	};
+
+	useEffect(() => {
+		setQuery(props.query);
+	}, [props.query]);
+
+	useEffect(() => {
+		const abortController = new AbortController();
+
+		document.addEventListener(
+			"keydown",
+			(event) => {
+				console.log("keydown slash suggestions", event);
+				if (navigationKeys.includes(event.key)) {
+					// prevent default behavior of the key
+					event.preventDefault();
+
+					if (ref.current) {
+						// dispatch the keydown event to the slash command
+						ref.current.dispatchEvent(
+							new KeyboardEvent("keydown", {
+								key: event.key,
+								cancelable: true,
+								bubbles: true,
+							}),
+						);
+
+						return false;
+					}
+				}
+			},
+			{
+				signal: abortController.signal,
+			},
+		);
+
+		return () => {
+			abortController.abort();
+		};
+	}, []);
+
+	return (
+		<Command
+			className="min-w-[200px] border"
+			ref={ref}
+			onKeyDown={(e) => e.stopPropagation()}
+			id="SLASH_EXTENSION_DOM_ID"
+		>
+			<Cmd.Input
+				value={query}
+				onValueChange={onChange}
+				style={{ display: "none" }}
+			/>
+			<CommandEmpty>No results.</CommandEmpty>
+			<CommandList className="max-h-[300px] overflow-y-auto scrollbar-thin">
+				{allSuggestions.map((model, index) => (
+					<CommandGroup key={model.group} value={model.group}>
+						{model.items.map((item) => (
+							<CommandItem
+								key={item.title}
+								value={item.title}
+								onSelect={() => {
+									item.command({ editor: props.editor, range: props.range });
+								}}
+							>
+								<item.icon />
+								{item.title}
+							</CommandItem>
+						))}
+						{index !== allSuggestions.length - 1 && (
+							<CommandSeparator className="mt-1" />
+						)}
+					</CommandGroup>
+				))}
+			</CommandList>
+		</Command>
+	);
+};
