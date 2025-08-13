@@ -1,37 +1,37 @@
+import type { ReactNode } from "react";
 import { Element } from "react-shiki";
-import { ReactNode } from "react";
 
 type HeadingProps = {
-  className?: string | undefined;
-  children?: ReactNode | undefined;
+	className?: string | undefined;
+	children?: ReactNode | undefined;
 };
 
 export const HeadingH1 = ({ children }: HeadingProps) => {
-  const stringValue = String(children).trim();
-  return <h1 className="mb-8 text-4xl font-extrabold">{stringValue}</h1>;
+	const stringValue = String(children).trim();
+	return <h1 className="mb-8 text-3xl font-bold">{stringValue}</h1>;
 };
 
 export const HeadingH2 = ({ children }: HeadingProps) => {
-  const stringValue = String(children).trim();
-  return <h2 className="mb-6 text-3xl font-bold">{stringValue}</h2>;
+	const stringValue = String(children).trim();
+	return <h2 className="mb-6 text-2xl font-semibold">{stringValue}</h2>;
 };
 
 export const HeadingH3 = ({ children }: HeadingProps) => {
-  const stringValue = String(children).trim();
-  return <h3 className="mb-4 text-2xl font-bold">{stringValue}</h3>;
+	const stringValue = String(children).trim();
+	return <h3 className="mb-4 text-xl font-bold">{stringValue}</h3>;
 };
 
 export const HeadingH4 = ({ children }: HeadingProps) => {
-  const stringValue = String(children).trim();
-  return <h4 className="mb-2 text-xl font-bold">{stringValue}</h4>;
+	const stringValue = String(children).trim();
+	return <h4 className="mb-2 text-lg font-semibold">{stringValue}</h4>;
 };
 
 export const HeadingH5 = ({ children }: HeadingProps) => {
-  const stringValue = String(children).trim();
-  return <h5 className="mb-2 text-lg font-bold">{stringValue}</h5>;
+	const stringValue = String(children).trim();
+	return <h5 className="mb-2 text-base font-bold">{stringValue}</h5>;
 };
 
 export const HeadingH6 = ({ children }: HeadingProps) => {
-  const stringValue = String(children).trim();
-  return <h6 className="mb-2 text-base font-bold">{stringValue}</h6>;
+	const stringValue = String(children).trim();
+	return <h6 className="mb-2 text-base font-semibold">{stringValue}</h6>;
 };

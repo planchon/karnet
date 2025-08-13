@@ -55,7 +55,7 @@ export const CodeMarkdown = memo(
 		}
 
 		return (
-			<div className="shiki not-prose bg-chat-accent rounded-4xl text-secondary-foreground relative py-2 text-sm font-[450] [&_pre]:overflow-auto [&_pre]:px-[1em] [&_pre]:py-[1em]">
+			<div className="shiki not-prose bg-chat-accent rounded-4xl text-secondary-foreground relative py-2 pb-4 text-sm font-[450] [&_pre]:overflow-auto [&_pre]:px-[1em] [&_pre]:py-[1em]">
 				<div className="bg-accent-foreground flex h-full w-full items-center justify-between rounded-t-md p-1">
 					<span className="text-muted pl-2 text-xs tracking-tighter">
 						javascript

@@ -1,22 +1,22 @@
-import { marked } from "marked";
-import { memo, useMemo } from "react";
-import ReactMarkdown from "react-markdown";
-import { CodeMarkdown } from "./code.mark";
+import { marked } from 'marked';
+import { memo, useMemo } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { CodeMarkdown } from './code.mark';
 import {
   HeadingH1,
   HeadingH2,
   HeadingH3,
   HeadingH4,
   HeadingH5,
-  HeadingH6
-} from "./heading.mark";
-import { RulerMarkdown } from "./ruler.mark";
-import { ParagraphMarkdown } from "./paragraph.mark";
+  HeadingH6,
+} from './heading.mark';
 import {
-  UnorderedListMarkdown,
   ListItemMarkdown,
-  OrderedListMarkdown
-} from "./list.mark";
+  OrderedListMarkdown,
+  UnorderedListMarkdown,
+} from './list.mark';
+import { ParagraphMarkdown } from './paragraph.mark';
+import { RulerMarkdown } from './ruler.mark';
 
 function getMarkdownBlocks(content: string): string[] {
   const tokens = marked.lexer(content);
@@ -24,7 +24,7 @@ function getMarkdownBlocks(content: string): string[] {
 }
 
 const MemoizedMarkdownBlock = memo(
-  ({ block, id }: { block: string; id: string }) => {
+  ({ block }: { block: string }) => {
     return (
       <ReactMarkdown
         components={{
@@ -39,7 +39,7 @@ const MemoizedMarkdownBlock = memo(
           code: CodeMarkdown,
           ul: UnorderedListMarkdown,
           ol: OrderedListMarkdown,
-          li: ListItemMarkdown
+          li: ListItemMarkdown,
         }}
       >
         {block}
@@ -56,11 +56,7 @@ export const Markdown = memo(
     const blocks = useMemo(() => getMarkdownBlocks(content), [content]);
 
     return blocks.map((block, index) => (
-      <MemoizedMarkdownBlock
-        key={index}
-        block={block}
-        id={`${id}-block_${index}`}
-      />
+      <MemoizedMarkdownBlock block={block} key={`${id}-block_${index}`} />
     ));
   }
 );

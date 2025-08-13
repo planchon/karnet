@@ -3,7 +3,7 @@ export const UnorderedListMarkdown = ({
 }: {
   children?: React.ReactNode | undefined;
 }) => {
-  return <ul className="list-disc pl-5">{children}</ul>;
+  return <ul className="list-disc pl-5 text-base">{children}</ul>;
 };
 
 export const ListItemMarkdown = ({
@@ -11,7 +11,7 @@ export const ListItemMarkdown = ({
 }: {
   children?: React.ReactNode | undefined;
 }) => {
-  return <li className="mb-2">{children}</li>;
+  return <li className="mb-2 text-base">{children}</li>;
 };
 
 export const OrderedListMarkdown = ({
@@ -19,5 +19,5 @@ export const OrderedListMarkdown = ({
 }: {
   children?: React.ReactNode | undefined;
 }) => {
-  return <ol className="list-decimal pl-5">{children}</ol>;
+  return <ol className="list-decimal pl-5 text-base">{children}</ol>;
 };

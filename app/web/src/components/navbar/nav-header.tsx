@@ -1,4 +1,4 @@
-import { IconBell, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useCommands } from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";

@@ -3,5 +3,5 @@ export const ParagraphMarkdown = ({
 }: {
   children?: React.ReactNode | undefined;
 }) => {
-  return <p className="mb-4">{children}</p>;
+  return <p className="mb-4 text-base">{children}</p>;
 };
