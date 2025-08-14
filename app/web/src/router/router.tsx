@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { useAntiRageClick } from '@/components/help/shortcut-remember';
 import { useSettings } from '@/hooks/useStores';
+import { ChatHomePage } from '@/pages/chat/home';
 import { DiagramPage } from '@/pages/diagram';
 import { PaperPage } from '@/pages/paper';
 import { DocumentView } from '@/pages/view/document.view';
@@ -27,7 +28,10 @@ export const Router = () => {
     <Routes>
       <Route element={<GeneralOutlet />} path="/">
         {/* <Route path="/agenda" element={<AgendaPage />} /> */}
-        <Route element={<ChatPage />} path="/chat" />
+        <Route path="/chat">
+          <Route element={<ChatHomePage />} index />
+          <Route element={<ChatPage />} path=":id" />
+        </Route>
         <Route element={<TaskView />} path="/task" />
         <Route path="/diagram">
           <Route element={<DiagramPage />} path=":smallId/:any?" />

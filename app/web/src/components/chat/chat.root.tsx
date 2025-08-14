@@ -1,22 +1,50 @@
-import { cn } from "@/lib/utils";
-import { observer } from "mobx-react";
+import { observer } from 'mobx-react';
+import React, { createContext, useState } from 'react';
+import { cn } from '@/lib/utils';
 
-type ChatRootProps = React.ComponentProps<"div">;
+type ChatRootProps = React.ComponentProps<'div'>;
 
-export const ChatRoot = observer(function ChatRoot({
+export const ChatContext = createContext<{
+  model: string | null;
+  setModel: (model: string) => void;
+  mcp: string | null;
+  setMcp: (mcp: string) => void;
+  modelRef: React.RefObject<HTMLButtonElement | null>;
+  mcpRef: React.RefObject<HTMLButtonElement | null>;
+}>({
+  model: null,
+  setModel: () => {
+    console.log('setModel');
+  },
+  mcp: null,
+  setMcp: () => {
+    console.log('setMcp');
+  },
+  modelRef: {
+    current: null,
+  },
+  mcpRef: {
+    current: null,
+  },
+});
+
+export const ChatRoot = observer(function ChatRootInside({
   children,
   className,
   ...props
 }: ChatRootProps) {
+  const [model, setModel] = useState<string | null>(null);
+  const [mcp, setMcp] = useState<string | null>(null);
+  const modelRef = React.useRef<HTMLButtonElement>(null);
+  const mcpRef = React.useRef<HTMLButtonElement>(null);
+
   return (
-    <div
-      className={cn(
-        "h-full w-full rounded-t-lg border border-b-0 bg-white",
-        className
-      )}
-      {...props}
+    <ChatContext.Provider
+      value={{ model, setModel, mcp, setMcp, modelRef, mcpRef }}
     >
-      {children}
-    </div>
+      <div className={cn(className)} {...props}>
+        {children}
+      </div>
+    </ChatContext.Provider>
   );
 });
