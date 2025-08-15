@@ -1,13 +1,13 @@
-import { makeObservable, observable, reaction } from "mobx";
-import { AbstractModel } from "./abstract.model";
-import { IsString, IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsString } from 'class-validator';
+import { makeObservable, observable, reaction } from 'mobx';
+import { AbstractModel } from './abstract.model';
 
 export class DiagramModel extends AbstractModel {
-  type = "diagram" as const;
+  type = 'diagram' as const;
 
   @IsString()
   @IsNotEmpty()
-  content: string = `sequenceDiagram
+  content = `sequenceDiagram
     Alice->John: Hello John, how are you?
     Note over Alice,John: A typical interaction
     John-->Alice: How are you?
@@ -19,7 +19,7 @@ export class DiagramModel extends AbstractModel {
 
     makeObservable(this, {
       content: observable,
-      name: observable
+      name: observable,
     });
 
     this.load();
@@ -30,14 +30,14 @@ export class DiagramModel extends AbstractModel {
         this.save();
       },
       {
-        delay: 1000
+        delay: 1000,
       }
     );
   }
 
   toJSON() {
     return {
-      ...this
+      ...this,
     };
   }
 

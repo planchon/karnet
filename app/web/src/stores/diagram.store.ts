@@ -1,20 +1,17 @@
-import { AbstractStore } from "./abstract.store";
-import { RootStore } from "./root.store";
-import { DiagramModel } from "@/models/diagram.model";
+import { DiagramModel } from '@/models/diagram.model';
+import { AbstractStore } from './abstract.store';
 
-const ALL_DIAGRAMS_KEY = "p6n-all-diagrams";
+const ALL_DIAGRAMS_KEY = 'p6n-all-diagrams';
 
 export class DiagramStore extends AbstractStore<DiagramModel> {
   store_key = ALL_DIAGRAMS_KEY;
-  store_name = "diagram";
-  smallId = "DIAG";
-
-  constructor(rootStore: RootStore) {
-    super(rootStore);
-  }
+  store_name = 'diagram';
+  smallId = 'DIAG';
 
   loadInMemory(id: string | undefined): DiagramModel {
-    if (id === undefined) throw new Error("Id is undefined");
+    if (id === undefined) {
+      throw new Error('Id is undefined');
+    }
     return new DiagramModel({ id });
   }
 

@@ -10,7 +10,7 @@ import {
 } from '@/primitive/ui/sidebar';
 import { SuperLink } from '../../primitive/super-ui/link';
 
-export const NavMain = observer(function NavMain({
+export const NavMain = observer(function NavMainInner({
   items,
 }: {
   items: {
@@ -33,9 +33,9 @@ export const NavMain = observer(function NavMain({
 
   useEffect(() => {
     setSelectedStartPosition(
-      items.findIndex((item) => item.url === location.pathname) * 32 + 8
+      items.findIndex((item) => location.pathname.includes(item.url)) * 32 + 8
     );
-  }, [location.pathname]);
+  }, [location.pathname, items]);
 
   return (
     <AnimatePresence>

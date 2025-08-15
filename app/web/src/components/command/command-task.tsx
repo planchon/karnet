@@ -55,16 +55,22 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     taskStore.save();
   };
 
-  useShortcut('Control+Enter', () => {
-    commands.toggleTask();
+  const onCreateTask = () => {
+    if (!commands.taskOpen) {
+      return;
+    }
+
+    commands.closeTask();
     createTask();
     reset();
+  };
+
+  useShortcut('Control+Enter', () => {
+    onCreateTask();
   });
 
   useShortcut('Command+Enter', () => {
-    commands.toggleTask();
-    createTask();
-    reset();
+    onCreateTask();
   });
 
   const onTagChange = (value: string) => {

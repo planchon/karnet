@@ -1,5 +1,5 @@
 import { FocusManager } from '@/lib/focus-manager';
-
+import { ChatStore } from './chat.store';
 import { CommandStore } from './command.store';
 import { DiagramStore } from './diagram.store';
 import { PaperStore } from './paper.store';
@@ -16,6 +16,7 @@ export class RootStore {
   diagramStore: DiagramStore;
   userStore: UserStore;
   taskStore: TaskStore;
+  chatStore: ChatStore;
 
   focusManager: FocusManager;
 
@@ -32,7 +33,7 @@ export class RootStore {
     this.diagramStore = new DiagramStore(this);
     this.userStore = new UserStore(this);
     this.taskStore = new TaskStore(this);
-
+    this.chatStore = new ChatStore(this);
     this.viewStore = new ViewStore(this);
 
     this.settingsStore = new SettingsStore(this);

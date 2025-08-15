@@ -139,7 +139,11 @@ export const useLinkShortcut = (shortcut: string, link: string) => {
   const navigate = useNavigate();
 
   useShortcut(shortcut, () => {
-    navigate(link);
+    navigate(link, {
+      state: {
+        fromShortcut: true,
+      },
+    });
   });
 };
 

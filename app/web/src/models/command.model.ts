@@ -1,12 +1,12 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable } from 'mobx';
 
 export class CommandsModels {
-  helpOpen: boolean = false;
-  commandKOpen: boolean = false;
-  eventOpen: boolean = false;
-  chatOpen: boolean = false;
-  taskOpen: boolean = false;
-  projectOpen: boolean = false;
+  helpOpen = false;
+  commandKOpen = false;
+  eventOpen = false;
+  chatOpen = false;
+  taskOpen = false;
+  projectOpen = false;
 
   lastFocus: string | null = null;
 
@@ -34,6 +34,10 @@ export class CommandsModels {
 
   toggleTask = () => {
     this.taskOpen = !this.taskOpen;
+  };
+
+  closeTask = () => {
+    this.taskOpen = false;
   };
 
   toggleProject = () => {

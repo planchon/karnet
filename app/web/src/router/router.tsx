@@ -29,8 +29,7 @@ export const Router = () => {
       <Route element={<GeneralOutlet />} path="/">
         {/* <Route path="/agenda" element={<AgendaPage />} /> */}
         <Route path="/chat">
-          <Route element={<ChatHomePage />} index />
-          <Route element={<ChatPage />} path=":id" />
+          <Route element={<ChatHomePage />} path=":id?" />
         </Route>
         <Route element={<TaskView />} path="/task" />
         <Route path="/diagram">
