@@ -60,6 +60,8 @@ export const ToolsSuggestionComponent = (
   const [query, setQuery] = useState('');
   const ref = React.useRef<HTMLDivElement>(null);
 
+  const callback = props.callback;
+
   const onChange = (q: string) => {
     setQuery(q);
   };
@@ -107,8 +109,11 @@ export const ToolsSuggestionComponent = (
     };
   }, []);
 
-  const handleSelect = () => {
+  const handleSelect = (id: string) => {
     props.editor.chain().focus().deleteRange(props.range).run();
+    callback({
+      id,
+    });
   };
 
   return (
@@ -129,7 +134,7 @@ export const ToolsSuggestionComponent = (
             {tool.tools.map((item) => (
               <CommandItem
                 key={item.id}
-                onSelect={handleSelect}
+                onSelect={() => handleSelect(item.id)}
                 value={item.id}
               >
                 <item.icon />

@@ -25,6 +25,8 @@ export const ModelSuggestionComponent = (
   const [query, setQuery] = useState('');
   const ref = useRef<HTMLDivElement>(null);
 
+  const callback = props.callback;
+
   const onChange = (q: string) => {
     setQuery(q);
   };
@@ -67,8 +69,11 @@ export const ModelSuggestionComponent = (
     };
   }, []);
 
-  const handleSelect = () => {
+  const handleSelect = (id: string) => {
     props.editor.chain().focus().deleteRange(props.range).run();
+    callback({
+      id,
+    });
   };
 
   return (
@@ -93,7 +98,7 @@ export const ModelSuggestionComponent = (
             {provider.models.map((model) => (
               <CommandItem
                 key={model.id}
-                onSelect={handleSelect}
+                onSelect={() => handleSelect(model.id)}
                 value={model.id}
               >
                 <model.icon />

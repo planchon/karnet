@@ -1,6 +1,7 @@
 import { MCP } from '@lobehub/icons';
 import { IconBrain } from '@tabler/icons-react';
 import Document from '@tiptap/extension-document';
+import Mention from '@tiptap/extension-mention';
 import Paragraph from '@tiptap/extension-paragraph';
 import Placeholder from '@tiptap/extension-placeholder';
 import Text from '@tiptap/extension-text';
@@ -24,7 +25,9 @@ import { commands } from '@/data/tools';
 import { cn } from '@/lib/utils';
 import { ChatContext } from './chat.root';
 import { RewriteEnter } from './extensions/enter';
-import { MultipleTextualCommands } from './extensions/textual-commands';
+import { ModelSuggestionComponent } from './extensions/model-suggestion';
+import { renderItems } from './extensions/textual-commands';
+import { ToolsSuggestionComponent } from './extensions/tools-suggestion';
 
 export const ChatModelSelect = observer(function ChatModelSelectInner() {
   const { model, setModel, modelRef } = useContext(ChatContext);
@@ -52,7 +55,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
       .find((modelItemIterator) => modelItemIterator.id === model);
     return modelItem?.name;
   }
-  
+
   function getRenderingIcon() {
     const modelItem = models
       .flatMap((provider) => provider.models)
@@ -261,7 +264,26 @@ export const ChatInput = observer(function ChatInputInside({
         emptyNodeClass:
           'placeholder:text-[13px] placeholder:min-h-[1rem] placeholder:mt-0 text-sm!',
       }),
-      MultipleTextualCommands,
+      Mention.configure({
+        suggestions: [
+          {
+            char: '/',
+            render: (props) => {
+              return renderItems(ToolsSuggestionComponent, (props) => {
+                setMcp(props.id);
+              });
+            },
+          },
+          {
+            char: '@',
+            render: (props) => {
+              return renderItems(ModelSuggestionComponent, (props) => {
+                setModel(props.id);
+              });
+            },
+          },
+        ],
+      }),
       RewriteEnter,
     ],
     autofocus: 'start',

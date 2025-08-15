@@ -2,10 +2,11 @@ import Mention from '@tiptap/extension-mention';
 import { ReactRenderer } from '@tiptap/react';
 import type { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { type Instance, type Props } from 'tippy.js';
-import { ModelSuggestionComponent } from './model-suggestion';
-import { ToolsSuggestionComponent } from './tools-suggestion';
 
-const renderItems: SuggestionOptions['render'] = () => {
+export const renderItems: SuggestionOptions['render'] = (
+  RenderingComponent,
+  callback
+) => {
   let component: ReactRenderer | null = null;
   let popup: Instance<Props>[] | null = null;
 
@@ -13,18 +14,12 @@ const renderItems: SuggestionOptions['render'] = () => {
     onStart: (props) => {
       const { editor } = props;
 
-      if (props.text === '/') {
-        component = new ReactRenderer(ToolsSuggestionComponent, {
-          editor,
-          props,
-        });
-      }
-      if (props.text === '@') {
-        component = new ReactRenderer(ModelSuggestionComponent, {
-          editor,
-          props,
-        });
-      }
+      props.callback = callback;
+
+      component = new ReactRenderer(RenderingComponent, {
+        editor,
+        props,
+      });
 
       if (!component) {
         console.error('No component found');
@@ -67,16 +62,3 @@ const renderItems: SuggestionOptions['render'] = () => {
     },
   };
 };
-
-export const MultipleTextualCommands = Mention.configure({
-  suggestions: [
-    {
-      char: '/',
-      render: renderItems,
-    },
-    {
-      char: '@',
-      render: renderItems,
-    },
-  ],
-});
