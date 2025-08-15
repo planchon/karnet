@@ -52,6 +52,7 @@ interface ToolsSuggestionComponentProps {
   query: string;
   range: Range;
   editor: Editor;
+  callback: (props: { id: string }) => void;
 }
 
 export const ToolsSuggestionComponent = (

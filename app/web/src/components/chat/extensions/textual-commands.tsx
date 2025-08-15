@@ -1,16 +1,15 @@
-import Mention from '@tiptap/extension-mention';
 import { ReactRenderer } from '@tiptap/react';
-import type { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { type Instance, type Props } from 'tippy.js';
 
-export const renderItems: SuggestionOptions['render'] = (
-  RenderingComponent,
-  callback
+export const renderItems = (
+  RenderingComponent: any,
+  callback: (props: { id: string }) => void
 ) => {
   let component: ReactRenderer | null = null;
   let popup: Instance<Props>[] | null = null;
 
   return {
+    // @ts-expect-error
     onStart: (props) => {
       const { editor } = props;
 
@@ -28,7 +27,6 @@ export const renderItems: SuggestionOptions['render'] = (
 
       // add the context menu to the editor
       // it also position it to the correct place (next to the cursor)
-      // @ts-expect-error
       popup = tippy('body', {
         getReferenceClientRect: props.clientRect,
         appendTo: () => document.body,
@@ -39,13 +37,14 @@ export const renderItems: SuggestionOptions['render'] = (
         placement: 'bottom-start',
       });
     },
+    // @ts-expect-error
     onUpdate: (props) => {
       component?.updateProps(props);
       popup?.[0]?.setProps({
-        // @ts-expect-error
         getReferenceClientRect: props.clientRect,
       });
     },
+    // @ts-expect-error
     onKeyDown: (props) => {
       if (props.event.key === 'Escape') {
         popup?.[0]?.hide();

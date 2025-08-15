@@ -268,18 +268,24 @@ export const ChatInput = observer(function ChatInputInside({
         suggestions: [
           {
             char: '/',
-            render: (props) => {
-              return renderItems(ToolsSuggestionComponent, (props) => {
-                setMcp(props.id);
-              });
+            render: () => {
+              return renderItems(
+                ToolsSuggestionComponent,
+                (props: { id: string }) => {
+                  setMcp(props.id);
+                }
+              );
             },
           },
           {
             char: '@',
-            render: (props) => {
-              return renderItems(ModelSuggestionComponent, (props) => {
-                setModel(props.id);
-              });
+            render: () => {
+              return renderItems(
+                ModelSuggestionComponent,
+                (props: { id: string }) => {
+                  setModel(props.id);
+                }
+              );
             },
           },
         ],
