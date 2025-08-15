@@ -10,6 +10,7 @@ import {
 import { Command as Cmd } from 'cmdk';
 import React, { useEffect, useState } from 'react';
 import { FaImage, FaInternetExplorer, FaReact } from 'react-icons/fa';
+import { commands } from '@/data/tools';
 
 export const ToolsSuggestion = [
   {
@@ -106,6 +107,10 @@ export const ToolsSuggestionComponent = (
     };
   }, []);
 
+  const handleSelect = () => {
+    props.editor.chain().focus().deleteRange(props.range).run();
+  };
+
   return (
     <Command
       className="min-w-[200px] border"
@@ -119,25 +124,19 @@ export const ToolsSuggestionComponent = (
       />
       <CommandEmpty>No results.</CommandEmpty>
       <CommandList className="scrollbar-thin max-h-[300px] overflow-y-auto">
-        {ToolsSuggestion.map((tool, index) => (
-          <CommandGroup
-            heading={tool.group}
-            key={tool.group}
-            value={tool.group}
-          >
-            {tool.items.map((item) => (
+        {commands.map((tool, index) => (
+          <CommandGroup heading={tool.name} key={tool.name} value={tool.name}>
+            {tool.tools.map((item) => (
               <CommandItem
-                key={item.title}
-                onSelect={() => {
-                  item.command({ editor: props.editor, range: props.range });
-                }}
-                value={item.title}
+                key={item.id}
+                onSelect={handleSelect}
+                value={item.id}
               >
                 <item.icon />
-                {item.title}
+                {item.name}
               </CommandItem>
             ))}
-            {index !== ToolsSuggestion.length - 1 && (
+            {index !== commands.length - 1 && (
               <CommandSeparator className="mt-1" />
             )}
           </CommandGroup>

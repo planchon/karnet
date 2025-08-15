@@ -1,4 +1,3 @@
-import { Anthropic, Gemini, OpenAI } from '@lobehub/icons';
 import type { Editor, Range } from '@tiptap/react';
 import {
   Command,
@@ -10,80 +9,7 @@ import {
 } from '@ui/command';
 import { Command as Cmd } from 'cmdk';
 import { useEffect, useRef, useState } from 'react';
-
-export const modelSuggestion = [
-  {
-    group: 'OpenAI',
-    items: [
-      {
-        title: 'GPT 4o',
-        searchTerms: ['gpt-4o'],
-        icon: OpenAI,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
-        },
-      },
-      {
-        title: 'GPT 4o Mini',
-        searchTerms: ['gpt-4o-mini'],
-        icon: OpenAI,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
-        },
-      },
-      {
-        title: 'GPT 5',
-        searchTerms: ['gpt-5'],
-        icon: OpenAI,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
-        },
-      },
-    ],
-  },
-  {
-    group: 'Anthropic',
-    items: [
-      {
-        title: 'Claude 3.5 Sonnet',
-        searchTerms: ['claude'],
-        icon: Anthropic,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
-        },
-      },
-      {
-        title: 'Claude 4 Opus',
-        searchTerms: ['claude 4 opus'],
-        icon: Anthropic,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
-        },
-      },
-      {
-        title: 'Claude 4.1 Opus',
-        searchTerms: ['claude 4.1 opus'],
-        icon: Anthropic,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
-        },
-      },
-    ],
-  },
-  {
-    group: 'Google',
-    items: [
-      {
-        title: 'Gemini 2.0 Flash',
-        searchTerms: ['gemini 2.0 flash'],
-        icon: Gemini,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
-        },
-      },
-    ],
-  },
-];
+import { models } from '@/data/model';
 
 export const navigationKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
 
@@ -141,6 +67,10 @@ export const ModelSuggestionComponent = (
     };
   }, []);
 
+  const handleSelect = () => {
+    props.editor.chain().focus().deleteRange(props.range).run();
+  };
+
   return (
     <Command
       className="min-w-[200px] border"
@@ -154,25 +84,23 @@ export const ModelSuggestionComponent = (
       />
       <CommandEmpty>No results.</CommandEmpty>
       <CommandList className="scrollbar-thin max-h-[300px] overflow-y-auto">
-        {modelSuggestion.map((model, index) => (
+        {models.map((provider, index) => (
           <CommandGroup
-            heading={model.group}
-            key={model.group}
-            value={model.group}
+            heading={provider.providerName}
+            key={provider.providerID}
+            value={provider.providerID}
           >
-            {model.items.map((item) => (
+            {provider.models.map((model) => (
               <CommandItem
-                key={item.title}
-                onSelect={() => {
-                  item.command({ editor: props.editor, range: props.range });
-                }}
-                value={item.title}
+                key={model.id}
+                onSelect={handleSelect}
+                value={model.id}
               >
-                <item.icon />
-                {item.title}
+                <model.icon />
+                {model.name}
               </CommandItem>
             ))}
-            {index !== modelSuggestion.length - 1 && (
+            {index !== models.length - 1 && (
               <CommandSeparator className="mt-1" />
             )}
           </CommandGroup>

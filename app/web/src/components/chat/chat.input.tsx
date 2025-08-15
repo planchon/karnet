@@ -18,62 +18,51 @@ import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
 import { Shortcut } from '@ui/shortcut';
 import { observer } from 'mobx-react';
 import { useContext, useEffect, useRef, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { models } from '@/data/model';
+import { commands } from '@/data/tools';
 import { cn } from '@/lib/utils';
 import { ChatContext } from './chat.root';
 import { RewriteEnter } from './extensions/enter';
 import { MultipleTextualCommands } from './extensions/textual-commands';
 
-const providers = [
-  {
-    name: 'OpenAI',
-    models: [
-      {
-        name: 'GPT-4o',
-        value: 'gpt-4o',
-      },
-      {
-        name: 'GPT-4o-mini',
-        value: 'gpt-4o-mini',
-      },
-      {
-        name: 'GPT-3.5-turbo',
-        value: 'gpt-3.5-turbo',
-      },
-    ],
-  },
-  {
-    name: 'Google',
-    models: [
-      {
-        name: 'Gemini 2.0 Flash',
-        value: 'gemini-2.0-flash',
-      },
-    ],
-  },
-  {
-    name: 'Anthropic',
-    models: [
-      {
-        name: 'Claude 3.5 Sonnet',
-        value: 'claude-3-5-sonnet',
-      },
-    ],
-  },
-];
 export const ChatModelSelect = observer(function ChatModelSelectInner() {
   const { model, setModel, modelRef } = useContext(ChatContext);
   const [open, setOpen] = useState(false);
+
+  useHotkeys(
+    'm',
+    () => {
+      setOpen(true);
+    },
+    {
+      preventDefault: true,
+      useKey: true,
+    }
+  );
 
   function handleSelect(value: string) {
     setModel(value);
     setOpen(false);
   }
 
-  function getRenderingName(value: string) {
-    const modelItem = providers
+  function getRenderingName() {
+    const modelItem = models
       .flatMap((provider) => provider.models)
-      .find((modelItemIterator) => modelItemIterator.value === value);
+      .find((modelItemIterator) => modelItemIterator.id === model);
     return modelItem?.name;
+  }
+  
+  function getRenderingIcon() {
+    const modelItem = models
+      .flatMap((provider) => provider.models)
+      .find((modelItemIterator) => modelItemIterator.id === model);
+
+    if (!modelItem) {
+      return <IconBrain className="size-4" />;
+    }
+
+    return <modelItem.icon className="size-4" />;
   }
 
   return (
@@ -84,8 +73,8 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
           size="sm"
           variant="ghost"
         >
-          <IconBrain className="size-4" />
-          {model ? getRenderingName(model) : 'Model'}
+          {getRenderingIcon()}
+          {model ? getRenderingName() : 'Model'}
           <Shortcut shortcut={['M']} />
         </Button>
       </PopoverTrigger>
@@ -94,14 +83,18 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
           <CommandInput placeholder="Search model..." />
           <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
             <CommandEmpty>No model found.</CommandEmpty>
-            {providers.map((provider) => (
-              <CommandGroup heading={provider.name} key={provider.name}>
+            {models.map((provider) => (
+              <CommandGroup
+                heading={provider.providerName}
+                key={provider.providerName}
+              >
                 {provider.models.map((modelItem) => (
                   <CommandItem
-                    key={modelItem.value}
-                    onSelect={() => handleSelect(modelItem.value)}
-                    value={modelItem.value}
+                    key={modelItem.id}
+                    onSelect={() => handleSelect(modelItem.id)}
+                    value={modelItem.id}
                   >
+                    <modelItem.icon />
                     {modelItem.name}
                   </CommandItem>
                 ))}
@@ -159,17 +152,41 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
   const { mcp, setMcp, mcpRef } = useContext(ChatContext);
   const [open, setOpen] = useState(false);
 
+  useHotkeys(
+    's',
+    () => {
+      setOpen(true);
+    },
+    {
+      preventDefault: true,
+      useKey: true,
+    }
+  );
+
   function handleSelect(value: string) {
     setMcp(value);
     setOpen(false);
   }
 
-  function getRenderingName(value: string) {
-    const mcpItem = mcpProviders
-      .flatMap((provider) => provider.items)
-      .find((mcpItemIterator) => mcpItemIterator.value === value);
+  function getRenderingName() {
+    const mcpItem = commands
+      .flatMap((provider) => provider.tools)
+      .find((mcpItemIterator) => mcpItemIterator.id === mcp);
     return mcpItem?.name;
   }
+
+  function getRenderingIcon() {
+    const mcpItem = commands
+      .flatMap((provider) => provider.tools)
+      .find((mcpItemIterator) => mcpItemIterator.id === mcp);
+
+    if (!mcpItem) {
+      return <MCP className="size-4" />;
+    }
+
+    return <mcpItem.icon className="size-4" />;
+  }
+
   return (
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger className="outline-none ring-0" ref={mcpRef}>
@@ -178,8 +195,8 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
           size="sm"
           variant="ghost"
         >
-          <MCP className="size-4" />
-          {mcp ? getRenderingName(mcp) : 'MCP'}
+          {getRenderingIcon()}
+          {mcp ? getRenderingName() : 'MCP'}
           <Shortcut nothen shortcut={['S']} />
         </Button>
       </PopoverTrigger>
@@ -188,14 +205,15 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
           <CommandInput placeholder="Search MCP..." />
           <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
             <CommandEmpty>No MCP found.</CommandEmpty>
-            {mcpProviders.map((provider) => (
-              <CommandGroup heading={provider.category} key={provider.category}>
-                {provider.items.map((item) => (
+            {commands.map((provider) => (
+              <CommandGroup heading={provider.name} key={provider.name}>
+                {provider.tools.map((item) => (
                   <CommandItem
-                    key={item.value}
-                    onSelect={() => handleSelect(item.value)}
-                    value={item.value}
+                    key={item.id}
+                    onSelect={() => handleSelect(item.id)}
+                    value={item.id}
                   >
+                    <item.icon />
                     {item.name}
                   </CommandItem>
                 ))}
@@ -279,20 +297,6 @@ export const ChatInput = observer(function ChatInputInside({
 
   const modelMCPHandler = (e: KeyboardEvent) => {
     if (editor?.isFocused) {
-      return;
-    }
-
-    if (e.key === 'm' && modelRef.current?.value) {
-      modelRef.current?.click();
-      setModel(modelRef.current?.value);
-      e.preventDefault();
-      return;
-    }
-
-    if (e.key === 's' && mcpRef.current?.value) {
-      mcpRef.current?.click();
-      setMcp(mcpRef.current?.value);
-      e.preventDefault();
       return;
     }
 
