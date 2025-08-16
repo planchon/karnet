@@ -17,6 +17,7 @@ export const NavMain = observer(function NavMainInner({
     title: string;
     url: string;
     icon?: Icon;
+    match: (pathname: string) => boolean;
     tooltip: {
       title: string;
       side?: 'top' | 'right' | 'bottom' | 'left';
@@ -26,14 +27,14 @@ export const NavMain = observer(function NavMainInner({
 }) {
   const location = useLocation();
   const initialSelectedStartPosition =
-    items.findIndex((item) => item.url === location.pathname) * 32 + 8;
+    items.findIndex((item) => item.match(location.pathname)) * 32 + 8;
   const [selectedStartPosition, setSelectedStartPosition] = useState(
     initialSelectedStartPosition
   );
 
   useEffect(() => {
     setSelectedStartPosition(
-      items.findIndex((item) => location.pathname.includes(item.url)) * 32 + 8
+      items.findIndex((item) => item.match(location.pathname)) * 32 + 8
     );
   }, [location.pathname, items]);
 
