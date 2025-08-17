@@ -78,12 +78,15 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
         >
           {getRenderingIcon()}
           {model ? getRenderingName() : 'Model'}
-          <Shortcut shortcut={['M']} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder="Search model..." />
+          <CommandInput
+            placeholder="Search model..."
+            searchIcon={false}
+            shortcut={['M']}
+          />
           <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
             <CommandEmpty>No model found.</CommandEmpty>
             {models.map((provider) => (
@@ -200,12 +203,15 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
         >
           {getRenderingIcon()}
           {mcp ? getRenderingName() : 'MCP'}
-          <Shortcut nothen shortcut={['S']} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder="Search MCP..." />
+          <CommandInput
+            placeholder="Search MCP..."
+            searchIcon={false}
+            shortcut={['S']}
+          />
           <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
             <CommandEmpty>No MCP found.</CommandEmpty>
             {commands.map((provider) => (

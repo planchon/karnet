@@ -1,6 +1,5 @@
 import { IsObject, IsString } from 'class-validator';
 import { action, computed, makeObservable, observable } from 'mobx';
-import posthog from 'posthog-js';
 import z from 'zod';
 import type { AbstractModel } from '@/models/abstract.model';
 import type { RootStore } from './root.store';
@@ -44,7 +43,9 @@ export abstract class AbstractStore<T extends AbstractModel> {
   }
 
   getById(id: string | undefined): T | undefined {
-    if (id === undefined) throw new Error('Id is undefined');
+    if (id === undefined) {
+      throw new Error('Id is undefined');
+    }
     const el = this._models.get(id);
 
     return el;
@@ -78,10 +79,10 @@ export abstract class AbstractStore<T extends AbstractModel> {
       throw new Error('Invalid store local storage found');
     }
 
-    parsed.data.forEach((id: string) => {
+    for (const id of parsed.data) {
       const model = this.loadInMemory(id);
       this.setModel(id, model);
-    });
+    }
 
     this.validateAllModels();
 
@@ -95,13 +96,13 @@ export abstract class AbstractStore<T extends AbstractModel> {
 
   validateAllModels() {
     let modelLength = this.getLength();
-    this.allModels.forEach((model) => {
+    for (const model of this.allModels) {
       if (model.smallId === '') {
         modelLength++;
         model.smallId = model.getSmallId(modelLength);
         model.save();
       }
-    });
+    }
   }
 
   setModel(id: string, model: T) {

@@ -1,13 +1,15 @@
-import { makeAutoObservable } from "mobx";
-import { DocumentView } from "@/view/document.view";
-import { TaskView } from "@/view/task.view";
-import type { RootStore } from "./root.store";
+import { makeAutoObservable } from 'mobx';
+import { AgentView } from '@/view/agent.view';
+import { DocumentView } from '@/view/document.view';
+import { TaskView } from '@/view/task.view';
+import type { RootStore } from './root.store';
 
 export class ViewStore {
   rootStore: RootStore;
 
   documentView: Record<string | 'default', DocumentView>;
   taskView: Record<string | 'default', TaskView>;
+  agentView: Record<string | 'default', AgentView>;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -18,6 +20,10 @@ export class ViewStore {
 
     this.taskView = {
       default: new TaskView(this.rootStore),
+    };
+
+    this.agentView = {
+      default: new AgentView(this.rootStore),
     };
 
     makeAutoObservable(this);
@@ -37,6 +43,16 @@ export class ViewStore {
 
   getTaskView(id = 'default') {
     const existingView = this.taskView[id];
+
+    if (!existingView) {
+      throw new Error(`View with id ${id} not found`);
+    }
+
+    return existingView;
+  }
+
+  getAgentView(id = 'default') {
+    const existingView = this.agentView[id];
 
     if (!existingView) {
       throw new Error(`View with id ${id} not found`);

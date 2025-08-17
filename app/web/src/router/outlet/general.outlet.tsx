@@ -15,7 +15,7 @@ export function GeneralOutlet() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
-  useLinkShortcut("g+a", "/agenda");
+  useLinkShortcut('g+a', '/agent');
   useLinkShortcut("g+t", "/task");
 
   useLinkShortcut("g+c", "/chat");

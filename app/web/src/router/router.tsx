@@ -5,9 +5,9 @@ import { useSettings } from '@/hooks/useStores';
 import { ChatHomePage } from '@/pages/chat/home';
 import { DiagramPage } from '@/pages/diagram';
 import { PaperPage } from '@/pages/paper';
+import { AgentView } from '@/pages/view/agent.view';
 import { DocumentView } from '@/pages/view/document.view';
 import { TaskView } from '@/pages/view/task.view';
-import { ChatPage } from '../pages/chat';
 import { DrawPage } from '../pages/sketch';
 import { GeneralOutlet } from './outlet/general.outlet';
 
@@ -30,6 +30,9 @@ export const Router = () => {
         {/* <Route path="/agenda" element={<AgendaPage />} /> */}
         <Route path="/chat">
           <Route element={<ChatHomePage />} path=":id?" />
+        </Route>
+        <Route path="/agent">
+          <Route element={<AgentView />} path=":id?" />
         </Route>
         <Route element={<TaskView />} path="/task" />
         <Route path="/diagram">
