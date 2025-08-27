@@ -1,3 +1,5 @@
+"use client";
+
 import z from "zod";
 import { TaskModel } from "@/models/task.model";
 import { AbstractStore } from "./abstract.store";

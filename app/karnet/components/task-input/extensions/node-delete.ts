@@ -1,8 +1,10 @@
-import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
-import { type EditorState, Plugin, type Transaction } from '@tiptap/pm/state';
+"use client";
+
+import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
+import { type EditorState, Plugin, type Transaction } from "@tiptap/pm/state";
 
 export type NodeWithDeleteOptions = {
-  onNodeDelete?: () => void;
+	onNodeDelete?: () => void;
 };
 
 /**
@@ -11,45 +13,45 @@ export type NodeWithDeleteOptions = {
  * @param onNodeDelete The callback to call with the deleted node
  */
 export function createOnNodeDeletePlugin(
-  nodeTypeName: string,
-  onNodeDelete?: () => void
+	nodeTypeName: string,
+	onNodeDelete?: () => void,
 ) {
-  return new Plugin({
-    state: {
-      init: (_: unknown, { doc }: { doc: ProseMirrorNode }) => doc,
-      apply: (
-        tr: Transaction,
-        prev: unknown,
-        oldState: EditorState,
-        newState: EditorState
-      ) => {
-        if (!onNodeDelete) {
-          return prev;
-        }
-        if (!tr.docChanged) {
-          return prev;
-        }
+	return new Plugin({
+		state: {
+			init: (_: unknown, { doc }: { doc: ProseMirrorNode }) => doc,
+			apply: (
+				tr: Transaction,
+				prev: unknown,
+				oldState: EditorState,
+				newState: EditorState,
+			) => {
+				if (!onNodeDelete) {
+					return prev;
+				}
+				if (!tr.docChanged) {
+					return prev;
+				}
 
-        const oldNodes: { node: ProseMirrorNode; pos: number }[] = [];
-        oldState.doc.descendants((node: ProseMirrorNode, pos: number) => {
-          if (node.type.name === nodeTypeName) {
-            oldNodes.push({ node, pos });
-          }
-        });
+				const oldNodes: { node: ProseMirrorNode; pos: number }[] = [];
+				oldState.doc.descendants((node: ProseMirrorNode, pos: number) => {
+					if (node.type.name === nodeTypeName) {
+						oldNodes.push({ node, pos });
+					}
+				});
 
-        const newNodes: Set<number> = new Set();
-        newState.doc.descendants((node: ProseMirrorNode, pos: number) => {
-          if (node.type.name === nodeTypeName) {
-            newNodes.add(pos);
-          }
-        });
+				const newNodes: Set<number> = new Set();
+				newState.doc.descendants((node: ProseMirrorNode, pos: number) => {
+					if (node.type.name === nodeTypeName) {
+						newNodes.add(pos);
+					}
+				});
 
-        if (oldNodes.length > 0 && newNodes.size === 0) {
-          onNodeDelete();
-        }
+				if (oldNodes.length > 0 && newNodes.size === 0) {
+					onNodeDelete();
+				}
 
-        return prev;
-      },
-    },
-  });
+				return prev;
+			},
+		},
+	});
 }

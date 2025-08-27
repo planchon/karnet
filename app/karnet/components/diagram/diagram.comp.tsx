@@ -1,3 +1,5 @@
+"use client";
+
 import { MermaidDiagram } from "@lightenna/react-mermaid-diagram";
 import Editor from "@monaco-editor/react";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";

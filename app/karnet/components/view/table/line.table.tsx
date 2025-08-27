@@ -1,3 +1,5 @@
+"use client";
+
 import type { IconProps } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 import { Checkbox } from "@ui/checkbox";

@@ -1,3 +1,5 @@
+"use client";
+
 import { Draw } from "@draw/draw";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { observer } from "mobx-react";
@@ -39,15 +41,15 @@ const SketchHeader = observer(function SketchHeader({
 	);
 });
 
-export const DrawPage = observer(function DrawPage() {
-	const { smallId } = useParams();
+export default observer(function DrawPage() {
+	const { id } = useParams<{ id: string }>();
 	const { commandStore, sketchesStore } = useStores();
 
-	if (!smallId) {
+	if (!id) {
 		return null;
 	}
 
-	const sketch = sketchesStore.getBySmallId(smallId);
+	const sketch = sketchesStore.getBySmallId(id);
 
 	useEffect(() => {
 		return () => {

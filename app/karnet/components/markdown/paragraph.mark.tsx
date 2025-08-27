@@ -1,7 +1,9 @@
+"use client";
+
 export const ParagraphMarkdown = ({
-  children
+	children,
 }: {
-  children?: React.ReactNode | undefined;
+	children?: React.ReactNode | undefined;
 }) => {
-  return <p className="mb-4 text-base">{children}</p>;
+	return <p className="mb-4 text-base">{children}</p>;
 };

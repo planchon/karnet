@@ -1,3 +1,5 @@
+"use client";
+
 import type { TaskModel } from "@/models/task.model";
 import { AbstractView } from "./abstract.view";
 

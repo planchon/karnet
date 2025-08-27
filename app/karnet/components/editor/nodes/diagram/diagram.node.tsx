@@ -1,3 +1,4 @@
+"use client";
 import { MermaidDiagram } from "@lightenna/react-mermaid-diagram";
 import { type Editor, mergeAttributes, Node } from "@tiptap/core";
 import {

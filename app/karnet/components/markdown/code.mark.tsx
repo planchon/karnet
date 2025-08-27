@@ -1,3 +1,5 @@
+"use client";
+
 import { IconDownload } from "@tabler/icons-react";
 import { Button } from "@ui/button";
 import { Copy } from "lucide-react";

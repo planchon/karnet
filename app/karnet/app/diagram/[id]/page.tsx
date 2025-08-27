@@ -1,18 +1,19 @@
+"use client";
+
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import DiagramEditor from "@/components/diagram/diagram.comp";
 import { useStores } from "@/hooks/useStores";
 
-export const DiagramPage = observer(function DiagramPage() {
-	const { smallId } = useParams();
+export default observer(function DiagramPage() {
+	const { id } = useParams<{ id: string }>();
+	const { diagramStore } = useStores();
 
-	if (!smallId) {
+	if (!id) {
 		return null;
 	}
 
-	const { diagramStore } = useStores();
-
-	const diagram = diagramStore.getBySmallId(smallId);
+	const diagram = diagramStore.getBySmallId(id);
 
 	if (!diagram) {
 		return null;

@@ -1,3 +1,5 @@
+"use client";
+
 import { Read } from "@draw/read";
 import { type Editor, mergeAttributes, Node } from "@tiptap/core";
 import {

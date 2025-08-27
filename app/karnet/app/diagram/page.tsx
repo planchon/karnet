@@ -1,21 +1,18 @@
-import { observer } from "mobx-react";
-import { useParams } from "next/navigation";
-import DiagramEditor from "@/components/diagram/diagram.comp";
-import { useStores } from "@/hooks/useStores";
+"use client";
 
-export const DiagramPage = observer(function DiagramPage() {
-	const { smallId } = useParams();
+import { observer } from "mobx-react";
+import { useRouter } from "next/navigation";
+import { useStores } from "@/hooks/useStores";
+import { generateId } from "@/lib/utils";
+
+export default observer(function DiagramPage() {
+	const router = useRouter();
 	const { diagramStore } = useStores();
 
-	if (!smallId) {
-		return null;
-	}
+	const id = generateId();
+	const newDiagram = diagramStore.createModel(id);
 
-	const diagram = diagramStore.getBySmallId(smallId);
+	router.push(`/diagram/${newDiagram.smallId}`);
 
-	if (!diagram) {
-		return null;
-	}
-
-	return <DiagramEditor diagram={diagram} />;
+	return null;
 });

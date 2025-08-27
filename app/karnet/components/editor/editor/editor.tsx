@@ -1,3 +1,5 @@
+"use client";
+
 // --- Tiptap Node ---
 import { ImageUploadNode } from "@editor/nodes/image-upload-node/image-upload-node-extension";
 import { Highlight } from "@tiptap/extension-highlight";

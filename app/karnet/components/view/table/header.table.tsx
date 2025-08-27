@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { observer } from "mobx-react";

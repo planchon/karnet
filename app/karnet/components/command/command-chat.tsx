@@ -1,3 +1,5 @@
+"use client";
+
 import { observer } from "mobx-react";
 import { useCommands } from "@/hooks/useShortcut";
 import { Dialog, DialogContent } from "@/primitive/ui/dialog";

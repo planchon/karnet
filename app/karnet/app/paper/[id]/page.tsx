@@ -1,22 +1,24 @@
+"use client";
+
 import { SimpleEditor } from "@editor/editor/editor";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { observer } from "mobx-react";
-import { useParams } from "next/navigation";
 import { useStores } from "@/hooks/useStores";
 import { Button } from "@/primitive/ui/button";
 import { Input } from "@/primitive/ui/input";
 import "@editor/styles/_variables.scss";
 import "@editor/styles/_keyframe-animations.scss";
+import { useParams } from "next/navigation";
 
-export const PaperPage = observer(function PaperPage() {
-	const { smallId } = useParams();
+export default observer(function PaperPage() {
+	const { id } = useParams<{ id: string }>();
 	const { paperStore } = useStores();
 
-	if (!smallId) {
+	if (!id) {
 		return null;
 	}
 
-	const paper = paperStore.getBySmallId(smallId);
+	const paper = paperStore.getBySmallId(id);
 
 	if (!paper) {
 		return <div>No id</div>;

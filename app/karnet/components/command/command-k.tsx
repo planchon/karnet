@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	Icon123,
 	IconHelpCircle,

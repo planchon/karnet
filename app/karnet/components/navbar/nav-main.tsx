@@ -1,3 +1,5 @@
+"use client";
+
 import type { Icon } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { observer } from "mobx-react";
