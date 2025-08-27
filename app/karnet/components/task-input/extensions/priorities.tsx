@@ -58,7 +58,7 @@ export const PriorityNode = Node.create<PriorityNodeOptions>({
       HTMLAttributes,
       {
         level: 1,
-        class: `font-normal px-[3px] pb-[2px] py-[1px] ml-1 ${color} rounded-xs`,
+        class: `font-normal px-[3px] pb-[2px] py-px ml-1 ${color} rounded-xs`,
       }
     );
 

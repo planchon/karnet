@@ -1,8 +1,8 @@
 import { Draw } from "@draw/draw";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { observer } from "mobx-react";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
-import { useParams } from "react-router";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 import type { SketchModel } from "@/models/sketch.model";
@@ -19,7 +19,7 @@ const SketchHeader = observer(function SketchHeader({
 			<div className="flex h-full select-none flex-row items-center justify-center gap-2 pl-4">
 				<Input
 					className={cn(
-						"focus:!ring-0 w-full border-none font-medium focus:border-transparent",
+						"focus:ring-0! w-full border-none font-medium focus:border-transparent",
 					)}
 					onChange={(e) => {
 						sketch.setName(e.target.value);

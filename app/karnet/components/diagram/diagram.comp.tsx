@@ -21,7 +21,7 @@ const DiagramHeader = observer(function DiagramHeader({
 			<div className="flex h-full w-full select-none flex-row items-center justify-center gap-2 pl-4">
 				<Input
 					className={cn(
-						"w-full border-none font-medium focus:border-transparent focus:!ring-0",
+						"w-full border-none font-medium focus:border-transparent focus:ring-0!",
 					)}
 					placeholder="Drawing name"
 					value={diagram.name}
@@ -70,7 +70,7 @@ const DiagramEditor = observer(function DiagramEditor({
 					</div>
 					<div
 						id="status"
-						className="flex h-[25px] flex-row items-center justify-center gap-x-2 border-r px-2 pt-[1px] font-mono text-sm"
+						className="flex h-[25px] flex-row items-center justify-center gap-x-2 border-r px-2 pt-px font-mono text-sm"
 					/>
 				</div>
 				<div className="flex h-full w-full">

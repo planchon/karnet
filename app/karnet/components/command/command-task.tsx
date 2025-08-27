@@ -289,7 +289,7 @@ const Deadline = observer(function DeadlineComp({
             size="sm"
             tabIndex={-1}
           >
-            <IconCalendar className="ml-[1px] size-4 text-accent-foreground/60" />
+            <IconCalendar className="ml-px size-4 text-accent-foreground/60" />
             {deadline && (
               <span className="text-accent-foreground/80 text-xs">
                 {deadline}

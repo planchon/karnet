@@ -7,7 +7,7 @@ export const CommandChat = observer(function CommandChat() {
 
 	return (
 		<Dialog open={commands.chatOpen} onOpenChange={commands.toggleChat}>
-			<DialogContent className="z-[1000] min-w-[700px] p-3">
+			<DialogContent className="z-1000 min-w-[700px] p-3">
 				<div className="flex w-full flex-col gap-3">
 					<div className="flex items-center gap-2">test</div>
 				</div>

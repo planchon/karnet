@@ -11,7 +11,7 @@ export function Read({ id }: { id: string }) {
 
   return (
     <div className="relative h-full w-full">
-      <div className="absolute left-0 top-0 z-[12] h-full w-full" />
+      <div className="absolute left-0 top-0 z-12 h-full w-full" />
       <Tldraw
         className="z-10 h-full w-full"
         key={id}

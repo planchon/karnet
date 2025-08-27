@@ -134,7 +134,7 @@ export const HelpComponent = observer(function HelpComponent() {
       open={commands.helpOpen}
       onOpenChange={commands.toggleHelp}
     >
-      <DrawerContent className="z-[500]">
+      <DrawerContent className="z-500">
         <DrawerHeader>
           <DrawerTitle>Keyboard shortcuts</DrawerTitle>
           <DrawerClose className="absolute right-4 top-4">

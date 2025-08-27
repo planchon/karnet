@@ -42,11 +42,11 @@ export const ViewHeaderSearch = observer(() => {
 
 	return (
 		<div
-			className="flex h-6 w-40 items-center justify-between rounded-sm border pr-[3px] focus-within:border-1 focus-within:border-accent-foreground/50 focus-within:ring-3 focus-within:ring-accent-foreground/30"
+			className="flex h-6 w-40 items-center justify-between rounded-sm border pr-[3px] focus-within:border focus-within:border-accent-foreground/50 focus-within:ring-3 focus-within:ring-accent-foreground/30"
 			id="view-header-search"
 		>
 			<Input
-				className="focus:!ring-0 h-6 w-full rounded-sm border-none text-xs shadow-none placeholder:text-xs focus:outline-none"
+				className="focus:ring-0! h-6 w-full rounded-sm border-none text-xs shadow-none placeholder:text-xs focus:outline-none"
 				onChange={(e) => {
 					viewModel.setSearchQuery(e.target.value);
 				}}

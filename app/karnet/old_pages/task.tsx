@@ -168,7 +168,7 @@ const TaskDayColumn = observer(function TaskDayColumn({
 }: TaskPerDayProps) {
   return (
     <div className="h-full w-[350px] min-w-[350px] max-w-[350px] overflow-hidden rounded-md border">
-      <div className="from-accent/30 to-accent/10 h-full bg-gradient-to-b">
+      <div className="from-accent/30 to-accent/10 h-full bg-linear-to-b">
         <div className="flex flex-row items-center gap-3 p-3">
           <span className="text-sm font-semibold">{day}</span>
         </div>

@@ -23,7 +23,7 @@ export const CreateProjectCommand = observer(function CreateProjectCommand() {
 
   return (
     <Dialog open={commands.projectOpen} onOpenChange={commands.toggleProject}>
-      <DialogContent className="z-[1000] min-w-[700px] p-0">
+      <DialogContent className="z-1000 min-w-[700px] p-0">
         <div className="flex h-full min-h-[200px] w-full flex-col gap-3 p-3 pb-0">
           <div className="flex items-center gap-2">
             <span className="font-regular text-xs">Create a new project</span>

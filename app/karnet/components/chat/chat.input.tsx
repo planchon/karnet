@@ -251,20 +251,20 @@ export const ChatInput = observer(function ChatInputInside({
 			}),
 			Paragraph.configure({
 				HTMLAttributes: {
-					class: "min-h-[1rem] mt-0",
+					class: "min-h-4 mt-0",
 					// the tailwind text-sm! is not working here
 					style: "font-size: 13px;",
 				},
 			}),
 			Text.configure({
 				HTMLAttributes: {
-					class: "text-sm! min-h-[1rem]",
+					class: "text-sm! min-h-4",
 				},
 			}),
 			Placeholder.configure({
 				placeholder: "use / for commands and @ for entities",
 				emptyNodeClass:
-					"placeholder:text-[13px] placeholder:min-h-[1rem] placeholder:mt-0 text-sm!",
+					"placeholder:text-[13px] placeholder:min-h-4 placeholder:mt-0 text-sm!",
 			}),
 			Mention.configure({
 				suggestions: [

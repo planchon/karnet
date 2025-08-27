@@ -107,7 +107,7 @@ export const DeadlineNode = Node.create<DeadlineNodeOptions>({
       HTMLAttributes,
       {
         level: 1,
-        class: 'mx-1 px-[4px] pb-[2px] py-[1px] ml-1 bg-slate-200 rounded-xs',
+        class: 'mx-1 px-[4px] pb-[2px] py-px ml-1 bg-slate-200 rounded-xs',
       }
     );
 

@@ -1,12 +1,12 @@
 import { SimpleEditor } from "@editor/editor/editor";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { observer } from "mobx-react";
-import { useParams } from "react-router";
 import { useStores } from "@/hooks/useStores";
 import { Button } from "@/primitive/ui/button";
 import { Input } from "@/primitive/ui/input";
 import "@editor/styles/_variables.scss";
 import "@editor/styles/_keyframe-animations.scss";
+import { useParams } from "next/navigation";
 
 export const PaperPage = observer(function PaperPage() {
 	const { smallId } = useParams();
@@ -27,7 +27,7 @@ export const PaperPage = observer(function PaperPage() {
 			<div className="flex h-10 w-full items-center justify-between border-b">
 				<div className="flex h-full w-full select-none flex-row items-center justify-center gap-2 pl-4">
 					<Input
-						className="focus:!ring-0 w-full border-none font-medium focus:border-transparent shadow-none"
+						className="focus:ring-0! w-full border-none font-medium focus:border-transparent shadow-none"
 						onChange={(e) => {
 							paper.name = e.target.value;
 						}}

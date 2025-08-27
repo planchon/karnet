@@ -69,7 +69,7 @@ export function DateTimePicker({ tabIndex }: { tabIndex?: number }) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="z-[1000] w-auto p-0">
+      <PopoverContent className="z-1000 w-auto p-0">
         <div className="sm:flex">
           <Calendar
             mode="single"
