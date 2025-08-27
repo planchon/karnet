@@ -194,7 +194,7 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
 
 	return (
 		<Popover onOpenChange={setOpen} open={open}>
-			<PopoverTrigger className="outline-none ring-0" ref={mcpRef}>
+			<PopoverTrigger className="outline-none ring-0" ref={mcpRef} asChild>
 				<Button
 					className="h-6 px-2 text-gray-700 outline-none ring-0"
 					size="sm"
@@ -263,8 +263,6 @@ export const ChatInput = observer(function ChatInputInside({
 			}),
 			Placeholder.configure({
 				placeholder: "use / for commands and @ for entities",
-				emptyNodeClass:
-					"placeholder:text-[13px] placeholder:min-h-4 placeholder:mt-0 text-sm!",
 			}),
 			Mention.configure({
 				suggestions: [

@@ -3,62 +3,81 @@
 import { IconSend } from "@tabler/icons-react";
 import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
+import { motion } from "framer-motion";
 import { observer } from "mobx-react";
-import React, { useState } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Chat } from "@/components/chat";
-import { ComputerMessage } from "@/components/messages/computer-message.comp";
-import { UserMessage } from "@/components/messages/user-message.comp";
-import { messages as messagesMock } from "@/mocks/messages";
+import { useShortcut } from "@/hooks/useShortcut";
+import { useStores } from "@/hooks/useStores";
 
-interface Message {
-	id: string;
-	content: string;
-	sender: "user" | "assistant";
-	timestamp: Date;
-}
+export default observer(function ChatPage() {
+	const { chatStore } = useStores();
+	const router = useRouter();
+	const { id } = useParams();
+	const location = usePathname();
 
-export default observer(function ChatPageInner() {
-	const [messages] = useState<Message[]>(messagesMock);
-	const messagesEndRef = React.useRef<HTMLDivElement>(null);
+	const [inputPosition, setInputPosition] = useState<"center" | "bottom">(
+		id ? "bottom" : "center",
+	);
+
+	// i want to keep the animation when im on the chat page
+	useEffect(() => {
+		if (location === "/chat") {
+			setInputPosition("center");
+		}
+	}, [location]);
+
+	const onSend = () => {
+		const chat = chatStore.createNewChat({
+			content: "Hello, how are you?",
+			model: "gpt-4o",
+		});
+		setInputPosition("bottom");
+		router.push(`/chat/${chat.id}`);
+	};
+
+	useShortcut("Control+Enter", onSend);
+	useShortcut("Command+Enter", onSend);
 
 	return (
-		<div className="flex h-full w-full flex-col">
-			<div className="scrollbar-thin flex justify-center overflow-y-auto">
-				<div className="h-auto w-9/12 max-w-[900px] space-y-8 pt-12">
-					{messages.map((message) => (
-						<div key={message.id}>
-							{message.sender === "user" ? (
-								<UserMessage content={message.content} />
-							) : (
-								<ComputerMessage content={message.content} />
-							)}
+		<div
+			className="flex h-full w-full flex-col items-center"
+			style={{
+				justifyContent: inputPosition === "center" ? "center" : "flex-end",
+				paddingBottom: inputPosition === "center" ? "0px" : "12px",
+			}}
+		>
+			<motion.div
+				className="w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
+				layout
+				transition={{
+					duration: 0.2,
+					ease: "easeInOut",
+				}}
+			>
+				<Chat.Root>
+					<div className="h-full w-full rounded-b-xl bg-white p-2 shadow-md">
+						<Chat.Input className="h-20" />
+					</div>
+					<div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
+						<div className="flex items-center gap-0">
+							<Chat.ModelSelect />
+							<Chat.MCPSelect />
 						</div>
-					))}
-					<div className="h-[100px]" ref={messagesEndRef} />
-				</div>
-			</div>
-			<div className="absolute bottom-0 flex h-auto w-full items-center justify-center">
-				<div className="h-full w-9/12 max-w-[900px]">
-					<Chat.Root>
-						<div className="h-full w-full p-2">
-							<Chat.Input />
+						<div className="pb-2">
+							<Button
+								className="h-8 rounded-sm pr-[6px]! pl-[8px]!"
+								onClick={onSend}
+							>
+								<IconSend className="size-4" />
+								Send
+								<Shortcut nothen shortcut={["⌘", "↵"]} />
+							</Button>
 						</div>
-						<div className="flex w-full justify-between p-2 py-0 pl-1">
-							<div className="flex items-center gap-0">
-								<Chat.ModelSelect />
-								<Chat.MCPSelect />
-							</div>
-							<div className="pb-2">
-								<Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!">
-									<IconSend className="size-4" />
-									Send
-									<Shortcut nothen shortcut={["⌘", "↵"]} />
-								</Button>
-							</div>
-						</div>
-					</Chat.Root>
-				</div>
-			</div>
+					</div>
+				</Chat.Root>
+			</motion.div>
 		</div>
 	);
 });

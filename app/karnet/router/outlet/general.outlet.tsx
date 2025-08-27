@@ -50,7 +50,7 @@ export function GeneralOutlet({ children }: { children: React.ReactNode }) {
 	}, []);
 
 	if (isLoading) {
-		return <p>loading</p>;
+		return null;
 	}
 
 	return (
