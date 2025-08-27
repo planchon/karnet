@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+	--background: #ffffff;
+	--foreground: #171717;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--font-sans: var(--font-geist-sans);
+	--font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+	}
+}
+
+body {
+	background: var(--background);
+	color: var(--foreground);
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.fc-scrollgrid {
+	border: none !important;
+}
+
+.tlui-style-panel {
+	max-width: 150px !important;
+	width: 150px !important;
+}
+
+.tlui-style-panel__wrapper {
+	box-shadow: none !important;
+	border: 1px solid var(--border) !important;
+}
+
+.tlui-toolbar__tools {
+	border: 1px solid var(--border) !important;
+	box-shadow: none !important;
+}
+
+.tl-background {
+	background-color: var(--background) !important;
+}
+
+.fc-col-header-cell-cushion {
+	width: 100% !important;
+}
+
+.fc-col-header-cell {
+	border-right: none !important;
+	border-left: none !important;
+}
+
+.fc-timegrid-event-harness-inset .fc-timegrid-event,
+.fc-timegrid-event.fc-event-mirror,
+.fc-timegrid-more-link {
+	box-shadow: none !important;
+}
+
+.fc-theme-standard td {
+	border: 1px solid var(--border) !important;
+	border-left: none !important;
+}
+
+.fc-theme-standard th {
+	border-top: none !important;
+}
+
+.fc-timegrid-axis {
+	border-right: none !important;
+	border-left: none !important;
+	border-bottom: none !important;
+}
+
+.fc-col-header-cell {
+	border-bottom: none !important;
+}
+
+.tl-watermark_SEE-LICENSE {
+	display: none !important;
+}
+
+.tl-container__focused {
+	border: none !important;
+}
+
+/* Target paragraph elements that are NOT the first child of their parent */
+.tiptap.ProseMirror p {
+	margin-top: 3px; /* Or whatever desired spacing you want between paragraphs */
+	font-size: 16px;
+	font-weight: 400;
+}
