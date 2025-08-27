@@ -5,7 +5,7 @@ import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Chat } from "@/components/chat";
 import { useShortcut } from "@/hooks/useShortcut";
@@ -13,7 +13,6 @@ import { useStores } from "@/hooks/useStores";
 
 export default observer(function ChatPage() {
 	const { chatStore } = useStores();
-	const router = useRouter();
 	const { id } = useParams();
 	const location = usePathname();
 
