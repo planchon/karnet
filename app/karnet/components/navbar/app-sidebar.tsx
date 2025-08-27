@@ -1,5 +1,6 @@
 "use client";
 
+import { UserButton, UserProfile, useUser } from "@clerk/nextjs";
 import {
 	IconDatabase,
 	IconFileText,
@@ -98,12 +99,34 @@ export const AppSidebar = observer(function AppSidebar({
 		],
 	};
 
+	const { user } = useUser();
+
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
 			<SidebarHeader />
 			<SidebarContent>
 				<NavMain items={data.navMain} />
 			</SidebarContent>
+			<div className="flex items-center justify-center">
+				<div className="flex w-full flex-row items-center justify-between gap-4 p-2">
+					<div className="flex flex-col select-none">
+						<p className="text-sm font-medium">{user?.fullName}</p>
+						<p className="text-xs text-muted-foreground">
+							{user?.emailAddresses[0].emailAddress}
+						</p>
+					</div>
+					<UserButton
+						appearance={{
+							elements: {
+								avatarBox: {
+									width: "32px",
+									height: "32px",
+								},
+							},
+						}}
+					/>
+				</div>
+			</div>
 		</Sidebar>
 	);
 });
