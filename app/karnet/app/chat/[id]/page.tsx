@@ -5,49 +5,25 @@ import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Chat } from "@/components/chat";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
 
 export default observer(function ChatPage() {
 	const { chatStore } = useStores();
-	const router = useRouter();
-	const { id } = useParams();
-	const location = usePathname();
-
-	const [inputPosition, setInputPosition] = useState<"center" | "bottom">(
-		id ? "bottom" : "center",
-	);
-
-	// i want to keep the animation when im on the chat page
-	useEffect(() => {
-		if (location === "/chat") {
-			setInputPosition("center");
-		}
-	}, [location]);
 
 	const onSend = () => {
 		const chat = chatStore.createNewChat({
 			content: "Hello, how are you?",
 			model: "gpt-4o",
 		});
-		setInputPosition("bottom");
-		window.history.pushState(null, "", `/chat/${chat.id}`);
 	};
 
 	useShortcut("Control+Enter", onSend);
 	useShortcut("Command+Enter", onSend);
 
 	return (
-		<div
-			className="flex h-full w-full flex-col items-center"
-			style={{
-				justifyContent: inputPosition === "center" ? "center" : "flex-end",
-				paddingBottom: inputPosition === "center" ? "0px" : "12px",
-			}}
-		>
+		<div className="flex h-full pb-[12px] w-full flex-col justify-end items-center">
 			<motion.div
 				className="w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
 				layout

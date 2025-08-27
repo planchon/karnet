@@ -238,4 +238,9 @@
 	float: left;
 	height: 0;
 	pointer-events: none;
+	outline: none;
+}
+
+.ProseMirror:focus {
+	outline: none;
 }

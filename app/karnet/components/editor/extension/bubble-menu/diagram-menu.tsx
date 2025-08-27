@@ -56,7 +56,7 @@ export const DiagramMenu = observer(({ editor }: { editor: Editor }) => {
 				<div className="flex flex-row items-center justify-center overflow-hidden rounded-md">
 					{state.id && (
 						<Popover>
-							<PopoverTrigger>
+							<PopoverTrigger asChild>
 								<Button
 									variant="ghost"
 									role="combobox"

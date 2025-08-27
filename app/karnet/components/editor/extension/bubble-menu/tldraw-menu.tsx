@@ -56,7 +56,7 @@ export const SketchMenu = ({ editor }: { editor: Editor }) => {
 				>
 					<div className="flex flex-row items-center justify-center overflow-hidden rounded-md">
 						<Popover>
-							<PopoverTrigger>
+							<PopoverTrigger asChild>
 								<Button
 									variant="ghost"
 									role="combobox"

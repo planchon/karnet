@@ -166,19 +166,18 @@ export const ViewItemCheckbox = observer(() => {
 	const isChecked = viewModel.isItemChecked(item);
 
 	return (
-		<button
+		<div
 			className="group z-1000 flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
 			onClick={(e) => {
 				viewModel.checkItem(item);
 				e.stopPropagation();
 			}}
-			type="button"
 		>
 			<Checkbox
 				checked={isChecked}
 				className="size-4 group-hover:border-accent-foreground/50"
 			/>
-		</button>
+		</div>
 	);
 });
 
