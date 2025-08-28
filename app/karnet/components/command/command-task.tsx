@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@karnet/backend/convex/_generated/api";
 import {
 	IconAntennaBars2,
 	IconAntennaBars3,
@@ -8,6 +9,7 @@ import {
 	IconCalendar,
 	IconLabel,
 } from "@tabler/icons-react";
+import { useMutation } from "convex/react";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import usePreventAutoFocus from "@/hooks/usePreventAutoFocus";
@@ -33,11 +35,12 @@ import { TaskInputComp } from "../task-input/task-input.comp";
 
 export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 	const commands = useCommands();
-	const { taskStore } = useStores();
 	const [priority, setPriority] = useState<number | undefined>(undefined);
 	const [deadline, setDeadline] = useState<string | undefined>(undefined);
 	const [task, setTask] = useState<string>("");
 	const [tags, setTags] = useState<string[]>([]);
+
+	const createTaskMutation = useMutation(api.functions.task.createTask);
 
 	const preventAutoFocus = usePreventAutoFocus();
 	const resetFocus = useResetFocus();
@@ -48,13 +51,11 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 
 	const createTask = () => {
 		console.log(task, priority, deadline);
-		const id = generateId();
-		const taskModel = taskStore.createNewModel(id);
-		taskModel.setDeadline(deadline);
-		taskModel.setPriority(priority);
-		taskModel.setTitle(task);
-		taskModel.save();
-		taskStore.save();
+		createTaskMutation({
+			priority: priority ?? 4,
+			deadline: deadline ?? undefined,
+			title: task,
+		});
 	};
 
 	const onCreateTask = () => {
@@ -149,7 +150,9 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 						<Switch tabIndex={-1} />
 						<span className="text-xs">Create more</span>
 					</div>
-					<Button tabIndex={0}>Create</Button>
+					<Button tabIndex={0} onClick={onCreateTask}>
+						Create
+					</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

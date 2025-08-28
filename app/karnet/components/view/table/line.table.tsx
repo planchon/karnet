@@ -57,10 +57,10 @@ export const ViewItemLine = observer(
 							settings.disableLinks && "pointer-events-none select-none",
 							className,
 						)}
-						data-document-id={item.id}
+						data-document-id={item._id}
 						data-list-index={listIndex}
 						id={`view-item-line-${item.smallId}`}
-						key={item.id}
+						key={item._id}
 						onFocus={() => {
 							navigation.setMode("focus");
 							viewModel.setSelectedIndex(listIndex);
@@ -70,7 +70,7 @@ export const ViewItemLine = observer(
 								viewModel.setSelectedIndex(listIndex);
 							}
 						}}
-						href={`/${item.type}/${item.smallId}/${slugify(item.name)}`}
+						href={`/${item.type}/${item.smallId}/${slugify(item.title)}`}
 						{...props}
 					>
 						{everythingElse}
@@ -186,8 +186,8 @@ export const ViewItemCheckbox = observer(() => {
 export const ViewItemStatus = observer(() => {
 	const { item } = useLocalItemContext("ViewItemStatus");
 
-	if (!(item instanceof TaskModel)) {
-		throw new Error("Item is not a TaskModel");
+	if (!("status" in item)) {
+		return null;
 	}
 
 	return <Status status={item.status} />;

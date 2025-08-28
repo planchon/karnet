@@ -1,11 +1,20 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
-const taskTable = defineTable({
+const baseViewItem = {
 	title: v.string(),
-	priority: v.number(),
 	smallId: v.string(),
 	is_deleted: v.boolean(),
+	created_at_iso: v.optional(v.string()),
+	created_at_ts: v.optional(v.number()),
+	updated_at_iso: v.optional(v.string()),
+	updated_at_ts: v.optional(v.number()),
+};
+
+const taskTable = defineTable({
+	...baseViewItem,
+	type: v.literal("task"),
+	priority: v.number(),
 	status: v.union(
 		v.literal("todo"),
 		v.literal("in_progress"),
@@ -15,10 +24,6 @@ const taskTable = defineTable({
 	deadlineLabel: v.optional(v.string()),
 	completed_at_iso: v.optional(v.string()),
 	completed_at_ts: v.optional(v.number()),
-	created_at_iso: v.optional(v.string()),
-	created_at_ts: v.optional(v.number()),
-	updated_at_iso: v.optional(v.string()),
-	updated_at_ts: v.optional(v.number()),
 })
 	.index("by_status", ["status"])
 	.index("by_deadline", ["deadline"])

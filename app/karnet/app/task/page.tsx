@@ -1,5 +1,7 @@
 "use client";
 
+import { api } from "@karnet/backend/convex/_generated/api";
+import type { Doc } from "@karnet/backend/convex/_generated/dataModel";
 import {
 	IconAntennaBars2,
 	IconAntennaBars3,
@@ -21,62 +23,72 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@ui/context-menu";
+import { useMutation, usePaginatedQuery } from "convex/react";
 import { observer } from "mobx-react";
 import { View } from "@/components/view/table";
-import { useCommands, useShortcut } from "@/hooks/useShortcut";
-import { useStores } from "@/hooks/useStores";
-import { TaskModel } from "@/models/task.model";
+import { useCommands } from "@/hooks/useShortcut";
 import { Priority } from "@/primitive/priority";
 import { Label } from "@/primitive/super-ui/label";
 
 export default observer(() => {
-	const { viewStore } = useStores();
-	const view = viewStore.getTaskView();
+	const { results: tasks } = usePaginatedQuery(
+		api.functions.task.getPaginatedTasks,
+		{},
+		{
+			initialNumItems: 100,
+		},
+	);
+
+	const updateTaskMutation = useMutation(api.functions.task.updateTask);
+
 	const commands = useCommands();
 
-	useShortcut("v", () => {
-		const item = view.currentItem();
+	// const { viewStore } = useStores();
+	// const view = viewStore.getTaskView();
 
-		if (item instanceof TaskModel) {
-			switch (item.status) {
-				case "done":
-					item.setStatus("todo");
-					item.setCompleted();
-					break;
-				case "in_progress":
-					item.setStatus("done");
-					break;
-				case "todo":
-					item.setStatus("in_progress");
-					break;
-				default:
-					break;
-			}
-		}
-	});
+	// useShortcut("v", () => {
+	// 	const item = view.currentItem();
 
-	useShortcut("f", () => {
-		const item = view.currentItem();
-		if (item instanceof TaskModel) {
-			let prio = item.priority;
+	// 	if (item instanceof TaskModel) {
+	// 		switch (item.status) {
+	// 			case "done":
+	// 				item.setStatus("todo");
+	// 				item.setCompleted();
+	// 				break;
+	// 			case "in_progress":
+	// 				item.setStatus("done");
+	// 				break;
+	// 			case "todo":
+	// 				item.setStatus("in_progress");
+	// 				break;
+	// 			default:
+	// 				break;
+	// 		}
+	// 	}
+	// });
 
-			if (!prio) {
-				item.setPriority(5);
-				return;
-			}
+	// useShortcut("f", () => {
+	// 	const item = view.currentItem();
+	// 	if (item instanceof TaskModel) {
+	// 		let prio = item.priority;
 
-			prio -= 1;
-			if (prio === 0) {
-				item.setPriority(5);
-				return;
-			}
+	// 		if (!prio) {
+	// 			item.setPriority(5);
+	// 			return;
+	// 		}
 
-			item.setPriority(prio);
-		}
-	});
+	// 		prio -= 1;
+	// 		if (prio === 0) {
+	// 			item.setPriority(5);
+	// 			return;
+	// 		}
+
+	// 		item.setPriority(prio);
+	// 	}
+	// });
 
 	return (
-		<View.Root viewModel={view}>
+		<View.Root data={tasks}>
 			<View.Header.Body>
 				<View.Header.Title>Tasks</View.Header.Title>
 				<View.Header.Spacer />
@@ -84,7 +96,7 @@ export default observer(() => {
 			</View.Header.Body>
 			<View.Items.Root>
 				<View.Items.List>
-					{(item: TaskModel) => (
+					{(item: Doc<"tasks">) => (
 						<View.Item.Line isLink={false}>
 							<View.Item.Checkbox />
 							<View.Item.Infos>
@@ -123,7 +135,10 @@ export default observer(() => {
 									<ContextMenuSubContent>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setPriority(1);
+												updateTaskMutation({
+													id: item._id,
+													priority: 1,
+												});
 											}}
 										>
 											<IconAntennaBars5 className="mr-2" />
@@ -131,7 +146,10 @@ export default observer(() => {
 										</ContextMenuItem>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setPriority(2);
+												updateTaskMutation({
+													id: item._id,
+													priority: 2,
+												});
 											}}
 										>
 											<IconAntennaBars4 className="mr-2" />
@@ -139,7 +157,10 @@ export default observer(() => {
 										</ContextMenuItem>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setPriority(3);
+												updateTaskMutation({
+													id: item._id,
+													priority: 3,
+												});
 											}}
 										>
 											<IconAntennaBars3 className="mr-2" />
@@ -147,7 +168,10 @@ export default observer(() => {
 										</ContextMenuItem>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setPriority(4);
+												updateTaskMutation({
+													id: item._id,
+													priority: 4,
+												});
 											}}
 										>
 											<IconAntennaBars2 className="mr-2" />
@@ -163,7 +187,10 @@ export default observer(() => {
 									<ContextMenuSubContent>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setDeadline("Tomorrow");
+												updateTaskMutation({
+													id: item._id,
+													deadlineLabel: "Tomorrow",
+												});
 											}}
 										>
 											<IconCalendarClock className="mr-2" />
@@ -171,7 +198,10 @@ export default observer(() => {
 										</ContextMenuItem>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setDeadline("2 days");
+												updateTaskMutation({
+													id: item._id,
+													deadlineLabel: "2 days",
+												});
 											}}
 										>
 											<IconCalendarClock className="mr-2" />
@@ -179,7 +209,10 @@ export default observer(() => {
 										</ContextMenuItem>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setDeadline("End of week");
+												updateTaskMutation({
+													id: item._id,
+													deadlineLabel: "End of week",
+												});
 											}}
 										>
 											<IconCalendarClock className="mr-2" />
@@ -187,7 +220,10 @@ export default observer(() => {
 										</ContextMenuItem>
 										<ContextMenuItem
 											onSelect={() => {
-												item.setDeadline("Next week");
+												updateTaskMutation({
+													id: item._id,
+													deadlineLabel: "Next week",
+												});
 											}}
 										>
 											<IconCalendarClock className="mr-2" />

@@ -1,10 +1,16 @@
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 
-export const getAllTasks = query({
-	args: {},
-	handler: async (ctx) => {
-		const tasks = await ctx.db.query("tasks").order("desc").take(100);
+export const getPaginatedTasks = query({
+	args: {
+		paginationOpts: paginationOptsValidator,
+	},
+	handler: async (ctx, { paginationOpts }) => {
+		const tasks = await ctx.db
+			.query("tasks")
+			.order("desc")
+			.paginate(paginationOpts);
 		return tasks;
 	},
 });
@@ -33,6 +39,7 @@ export const createTask = mutation({
 			title: args.title,
 			// the smallId is optimicly generated in the UI, but can be replaced by the backend
 			smallId: `TASK-${newId}`,
+			type: "task" as const,
 			priority: args.priority,
 			status: args.status ?? "todo",
 			deadline: args.deadline,
@@ -57,6 +64,7 @@ export const updateTask = mutation({
 		title: v.optional(v.string()),
 		priority: v.optional(v.number()),
 		status: v.optional(status),
+		deadlineLabel: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
 		const task = await ctx.db.get(args.id);
@@ -69,6 +77,7 @@ export const updateTask = mutation({
 			status: args.status ?? task.status,
 			updated_at_ts: Date.now(),
 			updated_at_iso: new Date().toISOString(),
+			deadlineLabel: args.deadlineLabel ?? task.deadlineLabel,
 		});
 		return task;
 	},

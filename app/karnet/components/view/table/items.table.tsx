@@ -1,5 +1,6 @@
 "use client";
 
+import type { Doc } from "@karnet/backend/convex/_generated/dataModel";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -57,18 +58,14 @@ export const ViewItemsRoot = observer(
 );
 
 export const ViewItemsList = observer(
-	<R extends ViewItemType>({
-		children,
-	}: {
-		children: (item: R) => JSX.Element;
-	}) => {
-		const { viewModel } = useViewContext("ViewBody");
-		const data = viewModel.getItems;
+	({ children }: { children: (item: Doc<"tasks">) => JSX.Element }) => {
+		const { data: tasks, viewModel } = useViewContext("ViewBody");
+		const data = tasks ?? [];
 
 		const selectedStartPosition = viewModel._selectedIndex * 40 + 39;
 
 		return (
-			<AnimatePresence>
+			<AnimatePresence initial={false}>
 				<div className="flex flex-col overflow-y-auto" id="view-items-list">
 					{selectedStartPosition !== -1 && (
 						<motion.div
@@ -100,7 +97,7 @@ export const ViewItemsList = observer(
 							}}
 						/>
 					)}
-					{data.map((item: R, index: number) => {
+					{data.map((item: Doc<"tasks">, index: number) => {
 						return (
 							<motion.div
 								animate={{
@@ -109,14 +106,14 @@ export const ViewItemsList = observer(
 								initial={{
 									opacity: 0,
 								}}
-								key={item.id}
+								key={item._id}
 								transition={{
 									duration: 0.15,
 									delay: index * 0.025,
 									ease: "easeOut",
 								}}
 							>
-								<__ViewItem item={item} key={item.id} listIndex={index}>
+								<__ViewItem item={item} key={item._id} listIndex={index}>
 									{children}
 								</__ViewItem>
 							</motion.div>
