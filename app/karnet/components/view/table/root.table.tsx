@@ -29,18 +29,24 @@ export const ViewContextProvider = ViewContext[0];
 export const useViewContext = ViewContext[1];
 
 export const ViewRoot = observer(
-	({ children, data }: { children: React.ReactNode; data: Doc<"tasks">[] }) => {
+	({
+		children,
+		_viewModel,
+		data,
+	}: {
+		children: React.ReactNode;
+		_viewModel: AbstractView<any>;
+		data: Doc<"tasks">[];
+	}) => {
 		const bodyRef = useRef<HTMLDivElement>(null);
 		const router = useRouter();
-		const [viewModel, setViewModel] = useState<AbstractView<any>>(
-			new GenericView(),
-		);
+		const [viewModel, setViewModel] = useState<AbstractView<any>>(_viewModel);
 		useSetFocusElement(bodyRef.current);
 
 		useEffect(() => {
 			viewModel.setItems(data);
 			setViewModel(viewModel);
-		}, [data]);
+		}, [data, viewModel]);
 
 		const [navigationMode, setNavigationMode] = useState<
 			"keyboard" | "mouse" | "focus"

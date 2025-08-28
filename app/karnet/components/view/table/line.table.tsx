@@ -161,27 +161,27 @@ export const ViewItemContextMenu = observer(
 	},
 );
 
-export const ViewItemCheckbox = observer(() => {
-	const { item } = useLocalItemContext("ViewItemCheckbox");
-	const { viewModel } = useViewContext("ViewItemCheckbox");
+export const ViewItemCheckbox = observer(
+	({ isChecked }: { isChecked: boolean }) => {
+		const { item } = useLocalItemContext("ViewItemCheckbox");
+		const { viewModel } = useViewContext("ViewItemCheckbox");
 
-	const isChecked = viewModel.isItemChecked(item);
-
-	return (
-		<div
-			className="group z-1000 flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
-			onClick={(e) => {
-				viewModel.checkItem(item);
-				e.stopPropagation();
-			}}
-		>
-			<Checkbox
-				checked={isChecked}
-				className="size-4 group-hover:border-accent-foreground/50"
-			/>
-		</div>
-	);
-});
+		return (
+			<div
+				className="group z-1000 flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
+				onClick={(e) => {
+					viewModel.checkItem(item);
+					e.stopPropagation();
+				}}
+			>
+				<Checkbox
+					checked={isChecked}
+					className="size-4 group-hover:border-accent-foreground/50"
+				/>
+			</div>
+		);
+	},
+);
 
 export const ViewItemStatus = observer(() => {
 	const { item } = useLocalItemContext("ViewItemStatus");

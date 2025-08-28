@@ -65,6 +65,8 @@ export const updateTask = mutation({
 		priority: v.optional(v.number()),
 		status: v.optional(status),
 		deadlineLabel: v.optional(v.string()),
+		completed_at_iso: v.optional(v.string()),
+		completed_at_ts: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
 		const task = await ctx.db.get(args.id);
@@ -78,7 +80,32 @@ export const updateTask = mutation({
 			updated_at_ts: Date.now(),
 			updated_at_iso: new Date().toISOString(),
 			deadlineLabel: args.deadlineLabel ?? task.deadlineLabel,
+			completed_at_iso: args.completed_at_iso ?? task.completed_at_iso,
+			completed_at_ts: args.completed_at_ts ?? task.completed_at_ts,
 		});
 		return task;
+	},
+});
+
+export const toggleTask = mutation({
+	args: {
+		id: v.id("tasks"),
+	},
+	handler: async (ctx, args) => {
+		const task = await ctx.db.get(args.id);
+		if (!task) {
+			throw new Error("Task not found");
+		}
+		if (task.completed_at_ts) {
+			await ctx.db.patch(args.id, {
+				completed_at_iso: undefined,
+				completed_at_ts: undefined,
+			});
+		} else {
+			await ctx.db.patch(args.id, {
+				completed_at_iso: new Date().toISOString(),
+				completed_at_ts: Date.now(),
+			});
+		}
 	},
 });

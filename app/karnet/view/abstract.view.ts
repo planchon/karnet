@@ -66,9 +66,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 	}
 
 	setItems(items: T[]) {
-		this.baseItems = items;
 		this._numberOfItems = items.length;
-		console.log("set items", this, items);
 	}
 
 	computeRenderableItems() {

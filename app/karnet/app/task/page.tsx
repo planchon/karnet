@@ -25,10 +25,12 @@ import {
 } from "@ui/context-menu";
 import { useMutation, usePaginatedQuery } from "convex/react";
 import { observer } from "mobx-react";
+import { useState } from "react";
 import { View } from "@/components/view/table";
-import { useCommands } from "@/hooks/useShortcut";
+import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { Priority } from "@/primitive/priority";
 import { Label } from "@/primitive/super-ui/label";
+import { GenericView } from "@/view/generic.view";
 
 export default observer(() => {
 	const { results: tasks } = usePaginatedQuery(
@@ -39,56 +41,90 @@ export default observer(() => {
 		},
 	);
 
+	const [viewModel, _] = useState(new GenericView());
+
 	const updateTaskMutation = useMutation(api.functions.task.updateTask);
+	const toggleTaskMutation = useMutation(api.functions.task.toggleTask);
 
 	const commands = useCommands();
 
-	// const { viewStore } = useStores();
-	// const view = viewStore.getTaskView();
+	useShortcut("v", () => {
+		const index = viewModel._selectedIndex;
+		const item = tasks[index];
 
-	// useShortcut("v", () => {
-	// 	const item = view.currentItem();
+		if (!item) {
+			return;
+		}
 
-	// 	if (item instanceof TaskModel) {
-	// 		switch (item.status) {
-	// 			case "done":
-	// 				item.setStatus("todo");
-	// 				item.setCompleted();
-	// 				break;
-	// 			case "in_progress":
-	// 				item.setStatus("done");
-	// 				break;
-	// 			case "todo":
-	// 				item.setStatus("in_progress");
-	// 				break;
-	// 			default:
-	// 				break;
-	// 		}
-	// 	}
-	// });
+		switch (item.status) {
+			case "done":
+				updateTaskMutation({
+					id: item._id,
+					status: "todo",
+				});
+				break;
+			case "in_progress":
+				updateTaskMutation({
+					id: item._id,
+					status: "done",
+				});
+				break;
+			case "todo":
+				updateTaskMutation({
+					id: item._id,
+					status: "in_progress",
+				});
+				break;
+			default:
+				break;
+		}
+	});
 
-	// useShortcut("f", () => {
-	// 	const item = view.currentItem();
-	// 	if (item instanceof TaskModel) {
-	// 		let prio = item.priority;
+	useShortcut("f", () => {
+		const index = viewModel._selectedIndex;
+		const item = tasks[index];
 
-	// 		if (!prio) {
-	// 			item.setPriority(5);
-	// 			return;
-	// 		}
+		if (!item) {
+			return;
+		}
 
-	// 		prio -= 1;
-	// 		if (prio === 0) {
-	// 			item.setPriority(5);
-	// 			return;
-	// 		}
+		let priority = item.priority;
 
-	// 		item.setPriority(prio);
-	// 	}
-	// });
+		if (!priority) {
+			updateTaskMutation({
+				id: item._id,
+				priority: 5,
+			});
+			return;
+		}
+
+		priority -= 1;
+
+		if (priority === 0) {
+			priority = 5;
+		}
+
+		updateTaskMutation({
+			id: item._id,
+			priority: priority,
+		});
+	});
+
+	useShortcut("x", () => {
+		const index = viewModel._selectedIndex;
+		const item = tasks[index];
+
+		if (!item) {
+			return;
+		}
+
+		toggleTaskMutation({
+			id: item._id,
+		});
+	});
 
 	return (
-		<View.Root data={tasks}>
+		<View.Root _viewModel={viewModel} data={tasks}>
 			<View.Header.Body>
 				<View.Header.Title>Tasks</View.Header.Title>
 				<View.Header.Spacer />
@@ -98,7 +134,7 @@ export default observer(() => {
 				<View.Items.List>
 					{(item: Doc<"tasks">) => (
 						<View.Item.Line isLink={false}>
-							<View.Item.Checkbox />
+							<View.Item.Checkbox isChecked={!!item.completed_at_ts} />
 							<View.Item.Infos>
 								<Priority priority={item.priority ?? 4} />
 								<View.Item.Status />
