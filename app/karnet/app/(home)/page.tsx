@@ -1,17 +1,7 @@
-"use client";
-
-import { useUser } from "@clerk/nextjs";
 import { Input } from "@ui/input";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default function Home() {
-	const { isSignedIn } = useUser();
-
-	if (isSignedIn) {
-		redirect("/document");
-	}
-
 	return (
 		<div className="flex h-screen gap-6 w-screen flex-col items-center justify-center">
 			<div className="flex flex-col items-center justify-center">

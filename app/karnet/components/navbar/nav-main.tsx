@@ -27,17 +27,17 @@ export const NavMain = observer(function NavMainInner({
 	}[];
 }) {
 	const location = usePathname();
+
+	const selectedIndex = items.findIndex((item) => location.includes(item.url));
 	const initialSelectedStartPosition =
-		items.findIndex((item) => item.url === location) * 32 + 8;
+		selectedIndex !== -1 ? selectedIndex * 32 + 8 : 8;
 	const [selectedStartPosition, setSelectedStartPosition] = useState(
 		initialSelectedStartPosition,
 	);
 
 	useEffect(() => {
-		setSelectedStartPosition(
-			items.findIndex((item) => location.includes(item.url)) * 32 + 8,
-		);
-	}, [location, items]);
+		setSelectedStartPosition(selectedIndex * 32 + 8);
+	}, [selectedIndex]);
 
 	return (
 		<AnimatePresence>
