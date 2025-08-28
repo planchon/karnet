@@ -53,12 +53,12 @@ export abstract class AbstractView<T extends { _id: string }> {
 			},
 		);
 
-		reaction(
-			() => this.baseItems,
-			() => {
-				this.computeRenderableItems();
-			},
-		);
+		// reaction(
+		// 	() => this.baseItems,
+		// 	() => {
+		// 		this.computeRenderableItems();
+		// 	},
+		// );
 	}
 
 	setSearchQuery(query: string) {
@@ -67,6 +67,8 @@ export abstract class AbstractView<T extends { _id: string }> {
 
 	setItems(items: T[]) {
 		this.baseItems = items;
+		this._numberOfItems = items.length;
+		console.log("set items", this, items);
 	}
 
 	computeRenderableItems() {
@@ -136,9 +138,9 @@ export abstract class AbstractView<T extends { _id: string }> {
 			return;
 		}
 
-		if (index > this.baseItems.length) {
+		if (index > this._numberOfItems) {
 			console.error("index is greater than the number of items");
-			index = this.baseItems.length - 1;
+			index = this._numberOfItems - 1;
 		}
 
 		if (index < 0) {
@@ -173,7 +175,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 	goDown() {
 		let tmpIndex = this.getLastIndex();
 		tmpIndex++;
-		if (tmpIndex >= this.baseItems.length) {
+		if (tmpIndex >= this._numberOfItems) {
 			tmpIndex = 0;
 		}
 
@@ -185,7 +187,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 		tmpIndex--;
 
 		if (tmpIndex < 0) {
-			tmpIndex = this.baseItems.length - 1;
+			tmpIndex = this._numberOfItems - 1;
 		}
 
 		this.setSelectedIndex(tmpIndex);

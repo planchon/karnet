@@ -32,10 +32,15 @@ export const ViewRoot = observer(
 	({ children, data }: { children: React.ReactNode; data: Doc<"tasks">[] }) => {
 		const bodyRef = useRef<HTMLDivElement>(null);
 		const router = useRouter();
+		const [viewModel, setViewModel] = useState<AbstractView<any>>(
+			new GenericView(),
+		);
 		useSetFocusElement(bodyRef.current);
 
-		const viewModel = new GenericView();
-		viewModel.setItems(data);
+		useEffect(() => {
+			viewModel.setItems(data);
+			setViewModel(viewModel);
+		}, [data]);
 
 		const [navigationMode, setNavigationMode] = useState<
 			"keyboard" | "mouse" | "focus"
@@ -80,8 +85,6 @@ export const ViewRoot = observer(
 		}
 
 		function handleKeyDown(e: KeyboardEvent) {
-			console.log("handle key down", e.key);
-
 			setNavigationMode("keyboard");
 
 			if (ESCAPE_KEYS.includes(e.key)) {
@@ -166,6 +169,7 @@ export const ViewRoot = observer(
 				className="h-full w-full focus:outline-none"
 				id="view-root"
 				ref={bodyRef} // make the div focusable (to be able to use the keyboard)
+				onKeyDown={handleKeyDown}
 				tabIndex={-1}
 			>
 				<ViewContextProvider
