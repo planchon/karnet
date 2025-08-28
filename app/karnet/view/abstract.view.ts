@@ -1,5 +1,6 @@
 "use client";
 
+import { isEqual } from "lodash";
 import { action, computed, makeObservable, observable, reaction } from "mobx";
 
 export type ViewItem = {
@@ -20,11 +21,12 @@ export abstract class AbstractView<T extends { _id: string }> {
 	_lastHoveredDocumentId: string | null = null;
 
 	_selectedIndex = -1;
+	_selectedId: string | null = null;
 	_numberOfItems = 0;
 
 	query: string;
 
-	baseItems: T[] = [];
+	baseItems: Map<string, T> = new Map();
 	renderableItems: T[] = [];
 
 	checkedItems: Map<string, boolean> = new Map();
@@ -44,6 +46,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 			computeRenderableItems: action,
 			checkedItems: observable,
 			checkItem: action,
+			updateData: action,
 		});
 
 		reaction(
@@ -61,6 +64,23 @@ export abstract class AbstractView<T extends { _id: string }> {
 		// );
 	}
 
+	// we update all the element who have changed
+	updateData(items: T[]) {
+		for (const item of items) {
+			if (this.baseItems.has(item._id)) {
+				// if the item are the same, we keep them that way
+				// and go to the next item
+				if (isEqual(this.baseItems.get(item._id), item)) {
+					continue;
+				}
+			}
+
+			this.baseItems.set(item._id, item);
+		}
+
+		console.log("baseItems", this.baseItems.size);
+	}
+
 	setSearchQuery(query: string) {
 		this.query = query;
 	}
@@ -70,12 +90,12 @@ export abstract class AbstractView<T extends { _id: string }> {
 	}
 
 	computeRenderableItems() {
-		const allItems = this.baseItems;
-		const searchedItems = this.search(allItems);
-		const filteredItems = this.filterBy(searchedItems);
-		const orderedItems = this.orderBy(filteredItems);
+		const allItems = this.baseItems.values().toArray();
+		// const searchedItems = this.search(allItems);
+		// const filteredItems = this.filterBy(searchedItems);
+		// const orderedItems = this.orderBy(filteredItems);
 
-		this.renderableItems = orderedItems;
+		this.renderableItems = allItems;
 	}
 
 	/*
@@ -83,7 +103,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 	 * @note this is the items that are currently displayed in the view (after filters, search, etc.)
 	 */
 	get getItems(): T[] {
-		return this.renderableItems;
+		return this.baseItems.values().toArray();
 	}
 
 	/*
@@ -125,6 +145,10 @@ export abstract class AbstractView<T extends { _id: string }> {
 		return this._selectedIndex;
 	}
 
+	getSelectedId() {
+		return this._selectedId;
+	}
+
 	/*
 	 * @param index - the index to set as selected
 	 */
@@ -136,9 +160,9 @@ export abstract class AbstractView<T extends { _id: string }> {
 			return;
 		}
 
-		if (index > this._numberOfItems) {
+		if (index > this.baseItems.size) {
 			console.error("index is greater than the number of items");
-			index = this._numberOfItems - 1;
+			index = this.baseItems.size - 1;
 		}
 
 		if (index < 0) {
@@ -147,6 +171,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 		}
 
 		this._selectedIndex = index;
+		this._selectedId = this.baseItems.values().toArray()[index]._id;
 
 		return this._selectedIndex;
 	}
@@ -173,7 +198,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 	goDown() {
 		let tmpIndex = this.getLastIndex();
 		tmpIndex++;
-		if (tmpIndex >= this._numberOfItems) {
+		if (tmpIndex >= this.baseItems.size) {
 			tmpIndex = 0;
 		}
 
@@ -185,7 +210,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 		tmpIndex--;
 
 		if (tmpIndex < 0) {
-			tmpIndex = this._numberOfItems - 1;
+			tmpIndex = this.baseItems.size - 1;
 		}
 
 		this.setSelectedIndex(tmpIndex);
@@ -194,7 +219,7 @@ export abstract class AbstractView<T extends { _id: string }> {
 	currentItem() {
 		const index = this.getSelectedIndex();
 
-		return this.baseItems[index];
+		return this.baseItems.get(index);
 	}
 
 	checkItem(item: T, forceTrue?: boolean) {

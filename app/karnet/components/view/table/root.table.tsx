@@ -1,6 +1,5 @@
 "use client";
 
-import type { Doc } from "@karnet/backend/convex/_generated/dataModel";
 import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
 import { type Key, useEffect, useRef, useState } from "react";
@@ -9,7 +8,6 @@ import { createContext } from "@/lib/create-context";
 import { useSetFocusElement } from "@/lib/focus-manager";
 import { slugify } from "@/lib/utils";
 import type { AbstractView } from "@/view/abstract.view";
-import { GenericView } from "@/view/generic.view";
 
 const UP_KEYS = ["ArrowUp", "ArrowLeft", "k", "K"] satisfies Key[];
 const DOWN_KEYS = ["ArrowDown", "ArrowRight", "j", "J"] satisfies Key[];
@@ -17,7 +15,6 @@ const ESCAPE_KEYS = ["Escape"] satisfies Key[];
 
 const ViewContext = createContext<{
 	viewModel: AbstractView<any>;
-	data: Doc<"tasks">[];
 	navigation: {
 		mode: "keyboard" | "mouse" | "focus";
 		setMode: (mode: "keyboard" | "mouse" | "focus") => void;
@@ -31,22 +28,14 @@ export const useViewContext = ViewContext[1];
 export const ViewRoot = observer(
 	({
 		children,
-		_viewModel,
-		data,
+		viewModel,
 	}: {
 		children: React.ReactNode;
-		_viewModel: AbstractView<any>;
-		data: Doc<"tasks">[];
+		viewModel: AbstractView<any>;
 	}) => {
 		const bodyRef = useRef<HTMLDivElement>(null);
 		const router = useRouter();
-		const [viewModel, setViewModel] = useState<AbstractView<any>>(_viewModel);
 		useSetFocusElement(bodyRef.current);
-
-		useEffect(() => {
-			viewModel.setItems(data);
-			setViewModel(viewModel);
-		}, [data, viewModel]);
 
 		const [navigationMode, setNavigationMode] = useState<
 			"keyboard" | "mouse" | "focus"
@@ -179,7 +168,6 @@ export const ViewRoot = observer(
 				tabIndex={-1}
 			>
 				<ViewContextProvider
-					data={data}
 					navigation={{
 						mode: navigationMode,
 						setMode: setNavigationMode,

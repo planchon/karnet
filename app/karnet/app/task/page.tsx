@@ -25,7 +25,7 @@ import {
 } from "@ui/context-menu";
 import { useMutation, usePaginatedQuery } from "convex/react";
 import { observer } from "mobx-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "@/components/view/table";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { Priority } from "@/primitive/priority";
@@ -33,6 +33,7 @@ import { Label } from "@/primitive/super-ui/label";
 import { GenericView } from "@/view/generic.view";
 
 export default observer(() => {
+	const commands = useCommands();
 	const { results: tasks } = usePaginatedQuery(
 		api.functions.task.getPaginatedTasks,
 		{},
@@ -40,13 +41,15 @@ export default observer(() => {
 			initialNumItems: 100,
 		},
 	);
-
 	const [viewModel, _] = useState(new GenericView());
-
 	const updateTaskMutation = useMutation(api.functions.task.updateTask);
 	const toggleTaskMutation = useMutation(api.functions.task.toggleTask);
 
-	const commands = useCommands();
+	useEffect(() => {
+		if (viewModel) {
+			viewModel.updateData(tasks);
+		}
+	}, [viewModel, tasks]);
 
 	useShortcut("v", () => {
 		const index = viewModel._selectedIndex;
@@ -124,7 +127,7 @@ export default observer(() => {
 	});
 
 	return (
-		<View.Root _viewModel={viewModel} data={tasks}>
+		<View.Root viewModel={viewModel}>
 			<View.Header.Body>
 				<View.Header.Title>Tasks</View.Header.Title>
 				<View.Header.Spacer />

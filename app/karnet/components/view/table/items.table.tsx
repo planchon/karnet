@@ -59,8 +59,8 @@ export const ViewItemsRoot = observer(
 
 export const ViewItemsList = observer(
 	({ children }: { children: (item: Doc<"tasks">) => JSX.Element }) => {
-		const { data: tasks, viewModel } = useViewContext("ViewBody");
-		const data = tasks ?? [];
+		const { viewModel } = useViewContext("ViewBody");
+		const data = viewModel.getItems;
 
 		const selectedStartPosition = viewModel._selectedIndex * 40 + 39;
 
