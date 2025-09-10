@@ -4,123 +4,123 @@ import { AbstractModel } from "@/models/abstract.model";
 export type TaskStatus = "todo" | "in_progress" | "done";
 
 export class TaskModel extends AbstractModel {
-  type = "task" as const;
+	type = "task" as const;
 
-  completed = false;
-  completedAt: Date | null = null;
+	completed = false;
+	completedAt: Date | null = null;
 
-  targetDate: Date | null = null;
+	targetDate: Date | null = null;
 
-  title = "";
-  priority: number | null = null;
+	title = "";
+	priority: number | null = null;
 
-  deadlineLabel: string | null = null;
-  deadlineDate: Date | null = null;
+	deadlineLabel: string | null = null;
+	deadlineDate: Date | null = null;
 
-  status: TaskStatus = "todo";
+	status: TaskStatus = "todo";
 
-  constructor(props: Partial<TaskModel> & { id: string }) {
-    super(props);
+	constructor(props: Partial<TaskModel> & { id: string }) {
+		super(props);
 
-    makeObservable(this, {
-      title: observable,
-      completed: observable,
-      completedAt: observable,
-      targetDate: observable,
-      priority: observable,
-      deadlineLabel: observable,
-      deadlineDate: observable,
-      setTitle: action,
-      setDeadline: action,
-      setPriority: action,
-      setCompleted: action,
-      status: observable,
-      setStatus: action
-    });
+		makeObservable(this, {
+			title: observable,
+			completed: observable,
+			completedAt: observable,
+			targetDate: observable,
+			priority: observable,
+			deadlineLabel: observable,
+			deadlineDate: observable,
+			setTitle: action,
+			setDeadline: action,
+			setPriority: action,
+			setCompleted: action,
+			status: observable,
+			setStatus: action,
+		});
 
-    this.load();
+		this.load();
 
-    reaction(
-      () => this.toJSON(),
-      () => {
-        this.save();
-      },
-      {
-        delay: 1000
-      }
-    );
-  }
+		reaction(
+			() => this.toJSON(),
+			() => {
+				this.save();
+			},
+			{
+				delay: 1000,
+			},
+		);
+	}
 
-  getSmallId(id: number): string {
-    return `TASK-${id}`;
-  }
+	getSmallId(id: number): string {
+		return `TASK-${id}`;
+	}
 
-  toJSON(): unknown {
-    return {
-      id: this.id,
-      name: this.name,
-      deadlineLabel: this.deadlineLabel,
-      deadlineDate: this.deadlineDate,
-      priority: this.priority,
-      title: this.title,
-      completed: this.completed,
-      status: this.status,
-    };
-  }
+	toJSON(): unknown {
+		return {
+			id: this._id,
+			name: this.title,
+			deadlineLabel: this.deadlineLabel,
+			deadlineDate: this.deadlineDate,
+			priority: this.priority,
+			title: this.title,
+			completed: this.completed,
+			status: this.status,
+		};
+	}
 
-  _id(): string {
-    return `p6n-task-metadata-${this.id}`;
-  }
+	generate_id(): string {
+		return `p6n-task-metadata-${this._id}`;
+	}
 
-  setCompleted() {
-    if (this.completed) {
-      this.completed = false;
-      this.completedAt = null;
-      return;
-    }
+	setCompleted() {
+		if (this.completed) {
+			this.completed = false;
+			this.completedAt = null;
+			return;
+		}
 
-    this.completed = true;
-    this.completedAt = new Date();
-  }
+		this.completed = true;
+		this.completedAt = new Date();
+	}
 
-  setStatus(status: "todo" | "in_progress" | "done") {
-    this.status = status;
-  }
+	setStatus(status: "todo" | "in_progress" | "done") {
+		this.status = status;
+	}
 
-  setTitle(title: string | undefined) {
-    if (!title) {
-      this.title = "";
-      return;
-    }
+	setTitle(title: string | undefined) {
+		if (!title) {
+			this.title = "";
+			return;
+		}
 
-    let tmpTitle = title;
+		let tmpTitle = title;
 
-    if (this.deadlineLabel) {
-      tmpTitle = tmpTitle.replaceAll(` ${this.deadlineLabel}`, "");
-    }
+		if (this.deadlineLabel) {
+			tmpTitle = tmpTitle.replaceAll(` ${this.deadlineLabel}`, "");
+		}
 
-    if (this.priority) {
-      tmpTitle = tmpTitle.replaceAll(` p${this.priority}`, "");
-    }
+		if (this.priority) {
+			tmpTitle = tmpTitle.replaceAll(` p${this.priority}`, "");
+		}
 
-    this.title = tmpTitle.trim();
-  }
+		this.title = tmpTitle.trim();
+	}
 
-  setDeadline(deadline: string | undefined) {
-    if (!deadline) {
-      this.deadlineLabel = null;
-      return;
-    }
+	setDeadline(deadline: string | undefined) {
+		if (!deadline) {
+			this.deadlineLabel = null;
+			return;
+		}
 
-    this.deadlineLabel = deadline;
-  }
+		this.deadlineLabel = deadline;
+	}
 
-  setPriority(priority: number | undefined) {
-    if (!priority) {
-      this.priority = null;
-      return;
-    }
+	setPriority(priority: number | undefined) {
+		if (!priority) {
+			this.priority = null;
+			return;
+		}
 
-    this.priority = priority;
-  }
+		this.priority = priority;
+	}
 }

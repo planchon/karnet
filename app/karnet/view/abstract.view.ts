@@ -8,7 +8,6 @@ export type ViewItem = {
 	smallId: string;
 	title: string;
 	type: string;
-	createdAt: Date;
 };
 
 // a view is a way of interacting with the data on the app
@@ -224,7 +223,8 @@ export abstract class AbstractView<T extends { _id: string }> {
 	currentItem() {
 		const index = this.getSelectedIndex();
 
-		return this.baseItems.get(index);
+		const item = this.baseItems.values().toArray()[index];
+		return item;
 	}
 
 	checkItem(item: T, forceTrue?: boolean) {

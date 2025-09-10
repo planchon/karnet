@@ -26,7 +26,7 @@ export const DiagramMenu = observer(({ editor }: { editor: Editor }) => {
 				.content()
 				.content.toJSON();
 
-			if (selectedContent && selectedContent.length == 1) {
+			if (selectedContent && selectedContent.length === 1) {
 				const node = selectedContent[0];
 				if (node.type === "diagram") {
 					return { id: node.attrs["id"] };
@@ -84,7 +84,7 @@ export const DiagramMenu = observer(({ editor }: { editor: Editor }) => {
 															.focus()
 															.deleteCurrentNode()
 															.insertContent(
-																`<diagram id="${diagram.id}"></diagram>`,
+																`<diagram id="${diagram._id}"></diagram>`,
 															)
 															.run();
 													}}

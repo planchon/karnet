@@ -85,7 +85,7 @@ export const SketchMenu = ({ editor }: { editor: Editor }) => {
 															.focus()
 															.deleteCurrentNode()
 															.insertContent(
-																`<tldraw id="${sketch.id}" nodeUniqueId="${nodeUniqueId}"></tldraw>`,
+																`<tldraw id="${sketch._id}" nodeUniqueId="${nodeUniqueId}"></tldraw>`,
 															)
 															.run();
 													}}

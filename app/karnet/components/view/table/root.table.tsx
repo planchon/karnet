@@ -164,7 +164,7 @@ export const ViewRoot = observer(
 				className="h-full w-full focus:outline-none"
 				id="view-root"
 				ref={bodyRef} // make the div focusable (to be able to use the keyboard)
-				onKeyDown={handleKeyDown}
+				// onKeyDown={handleKeyDown}
 				tabIndex={-1}
 			>
 				<ViewContextProvider

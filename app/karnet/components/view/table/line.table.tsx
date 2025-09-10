@@ -190,5 +190,6 @@ export const ViewItemStatus = observer(() => {
 		return null;
 	}
 
+	// @ts-ignore
 	return <Status status={item.status} />;
 });

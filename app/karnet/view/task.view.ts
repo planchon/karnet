@@ -5,7 +5,7 @@ import { AbstractView } from "./abstract.view";
 
 export class TaskView extends AbstractView<TaskModel> {
 	get getAllItems(): TaskModel[] {
-		return this.rootStore.taskStore.allModels;
+		return [];
 	}
 
 	orderBy(items: TaskModel[]): TaskModel[] {

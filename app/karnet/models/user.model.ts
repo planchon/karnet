@@ -12,7 +12,7 @@ export class UserModel extends AbstractModel {
 		this.load();
 	}
 
-	_id() {
+	generate_id() {
 		return "p6n-user";
 	}
 

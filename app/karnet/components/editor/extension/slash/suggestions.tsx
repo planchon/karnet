@@ -114,7 +114,7 @@ export const allSuggestions = [
 				searchTerms: ["sketch"],
 				icon: IconPencil,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					const id = Object.values(rootStore.sketchesStore.allModels)[0]?.id;
+					const id = Object.values(rootStore.sketchesStore.allModels)[0]?._id;
 					if (!id) {
 						console.debug("No sketch found");
 						return;
@@ -135,7 +135,7 @@ export const allSuggestions = [
 				searchTerms: ["diagram"],
 				icon: IconChartDots3,
 				command: ({ editor, range }: { editor: Editor; range: Range }) => {
-					const id = Object.values(rootStore.diagramStore.allModels)[0]?.id;
+					const id = Object.values(rootStore.diagramStore.allModels)[0]?._id;
 					if (!id) {
 						console.debug("No diagram found");
 						return;

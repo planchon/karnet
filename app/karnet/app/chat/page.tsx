@@ -33,7 +33,7 @@ export default observer(function ChatPage() {
 			model: "gpt-4o",
 		});
 		setInputPosition("bottom");
-		window.history.pushState(null, "", `/chat/${chat.id}`);
+		window.history.pushState(null, "", `/chat/${chat._id}`);
 	};
 
 	useShortcut("Control+Enter", onSend);
