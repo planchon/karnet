@@ -8,15 +8,21 @@ import {
 	IconCalendar,
 	IconLabel,
 } from "@tabler/icons-react";
+import { useMutation } from "convex/react";
 import { observer } from "mobx-react";
 import { useState } from "react";
+import { api } from "@/convex/_generated/api";
 import usePreventAutoFocus from "@/hooks/usePreventAutoFocus";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
-import { useStores } from "@/hooks/useStores";
 import { useResetFocus } from "@/lib/focus-manager";
-import { cn, generateId } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
-import { Dialog, DialogContent, DialogFooter } from "@/primitive/ui/dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogTitle,
+} from "@/primitive/ui/dialog";
 import { Switch } from "@/primitive/ui/switch";
 import {
 	Tooltip,
@@ -33,11 +39,12 @@ import { TaskInputComp } from "../task-input/task-input.comp";
 
 export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 	const commands = useCommands();
-	const { taskStore } = useStores();
 	const [priority, setPriority] = useState<number | undefined>(undefined);
 	const [deadline, setDeadline] = useState<string | undefined>(undefined);
 	const [task, setTask] = useState<string>("");
 	const [tags, setTags] = useState<string[]>([]);
+
+	const createTaskMutation = useMutation(api.functions.task.createTask);
 
 	const preventAutoFocus = usePreventAutoFocus();
 	const resetFocus = useResetFocus();
@@ -47,14 +54,11 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 	});
 
 	const createTask = () => {
-		console.log(task, priority, deadline);
-		const id = generateId();
-		const taskModel = taskStore.createNewModel(id);
-		taskModel.setDeadline(deadline);
-		taskModel.setPriority(priority);
-		taskModel.setTitle(task);
-		taskModel.save();
-		taskStore.save();
+		createTaskMutation({
+			priority: priority ?? 4,
+			deadline: deadline ?? undefined,
+			title: task,
+		});
 	};
 
 	const onCreateTask = () => {
@@ -119,6 +123,7 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 	return (
 		<Dialog onOpenChange={onToggleChange} open={commands.taskOpen}>
 			<DialogContent className="min-w-[700px] p-0" {...preventAutoFocus}>
+				<DialogTitle className="sr-only">Create a new task</DialogTitle>
 				<div className="flex w-full flex-col gap-3 p-3 pb-0">
 					<div className="flex items-center gap-2">
 						{/* <ProjectSelect />
@@ -149,7 +154,9 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 						<Switch tabIndex={-1} />
 						<span className="text-xs">Create more</span>
 					</div>
-					<Button tabIndex={0}>Create</Button>
+					<Button tabIndex={0} onClick={onCreateTask}>
+						Create
+					</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

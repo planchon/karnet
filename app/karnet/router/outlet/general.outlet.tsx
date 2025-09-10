@@ -1,5 +1,10 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
+import { ConvexQueryClient } from "@convex-dev/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Authenticated, ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CommandChat } from "@/components/command/command-chat";
@@ -12,6 +17,18 @@ import { AppSidebar } from "@/components/navbar/app-sidebar";
 import { useLinkShortcut, useShortcut } from "@/hooks/useShortcut";
 import { SidebarInset, SidebarProvider } from "@/primitive/ui/sidebar";
 import { rootStore } from "@/stores/root.store";
+
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convexQueryClient = new ConvexQueryClient(convex);
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			queryKeyHashFn: convexQueryClient.hashFn(),
+			queryFn: convexQueryClient.queryFn(),
+		},
+	},
+});
+convexQueryClient.connect(queryClient);
 
 export function GeneralOutlet({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
@@ -54,17 +71,23 @@ export function GeneralOutlet({ children }: { children: React.ReactNode }) {
 	}
 
 	return (
-		<SidebarProvider>
-			<CommandK />
-			<CreateEventCommand />
-			<CommandChat />
-			<HelpComponent />
-			<CreateTaskCommand />
-			<CreateProjectCommand />
-			<AppSidebar variant="inset" />
-			<SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">
-				{children}
-			</SidebarInset>
-		</SidebarProvider>
+		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+			<QueryClientProvider client={queryClient}>
+				<Authenticated>
+					<SidebarProvider>
+						<CommandK />
+						<CreateEventCommand />
+						<CommandChat />
+						<HelpComponent />
+						<CreateTaskCommand />
+						<CreateProjectCommand />
+						<AppSidebar variant="inset" />
+						<SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">
+							{children}
+						</SidebarInset>
+					</SidebarProvider>
+				</Authenticated>
+			</QueryClientProvider>
+		</ConvexProviderWithClerk>
 	);
 }

@@ -1,21 +1,18 @@
 "use client";
 
+import { isEqual } from "lodash";
 import { action, computed, makeObservable, observable, reaction } from "mobx";
-import type { RootStore } from "@/stores/root.store";
 
 export type ViewItem = {
-	id: string;
+	_id: string;
 	smallId: string;
-	name: string;
+	title: string;
 	type: string;
-	createdAt: Date;
 };
 
 // a view is a way of interacting with the data on the app
 // each view can have custom filters, search and order
-export abstract class AbstractView<T extends ViewItem> {
-	rootStore: RootStore;
-
+export abstract class AbstractView<T extends { _id: string }> {
 	bodyRef: React.RefObject<HTMLDivElement | null> | null = null;
 	searchInputRef: React.RefObject<HTMLInputElement | null> | null = null;
 
@@ -23,15 +20,17 @@ export abstract class AbstractView<T extends ViewItem> {
 	_lastHoveredDocumentId: string | null = null;
 
 	_selectedIndex = -1;
+	_selectedId: string | null = null;
+	_numberOfItems = 0;
 
 	query: string;
 
+	baseItems: Map<string, T> = new Map();
 	renderableItems: T[] = [];
 
 	checkedItems: Map<string, boolean> = new Map();
 
-	constructor(rootStore: RootStore) {
-		this.rootStore = rootStore;
+	constructor() {
 		this.query = "";
 
 		makeObservable(this, {
@@ -41,11 +40,12 @@ export abstract class AbstractView<T extends ViewItem> {
 			setSelectedIndex: action,
 			search: action,
 			getItems: computed,
-			getAllItems: computed,
+			baseItems: observable,
 			renderableItems: observable,
 			computeRenderableItems: action,
 			checkedItems: observable,
 			checkItem: action,
+			updateData: action,
 		});
 
 		reaction(
@@ -55,33 +55,46 @@ export abstract class AbstractView<T extends ViewItem> {
 			},
 		);
 
-		reaction(
-			() => this.getAllItems,
-			() => {
-				this.computeRenderableItems();
-			},
-			{
-				delay: 25,
-			},
-		);
+		// reaction(
+		// 	() => this.baseItems,
+		// 	() => {
+		// 		this.computeRenderableItems();
+		// 	},
+		// );
+	}
+
+	// we update all the element who have changed
+	updateData(items: T[]) {
+		for (const item of items) {
+			if (this.baseItems.has(item._id)) {
+				// if the item are the same, we keep them that way
+				// and go to the next item
+				if (isEqual(this.baseItems.get(item._id), item)) {
+					continue;
+				}
+			}
+
+			this.baseItems.set(item._id, item);
+		}
+
+		console.log("baseItems", this.baseItems.size);
 	}
 
 	setSearchQuery(query: string) {
 		this.query = query;
 	}
 
-	/*
-	 * @returns the all the possible items to display in the view
-	 */
-	abstract get getAllItems(): T[];
+	setItems(items: T[]) {
+		this._numberOfItems = items.length;
+	}
 
 	computeRenderableItems() {
-		const allItems = this.getAllItems;
-		const searchedItems = this.search(allItems);
-		const filteredItems = this.filterBy(searchedItems);
-		const orderedItems = this.orderBy(filteredItems);
+		const allItems = this.baseItems.values().toArray();
+		// const searchedItems = this.search(allItems);
+		// const filteredItems = this.filterBy(searchedItems);
+		// const orderedItems = this.orderBy(filteredItems);
 
-		this.renderableItems = orderedItems;
+		this.renderableItems = allItems;
 	}
 
 	/*
@@ -89,7 +102,12 @@ export abstract class AbstractView<T extends ViewItem> {
 	 * @note this is the items that are currently displayed in the view (after filters, search, etc.)
 	 */
 	get getItems(): T[] {
-		return this.renderableItems;
+		const items = this.baseItems.values().toArray();
+		const orderedItems = this.orderBy(items);
+		const filteredItems = this.filterBy(orderedItems);
+		const searchedItems = this.search(filteredItems);
+
+		return searchedItems;
 	}
 
 	/*
@@ -131,6 +149,10 @@ export abstract class AbstractView<T extends ViewItem> {
 		return this._selectedIndex;
 	}
 
+	getSelectedId() {
+		return this._selectedId;
+	}
+
 	/*
 	 * @param index - the index to set as selected
 	 */
@@ -142,9 +164,9 @@ export abstract class AbstractView<T extends ViewItem> {
 			return;
 		}
 
-		if (index > this.getItems.length) {
+		if (index > this.baseItems.size) {
 			console.error("index is greater than the number of items");
-			index = this.getItems.length - 1;
+			index = this.baseItems.size - 1;
 		}
 
 		if (index < 0) {
@@ -153,6 +175,7 @@ export abstract class AbstractView<T extends ViewItem> {
 		}
 
 		this._selectedIndex = index;
+		this._selectedId = this.baseItems.values().toArray()[index]._id;
 
 		return this._selectedIndex;
 	}
@@ -179,7 +202,7 @@ export abstract class AbstractView<T extends ViewItem> {
 	goDown() {
 		let tmpIndex = this.getLastIndex();
 		tmpIndex++;
-		if (tmpIndex >= this.getItems.length) {
+		if (tmpIndex >= this.baseItems.size) {
 			tmpIndex = 0;
 		}
 
@@ -191,7 +214,7 @@ export abstract class AbstractView<T extends ViewItem> {
 		tmpIndex--;
 
 		if (tmpIndex < 0) {
-			tmpIndex = this.getItems.length - 1;
+			tmpIndex = this.baseItems.size - 1;
 		}
 
 		this.setSelectedIndex(tmpIndex);
@@ -200,25 +223,26 @@ export abstract class AbstractView<T extends ViewItem> {
 	currentItem() {
 		const index = this.getSelectedIndex();
 
-		return this.getItems[index];
+		const item = this.baseItems.values().toArray()[index];
+		return item;
 	}
 
 	checkItem(item: T, forceTrue?: boolean) {
-		const isChecked = this.checkedItems.get(item.id);
+		const isChecked = this.checkedItems.get(item._id);
 
 		if (forceTrue) {
-			this.checkedItems.set(item.id, true);
+			this.checkedItems.set(item._id, true);
 			return;
 		}
 
 		if (isChecked) {
-			this.checkedItems.delete(item.id);
+			this.checkedItems.delete(item._id);
 		} else {
-			this.checkedItems.set(item.id, true);
+			this.checkedItems.set(item._id, true);
 		}
 	}
 
 	isItemChecked(item: T) {
-		return this.checkedItems.get(item.id) ?? false;
+		return this.checkedItems.get(item._id) ?? false;
 	}
 }

@@ -60,7 +60,7 @@ export default observer(function PaperPage() {
 					</Button>
 				</div>
 			</div>
-			<SimpleEditor id={paper.id} key={paper.id} />
+			<SimpleEditor id={paper._id} key={paper._id} />
 		</div>
 	);
 });

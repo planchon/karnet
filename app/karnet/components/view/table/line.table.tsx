@@ -57,10 +57,10 @@ export const ViewItemLine = observer(
 							settings.disableLinks && "pointer-events-none select-none",
 							className,
 						)}
-						data-document-id={item.id}
+						data-document-id={item._id}
 						data-list-index={listIndex}
 						id={`view-item-line-${item.smallId}`}
-						key={item.id}
+						key={item._id}
 						onFocus={() => {
 							navigation.setMode("focus");
 							viewModel.setSelectedIndex(listIndex);
@@ -70,7 +70,7 @@ export const ViewItemLine = observer(
 								viewModel.setSelectedIndex(listIndex);
 							}
 						}}
-						href={`/${item.type}/${item.smallId}/${slugify(item.name)}`}
+						href={`/${item.type}/${item.smallId}/${slugify(item.title)}`}
 						{...props}
 					>
 						{everythingElse}
@@ -161,34 +161,35 @@ export const ViewItemContextMenu = observer(
 	},
 );
 
-export const ViewItemCheckbox = observer(() => {
-	const { item } = useLocalItemContext("ViewItemCheckbox");
-	const { viewModel } = useViewContext("ViewItemCheckbox");
+export const ViewItemCheckbox = observer(
+	({ isChecked }: { isChecked: boolean }) => {
+		const { item } = useLocalItemContext("ViewItemCheckbox");
+		const { viewModel } = useViewContext("ViewItemCheckbox");
 
-	const isChecked = viewModel.isItemChecked(item);
-
-	return (
-		<div
-			className="group z-1000 flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
-			onClick={(e) => {
-				viewModel.checkItem(item);
-				e.stopPropagation();
-			}}
-		>
-			<Checkbox
-				checked={isChecked}
-				className="size-4 group-hover:border-accent-foreground/50"
-			/>
-		</div>
-	);
-});
+		return (
+			<div
+				className="group z-1000 flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
+				onClick={(e) => {
+					viewModel.checkItem(item);
+					e.stopPropagation();
+				}}
+			>
+				<Checkbox
+					checked={isChecked}
+					className="size-4 group-hover:border-accent-foreground/50"
+				/>
+			</div>
+		);
+	},
+);
 
 export const ViewItemStatus = observer(() => {
 	const { item } = useLocalItemContext("ViewItemStatus");
 
-	if (!(item instanceof TaskModel)) {
-		throw new Error("Item is not a TaskModel");
+	if (!("status" in item)) {
+		return null;
 	}
 
+	// @ts-ignore
 	return <Status status={item.status} />;
 });

@@ -15,8 +15,8 @@ export class DocumentView extends AbstractView<DocumentItem> {
 	groups: Record<string, string> = {};
 	display: string[] = ["id", "name", "createdAt"];
 
-	constructor(rootStore: RootStore) {
-		super(rootStore);
+	constructor() {
+		super();
 
 		makeObservable(this, {
 			displayColumns: action,
@@ -24,13 +24,14 @@ export class DocumentView extends AbstractView<DocumentItem> {
 	}
 
 	get getAllItems() {
-		const documents = this.rootStore.paperStore.allModels;
-		const sketches = this.rootStore.sketchesStore.allModels;
-		const diagrams = this.rootStore.diagramStore.allModels;
+		// const documents = this.rootStore.paperStore.allModels;
+		// const sketches = this.rootStore.sketchesStore.allModels;
+		// const diagrams = this.rootStore.diagramStore.allModels;
 
-		const rawItems = [...documents, ...sketches, ...diagrams];
+		// const rawItems = [...documents, ...sketches, ...diagrams];
 
-		return rawItems;
+		// return rawItems;
+		return [];
 	}
 
 	orderBy(items: DocumentItem[]) {

@@ -41,7 +41,7 @@ export class SettingsModel extends AbstractModel {
     return `SETT-${id}`;
   }
 
-  _id() {
+  generate_id() {
     return 'p6n-settings';
   }
 

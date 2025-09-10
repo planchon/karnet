@@ -69,7 +69,7 @@ export default observer(function DrawPage() {
 					callback={(editor) => {
 						commandStore.setDrawCommands(editor);
 					}}
-					id={sketch.id}
+					id={sketch._id}
 				/>
 			</div>
 		</div>

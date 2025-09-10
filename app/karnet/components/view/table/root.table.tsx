@@ -7,11 +7,7 @@ import { useShortcut } from "@/hooks/useShortcut";
 import { createContext } from "@/lib/create-context";
 import { useSetFocusElement } from "@/lib/focus-manager";
 import { slugify } from "@/lib/utils";
-import { TaskModel } from "@/models/task.model";
-import type {
-	AbstractView,
-	ViewItem as ViewItemType,
-} from "@/view/abstract.view";
+import type { AbstractView } from "@/view/abstract.view";
 
 const UP_KEYS = ["ArrowUp", "ArrowLeft", "k", "K"] satisfies Key[];
 const DOWN_KEYS = ["ArrowDown", "ArrowRight", "j", "J"] satisfies Key[];
@@ -30,12 +26,12 @@ export const ViewContextProvider = ViewContext[0];
 export const useViewContext = ViewContext[1];
 
 export const ViewRoot = observer(
-	<R extends ViewItemType, T extends AbstractView<R>>({
+	({
 		children,
 		viewModel,
 	}: {
 		children: React.ReactNode;
-		viewModel: T;
+		viewModel: AbstractView<any>;
 	}) => {
 		const bodyRef = useRef<HTMLDivElement>(null);
 		const router = useRouter();
@@ -127,7 +123,7 @@ export const ViewRoot = observer(
 			if (e.key === "Enter") {
 				const item = viewModel.currentItem();
 				if (item) {
-					router.push(`/${item.type}/${item.smallId}/${slugify(item.name)}`);
+					router.push(`/${item.type}/${item.smallId}/${slugify(item.title)}`);
 				}
 			}
 		}
@@ -168,6 +164,7 @@ export const ViewRoot = observer(
 				className="h-full w-full focus:outline-none"
 				id="view-root"
 				ref={bodyRef} // make the div focusable (to be able to use the keyboard)
+				// onKeyDown={handleKeyDown}
 				tabIndex={-1}
 			>
 				<ViewContextProvider

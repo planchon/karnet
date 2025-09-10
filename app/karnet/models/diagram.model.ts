@@ -46,7 +46,7 @@ export class DiagramModel extends AbstractModel {
 		this.name = name;
 	}
 
-	_id() {
-		return `p6n-diagram-${this.id}`;
+	generate_id() {
+		return `p6n-diagram-${this._id}`;
 	}
 }
