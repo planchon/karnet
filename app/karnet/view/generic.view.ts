@@ -1,6 +1,6 @@
 "use client";
 
-import type { Doc } from "@karnet/backend/convex/_generated/dataModel";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { AbstractView } from "./abstract.view";
 
 export class GenericView<T extends Doc<"tasks">> extends AbstractView<T> {

@@ -1,7 +1,5 @@
 "use client";
 
-import { api } from "@karnet/backend/convex/_generated/api";
-import type { Doc } from "@karnet/backend/convex/_generated/dataModel";
 import {
 	IconAntennaBars2,
 	IconAntennaBars3,
@@ -27,6 +25,8 @@ import { useMutation, usePaginatedQuery } from "convex/react";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { View } from "@/components/view/table";
+import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { Priority } from "@/primitive/priority";
 import { Label } from "@/primitive/super-ui/label";

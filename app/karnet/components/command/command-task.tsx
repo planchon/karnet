@@ -1,6 +1,5 @@
 "use client";
 
-import { api } from "@karnet/backend/convex/_generated/api";
 import {
 	IconAntennaBars2,
 	IconAntennaBars3,
@@ -12,6 +11,7 @@ import {
 import { useMutation } from "convex/react";
 import { observer } from "mobx-react";
 import { useState } from "react";
+import { api } from "@/convex/_generated/api";
 import usePreventAutoFocus from "@/hooks/usePreventAutoFocus";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { useResetFocus } from "@/lib/focus-manager";

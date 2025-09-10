@@ -1,6 +1,5 @@
 "use client";
 
-import type { Doc } from "@karnet/backend/convex/_generated/dataModel";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -9,6 +8,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { type JSX, memo } from "react";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { createContext } from "@/lib/create-context";
 import type { ViewItem as ViewItemType } from "@/view/abstract.view";
 import { useViewContext } from "./root.table";
