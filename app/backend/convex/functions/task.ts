@@ -7,10 +7,17 @@ export const getPaginatedTasks = query({
 		paginationOpts: paginationOptsValidator,
 	},
 	handler: async (ctx, { paginationOpts }) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
 		const tasks = await ctx.db
 			.query("tasks")
+			.filter((q) => q.eq(q.field("subject"), identity.subject))
 			.order("desc")
 			.paginate(paginationOpts);
+
 		return tasks;
 	},
 });
@@ -32,6 +39,11 @@ export const createTask = mutation({
 		completed_at_ts: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
 		const totalTasks = await ctx.db.query("tasks").collect();
 		const newId = totalTasks.length + 1;
 
@@ -47,6 +59,7 @@ export const createTask = mutation({
 			created_at_iso: new Date().toISOString(),
 			created_at_ts: Date.now(),
 			is_deleted: false,
+			subject: identity.subject,
 		};
 
 		const task = await ctx.db.insert("tasks", taskModel);
@@ -69,10 +82,17 @@ export const updateTask = mutation({
 		completed_at_ts: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
 		const task = await ctx.db.get(args.id);
-		if (!task) {
+
+		if (!task || task.subject !== identity.subject) {
 			throw new Error("Task not found");
 		}
+
 		await ctx.db.patch(args.id, {
 			title: args.title ?? task.title,
 			priority: args.priority ?? task.priority,
@@ -92,8 +112,13 @@ export const toggleTask = mutation({
 		id: v.id("tasks"),
 	},
 	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
 		const task = await ctx.db.get(args.id);
-		if (!task) {
+		if (!task || task.subject !== identity.subject) {
 			throw new Error("Task not found");
 		}
 		if (task.completed_at_ts) {

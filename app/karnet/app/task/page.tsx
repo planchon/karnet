@@ -38,7 +38,7 @@ export default observer(() => {
 		api.functions.task.getPaginatedTasks,
 		{},
 		{
-			initialNumItems: 100,
+			initialNumItems: 500,
 		},
 	);
 	const [viewModel, _] = useState(new GenericView());

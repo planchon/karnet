@@ -103,7 +103,12 @@ export abstract class AbstractView<T extends { _id: string }> {
 	 * @note this is the items that are currently displayed in the view (after filters, search, etc.)
 	 */
 	get getItems(): T[] {
-		return this.baseItems.values().toArray();
+		const items = this.baseItems.values().toArray();
+		const orderedItems = this.orderBy(items);
+		const filteredItems = this.filterBy(orderedItems);
+		const searchedItems = this.search(filteredItems);
+
+		return searchedItems;
 	}
 
 	/*

@@ -8,7 +8,7 @@ import {
 } from "@ui/context-menu";
 import { AnimatePresence, motion } from "framer-motion";
 import { observer } from "mobx-react";
-import type { JSX } from "react";
+import { type JSX, memo } from "react";
 import { createContext } from "@/lib/create-context";
 import type { ViewItem as ViewItemType } from "@/view/abstract.view";
 import { useViewContext } from "./root.table";
@@ -65,62 +65,45 @@ export const ViewItemsList = observer(
 		const selectedStartPosition = viewModel._selectedIndex * 40 + 39;
 
 		return (
-			<AnimatePresence initial={false}>
-				<div className="flex flex-col overflow-y-auto" id="view-items-list">
-					{selectedStartPosition !== -1 && (
-						<motion.div
-							animate={{
-								x: 0,
-								y: selectedStartPosition,
-								height: 40,
-								width: "100%",
-								opacity: 1,
-							}}
-							className="absolute top-0 left-0 z-0 h-full w-full bg-accent-foreground/10"
-							exit={{
-								x: 0,
-								y: selectedStartPosition,
-								height: 40,
-								width: "100%",
-								opacity: 0,
-							}}
-							initial={{
-								x: 0,
-								y: selectedStartPosition,
-								height: 40,
-								width: "100%",
-								opacity: 0,
-							}}
-							transition={{
-								duration: 0.1,
-								ease: "easeOut",
-							}}
-						/>
-					)}
-					{data.map((item: Doc<"tasks">, index: number) => {
-						return (
-							<motion.div
-								animate={{
-									opacity: 1,
-								}}
-								initial={{
-									opacity: 0,
-								}}
-								key={item._id}
-								transition={{
-									duration: 0.15,
-									delay: index * 0.025,
-									ease: "easeOut",
-								}}
-							>
-								<__ViewItem item={item} key={item._id} listIndex={index}>
-									{children}
-								</__ViewItem>
-							</motion.div>
-						);
-					})}
-				</div>
-			</AnimatePresence>
+			<div className="flex flex-col overflow-y-auto" id="view-items-list">
+				{selectedStartPosition !== -1 && (
+					<motion.div
+						animate={{
+							x: 0,
+							y: selectedStartPosition,
+							height: 40,
+							width: "100%",
+							opacity: 1,
+						}}
+						className="absolute top-0 left-0 z-0 h-full w-full bg-accent-foreground/10"
+						exit={{
+							x: 0,
+							y: selectedStartPosition,
+							height: 40,
+							width: "100%",
+							opacity: 0,
+						}}
+						initial={{
+							x: 0,
+							y: selectedStartPosition,
+							height: 40,
+							width: "100%",
+							opacity: 0,
+						}}
+						transition={{
+							duration: 0.1,
+							ease: "easeOut",
+						}}
+					/>
+				)}
+				{data.map((item: Doc<"tasks">, index: number) => {
+					return (
+						<__ViewItem item={item} key={item._id} listIndex={index}>
+							{children}
+						</__ViewItem>
+					);
+				})}
+			</div>
 		);
 	},
 );

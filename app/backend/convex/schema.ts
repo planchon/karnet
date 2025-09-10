@@ -4,9 +4,10 @@ import { v } from "convex/values";
 const baseViewItem = {
 	title: v.string(),
 	smallId: v.string(),
+	subject: v.string(),
 	is_deleted: v.boolean(),
-	created_at_iso: v.optional(v.string()),
-	created_at_ts: v.optional(v.number()),
+	created_at_iso: v.string(),
+	created_at_ts: v.number(),
 	updated_at_iso: v.optional(v.string()),
 	updated_at_ts: v.optional(v.number()),
 };

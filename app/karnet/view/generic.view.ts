@@ -9,7 +9,7 @@ export class GenericView<T extends Doc<"tasks">> extends AbstractView<T> {
 	}
 
 	orderBy(items: T[]): T[] {
-		return items;
+		return items.sort((a, b) => b.created_at_ts - a.created_at_ts);
 	}
 
 	search(items: T[]): T[] {

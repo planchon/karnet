@@ -1,8 +1,10 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import { ConvexQueryClient } from "@convex-dev/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { Authenticated, ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CommandChat } from "@/components/command/command-chat";
@@ -69,21 +71,23 @@ export function GeneralOutlet({ children }: { children: React.ReactNode }) {
 	}
 
 	return (
-		<ConvexProvider client={convex}>
+		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
 			<QueryClientProvider client={queryClient}>
-				<SidebarProvider>
-					<CommandK />
-					<CreateEventCommand />
-					<CommandChat />
-					<HelpComponent />
-					<CreateTaskCommand />
-					<CreateProjectCommand />
-					<AppSidebar variant="inset" />
-					<SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">
-						{children}
-					</SidebarInset>
-				</SidebarProvider>
+				<Authenticated>
+					<SidebarProvider>
+						<CommandK />
+						<CreateEventCommand />
+						<CommandChat />
+						<HelpComponent />
+						<CreateTaskCommand />
+						<CreateProjectCommand />
+						<AppSidebar variant="inset" />
+						<SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">
+							{children}
+						</SidebarInset>
+					</SidebarProvider>
+				</Authenticated>
 			</QueryClientProvider>
-		</ConvexProvider>
+		</ConvexProviderWithClerk>
 	);
 }

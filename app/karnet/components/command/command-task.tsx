@@ -14,11 +14,15 @@ import { observer } from "mobx-react";
 import { useState } from "react";
 import usePreventAutoFocus from "@/hooks/usePreventAutoFocus";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
-import { useStores } from "@/hooks/useStores";
 import { useResetFocus } from "@/lib/focus-manager";
-import { cn, generateId } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
-import { Dialog, DialogContent, DialogFooter } from "@/primitive/ui/dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogTitle,
+} from "@/primitive/ui/dialog";
 import { Switch } from "@/primitive/ui/switch";
 import {
 	Tooltip,
@@ -50,7 +54,6 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 	});
 
 	const createTask = () => {
-		console.log(task, priority, deadline);
 		createTaskMutation({
 			priority: priority ?? 4,
 			deadline: deadline ?? undefined,
@@ -120,6 +123,7 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
 	return (
 		<Dialog onOpenChange={onToggleChange} open={commands.taskOpen}>
 			<DialogContent className="min-w-[700px] p-0" {...preventAutoFocus}>
+				<DialogTitle className="sr-only">Create a new task</DialogTitle>
 				<div className="flex w-full flex-col gap-3 p-3 pb-0">
 					<div className="flex items-center gap-2">
 						{/* <ProjectSelect />
