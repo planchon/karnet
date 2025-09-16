@@ -8,7 +8,7 @@ import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
 import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import {
 	Command,
@@ -21,9 +21,15 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
 import { observer } from "mobx-react";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+	useContext,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+	useState,
+} from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { modelProviders, ProviderIcons } from "@/ai/models";
+import { modelProviders, ProviderIcons, rawList } from "@/ai/models";
 import { models } from "@/data/model";
 import { commands } from "@/data/tools";
 import { cn } from "@/lib/utils";
@@ -71,18 +77,34 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 					<CommandInput placeholder="Search model..." />
 					<CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
 						<CommandEmpty>No model found.</CommandEmpty>
-						{Object.entries(modelProviders).map(([provider, models]) => (
-							<CommandGroup heading={provider} key={provider}>
-								{models.map((m) => (
+						<CommandGroup heading="Popular">
+							{rawList
+								.filter((m) => m.popular)
+								.map((m) => (
 									<CommandItem
 										key={m.id}
 										onSelect={() => handleSelect(m)}
 										value={m.id}
 									>
-										<ProviderIcons provider={provider} />
+										<ProviderIcons provider={m.specification.provider} />
 										{m.name}
 									</CommandItem>
 								))}
+						</CommandGroup>
+						{Object.entries(modelProviders).map(([provider, models]) => (
+							<CommandGroup heading={provider} key={provider}>
+								{models
+									.filter((m) => !m.popular)
+									.map((m) => (
+										<CommandItem
+											key={m.id}
+											onSelect={() => handleSelect(m)}
+											value={m.id}
+										>
+											<ProviderIcons provider={provider} />
+											{m.name}
+										</CommandItem>
+									))}
 							</CommandGroup>
 						))}
 					</CommandList>
@@ -214,13 +236,12 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
 export const ChatInput = observer(function ChatInputInside({
 	className,
 	onChange,
+	ref,
 }: {
 	className?: string;
 	onChange?: (value: string) => void;
+	ref?: React.RefObject<Editor>;
 }) {
-	const modelRef = useRef<HTMLButtonElement>(null);
-	const mcpRef = useRef<HTMLButtonElement>(null);
-
 	const { setModel, setMcp } = useContext(ChatContext);
 
 	const editor = useEditor({
@@ -286,6 +307,8 @@ export const ChatInput = observer(function ChatInputInside({
 			onChange?.(text);
 		},
 	});
+
+	useImperativeHandle(ref, () => editor);
 
 	useEffect(() => {
 		document.addEventListener("keydown", (e) => {

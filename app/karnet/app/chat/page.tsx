@@ -2,17 +2,19 @@
 
 import { useChat } from "@ai-sdk/react";
 import { IconSend } from "@tabler/icons-react";
+import type { Editor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { useParams, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	Conversation,
 	ConversationContent,
 	ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
+import { Loader } from "@/components/ai-elements/loader";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
 import { Chat } from "@/components/chat";
@@ -20,10 +22,11 @@ import { useShortcut } from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 
 export default observer(function ChatPage() {
-	const [input, setInput] = useState("");
 	const { id } = useParams();
 	const location = usePathname();
-	const { messages, sendMessage, status } = useChat();
+	const editorRef = useRef<Editor | null>(null);
+
+	const { messages, sendMessage } = useChat();
 
 	const [inputPosition, setInputPosition] = useState<"center" | "bottom">(
 		id ? "bottom" : "center",
@@ -38,15 +41,24 @@ export default observer(function ChatPage() {
 
 	const onSend = () => {
 		setInputPosition("bottom");
+
+		const text = editorRef.current?.getText();
+		if (!text) {
+			alert("Please enter a message");
+			return;
+		}
+
 		sendMessage(
-			{ text: input },
+			{ text: text },
 			{
 				body: {
 					modelId: "google/gemini-2.5-flash-lite",
 				},
 			},
 		);
-		setInput("");
+
+		// clear the editor
+		editorRef.current?.commands.setContent("");
 		// window.history.pushState(null, "", `/chat/${chat._id}`);
 	};
 
@@ -97,7 +109,7 @@ export default observer(function ChatPage() {
 				>
 					<Chat.Root>
 						<div className="h-full w-full rounded-b-xl bg-white p-2 shadow-md">
-							<Chat.Input className="h-20" onChange={setInput} />
+							<Chat.Input className="h-20" ref={editorRef} />
 						</div>
 						<div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
 							<div className="flex items-center gap-0">

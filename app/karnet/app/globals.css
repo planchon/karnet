@@ -245,3 +245,32 @@
 .ProseMirror:focus {
 	outline: none;
 }
+
+/* For WebKit browsers (Chrome, Safari, Edge, Opera) */
+
+/* The whole scrollbar */
+::-webkit-scrollbar {
+	width: 5px; /* Adjust as needed */
+}
+
+/* The track (the area the thumb slides in) */
+::-webkit-scrollbar-track {
+	background: #f1f1f1; /* Light grey track */
+	border-radius: 10px;
+}
+
+/* The thumb (the draggable scrolling handle) */
+::-webkit-scrollbar-thumb {
+	background: #888; /* Darker grey thumb */
+	border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555; /* Even darker grey on hover */
+}
+
+/* For corner, if both horizontal and vertical scrollbars are present */
+::-webkit-scrollbar-corner {
+	background: #f1f1f1;
+}

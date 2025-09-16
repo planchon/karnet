@@ -25,7 +25,9 @@ import {
 import { IconBrain } from "@tabler/icons-react";
 import type { HTMLAttributes } from "react";
 
-const rawList: GatewayLanguageModelEntry[] = [
+type KarnetModel = GatewayLanguageModelEntry & { popular?: boolean };
+
+export const rawList: KarnetModel[] = [
 	{
 		id: "alibaba/qwen-3-14b",
 		name: "Qwen3-14B",
@@ -362,6 +364,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "anthropic/claude-sonnet-4",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "cohere/command-a",
@@ -506,6 +509,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "deepseek/deepseek-v3.1-base",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "deepseek/deepseek-v3.1-thinking",
@@ -571,6 +575,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "google/gemini-2.5-flash",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "google/gemini-2.5-flash-image-preview",
@@ -619,6 +624,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "google/gemini-2.5-pro",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "google/gemini-embedding-001",
@@ -1353,6 +1359,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "openai/gpt-5-mini",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "openai/gpt-5-nano",
@@ -1371,6 +1378,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "openai/gpt-5-nano",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "openai/gpt-oss-120b",
@@ -1475,6 +1483,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "openai/o4-mini",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "openai/text-embedding-3-large",
@@ -1538,6 +1547,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "perplexity/sonar",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "perplexity/sonar-pro",
@@ -1602,6 +1612,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "stealth/sonoma-dusk-alpha",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "stealth/sonoma-sky-alpha",
@@ -1824,6 +1835,7 @@ const rawList: GatewayLanguageModelEntry[] = [
 			modelId: "xai/grok-3-fast",
 		},
 		modelType: "language",
+		popular: true,
 	},
 	{
 		id: "xai/grok-3-mini",
@@ -1948,7 +1960,7 @@ export const modelProviders = rawList.reduce(
 		acc[model.specification.provider].push(model);
 		return acc;
 	},
-	{} as Record<string, GatewayLanguageModelEntry[]>,
+	{} as Record<string, KarnetModel[]>,
 );
 
 export const providerIcons = {
