@@ -2,7 +2,6 @@
 
 import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { MCP } from "@lobehub/icons";
-import { IconBrain } from "@tabler/icons-react";
 import Document from "@tiptap/extension-document";
 import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -21,18 +20,16 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
 import { observer } from "mobx-react";
-import {
-	useContext,
-	useEffect,
-	useImperativeHandle,
-	useRef,
-	useState,
-} from "react";
+import { useContext, useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { modelProviders, ProviderIcons, rawList } from "@/ai/models";
-import { models } from "@/data/model";
+import {
+	type KarnetModel,
+	modelProviders,
+	ProviderIcons,
+	rawList,
+} from "@/ai/models";
 import { commands } from "@/data/tools";
-import { cn } from "@/lib/utils";
+import { capitalize, cn } from "@/lib/utils";
 import { ChatContext } from "./chat.root";
 import { RewriteEnter } from "./extensions/enter";
 import { ModelSuggestionComponent } from "./extensions/model-suggestion";
@@ -77,7 +74,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 					<CommandInput placeholder="Search model..." />
 					<CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
 						<CommandEmpty>No model found.</CommandEmpty>
-						<CommandGroup heading="Popular">
+						<CommandGroup heading="Popular models">
 							{rawList
 								.filter((m) => m.popular)
 								.map((m) => (
@@ -92,7 +89,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 								))}
 						</CommandGroup>
 						{Object.entries(modelProviders).map(([provider, models]) => (
-							<CommandGroup heading={provider} key={provider}>
+							<CommandGroup heading={capitalize(provider)} key={provider}>
 								{models
 									.filter((m) => !m.popular)
 									.map((m) => (
@@ -114,47 +111,6 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 	);
 });
 
-const mcpProviders = [
-	{
-		category: "Database",
-		items: [
-			{
-				name: "Postgres",
-				value: "postgres",
-			},
-			{
-				name: "MongoDB",
-				value: "mongodb",
-			},
-		],
-	},
-	{
-		category: "Search",
-		items: [
-			{
-				name: "Google",
-				value: "google",
-			},
-			{
-				name: "Wikipedia",
-				value: "wikipedia",
-			},
-		],
-	},
-	{
-		category: "Clouds",
-		items: [
-			{
-				name: "AWS",
-				value: "aws",
-			},
-			{
-				name: "GCP",
-				value: "gcp",
-			},
-		],
-	},
-];
 export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
 	const { mcp, setMcp, mcpRef } = useContext(ChatContext);
 	const [open, setOpen] = useState(false);
@@ -274,7 +230,8 @@ export const ChatInput = observer(function ChatInputInside({
 						render: () => {
 							return renderItems(
 								ToolsSuggestionComponent,
-								(props: { id: string }) => {
+								(props: { id?: string }) => {
+									if (!props.id) return;
 									setMcp(props.id);
 								},
 							);
@@ -285,8 +242,9 @@ export const ChatInput = observer(function ChatInputInside({
 						render: () => {
 							return renderItems(
 								ModelSuggestionComponent,
-								(props: { id: string }) => {
-									setModel(props.id);
+								(props: { model?: KarnetModel }) => {
+									if (!props.model) return;
+									setModel(props.model);
 								},
 							);
 						},

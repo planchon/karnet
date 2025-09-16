@@ -11,7 +11,13 @@ import {
 } from "@ui/command";
 import { Command as Cmd } from "cmdk";
 import { useEffect, useRef, useState } from "react";
-import { models } from "@/data/model";
+import {
+	type KarnetModel,
+	modelProviders,
+	ProviderIcons,
+	rawList,
+} from "@/ai/models";
+import { capitalize } from "@/lib/utils";
 
 export const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
 
@@ -19,7 +25,7 @@ interface ModelSuggestionComponentProps {
 	query: string;
 	range: Range;
 	editor: Editor;
-	callback: (props: { id: string }) => void;
+	callback: (props: { model: KarnetModel }) => void;
 }
 
 export const ModelSuggestionComponent = (
@@ -72,10 +78,10 @@ export const ModelSuggestionComponent = (
 		};
 	}, []);
 
-	const handleSelect = (id: string) => {
+	const handleSelect = (model: KarnetModel) => {
 		props.editor.chain().focus().deleteRange(props.range).run();
 		callback({
-			id,
+			model,
 		});
 	};
 
@@ -92,25 +98,35 @@ export const ModelSuggestionComponent = (
 			/>
 			<CommandEmpty>No results.</CommandEmpty>
 			<CommandList className="scrollbar-thin max-h-[300px] overflow-y-auto">
-				{models.map((provider, index) => (
-					<CommandGroup
-						heading={provider.providerName}
-						key={provider.providerID}
-						value={provider.providerID}
-					>
-						{provider.models.map((model) => (
+				<CommandEmpty>No model found.</CommandEmpty>
+				<CommandGroup heading="Popular models">
+					{rawList
+						.filter((m) => m.popular)
+						.map((m) => (
 							<CommandItem
-								key={model.id}
-								onSelect={() => handleSelect(model.id)}
-								value={model.id}
+								key={m.id}
+								onSelect={() => handleSelect(m)}
+								value={m.id}
 							>
-								<model.icon />
-								{model.name}
+								<ProviderIcons provider={m.specification.provider} />
+								{m.name}
 							</CommandItem>
 						))}
-						{index !== models.length - 1 && (
-							<CommandSeparator className="mt-1" />
-						)}
+				</CommandGroup>
+				{Object.entries(modelProviders).map(([provider, models]) => (
+					<CommandGroup heading={capitalize(provider)} key={provider}>
+						{models
+							.filter((m) => !m.popular)
+							.map((m) => (
+								<CommandItem
+									key={m.id}
+									onSelect={() => handleSelect(m)}
+									value={m.id}
+								>
+									<ProviderIcons provider={provider} />
+									{m.name}
+								</CommandItem>
+							))}
 					</CommandGroup>
 				))}
 			</CommandList>

@@ -25,7 +25,7 @@ import {
 import { IconBrain } from "@tabler/icons-react";
 import type { HTMLAttributes } from "react";
 
-type KarnetModel = GatewayLanguageModelEntry & { popular?: boolean };
+export type KarnetModel = GatewayLanguageModelEntry & { popular?: boolean };
 
 export const rawList: KarnetModel[] = [
 	{

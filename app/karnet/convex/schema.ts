@@ -39,32 +39,39 @@ const messageSource = v.object({
 });
 
 const chatMessage = v.object({
-	role: v.union(v.literal("user"), v.literal("agent")),
-	input: v.object({
-		content: v.string(),
-		image: v.optional(v.string()),
-		audio: v.optional(v.string()),
-		link: v.optional(v.string()),
-		file: v.optional(v.string()),
-	}),
-	output: v.object({
-		content: v.string(),
-		image: v.optional(v.string()),
-		sources: v.array(messageSource),
-	}),
+	role: v.union(v.literal("user"), v.literal("assistant"), v.literal("system")),
+	parts: v.array(
+		v.object({
+			// we cannot have a literal here because they are too many types
+			type: v.string(),
+			text: v.optional(v.string()),
+
+			// tall calling
+			toolName: v.optional(v.string()),
+			toolCallId: v.optional(v.string()),
+			input: v.optional(v.string()),
+			output: v.optional(v.string()),
+			reasoning: v.optional(v.string()),
+
+			// file
+			mediaType: v.optional(v.string()),
+			filename: v.optional(v.string()),
+			url: v.optional(v.string()),
+		}),
+	),
 	created_at_iso: v.optional(v.string()),
 	finished_at_iso: v.optional(v.string()),
 	metadata: v.optional(v.string()),
+
+	// for the resumable stream option
+	stream: v.object({
+		active: v.boolean(),
+		id: v.optional(v.string()),
+	}),
 });
 
 const chatTable = defineTable({
-	title: v.string(),
-	description: v.string(),
-	is_deleted: v.boolean(),
-	created_at_iso: v.optional(v.string()),
-	created_at_ts: v.optional(v.number()),
-	updated_at_iso: v.optional(v.string()),
-	updated_at_ts: v.optional(v.number()),
+	...baseViewItem,
 	// if we have forked the chat
 	parent_id: v.optional(v.id("chats")),
 	messages: v.array(chatMessage),
