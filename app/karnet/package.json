@@ -124,6 +124,7 @@
 		"tldraw": "^3.14.2",
 		"tw-animate-css": "^1.3.7",
 		"twin.macro": "^3.4.1",
+		"use-stick-to-bottom": "^1.1.1",
 		"vaul": "^1.1.2",
 		"y-indexeddb": "^9.0.12",
 		"yjs": "^13.6.27",

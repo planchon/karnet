@@ -8,8 +8,14 @@ import { motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+	Conversation,
+	ConversationContent,
+	ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+import { Message, MessageContent } from "@/components/ai-elements/message";
+import { Response } from "@/components/ai-elements/response";
 import { Chat } from "@/components/chat";
-import { Markdown } from "@/components/markdown/markdown.comp";
 import { useShortcut } from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 
@@ -48,37 +54,33 @@ export default observer(function ChatPage() {
 	useShortcut("Command+Enter", onSend);
 
 	return (
-		<div className="flex h-full w-full flex-col">
-			{messages.length > 0 && (
-				<div className="absolute h-full w-full overflow-auto">
-					<div className="pt-16 pb-64 mx-auto h-full gap-y-8 flex flex-col w-9/12 max-w-[1000px]">
-						{messages.map((message) => {
-							if (message.role === "user") {
-								return (
-									<div className="flex w-full justify-end" key={message.id}>
-										<Markdown
-											className="bg-blue-50 rounded-md p-3 border border-blue-100"
-											message={message}
-											key={message.id}
-										/>
-									</div>
-								);
-							}
-							if (message.role === "assistant") {
-								return (
-									<div className="flex w-full justify-start" key={message.id}>
-										<Markdown message={message} key={message.id} />
-									</div>
-								);
-							}
-						})}
-					</div>
-				</div>
-			)}
+		<div className="flex w-full flex-col h-full">
+			<Conversation className="relative w-full h-full">
+				<ConversationContent className="w-8/12 mx-auto pb-64">
+					{messages.map((message) => (
+						<Message from={message.role} key={message.id}>
+							<MessageContent variant="flat">
+								{message.parts.map((part, i) => {
+									switch (part.type) {
+										case "text": // we don't use any reasoning or tool calls in this example
+											return (
+												<Response key={`${message.id}-${i}`}>
+													{part.text}
+												</Response>
+											);
+										default:
+											return null;
+									}
+								})}
+							</MessageContent>
+						</Message>
+					))}
+				</ConversationContent>
+				<ConversationScrollButton className="bottom-[180px]" />
+			</Conversation>
 			<div
 				className={cn(
-					"flex h-full w-full flex-col items-center",
-					messages.length === 0 && "h-full",
+					"absolute bottom-0 flex h-full w-full flex-col items-center z-0 pointer-events-none",
 				)}
 				style={{
 					justifyContent: inputPosition === "center" ? "center" : "flex-end",
@@ -86,7 +88,7 @@ export default observer(function ChatPage() {
 				}}
 			>
 				<motion.div
-					className="z-10 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
+					className="z-50 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100 pointer-events-auto"
 					layout
 					transition={{
 						duration: 0.2,
