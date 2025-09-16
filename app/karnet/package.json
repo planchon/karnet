@@ -4,9 +4,9 @@
 	"private": true,
 	"scripts": {
 		"dev": "npm-run-all --parallel dev:frontend dev:backend",
-		"dev:frontend": "next dev --turbopack",
+		"dev:frontend": "next dev",
 		"dev:backend": "convex dev --local",
-		"build": "next build --turbopack",
+		"build": "next build",
 		"start": "next start"
 	},
 	"dependencies": {
