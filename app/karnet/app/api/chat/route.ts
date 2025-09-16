@@ -16,8 +16,6 @@ interface BodyData {
 }
 
 export async function POST(req: Request) {
-	console.log("Chat API called");
-
 	// extract clerk jwt token
 	const { sessionId } = await auth();
 	if (!sessionId) {
@@ -81,15 +79,19 @@ export async function POST(req: Request) {
 			model: model.name,
 		}),
 		onFinish: async (message) => {
-			console.log("Chat API finished", message);
-
+			const preparedMessages = message.messages.map((m) => ({
+				role: m.role,
+				id: m.id,
+				// we cannot store the metadata because the type is unknown
+				metadata: JSON.stringify(m.metadata) || undefined,
+				// we cannot store the parts because the type too complexe and will change
+				parts: JSON.stringify(m.parts),
+			}));
 			await fetchMutation(
-				api.functions.chat.updateChatStream,
+				api.functions.chat.finishChatStream,
 				{
 					id: chat._id,
-					stream: {
-						status: "inactive",
-					},
+					messages: preparedMessages,
 				},
 				{
 					token: tokenRes.jwt,

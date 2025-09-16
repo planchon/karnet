@@ -33,35 +33,9 @@ const taskTable = defineTable({
 
 export const chatMessage = v.object({
 	role: v.union(v.literal("user"), v.literal("assistant"), v.literal("system")),
-	parts: v.array(
-		v.object({
-			// we cannot have a literal here because they are too many types
-			type: v.string(),
-			text: v.optional(v.string()),
-
-			// tall calling
-			toolName: v.optional(v.string()),
-			toolCallId: v.optional(v.string()),
-			input: v.optional(v.string()),
-			output: v.optional(v.string()),
-			reasoning: v.optional(v.string()),
-
-			// file
-			mediaType: v.optional(v.string()),
-			filename: v.optional(v.string()),
-			url: v.optional(v.string()),
-		}),
-	),
-
-	created_at_iso: v.optional(v.string()),
-	finished_at_iso: v.optional(v.string()),
+	parts: v.string(),
+	id: v.string(),
 	metadata: v.optional(v.string()),
-
-	model: v.object({
-		id: v.string(),
-		name: v.string(),
-		provider: v.string(),
-	}),
 });
 
 const chatTable = defineTable({

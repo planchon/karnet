@@ -32,13 +32,13 @@ export const createEmptyChat = mutation({
 			messages: [
 				{
 					role: "user" as const,
-					parts: [
+					parts: JSON.stringify([
 						{
 							type: "text" as const,
 							text: args.userInputMessage,
 						},
-					],
-					model: args.model,
+					]),
+					id: "",
 				},
 			],
 			stream: {
@@ -87,7 +87,7 @@ export const updateChatStream = mutation({
 	},
 });
 
-export const updateChatMessages = mutation({
+export const finishChatStream = mutation({
 	args: {
 		id: v.id("chats"),
 		messages: v.array(chatMessage),
@@ -104,6 +104,8 @@ export const updateChatMessages = mutation({
 		}
 
 		chat.messages = args.messages;
+		chat.stream.status = "inactive";
+		chat.stream.id = undefined;
 
 		await ctx.db.patch(args.id, chat);
 
