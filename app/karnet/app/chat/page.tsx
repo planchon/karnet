@@ -5,6 +5,7 @@ import { IconSend } from "@tabler/icons-react";
 import type { Editor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
+import { generateId } from "ai";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { useParams, usePathname } from "next/navigation";
@@ -14,7 +15,6 @@ import {
 	ConversationContent,
 	ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Loader } from "@/components/ai-elements/loader";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
 import { Chat } from "@/components/chat";
@@ -22,22 +22,23 @@ import { useShortcut } from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 
 export default observer(function ChatPage() {
-	const { id } = useParams();
 	const location = usePathname();
 	const editorRef = useRef<Editor | null>(null);
 
-	const { messages, sendMessage } = useChat();
+	const { messages, sendMessage, setMessages, id, stop } = useChat();
 
 	const [inputPosition, setInputPosition] = useState<"center" | "bottom">(
-		id ? "bottom" : "center",
+		"center",
 	);
 
 	// i want to keep the animation when im on the chat page
 	useEffect(() => {
 		if (location === "/chat") {
 			setInputPosition("center");
+			stop();
+			setMessages([]);
 		}
-	}, [location]);
+	}, [location, stop, setMessages]);
 
 	const onSend = () => {
 		setInputPosition("bottom");
@@ -53,13 +54,14 @@ export default observer(function ChatPage() {
 			{
 				body: {
 					modelId: "google/gemini-2.5-flash-lite",
+					id,
 				},
 			},
 		);
 
 		// clear the editor
 		editorRef.current?.commands.setContent("");
-		// window.history.pushState(null, "", `/chat/${chat._id}`);
+		window.history.pushState(null, "", `/chat/${id}`);
 	};
 
 	useShortcut("Control+Enter", onSend);
