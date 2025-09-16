@@ -16,5 +16,9 @@ export function slugify(text: string) {
 		.replace(/ /g, "-")
 		.replace(/[^a-z0-9-]/g, "");
 
-	return slug.length > 0 ? slug : '';
+	return slug.length > 0 ? slug : "";
+}
+
+export function capitalize(text: string) {
+	return text.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }

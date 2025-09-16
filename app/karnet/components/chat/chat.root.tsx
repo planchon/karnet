@@ -1,20 +1,22 @@
 "use client";
 
+import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { observer } from "mobx-react";
 import React, { createContext, useState } from "react";
+import { rawList } from "@/ai/models";
 import { cn } from "@/lib/utils";
 
 type ChatRootProps = React.ComponentProps<"div">;
 
 export const ChatContext = createContext<{
-	model: string | null;
-	setModel: (model: string) => void;
+	model: GatewayLanguageModelEntry | null;
+	setModel: (model: GatewayLanguageModelEntry) => void;
 	mcp: string | null;
 	setMcp: (mcp: string) => void;
 	modelRef: React.RefObject<HTMLButtonElement | null>;
 	mcpRef: React.RefObject<HTMLButtonElement | null>;
 }>({
-	model: null,
+	model: rawList.find((m) => m.id === "google/gemini-2.5-flash") || null,
 	setModel: () => {
 		console.log("setModel");
 	},
@@ -35,7 +37,9 @@ export const ChatRoot = observer(function ChatRootInside({
 	className,
 	...props
 }: ChatRootProps) {
-	const [model, setModel] = useState<string | null>(null);
+	const [model, setModel] = useState<GatewayLanguageModelEntry | null>(
+		rawList.find((m) => m.id === "google/gemini-2.5-flash") || null,
+	);
 	const [mcp, setMcp] = useState<string | null>(null);
 	const modelRef = React.useRef<HTMLButtonElement>(null);
 	const mcpRef = React.useRef<HTMLButtonElement>(null);

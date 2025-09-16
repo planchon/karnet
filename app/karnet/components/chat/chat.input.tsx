@@ -1,13 +1,13 @@
 "use client";
 
+import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { MCP } from "@lobehub/icons";
-import { IconBrain } from "@tabler/icons-react";
 import Document from "@tiptap/extension-document";
 import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
 import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import {
 	Command,
@@ -20,11 +20,16 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
 import { observer } from "mobx-react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { models } from "@/data/model";
+import {
+	type KarnetModel,
+	modelProviders,
+	ProviderIcons,
+	rawList,
+} from "@/ai/models";
 import { commands } from "@/data/tools";
-import { cn } from "@/lib/utils";
+import { capitalize, cn } from "@/lib/utils";
 import { ChatContext } from "./chat.root";
 import { RewriteEnter } from "./extensions/enter";
 import { ModelSuggestionComponent } from "./extensions/model-suggestion";
@@ -46,28 +51,9 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 		},
 	);
 
-	function handleSelect(value: string) {
+	function handleSelect(value: GatewayLanguageModelEntry) {
 		setModel(value);
 		setOpen(false);
-	}
-
-	function getRenderingName() {
-		const modelItem = models
-			.flatMap((provider) => provider.models)
-			.find((modelItemIterator) => modelItemIterator.id === model);
-		return modelItem?.name;
-	}
-
-	function getRenderingIcon() {
-		const modelItem = models
-			.flatMap((provider) => provider.models)
-			.find((modelItemIterator) => modelItemIterator.id === model);
-
-		if (!modelItem) {
-			return <IconBrain className="size-4" />;
-		}
-
-		return <modelItem.icon className="size-4" />;
 	}
 
 	return (
@@ -78,8 +64,8 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 					size="sm"
 					variant="ghost"
 				>
-					{getRenderingIcon()}
-					{model ? getRenderingName() : "Model"}
+					<ProviderIcons provider={model?.specification.provider || ""} />
+					{model ? model.name : "Model"}
 					<Shortcut shortcut={["M"]} />
 				</Button>
 			</PopoverTrigger>
@@ -88,21 +74,34 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 					<CommandInput placeholder="Search model..." />
 					<CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
 						<CommandEmpty>No model found.</CommandEmpty>
-						{models.map((provider) => (
-							<CommandGroup
-								heading={provider.providerName}
-								key={provider.providerName}
-							>
-								{provider.models.map((modelItem) => (
+						<CommandGroup heading="Popular models">
+							{rawList
+								.filter((m) => m.popular)
+								.map((m) => (
 									<CommandItem
-										key={modelItem.id}
-										onSelect={() => handleSelect(modelItem.id)}
-										value={modelItem.id}
+										key={m.id}
+										onSelect={() => handleSelect(m)}
+										value={m.id}
 									>
-										<modelItem.icon />
-										{modelItem.name}
+										<ProviderIcons provider={m.specification.provider} />
+										{m.name}
 									</CommandItem>
 								))}
+						</CommandGroup>
+						{Object.entries(modelProviders).map(([provider, models]) => (
+							<CommandGroup heading={capitalize(provider)} key={provider}>
+								{models
+									.filter((m) => !m.popular)
+									.map((m) => (
+										<CommandItem
+											key={m.id}
+											onSelect={() => handleSelect(m)}
+											value={m.id}
+										>
+											<ProviderIcons provider={provider} />
+											{m.name}
+										</CommandItem>
+									))}
 							</CommandGroup>
 						))}
 					</CommandList>
@@ -112,47 +111,6 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 	);
 });
 
-const mcpProviders = [
-	{
-		category: "Database",
-		items: [
-			{
-				name: "Postgres",
-				value: "postgres",
-			},
-			{
-				name: "MongoDB",
-				value: "mongodb",
-			},
-		],
-	},
-	{
-		category: "Search",
-		items: [
-			{
-				name: "Google",
-				value: "google",
-			},
-			{
-				name: "Wikipedia",
-				value: "wikipedia",
-			},
-		],
-	},
-	{
-		category: "Clouds",
-		items: [
-			{
-				name: "AWS",
-				value: "aws",
-			},
-			{
-				name: "GCP",
-				value: "gcp",
-			},
-		],
-	},
-];
 export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
 	const { mcp, setMcp, mcpRef } = useContext(ChatContext);
 	const [open, setOpen] = useState(false);
@@ -233,12 +191,13 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
 
 export const ChatInput = observer(function ChatInputInside({
 	className,
+	onChange,
+	ref,
 }: {
 	className?: string;
+	onChange?: (value: string) => void;
+	ref?: React.RefObject<Editor | null>;
 }) {
-	const modelRef = useRef<HTMLButtonElement>(null);
-	const mcpRef = useRef<HTMLButtonElement>(null);
-
 	const { setModel, setMcp } = useContext(ChatContext);
 
 	const editor = useEditor({
@@ -271,7 +230,8 @@ export const ChatInput = observer(function ChatInputInside({
 						render: () => {
 							return renderItems(
 								ToolsSuggestionComponent,
-								(props: { id: string }) => {
+								(props: { id?: string }) => {
+									if (!props.id) return;
 									setMcp(props.id);
 								},
 							);
@@ -282,8 +242,9 @@ export const ChatInput = observer(function ChatInputInside({
 						render: () => {
 							return renderItems(
 								ModelSuggestionComponent,
-								(props: { id: string }) => {
-									setModel(props.id);
+								(props: { model?: KarnetModel }) => {
+									if (!props.model) return;
+									setModel(props.model);
 								},
 							);
 						},
@@ -301,9 +262,12 @@ export const ChatInput = observer(function ChatInputInside({
 		},
 		onUpdate: ({ editor: e }) => {
 			const text = e.getText();
-			console.log(text);
+			onChange?.(text);
 		},
 	});
+
+	// @ts-ignore
+	useImperativeHandle(ref, () => editor);
 
 	useEffect(() => {
 		document.addEventListener("keydown", (e) => {
