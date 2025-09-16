@@ -1,9 +1,26 @@
 import { generateId } from "ai";
 import { v } from "convex/values";
-import { rawList } from "@/ai/models";
-import type { Id } from "../_generated/dataModel";
-import { mutation } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 import { chatMessage } from "../schema";
+
+export const getChat = query({
+	args: {
+		id: v.id("chats"),
+	},
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
+		const chat = await ctx.db.get(args.id);
+		if (!chat || chat.subject !== identity.subject) {
+			throw new Error("Chat not found");
+		}
+
+		return await ctx.db.get(args.id);
+	},
+});
 
 // this function is used to create an id
 export const createEmptyChat = mutation({

@@ -6,13 +6,14 @@ import { createResumableStreamContext } from "resumable-stream";
 import { getAvailableModels } from "@/ai/gateway";
 import type { ChatUIMessage } from "@/components/chat/chat.types";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import basePrompt from "./base_prompt.md";
 
 interface BodyData {
 	messages: ChatUIMessage[];
-	modelId?: string;
-	reasoningEffort?: "low" | "medium";
-	chatId?: string;
+	chatId: string;
+	modelId: string;
+	streamId: string;
 }
 
 export async function POST(req: Request) {
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
 		return new Response("Unauthorized", { status: 401 });
 	}
 
-	const [models, { messages, modelId }] = await Promise.all([
+	const [models, { messages, modelId, chatId, streamId }] = await Promise.all([
 		getAvailableModels(),
 		req.json() as Promise<BodyData>,
 	]);
@@ -46,25 +47,6 @@ export async function POST(req: Request) {
 	if (!userInputMessage) {
 		throw new Error("User input message not found");
 	}
-
-	const streamId = generateId();
-
-	// this will create the new chat id we need
-	const chat = await fetchMutation(
-		api.functions.chat.createEmptyChat,
-		{
-			model: {
-				id: model.id,
-				name: model.name,
-				provider: model.specification.provider,
-			},
-			streamId: streamId,
-			userInputMessage: userInputMessage,
-		},
-		{
-			token: tokenRes.jwt,
-		},
-	);
 
 	const res = streamText({
 		model: gateway(model.id),
@@ -90,7 +72,7 @@ export async function POST(req: Request) {
 			await fetchMutation(
 				api.functions.chat.finishChatStream,
 				{
-					id: chat._id,
+					id: chatId as Id<"chats">,
 					messages: preparedMessages,
 				},
 				{
@@ -109,7 +91,7 @@ export async function POST(req: Request) {
 			await fetchMutation(
 				api.functions.chat.updateChatStream,
 				{
-					id: chat._id,
+					id: chatId as Id<"chats">,
 					stream: {
 						status: "active",
 						id: streamId,

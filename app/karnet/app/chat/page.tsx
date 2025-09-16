@@ -6,6 +6,7 @@ import type { Editor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
 import { generateId } from "ai";
+import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { useParams, usePathname } from "next/navigation";
@@ -18,14 +19,16 @@ import {
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
 import { Chat } from "@/components/chat";
+import { api } from "@/convex/_generated/api";
 import { useShortcut } from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 
 export default observer(function ChatPage() {
 	const location = usePathname();
 	const editorRef = useRef<Editor | null>(null);
+	const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
 
-	const { messages, sendMessage, setMessages, id, stop } = useChat();
+	const { messages, sendMessage, setMessages, stop } = useChat();
 
 	const [inputPosition, setInputPosition] = useState<"center" | "bottom">(
 		"center",
@@ -40,7 +43,7 @@ export default observer(function ChatPage() {
 		}
 	}, [location, stop, setMessages]);
 
-	const onSend = () => {
+	const onSend = async () => {
 		setInputPosition("bottom");
 
 		const text = editorRef.current?.getText();
@@ -49,19 +52,32 @@ export default observer(function ChatPage() {
 			return;
 		}
 
+		const streamId = generateId();
+
+		const chat = await createEmptyChat({
+			model: {
+				id: "google/gemini-2.5-flash-lite",
+				name: "google/gemini-2.5-flash-lite",
+				provider: "google",
+			},
+			userInputMessage: text,
+			streamId: streamId,
+		});
+
 		sendMessage(
 			{ text: text },
 			{
 				body: {
 					modelId: "google/gemini-2.5-flash-lite",
-					id,
+					chatId: chat._id,
+					streamId,
 				},
 			},
 		);
 
 		// clear the editor
 		editorRef.current?.commands.setContent("");
-		window.history.pushState(null, "", `/chat/${id}`);
+		window.history.pushState(null, "", `/chat/${chat._id}`);
 	};
 
 	useShortcut("Control+Enter", onSend);
