@@ -7,6 +7,7 @@ import { getAvailableModels } from "@/ai/gateway";
 import type { ChatUIMessage } from "@/components/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+// @ts-ignore
 import basePrompt from "./base_prompt.md";
 
 interface BodyData {

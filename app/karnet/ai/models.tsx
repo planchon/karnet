@@ -1991,6 +1991,7 @@ export const ProviderIcons = ({
 	provider,
 	...props
 }: { provider: string } & HTMLAttributes<HTMLDivElement>) => {
+	// @ts-ignore
 	const Icon = providerIcons[provider];
 	if (!Icon) {
 		return <IconBrain className={props.className} />;

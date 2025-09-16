@@ -196,7 +196,7 @@ export const ChatInput = observer(function ChatInputInside({
 }: {
 	className?: string;
 	onChange?: (value: string) => void;
-	ref?: React.RefObject<Editor>;
+	ref?: React.RefObject<Editor | null>;
 }) {
 	const { setModel, setMcp } = useContext(ChatContext);
 
@@ -266,6 +266,7 @@ export const ChatInput = observer(function ChatInputInside({
 		},
 	});
 
+	// @ts-ignore
 	useImperativeHandle(ref, () => editor);
 
 	useEffect(() => {

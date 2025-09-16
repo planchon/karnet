@@ -9,7 +9,7 @@ import { generateId } from "ai";
 import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
 	Conversation,
