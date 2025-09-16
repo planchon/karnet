@@ -1,0 +1,136 @@
+import { generateId } from "ai";
+import { v } from "convex/values";
+import { rawList } from "@/ai/models";
+import type { Id } from "../_generated/dataModel";
+import { mutation } from "../_generated/server";
+import { chatMessage } from "../schema";
+
+// this function is used to create an id
+export const createEmptyChat = mutation({
+	args: {
+		model: v.object({
+			id: v.string(),
+			name: v.string(),
+			provider: v.string(),
+		}),
+		userInputMessage: v.string(),
+		streamId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
+		const chat = {
+			title: `Untitled chat ${args.userInputMessage.slice(0, 20)}...`,
+			smallId: `CHAT-${generateId()}`,
+			created_at_iso: new Date().toISOString(),
+			created_at_ts: Date.now(),
+			subject: identity.subject,
+			is_deleted: false,
+			messages: [
+				{
+					role: "user" as const,
+					parts: [
+						{
+							type: "text" as const,
+							text: args.userInputMessage,
+						},
+					],
+					model: args.model,
+				},
+			],
+			stream: {
+				status: "starting" as const,
+			},
+		};
+
+		const id = await ctx.db.insert("chats", chat);
+
+		return {
+			...chat,
+			_id: id,
+		};
+	},
+});
+
+export const updateChatStream = mutation({
+	args: {
+		id: v.id("chats"),
+		stream: v.object({
+			status: v.union(
+				v.literal("active"),
+				v.literal("inactive"),
+				v.literal("error"),
+				v.literal("starting"),
+			),
+			id: v.optional(v.string()),
+		}),
+	},
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
+		const chat = await ctx.db.get(args.id);
+		if (!chat || chat.subject !== identity.subject) {
+			throw new Error("Chat not found");
+		}
+
+		chat.stream = args.stream;
+
+		await ctx.db.patch(args.id, chat);
+
+		return chat;
+	},
+});
+
+export const updateChatMessages = mutation({
+	args: {
+		id: v.id("chats"),
+		messages: v.array(chatMessage),
+	},
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
+		const chat = await ctx.db.get(args.id);
+		if (!chat || chat.subject !== identity.subject) {
+			throw new Error("Chat not found");
+		}
+
+		chat.messages = args.messages;
+
+		await ctx.db.patch(args.id, chat);
+
+		return chat;
+	},
+});
+
+export const updateChatTitle = mutation({
+	args: {
+		id: v.id("chats"),
+		title: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("User not authenticated");
+		}
+
+		const chat = await ctx.db.get(args.id);
+		if (!chat || chat.subject !== identity.subject) {
+			throw new Error("Chat not found");
+		}
+
+		chat.title = args.title;
+
+		await ctx.db.patch(args.id, chat);
+
+		return chat;
+	},
+});

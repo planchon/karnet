@@ -31,14 +31,7 @@ const taskTable = defineTable({
 	.index("by_completed_at", ["completed_at_ts"])
 	.index("by_created_at", ["created_at_ts"]);
 
-const messageSource = v.object({
-	title: v.string(),
-	description: v.string(),
-	type: v.union(v.literal("link")),
-	link: v.optional(v.string()),
-});
-
-const chatMessage = v.object({
+export const chatMessage = v.object({
 	role: v.union(v.literal("user"), v.literal("assistant"), v.literal("system")),
 	parts: v.array(
 		v.object({
@@ -59,14 +52,15 @@ const chatMessage = v.object({
 			url: v.optional(v.string()),
 		}),
 	),
+
 	created_at_iso: v.optional(v.string()),
 	finished_at_iso: v.optional(v.string()),
 	metadata: v.optional(v.string()),
 
-	// for the resumable stream option
-	stream: v.object({
-		active: v.boolean(),
-		id: v.optional(v.string()),
+	model: v.object({
+		id: v.string(),
+		name: v.string(),
+		provider: v.string(),
 	}),
 });
 
@@ -75,6 +69,16 @@ const chatTable = defineTable({
 	// if we have forked the chat
 	parent_id: v.optional(v.id("chats")),
 	messages: v.array(chatMessage),
+	// for the resumable stream option
+	stream: v.object({
+		status: v.union(
+			v.literal("active"),
+			v.literal("inactive"),
+			v.literal("error"),
+			v.literal("starting"),
+		),
+		id: v.optional(v.string()),
+	}),
 })
 	.index("by_parent_id", ["parent_id"])
 	.index("by_created_at", ["created_at_ts"])
