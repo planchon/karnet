@@ -1,5 +1,6 @@
 "use client";
 
+import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { MCP } from "@lobehub/icons";
 import { IconBrain } from "@tabler/icons-react";
 import Document from "@tiptap/extension-document";
@@ -22,6 +23,7 @@ import { Shortcut } from "@ui/shortcut";
 import { observer } from "mobx-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { modelProviders, ProviderIcons } from "@/ai/models";
 import { models } from "@/data/model";
 import { commands } from "@/data/tools";
 import { cn } from "@/lib/utils";
@@ -46,28 +48,9 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 		},
 	);
 
-	function handleSelect(value: string) {
+	function handleSelect(value: GatewayLanguageModelEntry) {
 		setModel(value);
 		setOpen(false);
-	}
-
-	function getRenderingName() {
-		const modelItem = models
-			.flatMap((provider) => provider.models)
-			.find((modelItemIterator) => modelItemIterator.id === model);
-		return modelItem?.name;
-	}
-
-	function getRenderingIcon() {
-		const modelItem = models
-			.flatMap((provider) => provider.models)
-			.find((modelItemIterator) => modelItemIterator.id === model);
-
-		if (!modelItem) {
-			return <IconBrain className="size-4" />;
-		}
-
-		return <modelItem.icon className="size-4" />;
 	}
 
 	return (
@@ -78,8 +61,8 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 					size="sm"
 					variant="ghost"
 				>
-					{getRenderingIcon()}
-					{model ? getRenderingName() : "Model"}
+					<ProviderIcons provider={model?.specification.provider || ""} />
+					{model ? model.name : "Model"}
 					<Shortcut shortcut={["M"]} />
 				</Button>
 			</PopoverTrigger>
@@ -88,19 +71,16 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 					<CommandInput placeholder="Search model..." />
 					<CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
 						<CommandEmpty>No model found.</CommandEmpty>
-						{models.map((provider) => (
-							<CommandGroup
-								heading={provider.providerName}
-								key={provider.providerName}
-							>
-								{provider.models.map((modelItem) => (
+						{Object.entries(modelProviders).map(([provider, models]) => (
+							<CommandGroup heading={provider} key={provider}>
+								{models.map((m) => (
 									<CommandItem
-										key={modelItem.id}
-										onSelect={() => handleSelect(modelItem.id)}
-										value={modelItem.id}
+										key={m.id}
+										onSelect={() => handleSelect(m)}
+										value={m.id}
 									>
-										<modelItem.icon />
-										{modelItem.name}
+										<ProviderIcons provider={provider} />
+										{m.name}
 									</CommandItem>
 								))}
 							</CommandGroup>
@@ -233,8 +213,10 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
 
 export const ChatInput = observer(function ChatInputInside({
 	className,
+	onChange,
 }: {
 	className?: string;
+	onChange?: (value: string) => void;
 }) {
 	const modelRef = useRef<HTMLButtonElement>(null);
 	const mcpRef = useRef<HTMLButtonElement>(null);
@@ -301,7 +283,7 @@ export const ChatInput = observer(function ChatInputInside({
 		},
 		onUpdate: ({ editor: e }) => {
 			const text = e.getText();
-			console.log(text);
+			onChange?.(text);
 		},
 	});
 
