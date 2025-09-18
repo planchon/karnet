@@ -1,321 +1,285 @@
-"use client";
+'use client';
 
-import type { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
-import { MCP } from "@lobehub/icons";
-import Document from "@tiptap/extension-document";
-import Mention from "@tiptap/extension-mention";
-import Paragraph from "@tiptap/extension-paragraph";
-import Placeholder from "@tiptap/extension-placeholder";
-import Text from "@tiptap/extension-text";
-import { type Editor, EditorContent, useEditor } from "@tiptap/react";
-import { Button } from "@ui/button";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
-import { Shortcut } from "@ui/shortcut";
-import { observer } from "mobx-react";
-import { useContext, useEffect, useImperativeHandle, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-import {
-	type KarnetModel,
-	modelProviders,
-	ProviderIcons,
-	rawList,
-} from "@/ai/models";
-import { commands } from "@/data/tools";
-import { capitalize, cn } from "@/lib/utils";
-import { ChatContext } from "./chat.root";
-import { RewriteEnter } from "./extensions/enter";
-import { ModelSuggestionComponent } from "./extensions/model-suggestion";
-import { renderItems } from "./extensions/textual-commands";
-import { ToolsSuggestionComponent } from "./extensions/tools-suggestion";
+import { MCP } from '@lobehub/icons';
+import Document from '@tiptap/extension-document';
+import Mention from '@tiptap/extension-mention';
+import Paragraph from '@tiptap/extension-paragraph';
+import Placeholder from '@tiptap/extension-placeholder';
+import Text from '@tiptap/extension-text';
+import { type Editor, EditorContent, useEditor } from '@tiptap/react';
+import { Button } from '@ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
+import { Shortcut } from '@ui/shortcut';
+import { observer } from 'mobx-react';
+import { useContext, useEffect, useImperativeHandle, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { type KarnetModel, modelProviders, ProviderIcons, rawList } from '@/ai/models';
+import { commands } from '@/data/tools';
+import { useStores } from '@/hooks/useStores';
+import { capitalize, cn } from '@/lib/utils';
+import { ChatContext } from './chat.root';
+import { RewriteEnter } from './extensions/enter';
+import { ModelSuggestionComponent } from './extensions/model-suggestion';
+import { renderItems } from './extensions/textual-commands';
+import { ToolsSuggestionComponent } from './extensions/tools-suggestion';
 
 export const ChatModelSelect = observer(function ChatModelSelectInner() {
-	const { model, setModel, modelRef } = useContext(ChatContext);
-	const [open, setOpen] = useState(false);
+    const { modelRef } = useContext(ChatContext);
+    const { chatStore } = useStores();
+    const [open, setOpen] = useState(false);
 
-	useHotkeys(
-		"m",
-		() => {
-			setOpen(true);
-		},
-		{
-			preventDefault: true,
-			useKey: true,
-		},
-	);
+    useHotkeys(
+        'm',
+        () => {
+            setOpen(true);
+        },
+        {
+            preventDefault: true,
+            useKey: true,
+        }
+    );
 
-	function handleSelect(value: GatewayLanguageModelEntry) {
-		setModel(value);
-		setOpen(false);
-	}
+    function handleSelect(value: KarnetModel) {
+        chatStore.setModel(value);
+        setOpen(false);
+    }
 
-	return (
-		<Popover onOpenChange={setOpen} open={open}>
-			<PopoverTrigger className="outline-none ring-0" ref={modelRef} asChild>
-				<Button
-					className="h-6 px-2 text-gray-700 outline-none ring-0"
-					size="sm"
-					variant="ghost"
-				>
-					<ProviderIcons provider={model?.specification.provider || ""} />
-					{model ? model.name : "Model"}
-					<Shortcut shortcut={["M"]} />
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent className="w-full p-0">
-				<Command>
-					<CommandInput placeholder="Search model..." />
-					<CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
-						<CommandEmpty>No model found.</CommandEmpty>
-						<CommandGroup heading="Popular models">
-							{rawList
-								.filter((m) => m.popular)
-								.map((m) => (
-									<CommandItem
-										key={m.id}
-										onSelect={() => handleSelect(m)}
-										value={m.id}
-									>
-										<ProviderIcons provider={m.specification.provider} />
-										{m.name}
-									</CommandItem>
-								))}
-						</CommandGroup>
-						{Object.entries(modelProviders).map(([provider, models]) => (
-							<CommandGroup heading={capitalize(provider)} key={provider}>
-								{models
-									.filter((m) => !m.popular)
-									.map((m) => (
-										<CommandItem
-											key={m.id}
-											onSelect={() => handleSelect(m)}
-											value={m.id}
-										>
-											<ProviderIcons provider={provider} />
-											{m.name}
-										</CommandItem>
-									))}
-							</CommandGroup>
-						))}
-					</CommandList>
-				</Command>
-			</PopoverContent>
-		</Popover>
-	);
+    return (
+        <Popover onOpenChange={setOpen} open={open}>
+            <PopoverTrigger asChild className="outline-none ring-0" ref={modelRef}>
+                <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
+                    <ProviderIcons provider={chatStore.selectedModel?.specification.provider || ''} />
+                    {chatStore.selectedModel ? chatStore.selectedModel.name : 'Model'}
+                    <Shortcut shortcut={['M']} />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+                <Command>
+                    <CommandInput placeholder="Search model..." />
+                    <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
+                        <CommandEmpty>No model found.</CommandEmpty>
+                        <CommandGroup heading="Popular models">
+                            {rawList
+                                .filter((m) => m.popular)
+                                .map((m) => (
+                                    <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
+                                        <ProviderIcons provider={m.specification.provider} />
+                                        {m.name}
+                                    </CommandItem>
+                                ))}
+                        </CommandGroup>
+                        {Object.entries(modelProviders).map(([provider, models]) => (
+                            <CommandGroup heading={capitalize(provider)} key={provider}>
+                                {models
+                                    .filter((m) => !m.popular)
+                                    .map((m) => (
+                                        <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
+                                            <ProviderIcons provider={provider} />
+                                            {m.name}
+                                        </CommandItem>
+                                    ))}
+                            </CommandGroup>
+                        ))}
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    );
 });
 
 export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
-	const { mcp, setMcp, mcpRef } = useContext(ChatContext);
-	const [open, setOpen] = useState(false);
+    const { mcpRef } = useContext(ChatContext);
+    const { chatStore } = useStores();
+    const [open, setOpen] = useState(false);
 
-	useHotkeys(
-		"s",
-		() => {
-			setOpen(true);
-		},
-		{
-			preventDefault: true,
-			useKey: true,
-		},
-	);
+    useHotkeys(
+        's',
+        () => {
+            setOpen(true);
+        },
+        {
+            preventDefault: true,
+            useKey: true,
+        }
+    );
 
-	function handleSelect(value: string) {
-		setMcp(value);
-		setOpen(false);
-	}
+    function handleSelect(value: string) {
+        chatStore.setMCP(value);
+        setOpen(false);
+    }
 
-	function getRenderingName() {
-		const mcpItem = commands
-			.flatMap((provider) => provider.tools)
-			.find((mcpItemIterator) => mcpItemIterator.id === mcp);
-		return mcpItem?.name;
-	}
+    function getRenderingName() {
+        const mcpItem = commands
+            .flatMap((provider) => provider.tools)
+            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMCP);
+        return mcpItem?.name;
+    }
 
-	function getRenderingIcon() {
-		const mcpItem = commands
-			.flatMap((provider) => provider.tools)
-			.find((mcpItemIterator) => mcpItemIterator.id === mcp);
+    function getRenderingIcon() {
+        const mcpItem = commands
+            .flatMap((provider) => provider.tools)
+            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMCP);
 
-		if (!mcpItem) {
-			return <MCP className="size-4" />;
-		}
+        if (!mcpItem) {
+            return <MCP className="size-4" />;
+        }
 
-		return <mcpItem.icon className="size-4" />;
-	}
+        return <mcpItem.icon className="size-4" />;
+    }
 
-	return (
-		<Popover onOpenChange={setOpen} open={open}>
-			<PopoverTrigger className="outline-none ring-0" ref={mcpRef} asChild>
-				<Button
-					className="h-6 px-2 text-gray-700 outline-none ring-0"
-					size="sm"
-					variant="ghost"
-				>
-					{getRenderingIcon()}
-					{mcp ? getRenderingName() : "MCP"}
-					<Shortcut nothen shortcut={["S"]} />
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent className="w-full p-0">
-				<Command>
-					<CommandInput placeholder="Search MCP..." />
-					<CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
-						<CommandEmpty>No MCP found.</CommandEmpty>
-						{commands.map((provider) => (
-							<CommandGroup heading={provider.name} key={provider.name}>
-								{provider.tools.map((item) => (
-									<CommandItem
-										key={item.id}
-										onSelect={() => handleSelect(item.id)}
-										value={item.id}
-									>
-										<item.icon />
-										{item.name}
-									</CommandItem>
-								))}
-							</CommandGroup>
-						))}
-					</CommandList>
-				</Command>
-			</PopoverContent>
-		</Popover>
-	);
+    return (
+        <Popover onOpenChange={setOpen} open={open}>
+            <PopoverTrigger asChild className="outline-none ring-0" ref={mcpRef}>
+                <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
+                    {getRenderingIcon()}
+                    {chatStore.selectedMCP ? getRenderingName() : 'MCP'}
+                    <Shortcut nothen shortcut={['S']} />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+                <Command>
+                    <CommandInput placeholder="Search MCP..." />
+                    <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
+                        <CommandEmpty>No MCP found.</CommandEmpty>
+                        {commands.map((provider) => (
+                            <CommandGroup heading={provider.name} key={provider.name}>
+                                {provider.tools.map((item) => (
+                                    <CommandItem key={item.id} onSelect={() => handleSelect(item.id)} value={item.id}>
+                                        <item.icon />
+                                        {item.name}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        ))}
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    );
 });
 
 export const ChatInput = observer(function ChatInputInside({
-	className,
-	onChange,
-	ref,
+    className,
+    onChange,
+    ref,
 }: {
-	className?: string;
-	onChange?: (value: string) => void;
-	ref?: React.RefObject<Editor | null>;
+    className?: string;
+    onChange?: (value: string) => void;
+    ref?: React.RefObject<Editor | null>;
 }) {
-	const { setModel, setMcp } = useContext(ChatContext);
+    const { chatStore } = useStores();
 
-	const editor = useEditor({
-		immediatelyRender: false,
-		extensions: [
-			Document.configure({
-				HTMLAttributes: {
-					class: "text-sm!",
-				},
-			}),
-			Paragraph.configure({
-				HTMLAttributes: {
-					class: "min-h-4 mt-0",
-					// the tailwind text-sm! is not working here
-					style: "font-size: 13px;",
-				},
-			}),
-			Text.configure({
-				HTMLAttributes: {
-					class: "text-sm! min-h-4",
-				},
-			}),
-			Placeholder.configure({
-				placeholder: "use / for commands and @ for entities",
-			}),
-			Mention.configure({
-				suggestions: [
-					{
-						char: "/",
-						render: () => {
-							return renderItems(
-								ToolsSuggestionComponent,
-								(props: { id?: string }) => {
-									if (!props.id) return;
-									setMcp(props.id);
-								},
-							);
-						},
-					},
-					{
-						char: "@",
-						render: () => {
-							return renderItems(
-								ModelSuggestionComponent,
-								(props: { model?: KarnetModel }) => {
-									if (!props.model) return;
-									setModel(props.model);
-								},
-							);
-						},
-					},
-				],
-			}),
-			RewriteEnter,
-		],
-		autofocus: "start",
-		content: "",
-		editorProps: {
-			attributes: {
-				style: "font-size: 13px;",
-			},
-		},
-		onUpdate: ({ editor: e }) => {
-			const text = e.getText();
-			onChange?.(text);
-		},
-	});
+    const editor = useEditor({
+        immediatelyRender: false,
+        extensions: [
+            Document.configure({
+                HTMLAttributes: {
+                    class: 'text-sm!',
+                },
+            }),
+            Paragraph.configure({
+                HTMLAttributes: {
+                    class: 'min-h-4 mt-0',
+                    // the tailwind text-sm! is not working here
+                    style: 'font-size: 13px;',
+                },
+            }),
+            Text.configure({
+                HTMLAttributes: {
+                    class: 'text-sm! min-h-4',
+                },
+            }),
+            Placeholder.configure({
+                placeholder: 'use / for commands and @ for entities',
+            }),
+            Mention.configure({
+                suggestions: [
+                    {
+                        char: '/',
+                        render: () => {
+                            return renderItems(ToolsSuggestionComponent, (props: { id?: string }) => {
+                                if (!props.id) return;
+                                chatStore.setMCP(props.id);
+                            });
+                        },
+                    },
+                    {
+                        char: '@',
+                        render: () => {
+                            return renderItems(ModelSuggestionComponent, (props: { model?: KarnetModel }) => {
+                                if (!props.model) return;
+                                chatStore.setModel(props.model);
+                            });
+                        },
+                    },
+                ],
+            }),
+            RewriteEnter,
+        ],
+        autofocus: 'start',
+        content: '',
+        editorProps: {
+            attributes: {
+                style: 'font-size: 13px;',
+            },
+        },
+        onUpdate: ({ editor: e }) => {
+            const text = e.getText();
+            onChange?.(text);
+        },
+    });
 
-	// @ts-ignore
-	useImperativeHandle(ref, () => editor);
+    // @ts-expect-error
+    useImperativeHandle(ref, () => editor);
 
-	useEffect(() => {
-		document.addEventListener("keydown", (e) => {
-			if (e.key === "Escape") {
-				e.preventDefault();
-				// biome-ignore lint/style/useBlockStatements: useless
-				if (!editor) return;
-				editor.commands.blur();
-			}
+    useEffect(() => {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                // biome-ignore lint/style/useBlockStatements: useless
+                if (!editor) return;
+                editor.commands.blur();
+            }
 
-			if (["/", "t", " "].includes(e.key)) {
-				e.preventDefault();
-				// biome-ignore lint/style/useBlockStatements: useless
-				if (!editor) return;
-				editor.commands.focus();
-			}
-		});
-	}, [editor]);
+            if (['/', 't', ' '].includes(e.key)) {
+                e.preventDefault();
+                // biome-ignore lint/style/useBlockStatements: useless
+                if (!editor) return;
+                editor.commands.focus();
+            }
+        });
+    }, [editor]);
 
-	const modelMCPHandler = (e: KeyboardEvent) => {
-		if (editor?.isFocused) {
-			return;
-		}
+    const modelMCPHandler = (e: KeyboardEvent) => {
+        if (editor?.isFocused) {
+            return;
+        }
 
-		if (e.key === "g" || e.key === "c") {
-			return;
-		}
-	};
+        if (e.key === 'g' || e.key === 'c') {
+            return;
+        }
+    };
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: mcp change every render
-	useEffect(() => {
-		document.addEventListener("keydown", modelMCPHandler);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: mcp change every render
+    useEffect(() => {
+        document.addEventListener('keydown', modelMCPHandler);
 
-		return () => {
-			document.removeEventListener("keydown", modelMCPHandler);
-		};
-	}, []);
+        return () => {
+            document.removeEventListener('keydown', modelMCPHandler);
+        };
+    }, []);
 
-	// biome-ignore lint/style/useBlockStatements: useless
-	if (!editor) return null;
+    // biome-ignore lint/style/useBlockStatements: useless
+    if (!editor) return null;
 
-	return (
-		<EditorContent
-			className={cn("w-full cursor-text text-sm!", className)}
-			editor={editor}
-			onClick={() => {
-				editor.commands.focus();
-			}}
-		/>
-	);
+    return (
+        <EditorContent
+            className={cn('w-full cursor-text text-sm!', className)}
+            editor={editor}
+            onClick={() => {
+                editor.commands.focus();
+            }}
+        />
+    );
 });

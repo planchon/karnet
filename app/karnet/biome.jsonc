@@ -14,5 +14,12 @@
         "noExcessiveCognitiveComplexity": "off"
       }
     }
+  },
+  "formatter": {
+    "enabled": true,
+    "lineWidth": 120,
+    "indentWidth": 4,
+    "indentStyle": "space",
+    "lineEnding": "lf"
   }
 }
