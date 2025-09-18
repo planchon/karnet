@@ -73,6 +73,8 @@ export default observer(function ChatPage() {
 
         // clear the editor
         editorRef.current?.commands.setContent('');
+
+        // we dont navigate to the page for better UX
         window.history.pushState(null, '', `/chat/${chat._id}`);
     };
 

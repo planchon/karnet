@@ -29,7 +29,11 @@ export default observer(function ChatPage() {
     const chat = useQuery(api.functions.chat.getChat, {
         id: id as Id<'chats'>,
     });
-    const { messages, sendMessage, setMessages } = useChat();
+
+    const { messages, sendMessage, setMessages } = useChat({
+        id: id as string,
+        resume: true,
+    });
 
     useEffect(() => {
         if (chat) {
