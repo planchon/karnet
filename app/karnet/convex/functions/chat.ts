@@ -33,6 +33,8 @@ export const getLastChats = query({
             throw new Error('User not authenticated');
         }
 
+        paginationOpts.numItems = 10;
+
         const chats = await ctx.db
             .query('chats')
             .filter((q) => q.eq(q.field('subject'), identity.subject))
