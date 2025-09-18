@@ -1,9 +1,10 @@
 import { auth, clerkClient } from '@clerk/nextjs/server';
-import { convertToModelMessages, gateway, generateId, streamText } from 'ai';
+import { convertToModelMessages, generateId, streamText } from 'ai';
 import { fetchMutation } from 'convex/nextjs';
 import { after } from 'next/server';
 import { createResumableStreamContext } from 'resumable-stream';
-import { getAvailableModels } from '@/ai/gateway';
+import { openRouterGateway } from '@/ai/gateway';
+import { supportedModels } from '@/ai/models';
 import type { ChatUIMessage } from '@/components/chat/chat.types';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
@@ -28,12 +29,10 @@ export async function POST(req: Request) {
         return new Response('Unauthorized', { status: 401 });
     }
 
-    const [models, { messages, modelId, chatId, streamId }] = await Promise.all([
-        getAvailableModels(),
-        req.json() as Promise<BodyData>,
-    ]);
+    const [{ messages, modelId, chatId, streamId }] = await Promise.all([req.json() as Promise<BodyData>]);
 
-    const model = models.find((m) => m.id === modelId);
+    const model = supportedModels.find((m) => m.id === modelId);
+
     if (!model) {
         return new Response('Model not found', { status: 404 });
     }
@@ -46,8 +45,11 @@ export async function POST(req: Request) {
 
     console.log('[Chat] starting chat', model);
 
+    const openRouter = openRouterGateway();
+
     const res = streamText({
-        model: gateway(model.id),
+        // model: gateway(model.id),
+        model: openRouter(model.id),
         system: basePrompt,
         messages: convertToModelMessages(messages),
     });
@@ -77,13 +79,15 @@ export async function POST(req: Request) {
                     token: tokenRes.jwt,
                 }
             );
+            console.log('[Chat] finished chat', chatId);
         },
         async consumeSseStream({ stream }) {
             const streamContext = createResumableStreamContext({
                 waitUntil: after,
             });
-
             await streamContext.createNewResumableStream(streamId, () => stream);
+
+            console.log('[Chat] created new resumable stream', streamId);
 
             // change the stream status to active
             await fetchMutation(
@@ -99,6 +103,8 @@ export async function POST(req: Request) {
                     token: tokenRes.jwt,
                 }
             );
+
+            console.log('[Chat] updated stream status to active', chatId);
         },
     });
 }

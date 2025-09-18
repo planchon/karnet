@@ -67,6 +67,9 @@ export default observer(function ChatPage() {
             }
         );
 
+        // for the history feature
+        localStorage.setItem('chat-history', text);
+
         // clear the editor
         editorRef.current?.commands.setContent('');
     };
