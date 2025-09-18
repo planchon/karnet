@@ -64,7 +64,7 @@ export default observer(function ChatPage() {
             { text },
             {
                 body: {
-                    modelId: 'google/gemini-2.5-flash-lite',
+                    modelId: chatStore.selectedModel.id,
                     chatId: chat._id,
                     streamId,
                 },
