@@ -1,10 +1,10 @@
 'use client';
 
 import { IconSearch } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useCommands } from '@/hooks/useShortcut';
 import { cn } from '@/lib/utils';
 import { Button } from '@/primitive/ui/button';
-import { Logo } from '../logo';
 
 function SidebarHeaderContainer({ className, ...props }: React.ComponentProps<'div'>) {
     return (
@@ -45,7 +45,15 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <SidebarHeaderContainer className={className} {...props}>
             <SidebarHeaderLogo>
-                <img alt="karnet" className="size-5 select-none rounded-[4px]" src="/karnet.png" />
+                <Image
+                    alt="karnet"
+                    className="select-none rounded-[4px]"
+                    height={20}
+                    loading="eager"
+                    priority
+                    src="/karnet.png"
+                    width={20}
+                />
             </SidebarHeaderLogo>
             <SidebarHeaderAction>
                 <Button className="size-6" onClick={commands.toggleCommandK} size="icon" variant="ghost">
