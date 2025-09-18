@@ -1,9 +1,10 @@
-import { IconMessageCircle } from '@tabler/icons-react';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel } from '@ui/sidebar';
 import { usePaginatedQuery } from 'convex/react';
 import { observer } from 'mobx-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { api } from '@/convex/_generated/api';
+import { cn } from '@/lib/utils';
 
 export const ChatSidebar = observer(function ChatSidebarInner() {
     const oldChat = usePaginatedQuery(
@@ -18,6 +19,8 @@ export const ChatSidebar = observer(function ChatSidebarInner() {
         }
     );
 
+    const location = usePathname();
+
     if (oldChat.results.length === 0 || oldChat.isLoading) {
         return null;
     }
@@ -29,7 +32,10 @@ export const ChatSidebar = observer(function ChatSidebarInner() {
                 <div className="flex max-h-[500px] flex-col gap-2 overflow-y-hidden px-1">
                     {oldChat.results.map((chat) => (
                         <Link
-                            className="text-nowrap rounded-xs px-1 py-1 text-sm hover:cursor-pointer hover:bg-accent"
+                            className={cn(
+                                'text-nowrap rounded-xs px-1 py-1 text-sm hover:cursor-pointer hover:bg-accent',
+                                location.includes(`/chat/${chat._id}`) ? 'bg-accent font-normal' : ''
+                            )}
                             href={`/chat/${chat._id}`}
                             key={chat._id}
                         >
