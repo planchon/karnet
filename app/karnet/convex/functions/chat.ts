@@ -61,7 +61,7 @@ export const createEmptyChat = mutation({
         }
 
         const chat = {
-            title: `${args.userInputMessage.slice(0, 50)}...`,
+            title: `${args.userInputMessage.slice(0, 40)}...`,
             smallId: `CHAT-${generateId()}`,
             created_at_iso: new Date().toISOString(),
             created_at_ts: Date.now(),

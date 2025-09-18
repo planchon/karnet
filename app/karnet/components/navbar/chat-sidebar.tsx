@@ -29,7 +29,7 @@ export const ChatSidebar = observer(function ChatSidebarInner() {
         <SidebarGroup>
             <SidebarGroupContent>
                 <SidebarGroupLabel className="flex items-center gap-2">History</SidebarGroupLabel>
-                <div className="flex max-h-[500px] flex-col gap-2 overflow-y-hidden px-1">
+                <div className="flex max-h-[500px] flex-col gap-2 overflow-x-hidden overflow-y-hidden px-1">
                     {oldChat.results.map((chat) => (
                         <Link
                             className={cn(
