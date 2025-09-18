@@ -54,7 +54,7 @@ export default observer(function ChatPage() {
             model: {
                 id: chatStore.selectedModel.id,
                 name: chatStore.selectedModel.name,
-                provider: chatStore.selectedModel.specification.provider,
+                provider: chatStore.selectedModel.provider,
             },
             userInputMessage: text,
             streamId,
@@ -71,8 +71,12 @@ export default observer(function ChatPage() {
             }
         );
 
+        localStorage.setItem('chat-history', text);
+
         // clear the editor
         editorRef.current?.commands.setContent('');
+
+        // we dont navigate to the page for better UX
         window.history.pushState(null, '', `/chat/${chat._id}`);
     };
 

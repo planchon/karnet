@@ -1,10 +1,14 @@
 'use client';
 
 import { action, makeObservable, observable } from 'mobx';
-import { geminiFlash, type KarnetModel } from '@/ai/models';
+import type { GeneralKarnetModel } from '@/ai/models';
 
 export class ChatStore {
-    selectedModel: KarnetModel = geminiFlash;
+    selectedModel: GeneralKarnetModel = {
+        name: 'Gemini 2.5 Flash',
+        id: 'google/gemini-2.5-flash',
+        provider: 'google',
+    };
     selectedMCP: string | null = null;
 
     constructor() {
@@ -16,7 +20,7 @@ export class ChatStore {
         });
     }
 
-    setModel(model: KarnetModel) {
+    setModel(model: GeneralKarnetModel) {
         console.log('[ChatStore] setting model', model);
         this.selectedModel = model;
     }

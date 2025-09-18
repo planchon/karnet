@@ -29,7 +29,11 @@ export default observer(function ChatPage() {
     const chat = useQuery(api.functions.chat.getChat, {
         id: id as Id<'chats'>,
     });
-    const { messages, sendMessage, setMessages } = useChat();
+
+    const { messages, sendMessage, setMessages } = useChat({
+        id: id as string,
+        resume: true,
+    });
 
     useEffect(() => {
         if (chat) {
@@ -63,6 +67,9 @@ export default observer(function ChatPage() {
             }
         );
 
+        // for the history feature
+        localStorage.setItem('chat-history', text);
+
         // clear the editor
         editorRef.current?.commands.setContent('');
     };
@@ -71,7 +78,11 @@ export default observer(function ChatPage() {
     useShortcut('Command+Enter', onSend);
 
     if (!chat) {
-        return <Loader />;
+        return (
+            <div className="flex h-full w-full items-center justify-center">
+                <Loader />
+            </div>
+        );
     }
 
     return (

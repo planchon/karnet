@@ -14,7 +14,7 @@ import { Shortcut } from '@ui/shortcut';
 import { observer } from 'mobx-react';
 import { useContext, useEffect, useImperativeHandle, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { type KarnetModel, modelProviders, ProviderIcons, rawList } from '@/ai/models';
+import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from '@/ai/models';
 import { commands } from '@/data/tools';
 import { useStores } from '@/hooks/useStores';
 import { capitalize, cn } from '@/lib/utils';
@@ -40,7 +40,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
         }
     );
 
-    function handleSelect(value: KarnetModel) {
+    function handleSelect(value: GeneralKarnetModel) {
         chatStore.setModel(value);
         setOpen(false);
     }
@@ -49,7 +49,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
         <Popover onOpenChange={setOpen} open={open}>
             <PopoverTrigger asChild className="outline-none ring-0" ref={modelRef}>
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
-                    <ProviderIcons provider={chatStore.selectedModel?.specification.provider || ''} />
+                    <ProviderIcons provider={chatStore.selectedModel?.provider || ''} />
                     {chatStore.selectedModel ? chatStore.selectedModel.name : 'Model'}
                     <Shortcut shortcut={['M']} />
                 </Button>
@@ -59,26 +59,14 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
                     <CommandInput placeholder="Search model..." />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
                         <CommandEmpty>No model found.</CommandEmpty>
-                        <CommandGroup heading="Popular models">
-                            {rawList
-                                .filter((m) => m.popular)
-                                .map((m) => (
+                        {Object.entries(groupedByProvider).map(([provider, models]) => (
+                            <CommandGroup heading={capitalize(provider)} key={provider}>
+                                {models.map((m) => (
                                     <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
-                                        <ProviderIcons provider={m.specification.provider} />
+                                        <ProviderIcons provider={provider} />
                                         {m.name}
                                     </CommandItem>
                                 ))}
-                        </CommandGroup>
-                        {Object.entries(modelProviders).map(([provider, models]) => (
-                            <CommandGroup heading={capitalize(provider)} key={provider}>
-                                {models
-                                    .filter((m) => !m.popular)
-                                    .map((m) => (
-                                        <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
-                                            <ProviderIcons provider={provider} />
-                                            {m.name}
-                                        </CommandItem>
-                                    ))}
                             </CommandGroup>
                         ))}
                     </CommandList>
@@ -207,7 +195,7 @@ export const ChatInput = observer(function ChatInputInside({
                     {
                         char: '@',
                         render: () => {
-                            return renderItems(ModelSuggestionComponent, (props: { model?: KarnetModel }) => {
+                            return renderItems(ModelSuggestionComponent, (props: { model?: GeneralKarnetModel }) => {
                                 if (!props.model) return;
                                 chatStore.setModel(props.model);
                             });
@@ -247,6 +235,17 @@ export const ChatInput = observer(function ChatInputInside({
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
                 editor.commands.focus();
+            }
+
+            if (e.key === 'ArrowUp' && editor?.getText() === '') {
+                e.preventDefault();
+                // biome-ignore lint/style/useBlockStatements: useless
+                if (!editor) return;
+
+                const history = localStorage.getItem('chat-history');
+                if (history) {
+                    editor.commands.insertContent(history);
+                }
             }
         });
     }, [editor]);
