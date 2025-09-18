@@ -26,5 +26,9 @@ export function openRouterGateway() {
 
     return createOpenRouter({
         apiKey: process.env.OPENROUTER_API_KEY,
+        headers: {
+            'HTTP-Referer': 'https://karnet.app',
+            'X-Title': 'Karnet',
+        },
     });
 }

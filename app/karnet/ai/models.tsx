@@ -2005,7 +2005,7 @@ export type GeneralKarnetModel = {
 export const supportedModels: GeneralKarnetModel[] = [
     // google models
     {
-        name: 'Gemini 2.5 Flash Lite',
+        name: 'Gemini 2.5 Lite',
         id: 'google/gemini-2.5-flash-lite',
         provider: 'google',
     },

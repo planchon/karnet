@@ -1,5 +1,5 @@
 import { auth, clerkClient } from '@clerk/nextjs/server';
-import { convertToModelMessages, generateId, streamText } from 'ai';
+import { convertToModelMessages, generateId, generateText, streamText } from 'ai';
 import { fetchMutation } from 'convex/nextjs';
 import { after } from 'next/server';
 import { createResumableStreamContext } from 'resumable-stream';
@@ -80,6 +80,26 @@ export async function POST(req: Request) {
                 }
             );
             console.log('[Chat] finished chat', chatId);
+
+            // generate a title for the chat
+            const titlePrompt = `Generate a title for the chat based on the following messages (put an emoji at the beginning, keep the title short): ${JSON.stringify(preparedMessages)}`;
+            const title = await generateText({
+                model: openRouter('google/gemini-2.5-flash-lite'),
+                prompt: titlePrompt,
+            });
+
+            console.log('[Chat] generated title', title.text);
+
+            await fetchMutation(
+                api.functions.chat.updateChatTitle,
+                {
+                    id: chatId as Id<'chats'>,
+                    title: title.text,
+                },
+                {
+                    token: tokenRes.jwt,
+                }
+            );
         },
         async consumeSseStream({ stream }) {
             const streamContext = createResumableStreamContext({

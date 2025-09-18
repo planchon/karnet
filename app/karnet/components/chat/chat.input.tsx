@@ -14,7 +14,7 @@ import { Shortcut } from '@ui/shortcut';
 import { observer } from 'mobx-react';
 import { useContext, useEffect, useImperativeHandle, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { type GeneralKarnetModel, groupedByProvider, ProviderIcons, rawList, supportedModels } from '@/ai/models';
+import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from '@/ai/models';
 import { commands } from '@/data/tools';
 import { useStores } from '@/hooks/useStores';
 import { capitalize, cn } from '@/lib/utils';

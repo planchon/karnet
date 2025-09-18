@@ -78,7 +78,11 @@ export default observer(function ChatPage() {
     useShortcut('Command+Enter', onSend);
 
     if (!chat) {
-        return <Loader />;
+        return (
+            <div className="flex h-full w-full items-center justify-center">
+                <Loader />
+            </div>
+        );
     }
 
     return (
