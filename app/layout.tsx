@@ -26,7 +26,7 @@ export default function RootLayout({
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 {typeof window === 'undefined' ? null : (
                     <BrowserRouter>
-                        <ClerkProvider publishableKey={'pk_test_Y2FyaW5nLWVhZ2xlLTU1LmNsZXJrLmFjY291bnRzLmRldiQ'}>
+                        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
                             <SignedIn>
                                 <GeneralAppRouter />
                             </SignedIn>
