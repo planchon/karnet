@@ -7,14 +7,16 @@ import { StickToBottom, useStickToBottomContext } from 'use-stick-to-bottom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-export type ConversationProps = ComponentProps<typeof StickToBottom>;
+export type ConversationProps = ComponentProps<typeof StickToBottom> & {
+    isGenerating?: boolean;
+};
 
-export const Conversation = ({ className, ...props }: ConversationProps) => {
+export const Conversation = ({ className, isGenerating, ...props }: ConversationProps) => {
     return (
         <StickToBottom
             className={cn('relative overflow-y-auto', className)}
-            initial="smooth"
-            resize="smooth"
+            initial={isGenerating ? 'smooth' : 'instant'}
+            resize={isGenerating ? 'smooth' : 'instant'}
             role="log"
             {...props}
         />

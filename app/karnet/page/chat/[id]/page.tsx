@@ -8,11 +8,12 @@ import { useQuery } from '@tanstack/react-query';
 import type { Editor } from '@tiptap/core';
 import { Button } from '@ui/button';
 import { Shortcut } from '@ui/shortcut';
-import { generateId } from 'ai';
+import { generateId, type UIMessage } from 'ai';
 import { motion } from 'framer-motion';
 import { observer } from 'mobx-react';
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
+import type { StickToBottomContext } from 'use-stick-to-bottom';
 import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/ai-elements/conversation';
 import { Loader } from '@/components/ai-elements/loader';
 import { Message, MessageContent } from '@/components/ai-elements/message';
@@ -34,7 +35,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || 'null'),
     });
 
-    const { messages, sendMessage, setMessages } = useChat({
+    const { messages, sendMessage, setMessages, status } = useChat({
         id: chatId as string,
         resume: true,
     });
@@ -93,7 +94,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
 
     return (
         <div className="flex h-full w-full flex-col">
-            <Conversation className="relative h-full w-full">
+            <Conversation className="relative h-full w-full" isGenerating={status === 'streaming'}>
                 <ConversationContent className="mx-auto w-8/12 pb-64">
                     {messages.map((message) => (
                         <Message from={message.role} key={message.id}>
