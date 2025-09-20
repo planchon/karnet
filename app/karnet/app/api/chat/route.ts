@@ -1,4 +1,3 @@
-import { auth, clerkClient } from '@clerk/nextjs/server';
 import { convertToModelMessages, generateId, generateText, streamText } from 'ai';
 import { fetchMutation } from 'convex/nextjs';
 import { after } from 'next/server';
@@ -8,6 +7,7 @@ import { supportedModels } from '@/ai/models';
 import type { ChatUIMessage } from '@/components/chat/chat.types';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
+import { getSession } from '@/lib/session';
 // @ts-expect-error
 import basePrompt from './base_prompt.md';
 
@@ -19,18 +19,11 @@ interface BodyData {
 }
 
 export async function POST(req: Request) {
-    console.log('[Chat] starting chat', req);
-    const { sessionId } = await auth();
-    if (!sessionId) {
-        return new Response('Unauthorized', { status: 401 });
-    }
-    const tokenRes = await (await clerkClient()).sessions.getToken(sessionId, 'convex');
-    if (!tokenRes) {
-        return new Response('Unauthorized', { status: 401 });
-    }
+    const now = performance.now();
+    // start by getting the token async
+    getSession();
 
     const [{ messages, modelId, chatId, streamId }] = await Promise.all([req.json() as Promise<BodyData>]);
-
     const model = supportedModels.find((m) => m.id === modelId);
 
     if (!model) {
@@ -43,8 +36,6 @@ export async function POST(req: Request) {
         throw new Error('User input message not found');
     }
 
-    console.log('[Chat] starting chat', model);
-
     const openRouter = openRouterGateway();
 
     const res = streamText({
@@ -52,6 +43,10 @@ export async function POST(req: Request) {
         model: openRouter(model.id),
         system: basePrompt,
         messages: convertToModelMessages(messages),
+    });
+
+    const streamContext = createResumableStreamContext({
+        waitUntil: after,
     });
 
     return res.toUIMessageStreamResponse({
@@ -76,7 +71,7 @@ export async function POST(req: Request) {
                     messages: preparedMessages,
                 },
                 {
-                    token: tokenRes.jwt,
+                    token: await getSession(),
                 }
             );
             console.log('[Chat] finished chat', chatId);
@@ -97,17 +92,15 @@ export async function POST(req: Request) {
                     title: title.text,
                 },
                 {
-                    token: tokenRes.jwt,
+                    token: await getSession(),
                 }
             );
         },
         async consumeSseStream({ stream }) {
-            const streamContext = createResumableStreamContext({
-                waitUntil: after,
-            });
-            await streamContext.createNewResumableStream(streamId, () => stream);
-
+            console.log('[Chat] start streaming', performance.now() - now, 'ms');
             console.log('[Chat] created new resumable stream', streamId);
+
+            await streamContext.createNewResumableStream(streamId, () => stream);
 
             // change the stream status to active
             await fetchMutation(
@@ -120,7 +113,7 @@ export async function POST(req: Request) {
                     },
                 },
                 {
-                    token: tokenRes.jwt,
+                    token: await getSession(),
                 }
             );
 
