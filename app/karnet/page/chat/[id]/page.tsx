@@ -1,13 +1,14 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import { convexQuery } from '@convex-dev/react-query';
 import { cn } from '@editor/utils/tiptap-utils';
 import { IconSend } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import type { Editor } from '@tiptap/core';
 import { Button } from '@ui/button';
 import { Shortcut } from '@ui/shortcut';
 import { generateId } from 'ai';
-import { useQuery } from 'convex/react';
 import { motion } from 'framer-motion';
 import { observer } from 'mobx-react';
 import { useEffect, useRef } from 'react';
@@ -26,25 +27,31 @@ export const ChatWithIdPage = observer(function ChatPage() {
     const { chatId } = useParams();
     const { chatStore } = useStores();
     const editorRef = useRef<Editor | null>(null);
-    const chat = useQuery(api.functions.chat.getChat, {
-        id: chatId as Id<'chats'>,
+    const chat = useQuery({
+        ...convexQuery(api.functions.chat.getChat, {
+            id: chatId as Id<'chats'>,
+        }),
+        initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || 'null'),
     });
+
     const { messages, sendMessage, setMessages } = useChat({
         id: chatId as string,
         resume: true,
     });
 
     useEffect(() => {
-        if (chat) {
-            const parsedMessage = chat.messages.map((m) => ({
+        if (chat.data) {
+            const parsedMessage = chat.data.messages.map((m) => ({
                 role: m.role,
                 id: m.id,
                 parts: JSON.parse(m.parts),
                 metadata: m.metadata ? JSON.parse(m.metadata) : undefined,
             }));
             setMessages(parsedMessage);
+
+            localStorage.setItem(`chat:${chatId}`, JSON.stringify(chat.data));
         }
-    }, [chat, setMessages]);
+    }, [chat.data, setMessages, chatId]);
 
     const onSend = () => {
         const text = editorRef.current?.getText();
@@ -60,7 +67,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
             {
                 body: {
                     modelId: chatStore.selectedModel.id,
-                    chatId: chat?._id,
+                    chatId: chat.data?._id,
                     streamId,
                 },
             }

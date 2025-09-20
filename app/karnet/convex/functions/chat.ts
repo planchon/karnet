@@ -1,5 +1,4 @@
 import { generateId } from 'ai';
-import { paginationOptsValidator } from 'convex/server';
 import { v } from 'convex/values';
 import { mutation, query } from '../_generated/server';
 import { chatMessage } from '../schema';
@@ -25,21 +24,19 @@ export const getChat = query({
 
 export const getLastChats = query({
     args: {
-        paginationOpts: paginationOptsValidator,
+        limit: v.number(),
     },
-    handler: async (ctx, { paginationOpts }) => {
+    handler: async (ctx, { limit }) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
             throw new Error('User not authenticated');
         }
 
-        paginationOpts.numItems = 10;
-
         const chats = await ctx.db
             .query('chats')
             .filter((q) => q.eq(q.field('subject'), identity.subject))
             .order('desc')
-            .paginate(paginationOpts);
+            .take(limit);
 
         return chats;
     },
