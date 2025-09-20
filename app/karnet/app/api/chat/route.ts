@@ -19,7 +19,7 @@ interface BodyData {
 }
 
 export async function POST(req: Request) {
-    // extract clerk jwt token
+    console.log('[Chat] starting chat', req);
     const { sessionId } = await auth();
     if (!sessionId) {
         return new Response('Unauthorized', { status: 401 });

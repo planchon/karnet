@@ -1,8 +1,10 @@
-import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs';
+'use client';
+
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/react-router';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import type { Metadata } from 'next';
-import { GeneralOutlet } from '@/router/outlet/general.outlet';
+import { BrowserRouter } from 'react-router';
+import { GeneralAppRouter } from '@/router/router';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -14,28 +16,25 @@ const geistMono = Geist_Mono({
     subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-    title: 'Karnet',
-    description: 'Organize your life with AI',
-};
-
-export const revalidate = 3600;
-
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <ClerkProvider>
-            <html lang="en">
-                <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                    <SignedIn>
-                        <GeneralOutlet>{children}</GeneralOutlet>
-                    </SignedIn>
-                    <SignedOut>{children}</SignedOut>
-                </body>
-            </html>
-        </ClerkProvider>
+        <html lang="en" suppressHydrationWarning>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                {typeof window === 'undefined' ? null : (
+                    <BrowserRouter>
+                        <ClerkProvider publishableKey={'pk_test_Y2FyaW5nLWVhZ2xlLTU1LmNsZXJrLmFjY291bnRzLmRldiQ'}>
+                            <SignedIn>
+                                <GeneralAppRouter />
+                            </SignedIn>
+                            <SignedOut>{children}</SignedOut>
+                        </ClerkProvider>
+                    </BrowserRouter>
+                )}
+            </body>
+        </html>
     );
 }

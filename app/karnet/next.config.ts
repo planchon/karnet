@@ -19,6 +19,20 @@ const nextConfig: NextConfig = {
     experimental: {
         turbopackScopeHoisting: false,
     },
+    rewrites() {
+        return new Promise((resolve) => {
+            resolve([
+                {
+                    source: '/login(.*)',
+                    destination: '/login',
+                },
+                {
+                    source: '/:path*',
+                    destination: '/',
+                },
+            ]);
+        });
+    },
     images: {
         remotePatterns: [
             {

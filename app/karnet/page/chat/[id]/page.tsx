@@ -10,8 +10,8 @@ import { generateId } from 'ai';
 import { useQuery } from 'convex/react';
 import { motion } from 'framer-motion';
 import { observer } from 'mobx-react';
-import { useParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import { useParams } from 'react-router';
 import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/ai-elements/conversation';
 import { Loader } from '@/components/ai-elements/loader';
 import { Message, MessageContent } from '@/components/ai-elements/message';
@@ -22,16 +22,15 @@ import type { Id } from '@/convex/_generated/dataModel';
 import { useShortcut } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
 
-export default observer(function ChatPage() {
-    const { id } = useParams();
+export const ChatWithIdPage = observer(function ChatPage() {
+    const { chatId } = useParams();
     const { chatStore } = useStores();
     const editorRef = useRef<Editor | null>(null);
     const chat = useQuery(api.functions.chat.getChat, {
-        id: id as Id<'chats'>,
+        id: chatId as Id<'chats'>,
     });
-
     const { messages, sendMessage, setMessages } = useChat({
-        id: id as string,
+        id: chatId as string,
         resume: true,
     });
 

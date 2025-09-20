@@ -1,8 +1,8 @@
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel } from '@ui/sidebar';
 import { usePaginatedQuery } from 'convex/react';
 import { observer } from 'mobx-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Link } from 'react-router';
 import { api } from '@/convex/_generated/api';
 import { cn } from '@/lib/utils';
 
@@ -36,8 +36,8 @@ export const ChatSidebar = observer(function ChatSidebarInner() {
                                 'text-nowrap rounded-xs px-1 py-1 text-sm hover:cursor-pointer hover:bg-accent',
                                 location.includes(`/chat/${chat._id}`) ? 'bg-accent font-normal' : ''
                             )}
-                            href={`/chat/${chat._id}`}
                             key={chat._id}
+                            to={`/chat/${chat._id}`}
                         >
                             {chat.title}
                         </Link>

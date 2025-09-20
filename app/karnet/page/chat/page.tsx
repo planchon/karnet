@@ -20,7 +20,7 @@ import { useShortcut } from '@/hooks/useShortcut';
 import { useStores } from '@/hooks/useStores';
 import { cn } from '@/lib/utils';
 
-export default observer(function ChatPage() {
+export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();
     const location = usePathname();
     const editorRef = useRef<Editor | null>(null);

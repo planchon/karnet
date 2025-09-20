@@ -1,6 +1,6 @@
 'use client';
 
-import { UserButton, UserProfile, useUser } from '@clerk/nextjs';
+import { UserButton, useUser } from '@clerk/react-router';
 import {
     IconDatabase,
     IconFileText,

@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 
 export default clerkMiddleware(async (auth, req) => {
     const { userId } = await auth();
-    if (userId && req.nextUrl.pathname === '/') {
-        return NextResponse.redirect(new URL('/chat', req.url));
+    if (!userId && req.nextUrl.pathname === '/') {
+        return NextResponse.redirect(new URL('/hello', req.url));
     }
 });
 
