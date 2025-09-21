@@ -93,7 +93,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
     );
 
     function handleSelect(value: string) {
-        chatStore.setMCP(value);
+        chatStore.setMcp(value);
         setOpen(false);
     }
 
@@ -188,7 +188,7 @@ export const ChatInput = observer(function ChatInputInside({
                         render: () =>
                             renderItems(ToolsSuggestionComponent, (props: { id?: string }) => {
                                 if (!props.id) return;
-                                chatStore.setMCP(props.id);
+                                chatStore.setMcp(props.id);
                             }),
                     },
                     {
