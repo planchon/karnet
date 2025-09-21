@@ -1,19 +1,17 @@
-'use client';
+"use client";
 
-import { ClerkProvider, SignedIn, SignedOut } from '@clerk/react-router';
-import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import { BrowserRouter } from 'react-router';
-import { GeneralAppRouter } from '@/router/router';
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { Root } from "@/router/root";
 
 const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
 });
 
 export default function RootLayout({
@@ -24,16 +22,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                {typeof window === 'undefined' ? null : (
-                    <BrowserRouter>
-                        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-                            <SignedIn>
-                                <GeneralAppRouter />
-                            </SignedIn>
-                            <SignedOut>{children}</SignedOut>
-                        </ClerkProvider>
-                    </BrowserRouter>
-                )}
+                {typeof window === "undefined" ? null : <Root>{children}</Root>}
             </body>
         </html>
     );

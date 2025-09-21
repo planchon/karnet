@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useChat } from '@ai-sdk/react';
-import { IconSend } from '@tabler/icons-react';
-import type { Editor } from '@tiptap/react';
-import { Button } from '@ui/button';
-import { Shortcut } from '@ui/shortcut';
-import { generateId } from 'ai';
-import { useMutation } from 'convex/react';
-import { motion } from 'framer-motion';
-import { observer } from 'mobx-react';
-import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/ai-elements/conversation';
-import { Message, MessageContent } from '@/components/ai-elements/message';
-import { Response } from '@/components/ai-elements/response';
-import { Chat } from '@/components/chat';
-import { api } from '@/convex/_generated/api';
-import { useShortcut } from '@/hooks/useShortcut';
-import { useStores } from '@/hooks/useStores';
-import { cn } from '@/lib/utils';
+import { useChat } from "@ai-sdk/react";
+import { IconSend } from "@tabler/icons-react";
+import type { Editor } from "@tiptap/react";
+import { Button } from "@ui/button";
+import { Shortcut } from "@ui/shortcut";
+import { generateId } from "ai";
+import { useMutation } from "convex/react";
+import { motion } from "framer-motion";
+import { observer } from "mobx-react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
+import { Message, MessageContent } from "@/components/ai-elements/message";
+import { Response } from "@/components/ai-elements/response";
+import { Chat } from "@/components/chat";
+import { api } from "@/convex/_generated/api";
+import { useShortcut } from "@/hooks/useShortcut";
+import { useStores } from "@/hooks/useStores";
+import { cn } from "@/lib/utils";
 
 export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();
@@ -28,23 +28,23 @@ export const NewChatPage = observer(function ChatPage() {
 
     const { messages, sendMessage, setMessages, stop } = useChat();
 
-    const [inputPosition, setInputPosition] = useState<'center' | 'bottom'>('center');
+    const [inputPosition, setInputPosition] = useState<"center" | "bottom">("center");
 
     // i want to keep the animation when im on the chat page
     useEffect(() => {
-        if (location === '/chat') {
-            setInputPosition('center');
+        if (location === "/chat") {
+            setInputPosition("center");
             stop();
             setMessages([]);
         }
     }, [location, stop, setMessages]);
 
     const onSend = async () => {
-        setInputPosition('bottom');
+        setInputPosition("bottom");
 
         const text = editorRef.current?.getText();
         if (!text) {
-            alert('Please enter a message');
+            alert("Please enter a message");
             return;
         }
 
@@ -71,17 +71,17 @@ export const NewChatPage = observer(function ChatPage() {
             }
         );
 
-        localStorage.setItem('chat-history', text);
+        localStorage.setItem("chat-history", text);
 
         // clear the editor
-        editorRef.current?.commands.setContent('');
+        editorRef.current?.commands.setContent("");
 
         // we dont navigate to the page for better UX
-        window.history.pushState(null, '', `/chat/${chat._id}`);
+        window.history.pushState(null, "", `/chat/${chat._id}`);
     };
 
-    useShortcut('Control+Enter', onSend);
-    useShortcut('Command+Enter', onSend);
+    useShortcut("Control+Enter", onSend);
+    useShortcut("Command+Enter", onSend);
 
     return (
         <div className="flex h-full w-full flex-col">
@@ -92,7 +92,7 @@ export const NewChatPage = observer(function ChatPage() {
                             <MessageContent variant="flat">
                                 {message.parts.map((part, i) => {
                                     switch (part.type) {
-                                        case 'text': // we don't use any reasoning or tool calls in this example
+                                        case "text": // we don't use any reasoning or tool calls in this example
                                             return <Response key={`${message.id}-${i}`}>{part.text}</Response>;
                                         default:
                                             return null;
@@ -105,18 +105,19 @@ export const NewChatPage = observer(function ChatPage() {
                 <ConversationScrollButton className="bottom-[180px]" />
             </Conversation>
             <div
-                className={cn('pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center')}
+                className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{
-                    justifyContent: inputPosition === 'center' ? 'center' : 'flex-end',
-                    paddingBottom: inputPosition === 'center' ? '0px' : '12px',
+                    justifyContent: inputPosition === "center" ? "center" : "flex-end",
+                    paddingBottom: inputPosition === "center" ? "0px" : "12px",
                 }}
             >
                 <motion.div
                     className="pointer-events-auto z-50 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
                     layout
+                    layoutId="chat"
                     transition={{
                         duration: 0.2,
-                        ease: 'easeInOut',
+                        ease: "easeInOut",
                     }}
                 >
                     <Chat.Root>
@@ -132,7 +133,7 @@ export const NewChatPage = observer(function ChatPage() {
                                 <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>
                                     <IconSend className="size-4" />
                                     Send
-                                    <Shortcut nothen shortcut={['⌘', '↵']} />
+                                    <Shortcut nothen shortcut={["⌘", "↵"]} />
                                 </Button>
                             </div>
                         </div>

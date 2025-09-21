@@ -121,6 +121,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 }}
             >
                 <motion.div
+                    layoutId='chat'
                     className="pointer-events-auto z-50 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
                     layout
                     transition={{
