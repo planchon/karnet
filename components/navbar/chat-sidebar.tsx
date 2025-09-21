@@ -1,23 +1,23 @@
-import { convexQuery } from '@convex-dev/react-query';
-import { useQuery } from '@tanstack/react-query';
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel } from '@ui/sidebar';
-import { observer } from 'mobx-react';
-import { useEffect } from 'react';
-import { Link, useLocation } from 'react-router';
-import { api } from '@/convex/_generated/api';
-import { cn } from '@/lib/utils';
+import { convexQuery } from "@convex-dev/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel } from "@ui/sidebar";
+import { observer } from "mobx-react";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router";
+import { api } from "@/convex/_generated/api";
+import { cn } from "@/lib/utils";
 
 export const ChatSidebar = observer(function ChatSidebarInner() {
     const { data: oldChat, isLoading } = useQuery({
         ...convexQuery(api.functions.chat.getLastChats, {
             limit: 10,
         }),
-        initialData: JSON.parse(localStorage.getItem('chats-history') || '[]'),
+        initialData: JSON.parse(localStorage.getItem("chats-history") || "[]"),
     });
 
     useEffect(() => {
         if (oldChat) {
-            localStorage.setItem('chats-history', JSON.stringify(oldChat));
+            localStorage.setItem("chats-history", JSON.stringify(oldChat));
         }
     }, [oldChat]);
 
@@ -37,8 +37,8 @@ export const ChatSidebar = observer(function ChatSidebarInner() {
                     {oldChat.map((chat) => (
                         <Link
                             className={cn(
-                                'text-nowrap rounded-xs px-1 py-1 text-sm hover:cursor-pointer hover:bg-accent',
-                                location.pathname.includes(`/chat/${chat._id}`) ? 'bg-accent font-normal' : ''
+                                "max-w-full text-ellipsis whitespace-nowrap rounded-xs px-1 py-1 text-sm hover:cursor-pointer hover:bg-accent",
+                                location.pathname.includes(`/chat/${chat._id}`) ? "bg-accent font-normal" : ""
                             )}
                             key={chat._id}
                             to={`/chat/${chat._id}`}

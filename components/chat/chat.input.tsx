@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { MCP } from '@lobehub/icons';
-import Document from '@tiptap/extension-document';
-import Mention from '@tiptap/extension-mention';
-import Paragraph from '@tiptap/extension-paragraph';
-import Placeholder from '@tiptap/extension-placeholder';
-import Text from '@tiptap/extension-text';
-import { type Editor, EditorContent, useEditor } from '@tiptap/react';
-import { Button } from '@ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
-import { Shortcut } from '@ui/shortcut';
-import { observer } from 'mobx-react';
-import { useContext, useEffect, useImperativeHandle, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from '@/ai/models';
-import { commands } from '@/data/tools';
-import { useStores } from '@/hooks/useStores';
-import { capitalize, cn } from '@/lib/utils';
-import { ChatContext } from './chat.root';
-import { RewriteEnter } from './extensions/enter';
-import { ModelSuggestionComponent } from './extensions/model-suggestion';
-import { renderItems } from './extensions/textual-commands';
-import { ToolsSuggestionComponent } from './extensions/tools-suggestion';
+import { MCP } from "@lobehub/icons";
+import Document from "@tiptap/extension-document";
+import Mention from "@tiptap/extension-mention";
+import Paragraph from "@tiptap/extension-paragraph";
+import Placeholder from "@tiptap/extension-placeholder";
+import Text from "@tiptap/extension-text";
+import { type Editor, EditorContent, useEditor } from "@tiptap/react";
+import { Button } from "@ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
+import { Shortcut } from "@ui/shortcut";
+import { observer } from "mobx-react";
+import { useContext, useEffect, useImperativeHandle, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from "@/ai/models";
+import { commands } from "@/data/tools";
+import { useStores } from "@/hooks/useStores";
+import { capitalize, cn } from "@/lib/utils";
+import { ChatContext } from "./chat.root";
+import { RewriteEnter } from "./extensions/enter";
+import { ModelSuggestionComponent } from "./extensions/model-suggestion";
+import { renderItems } from "./extensions/textual-commands";
+import { ToolsSuggestionComponent } from "./extensions/tools-suggestion";
 
 export const ChatModelSelect = observer(function ChatModelSelectInner() {
     const { modelRef } = useContext(ChatContext);
@@ -30,7 +30,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
     const [open, setOpen] = useState(false);
 
     useHotkeys(
-        'm',
+        "m",
         () => {
             setOpen(true);
         },
@@ -49,9 +49,9 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
         <Popover onOpenChange={setOpen} open={open}>
             <PopoverTrigger asChild className="outline-none ring-0" ref={modelRef}>
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
-                    <ProviderIcons provider={chatStore.selectedModel?.provider || ''} />
-                    {chatStore.selectedModel ? chatStore.selectedModel.name : 'Model'}
-                    <Shortcut shortcut={['M']} />
+                    <ProviderIcons provider={chatStore.selectedModel?.provider || ""} />
+                    {chatStore.selectedModel ? chatStore.selectedModel.name : "Model"}
+                    <Shortcut shortcut={["M"]} />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
@@ -76,13 +76,13 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
     );
 });
 
-export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
+export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
     const { mcpRef } = useContext(ChatContext);
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
 
     useHotkeys(
-        's',
+        "s",
         () => {
             setOpen(true);
         },
@@ -100,14 +100,14 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
     function getRenderingName() {
         const mcpItem = commands
             .flatMap((provider) => provider.tools)
-            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMCP);
+            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMcp);
         return mcpItem?.name;
     }
 
     function getRenderingIcon() {
         const mcpItem = commands
             .flatMap((provider) => provider.tools)
-            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMCP);
+            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMcp);
 
         if (!mcpItem) {
             return <MCP className="size-4" />;
@@ -121,8 +121,8 @@ export const ChatMCPSelect = observer(function ChatMCPSelectInner() {
             <PopoverTrigger asChild className="outline-none ring-0" ref={mcpRef}>
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
                     {getRenderingIcon()}
-                    {chatStore.selectedMCP ? getRenderingName() : 'MCP'}
-                    <Shortcut nothen shortcut={['S']} />
+                    {chatStore.selectedMcp ? getRenderingName() : "MCP"}
+                    <Shortcut nothen shortcut={["S"]} />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
@@ -163,53 +163,51 @@ export const ChatInput = observer(function ChatInputInside({
         extensions: [
             Document.configure({
                 HTMLAttributes: {
-                    class: 'text-sm!',
+                    class: "text-sm!",
                 },
             }),
             Paragraph.configure({
                 HTMLAttributes: {
-                    class: 'min-h-4 mt-0',
+                    class: "min-h-4 mt-0",
                     // the tailwind text-sm! is not working here
-                    style: 'font-size: 13px;',
+                    style: "font-size: 13px;",
                 },
             }),
             Text.configure({
                 HTMLAttributes: {
-                    class: 'text-sm! min-h-4',
+                    class: "text-sm! min-h-4",
                 },
             }),
             Placeholder.configure({
-                placeholder: 'use / for commands and @ for entities',
+                placeholder: "use / for commands and @ for entities",
             }),
             Mention.configure({
                 suggestions: [
                     {
-                        char: '/',
-                        render: () => {
-                            return renderItems(ToolsSuggestionComponent, (props: { id?: string }) => {
+                        char: "/",
+                        render: () =>
+                            renderItems(ToolsSuggestionComponent, (props: { id?: string }) => {
                                 if (!props.id) return;
                                 chatStore.setMCP(props.id);
-                            });
-                        },
+                            }),
                     },
                     {
-                        char: '@',
-                        render: () => {
-                            return renderItems(ModelSuggestionComponent, (props: { model?: GeneralKarnetModel }) => {
+                        char: "@",
+                        render: () =>
+                            renderItems(ModelSuggestionComponent, (props: { model?: GeneralKarnetModel }) => {
                                 if (!props.model) return;
                                 chatStore.setModel(props.model);
-                            });
-                        },
+                            }),
                     },
                 ],
             }),
             RewriteEnter,
         ],
-        autofocus: 'start',
-        content: '',
+        autofocus: "start",
+        content: "",
         editorProps: {
             attributes: {
-                style: 'font-size: 13px;',
+                style: "font-size: 13px;",
             },
         },
         onUpdate: ({ editor: e }) => {
@@ -222,27 +220,27 @@ export const ChatInput = observer(function ChatInputInside({
     useImperativeHandle(ref, () => editor);
 
     useEffect(() => {
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
                 e.preventDefault();
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
                 editor.commands.blur();
             }
 
-            if (['/', 't', ' '].includes(e.key)) {
+            if (["/", "t", " "].includes(e.key)) {
                 e.preventDefault();
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
                 editor.commands.focus();
             }
 
-            if (e.key === 'ArrowUp' && editor?.getText() === '') {
+            if (e.key === "ArrowUp" && editor?.getText() === "") {
                 e.preventDefault();
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
 
-                const history = localStorage.getItem('chat-history');
+                const history = localStorage.getItem("chat-history");
                 if (history) {
                     editor.commands.insertContent(history);
                 }
@@ -250,22 +248,22 @@ export const ChatInput = observer(function ChatInputInside({
         });
     }, [editor]);
 
-    const modelMCPHandler = (e: KeyboardEvent) => {
+    const modelMcpHandler = (e: KeyboardEvent) => {
         if (editor?.isFocused) {
             return;
         }
 
-        if (e.key === 'g' || e.key === 'c') {
+        if (e.key === "g" || e.key === "c") {
             return;
         }
     };
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: mcp change every render
     useEffect(() => {
-        document.addEventListener('keydown', modelMCPHandler);
+        document.addEventListener("keydown", modelMcpHandler);
 
         return () => {
-            document.removeEventListener('keydown', modelMCPHandler);
+            document.removeEventListener("keydown", modelMcpHandler);
         };
     }, []);
 
@@ -274,7 +272,7 @@ export const ChatInput = observer(function ChatInputInside({
 
     return (
         <EditorContent
-            className={cn('w-full cursor-text text-sm!', className)}
+            className={cn("w-full cursor-text text-sm!", className)}
             editor={editor}
             onClick={() => {
                 editor.commands.focus();
