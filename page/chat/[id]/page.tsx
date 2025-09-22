@@ -1,28 +1,27 @@
-'use client';
+"use client";
 
-import { useChat } from '@ai-sdk/react';
-import { convexQuery } from '@convex-dev/react-query';
-import { cn } from '@editor/utils/tiptap-utils';
-import { IconSend } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import type { Editor } from '@tiptap/core';
-import { Button } from '@ui/button';
-import { Shortcut } from '@ui/shortcut';
-import { generateId, type UIMessage } from 'ai';
-import { motion } from 'framer-motion';
-import { observer } from 'mobx-react';
-import { memo, useEffect, useRef } from 'react';
-import { useParams } from 'react-router';
-import type { StickToBottomContext } from 'use-stick-to-bottom';
-import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/ai-elements/conversation';
-import { Loader } from '@/components/ai-elements/loader';
-import { Message, MessageContent } from '@/components/ai-elements/message';
-import { Response } from '@/components/ai-elements/response';
-import { Chat } from '@/components/chat';
-import { api } from '@/convex/_generated/api';
-import type { Id } from '@/convex/_generated/dataModel';
-import { useShortcut } from '@/hooks/useShortcut';
-import { useStores } from '@/hooks/useStores';
+import { useChat } from "@ai-sdk/react";
+import { convexQuery } from "@convex-dev/react-query";
+import { cn } from "@editor/utils/tiptap-utils";
+import { IconSend } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import type { Editor } from "@tiptap/core";
+import { Button } from "@ui/button";
+import { Shortcut } from "@ui/shortcut";
+import { generateId } from "ai";
+import { motion } from "framer-motion";
+import { observer } from "mobx-react";
+import { memo, useEffect, useRef } from "react";
+import { useParams } from "react-router";
+import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
+import { Loader } from "@/components/ai-elements/loader";
+import { Message, MessageContent } from "@/components/ai-elements/message";
+import { Response } from "@/components/ai-elements/response";
+import { Chat } from "@/components/chat";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+import { useShortcut } from "@/hooks/useShortcut";
+import { useStores } from "@/hooks/useStores";
 
 export const ChatWithIdPage = observer(function ChatPage() {
     const { chatId } = useParams();
@@ -30,14 +29,23 @@ export const ChatWithIdPage = observer(function ChatPage() {
     const editorRef = useRef<Editor | null>(null);
     const chat = useQuery({
         ...convexQuery(api.functions.chat.getChat, {
-            id: chatId as Id<'chats'>,
+            id: chatId as Id<"chats">,
         }),
-        initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || 'null'),
+        initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || "null"),
     });
 
     const { messages, sendMessage, setMessages, status } = useChat({
-        id: chatId as string,
-        resume: true,
+        id: chat.data?._id,
+        resume: chat.data?.stream.status === "active",
+        onData: (data) => {
+            console.log("data", data);
+        },
+        onError: (error) => {
+            console.log("error", error);
+        },
+        onFinish: (message) => {
+            console.log("message", message);
+        },
     });
 
     useEffect(() => {
@@ -57,7 +65,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
     const onSend = () => {
         const text = editorRef.current?.getText();
         if (!text) {
-            alert('Please enter a message');
+            alert("Please enter a message");
             return;
         }
 
@@ -75,14 +83,14 @@ export const ChatWithIdPage = observer(function ChatPage() {
         );
 
         // for the history feature
-        localStorage.setItem('chat-history', text);
+        localStorage.setItem("chat-history", text);
 
         // clear the editor
-        editorRef.current?.commands.setContent('');
+        editorRef.current?.commands.setContent("");
     };
 
-    useShortcut('Control+Enter', onSend);
-    useShortcut('Command+Enter', onSend);
+    useShortcut("Control+Enter", onSend);
+    useShortcut("Command+Enter", onSend);
 
     if (!chat) {
         return (
@@ -94,14 +102,14 @@ export const ChatWithIdPage = observer(function ChatPage() {
 
     return (
         <div className="flex h-full w-full flex-col">
-            <Conversation className="relative h-full w-full" isGenerating={status === 'streaming'}>
+            <Conversation className="relative h-full w-full" isGenerating={status === "streaming"}>
                 <ConversationContent className="mx-auto w-8/12 pb-64">
                     {messages.map((message) => (
                         <Message from={message.role} key={message.id}>
                             <MessageContent variant="flat">
                                 {message.parts.map((part, i) => {
                                     switch (part.type) {
-                                        case 'text': // we don't use any reasoning or tool calls in this example
+                                        case "text": // we don't use any reasoning or tool calls in this example
                                             return <Response key={`${message.id}-${i}`}>{part.text}</Response>;
                                         default:
                                             return null;
@@ -114,19 +122,19 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 <ConversationScrollButton className="bottom-[180px]" />
             </Conversation>
             <div
-                className={cn('pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center')}
+                className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{
-                    justifyContent: 'flex-end',
-                    paddingBottom: '12px',
+                    justifyContent: "flex-end",
+                    paddingBottom: "12px",
                 }}
             >
                 <motion.div
-                    layoutId='chat'
                     className="pointer-events-auto z-50 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
                     layout
+                    layoutId="chat"
                     transition={{
                         duration: 0.2,
-                        ease: 'easeInOut',
+                        ease: "easeInOut",
                     }}
                 >
                     <Chat.Root>
@@ -142,7 +150,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
                                 <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>
                                     <IconSend className="size-4" />
                                     Send
-                                    <Shortcut nothen shortcut={['⌘', '↵']} />
+                                    <Shortcut nothen shortcut={["⌘", "↵"]} />
                                 </Button>
                             </div>
                         </div>

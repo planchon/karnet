@@ -1,15 +1,15 @@
-import { convertToModelMessages, generateId, generateText, streamText } from 'ai';
-import { fetchMutation } from 'convex/nextjs';
-import { after } from 'next/server';
-import { createResumableStreamContext } from 'resumable-stream';
-import { openRouterGateway } from '@/ai/gateway';
-import { supportedModels } from '@/ai/models';
-import type { ChatUIMessage } from '@/components/chat/chat.types';
-import { api } from '@/convex/_generated/api';
-import type { Id } from '@/convex/_generated/dataModel';
-import { getSession } from '@/lib/session';
+import { convertToModelMessages, generateId, generateText, streamText } from "ai";
+import { fetchMutation } from "convex/nextjs";
+import { after } from "next/server";
+import { createResumableStreamContext } from "resumable-stream";
+import { openRouterGateway } from "@/ai/gateway";
+import { supportedModels } from "@/ai/models";
+import type { ChatUIMessage } from "@/components/chat/chat.types";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+import { getSession } from "@/lib/session";
 // @ts-expect-error
-import basePrompt from './base_prompt.md';
+import basePrompt from "./base_prompt.md";
 
 interface BodyData {
     messages: ChatUIMessage[];
@@ -27,13 +27,13 @@ export async function POST(req: Request) {
     const model = supportedModels.find((m) => m.id === modelId);
 
     if (!model) {
-        return new Response('Model not found', { status: 404 });
+        return new Response("Model not found", { status: 404 });
     }
 
-    const userInputMessage = messages.filter((m) => m.role === 'user')[0].parts.find((p) => p.type === 'text')?.text;
+    const userInputMessage = messages.filter((m) => m.role === "user")[0].parts.find((p) => p.type === "text")?.text;
 
     if (!userInputMessage) {
-        throw new Error('User input message not found');
+        throw new Error("User input message not found");
     }
 
     const openRouter = openRouterGateway();
@@ -67,28 +67,28 @@ export async function POST(req: Request) {
             await fetchMutation(
                 api.functions.chat.finishChatStream,
                 {
-                    id: chatId as Id<'chats'>,
+                    id: chatId as Id<"chats">,
                     messages: preparedMessages,
                 },
                 {
                     token: await getSession(),
                 }
             );
-            console.log('[Chat] finished chat', chatId);
+            console.log("[Chat] finished chat", chatId);
 
             // generate a title for the chat
             const titlePrompt = `Generate a title for the chat based on the following messages (put an emoji at the beginning, keep the title short): ${JSON.stringify(preparedMessages)}`;
             const title = await generateText({
-                model: openRouter('google/gemini-2.5-flash-lite'),
+                model: openRouter("google/gemini-2.5-flash-lite"),
                 prompt: titlePrompt,
             });
 
-            console.log('[Chat] generated title', title.text);
+            console.log("[Chat] generated title", title.text);
 
             await fetchMutation(
                 api.functions.chat.updateChatTitle,
                 {
-                    id: chatId as Id<'chats'>,
+                    id: chatId as Id<"chats">,
                     title: title.text,
                 },
                 {
@@ -96,9 +96,13 @@ export async function POST(req: Request) {
                 }
             );
         },
+        onError: (error) => {
+            console.error("[Chat] error", error);
+            return "Error while streaming in the chat";
+        },
         async consumeSseStream({ stream }) {
-            console.log('[Chat] start streaming', performance.now() - now, 'ms');
-            console.log('[Chat] created new resumable stream', streamId);
+            console.log("[Chat] start streaming", performance.now() - now, "ms");
+            console.log("[Chat] created new resumable stream", streamId);
 
             await streamContext.createNewResumableStream(streamId, () => stream);
 
@@ -106,9 +110,9 @@ export async function POST(req: Request) {
             await fetchMutation(
                 api.functions.chat.updateChatStream,
                 {
-                    id: chatId as Id<'chats'>,
+                    id: chatId as Id<"chats">,
                     stream: {
-                        status: 'active',
+                        status: "active",
                         id: streamId,
                     },
                 },
@@ -117,7 +121,10 @@ export async function POST(req: Request) {
                 }
             );
 
-            console.log('[Chat] updated stream status to active', chatId);
+            console.log("[Chat] updated stream status to active", {
+                chatId,
+                streamId,
+            });
         },
     });
 }

@@ -10,7 +10,7 @@ import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
@@ -26,7 +26,17 @@ export const NewChatPage = observer(function ChatPage() {
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
 
-    const { messages, sendMessage, setMessages, stop } = useChat();
+    const { messages, sendMessage, setMessages, stop } = useChat({
+        onData: (data) => {
+            console.log("data", data);
+        },
+        onError: (error) => {
+            console.log("error", error);
+        },
+        onFinish: (message) => {
+            console.log("message", message);
+        },
+    });
 
     const [inputPosition, setInputPosition] = useState<"center" | "bottom">("center");
 
@@ -83,6 +93,45 @@ export const NewChatPage = observer(function ChatPage() {
     useShortcut("Control+Enter", onSend);
     useShortcut("Command+Enter", onSend);
 
+    const BottomContent = memo(() => (
+        <div
+            className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
+            style={{
+                justifyContent: inputPosition === "center" ? "center" : "flex-end",
+                paddingBottom: inputPosition === "center" ? "0px" : "12px",
+            }}
+        >
+            <motion.div
+                className="pointer-events-auto z-50 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
+                layout
+                layoutId="chat"
+                transition={{
+                    duration: 0.2,
+                    ease: "easeInOut",
+                }}
+            >
+                <Chat.Root>
+                    <div className="h-full w-full rounded-b-xl bg-white p-2 shadow-md">
+                        <Chat.Input className="h-20" ref={editorRef} />
+                    </div>
+                    <div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
+                        <div className="flex items-center gap-0">
+                            <Chat.ModelSelect />
+                            <Chat.MCPSelect />
+                        </div>
+                        <div className="pb-2">
+                            <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>
+                                <IconSend className="size-4" />
+                                Send
+                                <Shortcut nothen shortcut={["⌘", "↵"]} />
+                            </Button>
+                        </div>
+                    </div>
+                </Chat.Root>
+            </motion.div>
+        </div>
+    ));
+
     return (
         <div className="flex h-full w-full flex-col">
             <Conversation className="relative h-full w-full">
@@ -94,8 +143,18 @@ export const NewChatPage = observer(function ChatPage() {
                                     switch (part.type) {
                                         case "text": // we don't use any reasoning or tool calls in this example
                                             return <Response key={`${message.id}-${i}`}>{part.text}</Response>;
+                                        case "reasoning": // we don't use any reasoning or tool calls in this example
+                                            return (
+                                                <Response className="text-red-200" key={`${message.id}-${i}`}>
+                                                    {part.text}
+                                                </Response>
+                                            );
                                         default:
-                                            return null;
+                                            return (
+                                                <p className="text-green-200" key={`${message.id}-${i}`}>
+                                                    {part.type}
+                                                </p>
+                                            );
                                     }
                                 })}
                             </MessageContent>
@@ -104,7 +163,8 @@ export const NewChatPage = observer(function ChatPage() {
                 </ConversationContent>
                 <ConversationScrollButton className="bottom-[180px]" />
             </Conversation>
-            <div
+            <BottomContent />
+            {/* <div
                 className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{
                     justifyContent: inputPosition === "center" ? "center" : "flex-end",
@@ -139,7 +199,7 @@ export const NewChatPage = observer(function ChatPage() {
                         </div>
                     </Chat.Root>
                 </motion.div>
-            </div>
+            </div> */}
         </div>
     );
 });

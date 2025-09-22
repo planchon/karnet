@@ -27,8 +27,6 @@ export const ChatSidebar = observer(function ChatSidebarInner() {
         return null;
     }
 
-    console.log(oldChat);
-
     return (
         <SidebarGroup>
             <SidebarGroupContent>
