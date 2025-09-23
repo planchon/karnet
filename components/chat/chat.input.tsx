@@ -23,7 +23,11 @@ import { ModelSuggestionComponent } from "./extensions/model-suggestion";
 import { renderItems } from "./extensions/textual-commands";
 import { ToolsSuggestionComponent } from "./extensions/tools-suggestion";
 
-export const ChatModelSelect = observer(function ChatModelSelectInner() {
+export const ChatModelSelect = observer(function ChatModelSelectInner({
+    editorRef,
+}: {
+    editorRef: React.RefObject<Editor | null>;
+}) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
 
@@ -41,6 +45,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
     function handleSelect(value: GeneralKarnetModel) {
         chatStore.setModel(value);
         setOpen(false);
+        editorRef.current?.commands.focus();
     }
 
     return (
@@ -74,7 +79,11 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
     );
 });
 
-export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
+export const ChatMCPSelect = observer(function ChatMcpSelectInner({
+    editorRef,
+}: {
+    editorRef: React.RefObject<Editor | null>;
+}) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
 
@@ -92,6 +101,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
     function handleSelect(value: string) {
         chatStore.setMcp(value);
         setOpen(false);
+        editorRef.current?.commands.focus();
     }
 
     function getRenderingName() {
@@ -225,14 +235,14 @@ export const ChatInput = observer(function ChatInputInside({
                 editor.commands.blur();
             }
 
-            if (["/", "t", " "].includes(e.key)) {
+            if (["/", " "].includes(e.key)) {
                 e.preventDefault();
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
                 editor.commands.focus();
             }
 
-            if (e.key === "ArrowUp" && editor?.getText() === "") {
+            if (e.key === "ArrowUp" && editor?.getText() === "" && editor.isFocused) {
                 e.preventDefault();
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
@@ -269,7 +279,7 @@ export const ChatInput = observer(function ChatInputInside({
 
     return (
         <EditorContent
-            className={cn("w-full cursor-text text-sm!", className)}
+            className={cn("h-auto w-full cursor-text text-sm!", className)}
             editor={editor}
             onClick={() => {
                 editor.commands.focus();

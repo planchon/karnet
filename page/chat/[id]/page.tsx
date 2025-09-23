@@ -19,7 +19,6 @@ import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
 
 const DEBOUNCE_TIME = 5000;
@@ -36,7 +35,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
     });
 
     const { messages, sendMessage, setMessages, status } = useChat({
-        id: chat.data?._id,
+        id: chatId as Id<"chats">,
         resume: chat.data?.stream.status === "active",
         // biome-ignore lint/style/useNamingConvention: i dont control the API
         experimental_throttle: 200,
@@ -56,11 +55,32 @@ export const ChatWithIdPage = observer(function ChatPage() {
 
     useEffect(() => {
         const debouncedSetLocalStorage = debounce(() => {
-            console.log("setting local storage");
             localStorage.setItem(`chat:${chatId}`, JSON.stringify(chat.data));
         }, DEBOUNCE_TIME);
         debouncedSetLocalStorage();
     }, [chatId, chat.data]);
+
+    const listenToEnter = (e: KeyboardEvent) => {
+        if (
+            e.key === "Enter" &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.shiftKey &&
+            editorRef.current?.isFocused &&
+            editorRef.current?.getText() !== ""
+        ) {
+            e.preventDefault();
+            onSend();
+        }
+    };
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: this is false
+    useEffect(() => {
+        document.addEventListener("keydown", listenToEnter, { capture: true });
+        return () => {
+            document.removeEventListener("keydown", listenToEnter, { capture: true });
+        };
+    }, []);
 
     const onSend = () => {
         const text = editorRef.current?.getText();
@@ -69,6 +89,12 @@ export const ChatWithIdPage = observer(function ChatPage() {
             alert("Please enter a message");
             return;
         }
+
+        // for the history feature
+        localStorage.setItem("chat-history", text);
+
+        // clear the editor
+        editorRef.current?.commands.setContent("");
 
         const streamId = generateId();
 
@@ -82,16 +108,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 },
             }
         );
-
-        // for the history feature
-        localStorage.setItem("chat-history", text);
-
-        // clear the editor
-        editorRef.current?.commands.setContent("");
     };
-
-    useShortcut("Control+Enter", onSend);
-    useShortcut("Command+Enter", onSend);
 
     if (!chat) {
         return (
@@ -122,12 +139,12 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 >
                     <Chat.Root>
                         <div className="h-full w-full rounded-b-xl bg-white p-2 shadow-md">
-                            <Chat.Input className="h-20" ref={editorRef} />
+                            <Chat.Input className="h-auto max-h-96 min-h-20 overflow-y-auto" ref={editorRef} />
                         </div>
                         <div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
                             <div className="flex items-center gap-0">
-                                <Chat.ModelSelect />
-                                <Chat.MCPSelect />
+                                <Chat.ModelSelect editorRef={editorRef} />
+                                <Chat.MCPSelect editorRef={editorRef} />
                             </div>
                             <div className="pb-2">
                                 <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>

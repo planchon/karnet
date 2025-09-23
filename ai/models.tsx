@@ -150,6 +150,12 @@ export const supportedModels: GeneralKarnetModel[] = [
         name: "OpenAI: GPT-5 Nano",
         provider: "openai",
     },
+    // search
+    {
+        id: "perplexity/sonar",
+        name: "Perplexity: Sonar",
+        provider: "perplexity",
+    },
 ];
 
 export const defaultModel: GeneralKarnetModel = supportedModels.find(

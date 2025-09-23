@@ -58,8 +58,9 @@ export async function POST(req: Request) {
     return res.toUIMessageStreamResponse({
         originalMessages: messages,
         generateMessageId: generateId,
-        messageMetadata: () => ({
+        messageMetadata: (metadata) => ({
             model: model.name,
+            ...metadata,
         }),
         onFinish: async (message) => {
             const preparedMessages = message.messages.map((m) => ({
@@ -106,6 +107,9 @@ export async function POST(req: Request) {
             console.error("[Chat] error", error);
             return "Error while streaming in the chat";
         },
+        sendSources: true,
+        sendReasoning: true,
+        sendStart: true,
         async consumeSseStream({ stream }) {
             console.log("[Chat] start streaming", performance.now() - now, "ms");
             console.log("[Chat] created new resumable stream", streamId);

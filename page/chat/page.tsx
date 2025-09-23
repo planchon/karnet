@@ -16,7 +16,6 @@ import { useNavigate } from "react-router";
 import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
-import { useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 
@@ -48,12 +47,33 @@ export const NewChatPage = observer(function ChatPage() {
 
     useEffect(() => {
         const debouncedSetLocalStorage = debounce(() => {
-            console.log("setting local storage");
             localStorage.setItem(`chat:${chatId}`, JSON.stringify(messages));
         }, DEBOUNCE_TIME);
 
         debouncedSetLocalStorage();
     }, [chatId, messages]);
+
+    const listenToEnter = (e: KeyboardEvent) => {
+        if (
+            e.key === "Enter" &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.shiftKey &&
+            editorRef.current?.isFocused &&
+            editorRef.current?.getText() !== ""
+        ) {
+            e.preventDefault();
+            onSend();
+        }
+    };
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: this is false
+    useEffect(() => {
+        document.addEventListener("keydown", listenToEnter, { capture: true });
+        return () => {
+            document.removeEventListener("keydown", listenToEnter, { capture: true });
+        };
+    }, []);
 
     const onSend = async () => {
         setInputPosition("bottom");
@@ -64,6 +84,11 @@ export const NewChatPage = observer(function ChatPage() {
             alert("Please enter a message");
             return;
         }
+
+        localStorage.setItem("chat-history", text);
+
+        // clear the editor
+        editorRef.current?.commands.setContent("");
 
         const streamId = generateId();
 
@@ -90,19 +115,9 @@ export const NewChatPage = observer(function ChatPage() {
             }
         );
 
-        localStorage.setItem("chat-history", text);
-
-        // clear the editor
-        editorRef.current?.commands.setContent("");
-
         // we dont navigate to the page for better UX
         navigate(`/chat/${chat._id}`, { replace: true });
     };
-
-    // biome-ignore lint/nursery/noMisusedPromises: no need
-    useShortcut("Control+Enter", onSend);
-    // biome-ignore lint/nursery/noMisusedPromises: no need
-    useShortcut("Command+Enter", onSend);
 
     return (
         <div className="flex h-full w-full flex-col">
@@ -115,7 +130,7 @@ export const NewChatPage = observer(function ChatPage() {
                 }}
             >
                 <motion.div
-                    className="pointer-events-auto z-50 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
+                    className="pointer-events-auto z-50 h-auto w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
                     layout
                     layoutId="chat"
                     transition={{
@@ -125,12 +140,12 @@ export const NewChatPage = observer(function ChatPage() {
                 >
                     <Chat.Root>
                         <div className="h-full w-full rounded-b-xl bg-white p-2 shadow-md">
-                            <Chat.Input className="h-20" ref={editorRef} />
+                            <Chat.Input className="h-auto max-h-96 min-h-20 overflow-y-auto" ref={editorRef} />
                         </div>
                         <div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
                             <div className="flex items-center gap-0">
-                                <Chat.ModelSelect />
-                                <Chat.MCPSelect />
+                                <Chat.ModelSelect editorRef={editorRef} />
+                                <Chat.MCPSelect editorRef={editorRef} />
                             </div>
                             <div className="pb-2">
                                 <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>
