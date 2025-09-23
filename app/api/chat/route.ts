@@ -1,4 +1,4 @@
-import { convertToModelMessages, generateId, generateText, streamText } from "ai";
+import { convertToModelMessages, generateId, generateText, smoothStream, streamText } from "ai";
 import { fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
@@ -39,10 +39,11 @@ export async function POST(req: Request) {
     const openRouter = openRouterGateway();
 
     const res = streamText({
-        // model: gateway(model.id),
         model: openRouter(model.id),
         system: basePrompt,
         messages: convertToModelMessages(messages),
+        // biome-ignore lint/style/useNamingConvention: i dont control the API
+        experimental_transform: smoothStream({ chunking: "word" }),
     });
 
     const streamContext = createResumableStreamContext({
