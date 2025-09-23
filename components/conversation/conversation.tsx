@@ -44,8 +44,18 @@ const RenderText = memo(
 );
 
 const RenderSource = memo(
-    ({ part, messageId, offsetPartIndex }: { part: SourceUrlUIPart[]; messageId: string; offsetPartIndex: number }) => {
-        if (part.length === 0) {
+    ({
+        part,
+        messageId,
+        offsetPartIndex,
+        status,
+    }: {
+        part: SourceUrlUIPart[];
+        messageId: string;
+        offsetPartIndex: number;
+        status: ChatStatus;
+    }) => {
+        if (part.length === 0 || status === "streaming") {
             return null;
         }
 
@@ -72,7 +82,7 @@ export const RenderOneMessage = memo(({ message, status }: { message: UIMessage;
             <MessageContent variant="flat">
                 <RenderReasoning messageId={message.id} offsetPartIndex={0} part={reasoningParts} status={status} />
                 <RenderText messageId={message.id} offsetPartIndex={0} part={textParts} />
-                <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} />
+                <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} status={status} />
             </MessageContent>
         </Message>
     );

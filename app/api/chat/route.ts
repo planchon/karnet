@@ -1,3 +1,4 @@
+import { geolocation } from "@vercel/functions";
 import { convertToModelMessages, generateId, generateText, smoothStream, streamText } from "ai";
 import { fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
@@ -7,24 +8,31 @@ import { supportedModels } from "@/ai/models";
 import type { ChatUIMessage } from "@/components/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { generatePrompt } from "@/lib/prompt";
 import { getSession } from "@/lib/session";
-// @ts-expect-error
-import basePrompt from "./base_prompt.md";
 
-interface BodyData {
+type BodyData = {
     messages: ChatUIMessage[];
     chatId: string;
     modelId: string;
     streamId: string;
-}
+    webSearch?: boolean;
+};
 
 export async function POST(req: Request) {
     const now = performance.now();
     // start by getting the token async
     getSession();
 
-    const [{ messages, modelId, chatId, streamId }] = await Promise.all([req.json() as Promise<BodyData>]);
+    const [{ messages, modelId, chatId, streamId, webSearch }] = await Promise.all([req.json() as Promise<BodyData>]);
     const model = supportedModels.find((m) => m.id === modelId);
+
+    console.log("[Chat] new chat", {
+        modelId,
+        chatId,
+        streamId,
+        webSearch,
+    });
 
     if (!model) {
         return new Response("Model not found", { status: 404 });
@@ -38,13 +46,39 @@ export async function POST(req: Request) {
 
     const openRouter = openRouterGateway();
 
+    const geo = geolocation(req);
+    const geoString = geo.city ? `${geo.city}, ${geo.country}` : "Paris France";
+
+    const prompt = generatePrompt(model.name, new Date().toLocaleString(), geoString);
+
+    console.log("[Chat] websearch", {
+        model: model.id,
+        webSearch,
+    });
+
     const res = streamText({
-        model: openRouter(model.id),
-        system: basePrompt,
+        model: openRouter(webSearch ? `${model.id}:online` : model.id),
+        system: prompt,
         messages: convertToModelMessages(messages),
         // biome-ignore lint/style/useNamingConvention: i dont control the API
         experimental_transform: smoothStream({ chunking: "word" }),
     });
+
+    fetchMutation(
+        api.functions.chat.updateChatMessages,
+        {
+            id: chatId as Id<"chats">,
+            messages: messages.map((m) => ({
+                id: m.id,
+                role: m.role,
+                parts: JSON.stringify(m.parts),
+                metadata: JSON.stringify(m.metadata),
+            })),
+        },
+        {
+            token: await getSession(),
+        }
+    );
 
     const streamContext = createResumableStreamContext({
         waitUntil: after,
@@ -53,8 +87,12 @@ export async function POST(req: Request) {
     return res.toUIMessageStreamResponse({
         originalMessages: messages,
         generateMessageId: generateId,
-        messageMetadata: () => ({
+        sendSources: true,
+        sendReasoning: true,
+        sendStart: true,
+        messageMetadata: (metadata) => ({
             model: model.name,
+            ...metadata,
         }),
         onFinish: async (message) => {
             const preparedMessages = message.messages.map((m) => ({

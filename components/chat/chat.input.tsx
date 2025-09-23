@@ -11,6 +11,7 @@ import { Button } from "@ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
+import { Wrench } from "lucide-react";
 import { observer } from "mobx-react";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -23,7 +24,11 @@ import { ModelSuggestionComponent } from "./extensions/model-suggestion";
 import { renderItems } from "./extensions/textual-commands";
 import { ToolsSuggestionComponent } from "./extensions/tools-suggestion";
 
-export const ChatModelSelect = observer(function ChatModelSelectInner() {
+export const ChatModelSelect = observer(function ChatModelSelectInner({
+    editorRef,
+}: {
+    editorRef: React.RefObject<Editor | null>;
+}) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
 
@@ -31,6 +36,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
         "m",
         () => {
             setOpen(true);
+            chatStore.setDropdownOpen(true);
         },
         {
             preventDefault: true,
@@ -41,6 +47,8 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
     function handleSelect(value: GeneralKarnetModel) {
         chatStore.setModel(value);
         setOpen(false);
+        chatStore.setDropdownOpen(false);
+        editorRef.current?.commands.focus();
     }
 
     return (
@@ -74,7 +82,11 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
     );
 });
 
-export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
+export const ChatMCPSelect = observer(function ChatMcpSelectInner({
+    editorRef,
+}: {
+    editorRef: React.RefObject<Editor | null>;
+}) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
 
@@ -82,6 +94,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
         "s",
         () => {
             setOpen(true);
+            chatStore.setDropdownOpen(true);
         },
         {
             preventDefault: true,
@@ -92,6 +105,8 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
     function handleSelect(value: string) {
         chatStore.setMcp(value);
         setOpen(false);
+        chatStore.setDropdownOpen(false);
+        editorRef.current?.commands.focus();
     }
 
     function getRenderingName() {
@@ -107,7 +122,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
             .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMcp);
 
         if (!mcpItem) {
-            return <MCP className="size-4" />;
+            return <Wrench className="size-4" />;
         }
 
         return <mcpItem.icon className="size-4" />;
@@ -118,15 +133,15 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
             <PopoverTrigger asChild className="outline-none ring-0">
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
                     {getRenderingIcon()}
-                    {chatStore.selectedMcp ? getRenderingName() : "MCP"}
-                    <Shortcut nothen shortcut={["S"]} />
+                    {chatStore.selectedMcp ? getRenderingName() : "No tools"}
+                    <Shortcut nothen shortcut={["s"]} />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
                 <Command>
-                    <CommandInput placeholder="Search MCP..." />
+                    <CommandInput placeholder="Search tools..." />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
-                        <CommandEmpty>No MCP found.</CommandEmpty>
+                        <CommandEmpty>No tools found.</CommandEmpty>
                         {commands.map((provider) => (
                             <CommandGroup heading={provider.name} key={provider.name}>
                                 {provider.tools.map((item) => (
@@ -225,14 +240,14 @@ export const ChatInput = observer(function ChatInputInside({
                 editor.commands.blur();
             }
 
-            if (["/", "t", " "].includes(e.key)) {
+            if (["/", " "].includes(e.key)) {
                 e.preventDefault();
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
                 editor.commands.focus();
             }
 
-            if (e.key === "ArrowUp" && editor?.getText() === "") {
+            if (e.key === "ArrowUp" && editor?.getText() === "" && editor.isFocused) {
                 e.preventDefault();
                 // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
@@ -269,7 +284,7 @@ export const ChatInput = observer(function ChatInputInside({
 
     return (
         <EditorContent
-            className={cn("w-full cursor-text text-sm!", className)}
+            className={cn("h-auto w-full cursor-text text-sm!", className)}
             editor={editor}
             onClick={() => {
                 editor.commands.focus();
