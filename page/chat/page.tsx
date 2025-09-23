@@ -8,14 +8,11 @@ import { Shortcut } from "@ui/shortcut";
 import { generateId } from "ai";
 import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
+import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
-import { Message, MessageContent } from "@/components/ai-elements/message";
-import { Reasoning, ReasoningContent, ReasoningTrigger } from "@/components/ai-elements/reasoning";
-import { Response } from "@/components/ai-elements/response";
 import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
@@ -23,12 +20,15 @@ import { useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 
+const DEBOUNCE_TIME = 5000;
+
 export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();
     const navigate = useNavigate();
     const location = usePathname();
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
+    const [chatId, setChatId] = useState<string | null>(null);
 
     const { messages, sendMessage, setMessages, stop, status } = useChat({
         // biome-ignore lint/style/useNamingConvention: i dont control the API
@@ -45,6 +45,15 @@ export const NewChatPage = observer(function ChatPage() {
             setMessages([]);
         }
     }, [location, stop, setMessages]);
+
+    useEffect(() => {
+        const debouncedSetLocalStorage = debounce(() => {
+            console.log("setting local storage");
+            localStorage.setItem(`chat:${chatId}`, JSON.stringify(messages));
+        }, DEBOUNCE_TIME);
+
+        debouncedSetLocalStorage();
+    }, [chatId, messages]);
 
     const onSend = async () => {
         setInputPosition("bottom");
@@ -67,6 +76,8 @@ export const NewChatPage = observer(function ChatPage() {
             userInputMessage: text,
             streamId,
         });
+
+        setChatId(chat._id);
 
         sendMessage(
             { text },

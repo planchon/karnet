@@ -12,18 +12,17 @@ import { generateId } from "ai";
 import { motion } from "framer-motion";
 import { debounce } from "lodash";
 import { observer } from "mobx-react";
-import { memo, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
-import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
 import { Loader } from "@/components/ai-elements/loader";
-import { Message, MessageContent } from "@/components/ai-elements/message";
-import { Response } from "@/components/ai-elements/response";
 import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
+
+const DEBOUNCE_TIME = 5000;
 
 export const ChatWithIdPage = observer(function ChatPage() {
     const { chatId } = useParams();
@@ -56,10 +55,11 @@ export const ChatWithIdPage = observer(function ChatPage() {
     }, [chat.data, setMessages]);
 
     useEffect(() => {
-        debounce(() => {
+        const debouncedSetLocalStorage = debounce(() => {
             console.log("setting local storage");
             localStorage.setItem(`chat:${chatId}`, JSON.stringify(chat.data));
-        }, 5000);
+        }, DEBOUNCE_TIME);
+        debouncedSetLocalStorage();
     }, [chatId, chat.data]);
 
     const onSend = () => {
