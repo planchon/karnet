@@ -14,8 +14,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
+import { Reasoning, ReasoningContent, ReasoningTrigger } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
 import { Chat } from "@/components/chat";
+import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
@@ -28,7 +30,7 @@ export const NewChatPage = observer(function ChatPage() {
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
 
-    const { messages, sendMessage, setMessages, stop } = useChat({
+    const { messages, sendMessage, setMessages, stop, status } = useChat({
         // biome-ignore lint/style/useNamingConvention: i dont control the API
         experimental_throttle: 200,
     });
@@ -93,35 +95,7 @@ export const NewChatPage = observer(function ChatPage() {
 
     return (
         <div className="flex h-full w-full flex-col">
-            <Conversation className="relative h-full w-full">
-                <ConversationContent className="mx-auto w-8/12 pb-64">
-                    {messages.map((message) => (
-                        <Message from={message.role} key={message.id}>
-                            <MessageContent variant="flat">
-                                {message.parts.map((part, i) => {
-                                    switch (part.type) {
-                                        case "text": // we don't use any reasoning or tool calls in this example
-                                            return <Response key={`${message.id}-${i}`}>{part.text}</Response>;
-                                        case "reasoning": // we don't use any reasoning or tool calls in this example
-                                            return (
-                                                <Response className="text-red-200" key={`${message.id}-${i}`}>
-                                                    {part.text}
-                                                </Response>
-                                            );
-                                        default:
-                                            return (
-                                                <p className="text-green-200" key={`${message.id}-${i}`}>
-                                                    {part.type}
-                                                </p>
-                                            );
-                                    }
-                                })}
-                            </MessageContent>
-                        </Message>
-                    ))}
-                </ConversationContent>
-                <ConversationScrollButton className="bottom-[180px]" />
-            </Conversation>
+            <ConversationComp messages={messages} status={status} />
             <div
                 className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{
