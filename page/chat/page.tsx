@@ -12,6 +12,7 @@ import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useNavigate } from "react-router";
 import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
@@ -52,6 +53,10 @@ export const NewChatPage = observer(function ChatPage() {
 
         debouncedSetLocalStorage();
     }, [chatId, messages]);
+
+    useHotkeys("t", () => {
+        editorRef.current?.commands.focus();
+    });
 
     const listenToEnter = (e: KeyboardEvent) => {
         if (

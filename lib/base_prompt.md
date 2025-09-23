@@ -79,23 +79,20 @@ Here are some information about the user asking the question :
 ### DIAGRAMS & VISUALIZATION (MERMAID):
 - When explaining **processes, architectures, data flows, or relationships**, prefer **diagrams in Mermaid syntax** to improve clarity.  
 - Mermaid code blocks must use fenced blocks with `mermaid`. Example:  
+- Diagrams should **augment** textual explanations, not replace them. Always explain the diagram in words.  
+
+IMPORTANTS RULES TO FOLLOW WHEN GENERATING A MERMAID DIAGRAM:
+- Always put the node title **within quotes** like this `id["title"]`. 
+- DO NOT USE SUBGRAPHS. 
+
+This is a valid graph
 
   ```mermaid
   graph TD
-    A[User] --> B[Next.js Frontend]
-    B --> C[API Layer]
-    C --> D[Database]
+    A[User] --> B["Next.js Frontend"]
+    B --> C["API Layer"]
+    C --> D["Database"]
   ```
-
-- Types of diagrams you may use:
-  - **Flowcharts** (to explain processes or logic).  
-  - **Sequence diagrams** (to explain request/response flows).  
-  - **Class / ER diagrams** (to explain data structures).  
-  - **Mindmaps** (to structure concepts).  
-
-- Diagrams should **augment** textual explanations, not replace them. Always explain the diagram in words.  
-
-- Be extra carefull with the diagrams. They must be correct. Do not produce broken mermaid diagrams
 
 ---
 

@@ -91,7 +91,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
     const [open, setOpen] = useState(false);
 
     useHotkeys(
-        "t",
+        "s",
         () => {
             setOpen(true);
             chatStore.setDropdownOpen(true);
@@ -134,7 +134,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
                     {getRenderingIcon()}
                     {chatStore.selectedMcp ? getRenderingName() : "No tools"}
-                    <Shortcut nothen shortcut={["t"]} />
+                    <Shortcut nothen shortcut={["s"]} />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
