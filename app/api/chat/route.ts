@@ -1,3 +1,4 @@
+import { geolocation } from "@vercel/functions";
 import { convertToModelMessages, generateId, generateText, smoothStream, streamText } from "ai";
 import { fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
@@ -7,16 +8,15 @@ import { supportedModels } from "@/ai/models";
 import type { ChatUIMessage } from "@/components/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { generatePrompt } from "@/lib/prompt";
 import { getSession } from "@/lib/session";
-// @ts-expect-error
-import basePrompt from "./base_prompt.md";
 
-interface BodyData {
+type BodyData = {
     messages: ChatUIMessage[];
     chatId: string;
     modelId: string;
     streamId: string;
-}
+};
 
 export async function POST(req: Request) {
     const now = performance.now();
@@ -38,9 +38,14 @@ export async function POST(req: Request) {
 
     const openRouter = openRouterGateway();
 
+    const geo = geolocation(req);
+    const geoString = geo.city ? `${geo.city}, ${geo.country}` : "Paris France";
+
+    const prompt = generatePrompt(model.name, new Date().toLocaleString(), geoString);
+
     const res = streamText({
         model: openRouter(model.id),
-        system: basePrompt,
+        system: prompt,
         messages: convertToModelMessages(messages),
         // biome-ignore lint/style/useNamingConvention: i dont control the API
         experimental_transform: smoothStream({ chunking: "word" }),
