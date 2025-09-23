@@ -43,7 +43,10 @@ export const SourcesContent = ({ className, ...props }: SourcesContentProps) => 
 export type SourceProps = ComponentProps<"a">;
 
 export const Source = ({ href, title, children, ...props }: SourceProps) => {
-    const getFavicon = (url: string) => {
+    const getFavicon = (url: string | undefined) => {
+        if (!url) {
+            return null;
+        }
         const domain = new URL(url).hostname;
         return `https://www.google.com/s2/favicons?sz=64&domain_url=${domain}`;
     };
