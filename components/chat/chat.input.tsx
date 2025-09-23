@@ -12,20 +12,18 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
 import { observer } from "mobx-react";
-import { useContext, useEffect, useImperativeHandle, useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from "@/ai/models";
 import { commands } from "@/data/tools";
 import { useStores } from "@/hooks/useStores";
 import { capitalize, cn } from "@/lib/utils";
-import { ChatContext } from "./chat.root";
 import { RewriteEnter } from "./extensions/enter";
 import { ModelSuggestionComponent } from "./extensions/model-suggestion";
 import { renderItems } from "./extensions/textual-commands";
 import { ToolsSuggestionComponent } from "./extensions/tools-suggestion";
 
 export const ChatModelSelect = observer(function ChatModelSelectInner() {
-    const { modelRef } = useContext(ChatContext);
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
 
@@ -47,7 +45,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 
     return (
         <Popover onOpenChange={setOpen} open={open}>
-            <PopoverTrigger asChild className="outline-none ring-0" ref={modelRef}>
+            <PopoverTrigger asChild className="outline-none ring-0">
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
                     <ProviderIcons provider={chatStore.selectedModel?.provider || ""} />
                     {chatStore.selectedModel ? chatStore.selectedModel.name : "Model"}
@@ -77,7 +75,6 @@ export const ChatModelSelect = observer(function ChatModelSelectInner() {
 });
 
 export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
-    const { mcpRef } = useContext(ChatContext);
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
 
@@ -118,7 +115,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner() {
 
     return (
         <Popover onOpenChange={setOpen} open={open}>
-            <PopoverTrigger asChild className="outline-none ring-0" ref={mcpRef}>
+            <PopoverTrigger asChild className="outline-none ring-0">
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
                     {getRenderingIcon()}
                     {chatStore.selectedMcp ? getRenderingName() : "MCP"}

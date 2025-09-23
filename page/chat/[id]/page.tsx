@@ -10,6 +10,7 @@ import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
 import { generateId } from "ai";
 import { motion } from "framer-motion";
+import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { memo, useEffect, useRef } from "react";
 import { useParams } from "react-router";
@@ -37,15 +38,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
     const { messages, sendMessage, setMessages, status } = useChat({
         id: chat.data?._id,
         resume: chat.data?.stream.status === "active",
-        onData: (data) => {
-            console.log("data", data);
-        },
-        onError: (error) => {
-            console.log("error", error);
-        },
-        onFinish: (message) => {
-            console.log("message", message);
-        },
+        experimental_throttle: 200,
     });
 
     useEffect(() => {
@@ -57,10 +50,15 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 metadata: m.metadata ? JSON.parse(m.metadata) : undefined,
             }));
             setMessages(parsedMessage);
-
-            localStorage.setItem(`chat:${chatId}`, JSON.stringify(chat.data));
         }
-    }, [chat.data, setMessages, chatId]);
+    }, [chat.data, setMessages]);
+
+    useEffect(() => {
+        debounce(() => {
+            console.log("setting local storage");
+            localStorage.setItem(`chat:${chatId}`, JSON.stringify(chat.data));
+        }, 5000);
+    }, [chatId, chat.data]);
 
     const onSend = () => {
         const text = editorRef.current?.getText();

@@ -10,7 +10,8 @@ import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
-import { memo, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
@@ -22,20 +23,14 @@ import { cn } from "@/lib/utils";
 
 export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();
+    const navigate = useNavigate();
     const location = usePathname();
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
 
     const { messages, sendMessage, setMessages, stop } = useChat({
-        onData: (data) => {
-            console.log("data", data);
-        },
-        onError: (error) => {
-            console.log("error", error);
-        },
-        onFinish: (message) => {
-            console.log("message", message);
-        },
+        // biome-ignore lint/style/useNamingConvention: i dont control the API
+        experimental_throttle: 200,
     });
 
     const [inputPosition, setInputPosition] = useState<"center" | "bottom">("center");
@@ -54,6 +49,7 @@ export const NewChatPage = observer(function ChatPage() {
 
         const text = editorRef.current?.getText();
         if (!text) {
+            // biome-ignore lint/suspicious/noAlert: alert is used for UX
             alert("Please enter a message");
             return;
         }
@@ -87,50 +83,13 @@ export const NewChatPage = observer(function ChatPage() {
         editorRef.current?.commands.setContent("");
 
         // we dont navigate to the page for better UX
-        window.history.pushState(null, "", `/chat/${chat._id}`);
+        navigate(`/chat/${chat._id}`, { replace: true });
     };
 
+    // biome-ignore lint/nursery/noMisusedPromises: no need
     useShortcut("Control+Enter", onSend);
+    // biome-ignore lint/nursery/noMisusedPromises: no need
     useShortcut("Command+Enter", onSend);
-
-    const BottomContent = memo(() => (
-        <div
-            className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
-            style={{
-                justifyContent: inputPosition === "center" ? "center" : "flex-end",
-                paddingBottom: inputPosition === "center" ? "0px" : "12px",
-            }}
-        >
-            <motion.div
-                className="pointer-events-auto z-50 w-9/12 max-w-[900px] overflow-hidden rounded-xl border bg-gray-100"
-                layout
-                layoutId="chat"
-                transition={{
-                    duration: 0.2,
-                    ease: "easeInOut",
-                }}
-            >
-                <Chat.Root>
-                    <div className="h-full w-full rounded-b-xl bg-white p-2 shadow-md">
-                        <Chat.Input className="h-20" ref={editorRef} />
-                    </div>
-                    <div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
-                        <div className="flex items-center gap-0">
-                            <Chat.ModelSelect />
-                            <Chat.MCPSelect />
-                        </div>
-                        <div className="pb-2">
-                            <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>
-                                <IconSend className="size-4" />
-                                Send
-                                <Shortcut nothen shortcut={["⌘", "↵"]} />
-                            </Button>
-                        </div>
-                    </div>
-                </Chat.Root>
-            </motion.div>
-        </div>
-    ));
 
     return (
         <div className="flex h-full w-full flex-col">
@@ -163,8 +122,7 @@ export const NewChatPage = observer(function ChatPage() {
                 </ConversationContent>
                 <ConversationScrollButton className="bottom-[180px]" />
             </Conversation>
-            <BottomContent />
-            {/* <div
+            <div
                 className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{
                     justifyContent: inputPosition === "center" ? "center" : "flex-end",
@@ -199,7 +157,7 @@ export const NewChatPage = observer(function ChatPage() {
                         </div>
                     </Chat.Root>
                 </motion.div>
-            </div> */}
+            </div>
         </div>
     );
 });
