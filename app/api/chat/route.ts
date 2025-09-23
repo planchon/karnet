@@ -27,6 +27,13 @@ export async function POST(req: Request) {
     const [{ messages, modelId, chatId, streamId, webSearch }] = await Promise.all([req.json() as Promise<BodyData>]);
     const model = supportedModels.find((m) => m.id === modelId);
 
+    console.log("[Chat] new chat", {
+        modelId,
+        chatId,
+        streamId,
+        webSearch,
+    });
+
     if (!model) {
         return new Response("Model not found", { status: 404 });
     }
@@ -57,6 +64,22 @@ export async function POST(req: Request) {
         experimental_transform: smoothStream({ chunking: "word" }),
     });
 
+    fetchMutation(
+        api.functions.chat.updateChatMessages,
+        {
+            id: chatId as Id<"chats">,
+            messages: messages.map((m) => ({
+                id: m.id,
+                role: m.role,
+                parts: JSON.stringify(m.parts),
+                metadata: JSON.stringify(m.metadata),
+            })),
+        },
+        {
+            token: await getSession(),
+        }
+    );
+
     const streamContext = createResumableStreamContext({
         waitUntil: after,
     });
@@ -64,6 +87,9 @@ export async function POST(req: Request) {
     return res.toUIMessageStreamResponse({
         originalMessages: messages,
         generateMessageId: generateId,
+        sendSources: true,
+        sendReasoning: true,
+        sendStart: true,
         messageMetadata: (metadata) => ({
             model: model.name,
             ...metadata,
@@ -113,9 +139,6 @@ export async function POST(req: Request) {
             console.error("[Chat] error", error);
             return "Error while streaming in the chat";
         },
-        sendSources: true,
-        sendReasoning: true,
-        sendStart: true,
         async consumeSseStream({ stream }) {
             console.log("[Chat] start streaming", performance.now() - now, "ms");
             console.log("[Chat] created new resumable stream", streamId);
