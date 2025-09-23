@@ -16,6 +16,7 @@ type BodyData = {
     chatId: string;
     modelId: string;
     streamId: string;
+    webSearch?: boolean;
 };
 
 export async function POST(req: Request) {
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
     // start by getting the token async
     getSession();
 
-    const [{ messages, modelId, chatId, streamId }] = await Promise.all([req.json() as Promise<BodyData>]);
+    const [{ messages, modelId, chatId, streamId, webSearch }] = await Promise.all([req.json() as Promise<BodyData>]);
     const model = supportedModels.find((m) => m.id === modelId);
 
     if (!model) {
@@ -43,8 +44,13 @@ export async function POST(req: Request) {
 
     const prompt = generatePrompt(model.name, new Date().toLocaleString(), geoString);
 
+    console.log("[Chat] websearch", {
+        model: model.id,
+        webSearch,
+    });
+
     const res = streamText({
-        model: openRouter(model.id),
+        model: openRouter(webSearch ? `${model.id}:online` : model.id),
         system: prompt,
         messages: convertToModelMessages(messages),
         // biome-ignore lint/style/useNamingConvention: i dont control the API

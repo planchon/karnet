@@ -35,6 +35,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
         "m",
         () => {
             setOpen(true);
+            chatStore.setDropdownOpen(true);
         },
         {
             preventDefault: true,
@@ -45,6 +46,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
     function handleSelect(value: GeneralKarnetModel) {
         chatStore.setModel(value);
         setOpen(false);
+        chatStore.setDropdownOpen(false);
         editorRef.current?.commands.focus();
     }
 
@@ -91,6 +93,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
         "s",
         () => {
             setOpen(true);
+            chatStore.setDropdownOpen(true);
         },
         {
             preventDefault: true,
@@ -101,6 +104,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
     function handleSelect(value: string) {
         chatStore.setMcp(value);
         setOpen(false);
+        chatStore.setDropdownOpen(false);
         editorRef.current?.commands.focus();
     }
 

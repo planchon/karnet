@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { ReactRenderer } from '@tiptap/react';
-import tippy, { type Instance, type Props } from 'tippy.js';
-import type { GeneralKarnetModel } from '@/ai/models';
+import { ReactRenderer } from "@tiptap/react";
+import tippy, { type Instance, type Props } from "tippy.js";
+import type { GeneralKarnetModel } from "@/ai/models";
+import { useStores } from "@/hooks/useStores";
 
 export const renderItems = (
     RenderingComponent: any,
@@ -10,6 +11,8 @@ export const renderItems = (
 ) => {
     let component: ReactRenderer | null = null;
     let popup: Instance<Props>[] | null = null;
+
+    const { chatStore } = useStores();
 
     return {
         // @ts-expect-error
@@ -23,21 +26,23 @@ export const renderItems = (
                 props,
             });
 
+            chatStore.setDropdownOpen(true);
+
             if (!component) {
-                console.error('No component found');
+                console.error("No component found");
                 return;
             }
 
             // add the context menu to the editor
             // it also position it to the correct place (next to the cursor)
-            popup = tippy('body', {
+            popup = tippy("body", {
                 getReferenceClientRect: props.clientRect,
                 appendTo: () => document.body,
                 content: component.element,
                 showOnCreate: true,
                 interactive: true,
-                trigger: 'manual',
-                placement: 'bottom-start',
+                trigger: "manual",
+                placement: "bottom-start",
             });
         },
         // @ts-expect-error
@@ -49,7 +54,7 @@ export const renderItems = (
         },
         // @ts-expect-error
         onKeyDown: (props) => {
-            if (props.event.key === 'Escape') {
+            if (props.event.key === "Escape") {
                 popup?.[0]?.hide();
 
                 return true;
@@ -61,6 +66,7 @@ export const renderItems = (
         onExit: () => {
             popup?.[0]?.destroy();
             component?.destroy();
+            chatStore.setDropdownOpen(false);
         },
     };
 };

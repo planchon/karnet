@@ -4,11 +4,13 @@ import { action, makeObservable, observable } from "mobx";
 import { defaultModel, type GeneralKarnetModel } from "@/ai/models";
 
 export class ChatStore {
+    dropdownOpen = false;
     selectedModel: GeneralKarnetModel = defaultModel;
     selectedMcp: string | null = null;
 
     constructor() {
         makeObservable(this, {
+            dropdownOpen: observable,
             selectedModel: observable,
             selectedMcp: observable,
             setModel: action,
@@ -22,6 +24,14 @@ export class ChatStore {
     }
 
     setMcp(mcp: string) {
-        this.selectedMcp = mcp;
+        if (mcp === this.selectedMcp) {
+            this.selectedMcp = null;
+        } else {
+            this.selectedMcp = mcp;
+        }
+    }
+
+    setDropdownOpen(open: boolean) {
+        this.dropdownOpen = open;
     }
 }

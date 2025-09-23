@@ -73,8 +73,6 @@ const RenderSource = memo(
 );
 
 export const RenderOneMessage = memo(({ message, status }: { message: UIMessage; status: ChatStatus }) => {
-    console.log(message);
-
     const reasoningParts = message.parts.filter((p) => p.type === "reasoning");
     const textParts = message.parts.filter((p) => p.type === "text");
     const sourceParts = message.parts.filter((p) => p.type === "source-url");

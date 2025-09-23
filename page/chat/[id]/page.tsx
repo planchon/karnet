@@ -67,7 +67,8 @@ export const ChatWithIdPage = observer(function ChatPage() {
             !e.metaKey &&
             !e.shiftKey &&
             editorRef.current?.isFocused &&
-            editorRef.current?.getText() !== ""
+            editorRef.current?.getText() !== "" &&
+            !chatStore.dropdownOpen
         ) {
             e.preventDefault();
             onSend();

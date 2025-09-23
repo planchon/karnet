@@ -60,7 +60,8 @@ export const NewChatPage = observer(function ChatPage() {
             !e.metaKey &&
             !e.shiftKey &&
             editorRef.current?.isFocused &&
-            editorRef.current?.getText() !== ""
+            editorRef.current?.getText() !== "" &&
+            !chatStore.dropdownOpen
         ) {
             e.preventDefault();
             onSend();
@@ -104,6 +105,11 @@ export const NewChatPage = observer(function ChatPage() {
 
         setChatId(chat._id);
 
+        console.log("[Chat] websearch", {
+            model: chatStore.selectedModel.id,
+            webSearch: chatStore.selectedMcp === "search",
+        });
+
         sendMessage(
             { text },
             {
@@ -111,6 +117,7 @@ export const NewChatPage = observer(function ChatPage() {
                     modelId: chatStore.selectedModel.id,
                     chatId: chat._id,
                     streamId,
+                    webSearch: chatStore.selectedMcp === "search",
                 },
             }
         );
