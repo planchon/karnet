@@ -153,7 +153,7 @@ export const supportedModels: GeneralKarnetModel[] = [
 ];
 
 export const defaultModel: GeneralKarnetModel = supportedModels.find(
-    (m) => m.id === "x-ai/grok-4-fast:free"
+    (m) => m.id === "google/gemini-2.5-flash"
 ) as GeneralKarnetModel;
 
 export const groupedByProvider = supportedModels.reduce(

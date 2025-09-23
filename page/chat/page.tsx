@@ -8,25 +8,32 @@ import { Shortcut } from "@ui/shortcut";
 import { generateId } from "ai";
 import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
+import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
-import { Message, MessageContent } from "@/components/ai-elements/message";
-import { Response } from "@/components/ai-elements/response";
+import { useNavigate } from "react-router";
 import { Chat } from "@/components/chat";
+import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import { useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 
+const DEBOUNCE_TIME = 5000;
+
 export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();
+    const navigate = useNavigate();
     const location = usePathname();
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
+    const [chatId, setChatId] = useState<string | null>(null);
 
-    const { messages, sendMessage, setMessages, stop } = useChat();
+    const { messages, sendMessage, setMessages, stop, status } = useChat({
+        // biome-ignore lint/style/useNamingConvention: i dont control the API
+        experimental_throttle: 200,
+    });
 
     const [inputPosition, setInputPosition] = useState<"center" | "bottom">("center");
 
@@ -39,11 +46,21 @@ export const NewChatPage = observer(function ChatPage() {
         }
     }, [location, stop, setMessages]);
 
+    useEffect(() => {
+        const debouncedSetLocalStorage = debounce(() => {
+            console.log("setting local storage");
+            localStorage.setItem(`chat:${chatId}`, JSON.stringify(messages));
+        }, DEBOUNCE_TIME);
+
+        debouncedSetLocalStorage();
+    }, [chatId, messages]);
+
     const onSend = async () => {
         setInputPosition("bottom");
 
         const text = editorRef.current?.getText();
         if (!text) {
+            // biome-ignore lint/suspicious/noAlert: alert is used for UX
             alert("Please enter a message");
             return;
         }
@@ -59,6 +76,8 @@ export const NewChatPage = observer(function ChatPage() {
             userInputMessage: text,
             streamId,
         });
+
+        setChatId(chat._id);
 
         sendMessage(
             { text },
@@ -77,33 +96,17 @@ export const NewChatPage = observer(function ChatPage() {
         editorRef.current?.commands.setContent("");
 
         // we dont navigate to the page for better UX
-        window.history.pushState(null, "", `/chat/${chat._id}`);
+        navigate(`/chat/${chat._id}`, { replace: true });
     };
 
+    // biome-ignore lint/nursery/noMisusedPromises: no need
     useShortcut("Control+Enter", onSend);
+    // biome-ignore lint/nursery/noMisusedPromises: no need
     useShortcut("Command+Enter", onSend);
 
     return (
         <div className="flex h-full w-full flex-col">
-            <Conversation className="relative h-full w-full">
-                <ConversationContent className="mx-auto w-8/12 pb-64">
-                    {messages.map((message) => (
-                        <Message from={message.role} key={message.id}>
-                            <MessageContent variant="flat">
-                                {message.parts.map((part, i) => {
-                                    switch (part.type) {
-                                        case "text": // we don't use any reasoning or tool calls in this example
-                                            return <Response key={`${message.id}-${i}`}>{part.text}</Response>;
-                                        default:
-                                            return null;
-                                    }
-                                })}
-                            </MessageContent>
-                        </Message>
-                    ))}
-                </ConversationContent>
-                <ConversationScrollButton className="bottom-[180px]" />
-            </Conversation>
+            <ConversationComp messages={messages} status={status} />
             <div
                 className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{

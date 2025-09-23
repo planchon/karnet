@@ -21,6 +21,14 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
+            <head>
+                {process.env.NODE_ENV === "development" && (
+                    <script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+                )}
+                <title>Karnet - your magical notebook</title>
+                <meta content="Karnet is your magical notebook" name="description" />
+                <meta content="width=device-width, initial-scale=1" name="viewport" />
+            </head>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 {typeof window === "undefined" ? null : <Root>{children}</Root>}
             </body>
