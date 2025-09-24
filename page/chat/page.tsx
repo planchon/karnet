@@ -8,7 +8,6 @@ import { Shortcut } from "@ui/shortcut";
 import { generateId } from "ai";
 import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
-import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -20,15 +19,12 @@ import { api } from "@/convex/_generated/api";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 
-const DEBOUNCE_TIME = 5000;
-
 export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();
     const navigate = useNavigate();
     const location = usePathname();
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
-    const [chatId, setChatId] = useState<string | null>(null);
 
     const { messages, sendMessage, setMessages, stop, status } = useChat({
         // biome-ignore lint/style/useNamingConvention: i dont control the API
@@ -45,14 +41,6 @@ export const NewChatPage = observer(function ChatPage() {
             setMessages([]);
         }
     }, [location, stop, setMessages]);
-
-    useEffect(() => {
-        const debouncedSetLocalStorage = debounce(() => {
-            localStorage.setItem(`chat:${chatId}`, JSON.stringify(messages));
-        }, DEBOUNCE_TIME);
-
-        debouncedSetLocalStorage();
-    }, [chatId, messages]);
 
     useHotkeys("t", () => {
         editorRef.current?.commands.focus();
@@ -95,6 +83,7 @@ export const NewChatPage = observer(function ChatPage() {
 
         // clear the editor
         editorRef.current?.commands.setContent("");
+        chatStore.resetMcp();
 
         const streamId = generateId();
 
@@ -106,13 +95,6 @@ export const NewChatPage = observer(function ChatPage() {
             },
             userInputMessage: text,
             streamId,
-        });
-
-        setChatId(chat._id);
-
-        console.log("[Chat] websearch", {
-            model: chatStore.selectedModel.id,
-            webSearch: chatStore.selectedMcp === "search",
         });
 
         sendMessage(
@@ -127,7 +109,6 @@ export const NewChatPage = observer(function ChatPage() {
             }
         );
 
-        // we dont navigate to the page for better UX
         navigate(`/chat/${chat._id}`, { replace: true });
     };
 

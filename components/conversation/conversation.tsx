@@ -1,5 +1,7 @@
 import type { ChatStatus, ReasoningUIPart, SourceUrlUIPart, TextUIPart, UIMessage } from "ai";
-import { memo } from "react";
+import { marked } from "marked";
+import mermaid from "mermaid";
+import { memo, useEffect, useState } from "react";
 import { Conversation, ConversationContent, ConversationScrollButton } from "../ai-elements/conversation";
 import { Message, MessageContent } from "../ai-elements/message";
 import { Reasoning, ReasoningContent, ReasoningTrigger } from "../ai-elements/reasoning";
@@ -33,15 +35,15 @@ const RenderReasoning = memo(
     }
 );
 
-const RenderText = memo(
-    ({ part, messageId, offsetPartIndex }: { part: TextUIPart[]; messageId: string; offsetPartIndex: number }) => {
-        if (part.length === 0) {
-            return null;
-        }
-
-        return part.map((p, i) => <Response key={`${messageId}-${offsetPartIndex + i}`}>{p.text}</Response>);
-    }
-);
+const RenderText = ({
+    part,
+    messageId,
+    offsetPartIndex,
+}: {
+    part: TextUIPart[];
+    messageId: string;
+    offsetPartIndex: number;
+}) => part.map((p, i) => <Response key={`${messageId}-${offsetPartIndex + i}`}>{p.text}</Response>);
 
 const RenderSource = memo(
     ({
