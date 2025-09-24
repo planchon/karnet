@@ -99,11 +99,6 @@ export const ChatWithIdPage = observer(function ChatPage() {
 
         const streamId = generateId();
 
-        console.log("[Chat] websearch", {
-            model: chatStore.selectedModel.id,
-            webSearch: chatStore.selectedMcp === "search",
-        });
-
         sendMessage(
             { text },
             {

@@ -15,6 +15,7 @@ export class ChatStore {
             selectedMcp: observable,
             setModel: action,
             setMcp: action,
+            resetMcp: action,
         });
     }
 
@@ -29,6 +30,10 @@ export class ChatStore {
         } else {
             this.selectedMcp = mcp;
         }
+    }
+
+    resetMcp() {
+        this.selectedMcp = null;
     }
 
     setDropdownOpen(open: boolean) {
