@@ -65,17 +65,13 @@ export abstract class AbstractView<T extends { _id: string }> {
 
     // we update all the element who have changed
     updateData(items: T[]) {
-        for (const item of items) {
-            if (this.baseItems.has(item._id)) {
-                // if the item are the same, we keep them that way
-                // and go to the next item
-                if (isEqual(this.baseItems.get(item._id), item)) {
-                    continue;
-                }
-            }
+        const newItems = new Map<string, T>();
 
-            this.baseItems.set(item._id, item);
+        for (const item of items) {
+            newItems.set(item._id, item);
         }
+
+        this.baseItems = newItems;
     }
 
     setSearchQuery(query: string) {

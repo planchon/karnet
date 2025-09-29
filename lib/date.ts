@@ -28,7 +28,11 @@ export const allPossibleMatches: Record<string, Match> = {
         callback: (input: string) => {
             const [hours, minutes] = input.split("h");
             const hoursInt = Number.parseInt(hours, 10);
-            const minutesInt = Number.parseInt(minutes, 10);
+            let minutesInt = Number.parseInt(minutes, 10);
+
+            if (Number.isNaN(minutesInt)) {
+                minutesInt = 0;
+            }
 
             return dayjs().hour(hoursInt).minute(minutesInt);
         },
@@ -109,6 +113,16 @@ export const DAY_TO_NUMBER = {
     sat: 6,
 };
 
+const NUMBER_TO_DAY = {
+    0: "Sunday",
+    1: "Monday",
+    2: "Tuesday",
+    3: "Wednesday",
+    4: "Thursday",
+    5: "Friday",
+    6: "Saturday",
+};
+
 const ONE_WEEK = 7;
 
 /**
@@ -135,4 +149,24 @@ export function theNext(date: Dayjs, day: number) {
     }
 
     return date.add(daysToAdd, "day");
+}
+
+export function getLabel(date: Dayjs) {
+    const today_day = dayjs().day();
+    const date_day = date.day();
+
+    const diff = date_day - today_day;
+    if (diff === 0) {
+        return `Today at ${date.format("HH:mm")}`;
+    }
+
+    if (diff === 1) {
+        return "Tomorrow";
+    }
+
+    if (diff < 7) {
+        return `${NUMBER_TO_DAY[date.day()]}`;
+    }
+
+    return date.format("DD/MM/YYYY");
 }

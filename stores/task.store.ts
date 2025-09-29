@@ -6,6 +6,7 @@ import { makeAutoObservable } from "mobx";
 export class TaskStore {
     deadlineMatch: string | undefined = undefined;
     deadline: Dayjs | undefined = undefined;
+    deadlineLabel: string | undefined = undefined;
 
     priorityMatch: string | undefined = undefined;
     priority: number | undefined = undefined;
@@ -40,16 +41,13 @@ export class TaskStore {
 
         let tmpTitle = this.title;
         if (this.deadlineMatch) {
-            console.debug("deadlineMatch", this.deadlineMatch);
             tmpTitle = tmpTitle.replaceAll(`${this.deadlineMatch}`, "");
         }
         if (this.priorityMatch) {
-            console.debug("priorityMatch", this.priorityMatch);
             tmpTitle = tmpTitle.replaceAll(`p${this.priorityMatch}`, "");
         }
 
         for (const tag of this.matchTags) {
-            console.debug("tag", tag);
             tmpTitle = tmpTitle.replaceAll(`#${tag}`, "");
         }
 

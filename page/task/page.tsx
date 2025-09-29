@@ -22,6 +22,7 @@ import {
     ContextMenuSubTrigger,
 } from "@ui/context-menu";
 import { useMutation, usePaginatedQuery } from "convex/react";
+import dayjs from "dayjs";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { View } from "@/components/view/table";
@@ -29,6 +30,7 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
+import { getLabel } from "@/lib/date";
 import { Priority } from "@/primitive/priority";
 import { Label } from "@/primitive/super-ui/label";
 import { GenericView } from "@/view/generic.view";
@@ -45,6 +47,7 @@ export default observer(() => {
     const [viewModel, _] = useState(new GenericView());
     const updateTaskMutation = useMutation(api.functions.task.updateTask);
     const toggleTaskMutation = useMutation(api.functions.task.toggleTask);
+    const deleteTaskMutation = useMutation(api.functions.task.deleteTask);
 
     usePageTitle("My Tasks - Karnet AI Assistant");
 
@@ -161,8 +164,13 @@ export default observer(() => {
                             </View.Item.Infos>
                             <View.Item.Spacer />
                             <View.Item.Tags>
-                                {item.deadlineLabel && (
-                                    <Label className="bg-background" icon={IconCalendar} label={item.deadlineLabel} />
+                                {item.deadline && (
+                                    <Label
+                                        className="bg-background"
+                                        icon={IconCalendar}
+                                        label={getLabel(dayjs(item.deadline))}
+                                        tooltip={dayjs(item.deadline).format("DD/MM/YYYY HH:mm")}
+                                    />
                                 )}
                                 <View.Item.Author />
                                 <View.Item.Date />
@@ -183,7 +191,9 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    priority: 1,
+                                                    patch: {
+                                                        priority: 1,
+                                                    },
                                                 });
                                             }}
                                         >
@@ -194,7 +204,9 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    priority: 2,
+                                                    patch: {
+                                                        priority: 2,
+                                                    },
                                                 });
                                             }}
                                         >
@@ -205,7 +217,9 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    priority: 3,
+                                                    patch: {
+                                                        priority: 3,
+                                                    },
                                                 });
                                             }}
                                         >
@@ -216,7 +230,9 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    priority: 4,
+                                                    patch: {
+                                                        priority: 4,
+                                                    },
                                                 });
                                             }}
                                         >
@@ -235,7 +251,10 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    deadlineLabel: "Tomorrow",
+                                                    patch: {
+                                                        deadlineLabel: "Tomorrow",
+                                                        deadline: dayjs().add(1, "day").valueOf(),
+                                                    },
                                                 });
                                             }}
                                         >
@@ -246,7 +265,10 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    deadlineLabel: "2 days",
+                                                    patch: {
+                                                        deadlineLabel: "2 days",
+                                                        deadline: dayjs().add(2, "day").valueOf(),
+                                                    },
                                                 });
                                             }}
                                         >
@@ -257,7 +279,10 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    deadlineLabel: "End of week",
+                                                    patch: {
+                                                        deadlineLabel: "End of week",
+                                                        deadline: dayjs().endOf("week").valueOf(),
+                                                    },
                                                 });
                                             }}
                                         >
@@ -268,7 +293,10 @@ export default observer(() => {
                                             onSelect={() => {
                                                 updateTaskMutation({
                                                     id: item._id,
-                                                    deadlineLabel: "Next week",
+                                                    patch: {
+                                                        deadlineLabel: "Next week",
+                                                        deadline: dayjs().add(1, "week").valueOf(),
+                                                    },
                                                 });
                                             }}
                                         >
@@ -294,7 +322,13 @@ export default observer(() => {
                                     </ContextMenuSubContent>
                                 </ContextMenuSub>
                                 <ContextMenuSeparator />
-                                <ContextMenuItem>
+                                <ContextMenuItem
+                                    onSelect={() => {
+                                        deleteTaskMutation({
+                                            id: item._id,
+                                        });
+                                    }}
+                                >
                                     <IconTrash className="mr-2 text-destructive" />
                                     <span className="text-destructive">Delete</span>
                                 </ContextMenuItem>

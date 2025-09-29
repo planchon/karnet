@@ -20,6 +20,7 @@ export const getPaginatedTasks = query({
         const tasks = await ctx.db
             .query("tasks")
             .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+            .filter((q) => q.eq(q.field("is_deleted"), false))
             .order("desc")
             .paginate(paginationOpts);
 
@@ -135,6 +136,35 @@ export const toggleTask = mutation({
 
         const updatedTask = await ctx.db.patch(task._id as Id<"tasks">, {
             completed_at_ts: task.completed_at_ts ? undefined : Date.now().valueOf(),
+        });
+        return updatedTask;
+    },
+});
+
+export const deleteTask = mutation({
+    args: {
+        id: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new Error("User not authenticated");
+        }
+
+        const task = await ctx.db
+            .query("tasks")
+            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+            .filter((q) => q.eq(q.field("_id"), args.id))
+            .first();
+
+        if (!task) {
+            throw new Error("Task not found");
+        }
+
+        const updatedTask = await ctx.db.patch(task._id as Id<"tasks">, {
+            is_deleted: true,
+            completed_at_ts: Date.now().valueOf(),
+            status: "done",
         });
         return updatedTask;
     },
