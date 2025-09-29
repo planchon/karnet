@@ -33,7 +33,8 @@ export const createTask = mutation({
         title: v.string(),
         priority: v.number(),
         status: v.optional(status),
-        deadline: v.optional(v.string()),
+        tags: v.optional(v.array(v.string())),
+        deadline: v.optional(v.number()),
         deadlineLabel: v.optional(v.string()),
         completed_at_iso: v.optional(v.string()),
         completed_at_ts: v.optional(v.number()),
@@ -54,11 +55,11 @@ export const createTask = mutation({
             title: args.title,
             // the smallId is optimicly generated in the UI, but can be replaced by the backend
             smallId: `TASK-${newId}`,
-            type: "task" as const,
             priority: args.priority,
             status: args.status ?? "todo",
             deadline: args.deadline,
             deadlineLabel: args.deadlineLabel,
+            tags: args.tags ?? [],
             created_at_iso: new Date().toISOString(),
             created_at_ts: Date.now(),
             is_deleted: false,
@@ -71,54 +72,6 @@ export const createTask = mutation({
         taskModel.id = task;
 
         return taskModel;
-    },
-});
-
-export const updateTask = mutation({
-    args: {
-        id: v.id("tasks"),
-        title: v.optional(v.string()),
-        priority: v.optional(v.number()),
-        status: v.optional(status),
-        deadlineLabel: v.optional(v.string()),
-        completed_at_iso: v.optional(v.string()),
-        completed_at_ts: v.optional(v.number()),
-    },
-    handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
-        if (!identity) {
-            throw new ConvexError({
-                uniqueId: "TASK_0002",
-                httpStatusCode: 401,
-                message: "User not authenticated",
-            });
-        }
-
-        const task = await ctx.db
-            .query("tasks")
-            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
-            .filter((q) => q.eq(q.field("_id"), args.id))
-            .first();
-
-        if (!task || task.subject !== identity.subject) {
-            throw new ConvexError({
-                uniqueId: "TASK_0001",
-                httpStatusCode: 404,
-                message: "Task not found",
-            });
-        }
-
-        await ctx.db.patch(args.id, {
-            title: args.title ?? task.title,
-            priority: args.priority ?? task.priority,
-            status: args.status ?? task.status,
-            updated_at_ts: Date.now(),
-            updated_at_iso: new Date().toISOString(),
-            deadlineLabel: args.deadlineLabel ?? task.deadlineLabel,
-            completed_at_iso: args.completed_at_iso ?? task.completed_at_iso,
-            completed_at_ts: args.completed_at_ts ?? task.completed_at_ts,
-        });
-        return task;
     },
 });
 

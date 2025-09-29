@@ -1,97 +1,11 @@
 "use client";
 
 import { InputRule, mergeAttributes, Node } from "@tiptap/core";
-import dayjs, { type Dayjs } from "dayjs";
-import { DAY_TO_NUMBER, theNext } from "@/lib/date";
+import { allPossibleMatches, type Match } from "@/lib/date";
 import { createOnNodeDeletePlugin, type NodeWithDeleteOptions } from "./node-delete";
 
-export const allPossibleMatches = {
-    date: {
-        regex: /(^|\s)(\d{1,2}\/\d{2})$/g,
-        label: "date",
-        callback: (input: string) => {
-            const [day, month] = input.split("/");
-            const dayInt = Number.parseInt(day, 10);
-            const monthInt = Number.parseInt(month, 10);
-
-            return dayjs()
-                .month(monthInt - 1)
-                .date(dayInt);
-        },
-        priority: 1000,
-    },
-    hours: {
-        regex: /(^|\s)(\d{1,2}h(\d{1,2})?)$/g,
-        label: "hours",
-        callback: (input: string) => {
-            const [hours, minutes] = input.split("h");
-            const hoursInt = Number.parseInt(hours, 10);
-            const minutesInt = Number.parseInt(minutes, 10);
-
-            return dayjs().hour(hoursInt).minute(minutesInt);
-        },
-        priority: 2,
-    },
-    jours: {
-        regex: /(^|\s)(\d{1,2}\s?j)$/g,
-        label: "jours",
-        callback: (input: string) => {
-            const daysInt = Number.parseInt(input, 10);
-            return dayjs().add(daysInt, "day");
-        },
-        priority: 2,
-    },
-    semaines: {
-        regex: /(^|\s)(\d{1,2}\s?sem)$/g,
-        label: "semaines",
-        callback: (input: string) => {
-            const weeksInt = Number.parseInt(input, 10);
-            return dayjs().add(weeksInt, "week");
-        },
-        priority: 2,
-    },
-    mois: {
-        regex: /(^|\s)(\d{1,2}\s?m)$/g,
-        label: "mois",
-        callback: (input: string) => {
-            const monthsInt = Number.parseInt(input, 10);
-            return dayjs().add(monthsInt, "month");
-        },
-        priority: 2,
-    },
-    dateHours: {
-        regex: /(^|\s)(\d{1,2}\/\d{1,2}\s\d{1,2}h(\d{1,2})?)$/g,
-        label: "dateHours",
-        callback: () => {
-            throw new Error("Not implemented");
-        },
-        priority: 1,
-    },
-    keyword: {
-        regex: /(^|\s)(dem|sem|lun|mar|mer|jeu|ven|sam|dim|mon|tue|wed|thu|fri|sat|sun)$/g,
-        callback: (input: string) => {
-            if (input === "dem") {
-                return dayjs().add(1, "day");
-            }
-
-            if (input === "sem") {
-                return dayjs().add(1, "week");
-            }
-
-            return theNext(dayjs(), DAY_TO_NUMBER[input as keyof typeof DAY_TO_NUMBER]);
-        },
-        label: "keyword",
-        priority: 5,
-    },
-    finSemaine: {
-        regex: /(^|\s)(fin sem)$/g,
-        callback: () => dayjs().endOf("week"),
-        priority: 10,
-    },
-};
-
 type DeadlineNodeOptions = NodeWithDeleteOptions & {
-    onDeadlineChange: (value: Dayjs) => void;
+    onDeadlineChange: (value: string, match: Match) => void;
 };
 
 export const DeadlineNode = Node.create<DeadlineNodeOptions>({
@@ -192,8 +106,8 @@ export const DeadlineNode = Node.create<DeadlineNodeOptions>({
                             })
                             .run();
 
-                        const date = value.callback(input.trim());
-                        this.options.onDeadlineChange(date);
+                        const stringMatch = input.trim();
+                        this.options.onDeadlineChange(stringMatch, value);
                     },
                 })
             );

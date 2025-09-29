@@ -4,19 +4,14 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 
 import { EditorContent, Node, useEditor } from "@tiptap/react";
-import type { Dayjs } from "dayjs";
+import { useStores } from "@/hooks/useStores";
+import type { Match } from "@/lib/date";
 import { DeadlineNode } from "./extensions/deadline";
 import { PriorityNode } from "./extensions/priorities";
 
-export function TaskInputComp({
-    onDeadlineChange,
-    onPriorityChange,
-    onValueChange,
-}: {
-    onDeadlineChange: (value: Dayjs | undefined) => void;
-    onPriorityChange: (value: string | undefined) => void;
-    onValueChange: (value: string) => void;
-}) {
+export function TaskInputComp() {
+    const { taskStore } = useStores();
+
     const editor = useEditor({
         immediatelyRender: false,
         extensions: [
@@ -28,15 +23,22 @@ export function TaskInputComp({
             Paragraph,
             Text,
             PriorityNode.configure({
-                onPriorityChange,
+                onPriorityChange: (value: string) => {
+                    taskStore.setPriority(value);
+                    taskStore.setPriorityMatch(value);
+                },
                 onNodeDelete: () => {
-                    onPriorityChange(undefined);
+                    taskStore.setPriority(undefined);
                 },
             }),
             DeadlineNode.configure({
-                onDeadlineChange,
+                onDeadlineChange: (value: string, match: Match) => {
+                    const date = match.callback(value);
+                    taskStore.setDeadline(date);
+                    taskStore.setDeadlineMatch(value);
+                },
                 onNodeDelete: () => {
-                    onDeadlineChange(undefined);
+                    taskStore.setDeadline(undefined);
                 },
             }),
         ],
@@ -44,7 +46,7 @@ export function TaskInputComp({
         content: "",
         onUpdate: ({ editor: e }) => {
             const text = e.getText();
-            onValueChange(text);
+            taskStore.setTitle(text);
         },
     });
 

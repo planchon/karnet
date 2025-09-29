@@ -9,13 +9,13 @@ import {
     IconLabel,
 } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
-import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import { api } from "@/convex/_generated/api";
 import usePreventAutoFocus from "@/hooks/usePreventAutoFocus";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
+import { useStores } from "@/hooks/useStores";
 import { DAY_TO_NUMBER, theNext } from "@/lib/date";
 import { useResetFocus } from "@/lib/focus-manager";
 import { cn } from "@/lib/utils";
@@ -30,10 +30,7 @@ const PRIORITY_DEFAULT = 4;
 
 export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     const commands = useCommands();
-    const [priority, setPriority] = useState<number | undefined>(undefined);
-    const [deadline, setDeadline] = useState<Dayjs | undefined>(undefined);
-    const [task, setTask] = useState<string>("");
-    const [tags, setTags] = useState<string[]>([]);
+    const { taskStore } = useStores();
 
     const createTaskMutation = useMutation(api.functions.task.createTask);
 
@@ -45,10 +42,17 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     });
 
     const createTask = () => {
+        const finalTitle = taskStore.sanitizeTitle();
+
+        if (!finalTitle) {
+            return;
+        }
+
         createTaskMutation({
-            priority: priority ?? PRIORITY_DEFAULT,
-            deadline: deadline ? deadline.toISOString() : undefined,
-            title: task,
+            priority: taskStore.priority ?? PRIORITY_DEFAULT,
+            deadline: taskStore.deadline ? taskStore.deadline.valueOf() : undefined,
+            tags: [taskStore.tags],
+            title: finalTitle,
         });
     };
 
@@ -57,9 +61,9 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
             return;
         }
 
-        commands.closeTask();
         createTask();
-        reset();
+        commands.closeTask();
+        taskStore.reset();
     };
 
     useShortcut("Control+Enter", () => {
@@ -70,45 +74,10 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
         onCreateTask();
     });
 
-    const onTagChange = (value: string) => {
-        setTags([...tags, value]);
-    };
-
-    const onPriorityChange = (value: string | undefined) => {
-        if (!value) {
-            setPriority(undefined);
-            return;
-        }
-
-        const priorityNumber = Number.parseInt(value, 10);
-        setPriority(priorityNumber);
-    };
-
-    const onDeadlineChange = (value: Dayjs | undefined) => {
-        if (!value) {
-            setDeadline(undefined);
-            return;
-        }
-
-        setDeadline(value);
-    };
-
-    const onTitleChange = (value: string) => {
-        console.log("onTitleChange", value);
-        setTask(value);
-    };
-
-    const reset = () => {
-        setTask("");
-        setPriority(undefined);
-        setDeadline(undefined);
-        setTags([]);
-        resetFocus();
-    };
-
     const onToggleChange = () => {
         commands.toggleTask();
-        reset();
+        taskStore.reset();
+        resetFocus();
     };
 
     return (
@@ -122,16 +91,12 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
                         <span className="select-none font-regular text-xs">Create a new task</span>
                     </div>
                     <div className="flex flex-col gap-3">
-                        <TaskInputComp
-                            onDeadlineChange={onDeadlineChange}
-                            onPriorityChange={onPriorityChange}
-                            onValueChange={onTitleChange}
-                        />
+                        <TaskInputComp />
                     </div>
                     <div className="flex w-full select-none flex-row gap-2 pt-3">
-                        <TaskLabel onTagChange={onTagChange} priority={priority} />
-                        <TaskPriority onPriorityChange={onPriorityChange} priority={priority} />
-                        <Deadline deadline={deadline} onDeadlineChange={onDeadlineChange} />
+                        <TaskLabel />
+                        <TaskPriority />
+                        <Deadline />
                     </div>
                 </div>
                 <div className="w-full border-b" />
@@ -149,15 +114,11 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     );
 });
 
-const TaskLabel = observer(function TaskLabelComp({
-    onTagChange,
-    priority,
-}: {
-    onTagChange: (value: string) => void;
-    priority: number | undefined;
-}) {
+const TaskLabel = observer(function TaskLabelComp() {
+    const { taskStore } = useStores();
+
     return (
-        <Select onValueChange={onTagChange} value={priority?.toString()}>
+        <Select onValueChange={taskStore.setTags} value={taskStore.tags}>
             <SelectTrigger showChevron={false} size="sm" tabIndex={0}>
                 <IconLabel className="size-4 text-accent-foreground/60" />
                 <span className="font-medium text-accent-foreground/60 text-xs">Tags</span>
@@ -176,25 +137,23 @@ const TaskLabel = observer(function TaskLabelComp({
     );
 });
 
-const TaskPriority = observer(function TaskPriorityComp({
-    onPriorityChange,
-    priority,
-}: {
-    onPriorityChange: (value: string) => void;
-    priority: number | undefined;
-}) {
+const TaskPriority = observer(function TaskPriorityComp() {
+    const { taskStore } = useStores();
+
     return (
         <Tooltip delayDuration={800}>
             <TooltipTrigger autoFocus={false}>
-                <Select onValueChange={onPriorityChange} value={priority?.toString() || ""}>
+                <Select onValueChange={taskStore.setPriority} value={taskStore.priority?.toString()}>
                     <SelectTrigger
-                        className={cn("pl-1", !priority && "w-7", priority && "gap-x-[5px] pr-2")}
+                        className={cn("pl-1", !taskStore.priority && "w-7", taskStore.priority && "gap-x-[5px] pr-2")}
                         showChevron={false}
                         size="sm"
                         tabIndex={-1}
                     >
                         <IconAntennaBars5 className="size-4 text-accent-foreground/60" />
-                        {priority && <span className="text-accent-foreground/80 text-xs">p{priority}</span>}
+                        {taskStore.priority && (
+                            <span className="text-accent-foreground/80 text-xs">p{taskStore.priority}</span>
+                        )}
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="1">
@@ -223,24 +182,20 @@ const TaskPriority = observer(function TaskPriorityComp({
     );
 });
 
-const Deadline = observer(function DeadlineComp({
-    onDeadlineChange,
-    deadline,
-}: {
-    onDeadlineChange: (value: Dayjs | undefined) => void;
-    deadline: Dayjs | undefined;
-}) {
+const Deadline = observer(function DeadlineComp() {
     const [internalDeadline, setInternalDeadline] = useState<string | undefined>(undefined);
-    const formattedDate = deadline ? deadline.format("DD/MM/YYYY") : "";
+    const { taskStore } = useStores();
+    const formattedDate = taskStore.deadline ? taskStore.deadline.format("DD/MM/YYYY") : "";
+    const deadline = taskStore.deadline;
 
     const onDeadlineChangeSelect = (value: string) => {
         setInternalDeadline(value);
         if (value === "dem") {
-            onDeadlineChange(dayjs().add(1, "day"));
+            taskStore.setDeadline(dayjs().add(1, "day"));
         }
 
         const day = DAY_TO_NUMBER[value as keyof typeof DAY_TO_NUMBER];
-        onDeadlineChange(theNext(dayjs(), day));
+        taskStore.setDeadline(theNext(dayjs(), day));
     };
 
     return (

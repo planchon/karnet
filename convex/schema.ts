@@ -12,18 +12,19 @@ const baseViewItem = {
 
 const taskTable = defineTable({
     ...baseViewItem,
-    type: v.literal("task"),
     title: v.string(),
     smallId: v.string(),
     priority: v.number(),
+    tags: v.array(v.string()),
     status: v.union(v.literal("todo"), v.literal("in_progress"), v.literal("done")),
-    deadline: v.optional(v.string()),
+    deadline: v.optional(v.number()),
     deadlineLabel: v.optional(v.string()),
     completed_at_iso: v.optional(v.string()),
     completed_at_ts: v.optional(v.number()),
 })
     .index("by_status", ["status"])
     .index("by_deadline", ["deadline"])
+    .index("by_tags", ["tags"])
     .index("by_completed_at", ["completed_at_ts"])
     .index("by_created_at", ["created_at_ts"])
     .index("by_subject", ["subject"]);
