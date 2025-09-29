@@ -19,6 +19,7 @@ import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 
 const DEBOUNCE_TIME = 5000;
@@ -33,6 +34,8 @@ export const ChatWithIdPage = observer(function ChatPage() {
         }),
         initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || "null"),
     });
+
+    usePageTitle(`My Chat: ${chat.data?.title} - Karnet AI Assistant`);
 
     const { messages, sendMessage, setMessages, status } = useChat({
         id: chatId as Id<"chats">,

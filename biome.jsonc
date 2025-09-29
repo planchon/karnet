@@ -1,19 +1,15 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": [
-    "ultracite"
-  ],
+  "extends": ["ultracite"],
   "linter": {
     "rules": {
+      "style": {
+        "useNamingConvention": "off"
+      },
       "suspicious": {
         "noConsole": {
           "options": {
-            "allow": [
-              "assert",
-              "error",
-              "info",
-              "warn"
-            ]
+            "allow": ["assert", "error", "info", "warn"]
           }
         }
       },

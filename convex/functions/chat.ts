@@ -1,5 +1,4 @@
-import { generateId } from "ai";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 import { chatMessage } from "../schema";
 
@@ -10,15 +9,28 @@ export const getChat = query({
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new Error("User not authenticated");
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
         }
 
-        const chat = await ctx.db.get(args.id);
+        const chat = await ctx.db
+            .query("chats")
+            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+            .filter((q) => q.eq(q.field("_id"), args.id))
+            .first();
+
         if (!chat || chat.subject !== identity.subject) {
-            throw new Error("Chat not found");
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
         }
 
-        return await ctx.db.get(args.id);
+        return chat;
     },
 });
 
@@ -29,7 +41,11 @@ export const getLastChats = query({
     handler: async (ctx, { limit }) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new Error("User not authenticated");
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
         }
 
         const chats = await ctx.db
@@ -50,12 +66,20 @@ export const updateChatMessages = mutation({
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new Error("User not authenticated");
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
         }
 
         const chat = await ctx.db.get(args.id);
         if (!chat || chat.subject !== identity.subject) {
-            throw new Error("Chat not found");
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
         }
 
         chat.messages = args.messages;
@@ -77,12 +101,20 @@ export const updateChatStream = mutation({
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new Error("User not authenticated");
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
         }
 
         const chat = await ctx.db.get(args.id);
         if (!chat || chat.subject !== identity.subject) {
-            throw new Error("Chat not found");
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
         }
 
         chat.stream = args.stream;
@@ -101,12 +133,20 @@ export const finishChatStream = mutation({
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new Error("User not authenticated");
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
         }
 
         const chat = await ctx.db.get(args.id);
         if (!chat || chat.subject !== identity.subject) {
-            throw new Error("Chat not found");
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
         }
 
         chat.messages = args.messages;
@@ -127,12 +167,20 @@ export const updateChatTitle = mutation({
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new Error("User not authenticated");
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
         }
 
         const chat = await ctx.db.get(args.id);
         if (!chat || chat.subject !== identity.subject) {
-            throw new Error("Chat not found");
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
         }
 
         chat.title = args.title;
@@ -157,12 +205,17 @@ export const createEmptyChat = mutation({
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new Error("User not authenticated");
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
         }
 
+        const MAX_TITLE_LENGTH = 35;
+
         const chat = {
-            title: `${args.userInputMessage.slice(0, 35)}...`,
-            smallId: `CHAT-${generateId()}`,
+            title: `${args.userInputMessage.slice(0, MAX_TITLE_LENGTH)}...`,
             created_at_iso: new Date().toISOString(),
             created_at_ts: Date.now(),
             subject: identity.subject,
