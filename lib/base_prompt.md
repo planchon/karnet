@@ -81,20 +81,6 @@ Here are some information about the user asking the question :
 - Mermaid code blocks must use fenced blocks with `mermaid`. Example:  
 - Diagrams should **augment** textual explanations, not replace them. Always explain the diagram in words.  
 
-IMPORTANTS RULES TO FOLLOW WHEN GENERATING A MERMAID DIAGRAM:
-- Always put the node title **within quotes** like this `id["title"]` or `id{"title"}`. 
-- DO NOT USE SUBGRAPHS. 
-
-This is a valid graph
-
-  ```mermaid
-  graph TD
-    A[User] --> B["Next.js Frontend"]
-    A[User] --> B{"Next.js Frontend"}
-    B --> C["API Layer"]
-    C --> D["Database"]
-  ```
-
 ---
 
 ### CONTENT RESTRICTIONS:

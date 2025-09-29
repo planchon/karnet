@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { FocusManager } from '@/lib/focus-manager';
-import { ChatStore } from './chat.store';
-import { CommandStore } from './command.store';
-import { DiagramStore } from './diagram.store';
-import { PaperStore } from './paper.store';
-import { SettingsStore } from './settings.store';
-import { SketchesStore } from './skeches.store';
-import { TaskStore } from './task.store';
-import { UserStore } from './user.store';
-import { ViewStore } from './view.store';
+import { FocusManager } from "@/lib/focus-manager";
+import { ChatStore } from "./chat.store";
+import { CommandStore } from "./command.store";
+import { DiagramStore } from "./diagram.store";
+import { PaperStore } from "./paper.store";
+import { SettingsStore } from "./settings.store";
+import { SketchesStore } from "./skeches.store";
+import { TaskStore } from "./task.store";
+import { UserStore } from "./user.store";
+import { ViewStore } from "./view.store";
 
 export class RootStore {
     // data store
@@ -34,7 +34,7 @@ export class RootStore {
         this.sketchesStore = new SketchesStore(this);
         this.diagramStore = new DiagramStore(this);
         this.userStore = new UserStore(this);
-        this.taskStore = new TaskStore(this);
+        this.taskStore = new TaskStore();
         this.chatStore = new ChatStore();
         this.viewStore = new ViewStore(this);
 

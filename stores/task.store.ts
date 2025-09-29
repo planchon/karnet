@@ -1,35 +1,86 @@
 "use client";
 
-import z from "zod";
-import { TaskModel } from "@/models/task.model";
-import { AbstractStore } from "./abstract.store";
+import type { Dayjs } from "dayjs";
+import { makeAutoObservable } from "mobx";
 
-const ALL_TASKS_KEY = "p6n-all-tasks";
+export class TaskStore {
+    deadlineMatch: string | undefined = undefined;
+    deadline: Dayjs | undefined = undefined;
+    deadlineLabel: string | undefined = undefined;
 
-const taskMetadataSchema = z.object({
-	id: z.string(),
-});
+    priorityMatch: string | undefined = undefined;
+    priority: number | undefined = undefined;
 
-const taskMetadataArraySchema = z.array(taskMetadataSchema);
+    matchTags: string[] = [];
+    tags = "";
 
-export class TaskStore extends AbstractStore<TaskModel> {
-	store_key = ALL_TASKS_KEY;
-	store_name = "task";
-	smallId = "TASK";
+    title: string | undefined = undefined;
 
-	loadInMemory(id: string | undefined): TaskModel {
-		if (id === undefined) throw new Error("Id is undefined");
-		return new TaskModel({ id });
-	}
+    constructor() {
+        makeAutoObservable(this, {}, { autoBind: true });
+    }
 
-	createNewModel(id: string): TaskModel {
-		const task = new TaskModel({ id });
-		task.smallId = `TASK-${this.getLength() + 1}`;
+    reset() {
+        this.deadlineMatch = undefined;
+        this.deadline = undefined;
+        this.priorityMatch = undefined;
+        this.priority = undefined;
+        this.matchTags = [];
+        this.tags = "";
+        this.title = undefined;
+    }
 
-		task.save();
-		this.setModel(id, task);
-		this.save();
+    setTitle(title: string) {
+        this.title = title;
+    }
 
-		return task;
-	}
+    sanitizeTitle() {
+        if (!this.title) {
+            return;
+        }
+
+        let tmpTitle = this.title;
+        if (this.deadlineMatch) {
+            tmpTitle = tmpTitle.replaceAll(`${this.deadlineMatch}`, "");
+        }
+        if (this.priorityMatch) {
+            tmpTitle = tmpTitle.replaceAll(`p${this.priorityMatch}`, "");
+        }
+
+        for (const tag of this.matchTags) {
+            tmpTitle = tmpTitle.replaceAll(`#${tag}`, "");
+        }
+
+        return tmpTitle;
+    }
+
+    setDeadlineMatch(match: string) {
+        this.deadlineMatch = match;
+    }
+
+    setPriorityMatch(match: string) {
+        this.priorityMatch = match;
+    }
+
+    setMatchTags(tags: string[]) {
+        this.matchTags = tags;
+    }
+
+    setTags(tags: string) {
+        this.tags = tags;
+    }
+
+    setDeadline(deadline: Dayjs | undefined) {
+        this.deadline = deadline;
+    }
+
+    setPriority(priority: string | undefined) {
+        if (!priority) {
+            this.priority = undefined;
+            return;
+        }
+
+        const priorityNumber = Number.parseInt(priority, 10);
+        this.priority = priorityNumber;
+    }
 }

@@ -1,38 +1,31 @@
 import { observer } from "mobx-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from "@/primitive/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/primitive/ui/tooltip";
 
 type LabelProps = {
-  label: string;
-  icon: React.ElementType;
-  className?: string;
+    label: string;
+    icon: React.ElementType;
+    tooltip?: string;
+    className?: string;
 };
 
-export const Label = observer(function Label({
-  label,
-  icon: Icon,
-  className
-}: LabelProps) {
-  return (
-    <Tooltip>
-      <TooltipTrigger>
-        <div
-          className={cn(
-            "shadow-xs flex select-none flex-row items-center gap-1 rounded-full border py-1 pl-2 pr-3",
-            className
-          )}
-        >
-          <Icon className="size-4 text-gray-500" />
-          <span className="text-xs font-medium text-gray-500">{label}</span>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent side="bottom" className="m-1">
-        <span className="text-xs font-medium text-gray-500">{label}</span>
-      </TooltipContent>
-    </Tooltip>
-  );
+export const Label = observer(function LabelInner({ label, icon: Icon, className, tooltip }: LabelProps) {
+    return (
+        <Tooltip>
+            <TooltipTrigger>
+                <div
+                    className={cn(
+                        "flex select-none flex-row items-center gap-1 rounded-full border py-1 pr-3 pl-2 shadow-xs",
+                        className
+                    )}
+                >
+                    <Icon className="size-4 text-gray-500" />
+                    <span className="font-medium text-gray-500 text-xs">{label}</span>
+                </div>
+            </TooltipTrigger>
+            <TooltipContent className="m-1" side="bottom">
+                <span className="font-medium text-gray-500 text-xs">{tooltip ?? label}</span>
+            </TooltipContent>
+        </Tooltip>
+    );
 });

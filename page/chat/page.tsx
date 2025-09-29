@@ -16,6 +16,7 @@ import { useNavigate } from "react-router";
 import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,8 @@ export const NewChatPage = observer(function ChatPage() {
     const location = usePathname();
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
+
+    usePageTitle("New Chat - Karnet AI Assistant");
 
     const { messages, sendMessage, setMessages, stop, status } = useChat({
         // biome-ignore lint/style/useNamingConvention: i dont control the API
