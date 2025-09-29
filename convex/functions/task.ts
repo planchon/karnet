@@ -57,6 +57,7 @@ export const createTask = mutation({
             title: args.title,
             // the smallId is optimicly generated in the UI, but can be replaced by the backend
             smallId: `TASK-${newId}`,
+            type: "task" as const,
             priority: args.priority,
             status: args.status ?? "todo",
             deadline: args.deadline,

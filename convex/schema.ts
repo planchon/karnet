@@ -13,6 +13,7 @@ const baseViewItem = {
 const taskTable = defineTable({
     ...baseViewItem,
     title: v.string(),
+    type: v.literal("task"),
     smallId: v.string(),
     priority: v.number(),
     tags: v.array(v.string()),
