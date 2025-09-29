@@ -66,19 +66,25 @@ export default observer(() => {
             case "done":
                 updateTaskMutation({
                     id: item._id,
-                    status: "todo",
+                    patch: {
+                        status: "todo",
+                    },
                 });
                 break;
             case "in_progress":
                 updateTaskMutation({
                     id: item._id,
-                    status: "done",
+                    patch: {
+                        status: "done",
+                    },
                 });
                 break;
             case "todo":
                 updateTaskMutation({
                     id: item._id,
-                    status: "in_progress",
+                    patch: {
+                        status: "in_progress",
+                    },
                 });
                 break;
             default:
@@ -99,7 +105,9 @@ export default observer(() => {
         if (!priority) {
             updateTaskMutation({
                 id: item._id,
-                priority: 5,
+                patch: {
+                    priority: 5,
+                },
             });
             return;
         }
@@ -112,7 +120,9 @@ export default observer(() => {
 
         updateTaskMutation({
             id: item._id,
-            priority,
+            patch: {
+                priority,
+            },
         });
     });
 

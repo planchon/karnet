@@ -40,14 +40,17 @@ export class TaskStore {
 
         let tmpTitle = this.title;
         if (this.deadlineMatch) {
-            tmpTitle = tmpTitle.replaceAll(` ${this.deadlineMatch}`, "");
+            console.debug("deadlineMatch", this.deadlineMatch);
+            tmpTitle = tmpTitle.replaceAll(`${this.deadlineMatch}`, "");
         }
         if (this.priorityMatch) {
-            tmpTitle = tmpTitle.replaceAll(` ${this.priorityMatch}`, "");
+            console.debug("priorityMatch", this.priorityMatch);
+            tmpTitle = tmpTitle.replaceAll(`p${this.priorityMatch}`, "");
         }
 
         for (const tag of this.matchTags) {
-            tmpTitle = tmpTitle.replaceAll(` #${tag}`, "");
+            console.debug("tag", tag);
+            tmpTitle = tmpTitle.replaceAll(`#${tag}`, "");
         }
 
         return tmpTitle;

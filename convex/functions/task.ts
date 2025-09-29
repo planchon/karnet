@@ -1,5 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
+import type { Id } from "../_generated/dataModel";
 import { mutation, query } from "../_generated/server";
 
 export const getPaginatedTasks = query({
@@ -75,18 +76,24 @@ export const createTask = mutation({
     },
 });
 
-export const toggleTask = mutation({
+export const updateTask = mutation({
     args: {
-        id: v.id("tasks"),
+        id: v.string(),
+        patch: v.object({
+            title: v.optional(v.string()),
+            priority: v.optional(v.number()),
+            deadline: v.optional(v.number()),
+            deadlineLabel: v.optional(v.string()),
+            tags: v.optional(v.array(v.string())),
+            status: v.optional(status),
+            completed_at_iso: v.optional(v.string()),
+            completed_at_ts: v.optional(v.number()),
+        }),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
-            throw new ConvexError({
-                uniqueId: "TASK_0002",
-                httpStatusCode: 401,
-                message: "User not authenticated",
-            });
+            throw new Error("User not authenticated");
         }
 
         const task = await ctx.db
@@ -95,23 +102,40 @@ export const toggleTask = mutation({
             .filter((q) => q.eq(q.field("_id"), args.id))
             .first();
 
-        if (!task || task.subject !== identity.subject) {
-            throw new ConvexError({
-                uniqueId: "TASK_0001",
-                httpStatusCode: 404,
-                message: "Task not found",
-            });
+        if (!task) {
+            throw new Error("Task not found");
         }
-        if (task.completed_at_ts) {
-            await ctx.db.patch(args.id, {
-                completed_at_iso: undefined,
-                completed_at_ts: undefined,
-            });
-        } else {
-            await ctx.db.patch(args.id, {
-                completed_at_iso: new Date().toISOString(),
-                completed_at_ts: Date.now(),
-            });
+
+        const updatedTask = await ctx.db.patch(task._id as Id<"tasks">, {
+            ...args.patch,
+        });
+        return updatedTask;
+    },
+});
+
+export const toggleTask = mutation({
+    args: {
+        id: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new Error("User not authenticated");
         }
+
+        const task = await ctx.db
+            .query("tasks")
+            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+            .filter((q) => q.eq(q.field("_id"), args.id))
+            .first();
+
+        if (!task) {
+            throw new Error("Task not found");
+        }
+
+        const updatedTask = await ctx.db.patch(task._id as Id<"tasks">, {
+            completed_at_ts: task.completed_at_ts ? undefined : Date.now().valueOf(),
+        });
+        return updatedTask;
     },
 });
