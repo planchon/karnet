@@ -5,7 +5,8 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 const tenantId = "a6c41dba-22ed-4c7b-8df6-f56ce64deb71";
 const clientId = "e7f0e4a8-abbe-4c39-b12a-c5cce1fedc20";
 const redirectURI = encodeURI("http://localhost:3000/account/microsoft");
-const scope = "https://graph.microsoft.com/.default%20offline_access";
+const scope =
+  "User.Read%20Calendars.ReadWrite.Shared%20Calendars.ReadWrite%20email%20offline_access%20openid%20profile%20People.Read";
 
 export default function MicrosoftOAuth() {
   const navigate = useNavigate();

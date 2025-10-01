@@ -29,12 +29,6 @@ export async function POST(request: Request) {
     }
   );
 
-  // const handle = await tasks.trigger<typeof microsoftLogin>("microsoft-login", {
-  //   code,
-  //   jwtToken,
-  //   outlookConfigId: id,
-  // });
-
   const handle = await microsoftLogin.trigger(
     {
       code,
