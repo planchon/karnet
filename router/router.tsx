@@ -7,12 +7,14 @@ import { NewChatPage } from "@/page/chat/page";
 import DocumentPage from "@/page/document/page";
 import TaskPage from "@/page/task/page";
 import { GeneralOutlet } from "./outlet/general.outlet";
+import MicrosoftOAuth from "@/page/account/microsoft";
 
 export const GeneralAppRouter = () => (
     <LayoutGroup>
         <AnimatePresence mode="wait">
             <Routes>
                 <Route element={<GeneralOutlet />} path="/">
+                    <Route element={<MicrosoftOAuth />} path="/account/microsoft" />
                     <Route path="/chat/">
                         <Route element={<ChatWithIdPage />} path=":chatId" />
                         <Route element={<NewChatPage />} index />
