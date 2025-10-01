@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: false,
   webpack(config) {
     config.module.rules.push({
       test: /\.md/,
@@ -31,12 +32,12 @@ const nextConfig: NextConfig = {
           source: "/api/:path*",
           destination: "/api/:path*",
         },
+      ],
+      afterFiles: [
         {
           source: "/login(.*)",
           destination: "/login",
         },
-      ],
-      afterFiles: [
         {
           source: "/((?!api).*)",
           destination: "/",

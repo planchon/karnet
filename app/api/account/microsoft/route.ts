@@ -1,39 +1,52 @@
-import { auth } from "@clerk/nextjs/server";
+import { fetchMutation } from "convex/nextjs";
 import { NextResponse } from "next/server";
+import { api } from "@/convex/_generated/api";
+import { getSession } from "@/lib/session";
+import { microsoftLogin } from "@/trigger/account/microsoft";
 
-export async function GET(request: Request) {
-  const tenantId = "a6c41dba-22ed-4c7b-8df6-f56ce64deb71";
-  const clientId = "e7f0e4a8-abbe-4c39-b12a-c5cce1fedc20";
-  const clientSecret = process.env.MICROSOFT_CLIENT_SECRET;
+/**
+ * This will create a new outlook calendar config for the user
+ * and then run the microsoftLogin task to get the token and the refresh token
+ */
+export async function POST(request: Request) {
+  const { code } = await request.json();
 
-  const { userId } = await auth();
+  if (!code) {
+    return new NextResponse("Code is required", { status: 400 });
+  }
 
-  if (!userId) {
+  const jwtToken = await getSession();
+
+  if (!jwtToken) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
+  const { id } = await fetchMutation(
+    api.functions.calendar.config.outlook.createOutlookCalendarConfig,
+    {},
+    {
+      token: jwtToken,
+    }
+  );
 
-  if (!code) {
-    return new NextResponse("Bad Request", { status: 400 });
-  }
+  // const handle = await tasks.trigger<typeof microsoftLogin>("microsoft-login", {
+  //   code,
+  //   jwtToken,
+  //   outlookConfigId: id,
+  // });
 
-  const formData = new FormData();
-  formData.append("client_id", clientId);
-  formData.append("scope", "offline_access%20openid%20profile%20User.Read%20Calendars.ReadWrite");
-  formData.append("code", code);
-  formData.append("grant_type", "authorization_code");
-  formData.append("redirect_uri", "http://localhost:3000/account/microsoft");
-  formData.append("client_secret", clientSecret as string);
+  const handle = await microsoftLogin.trigger(
+    {
+      code,
+      jwtToken,
+      outlookConfigId: id,
+    },
+    {
+      maxAttempts: 1,
+    }
+  );
 
-  console.log("getting token for code", code);
+  console.log("Microsoft login task triggered", { id, handle });
 
-  const req = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
-    method: "POST",
-    body: formData,
-  });
-
-  const data = await req.json();
-  console.log("token data", data);
+  return new NextResponse("OK", { status: 200 });
 }

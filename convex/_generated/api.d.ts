@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as functions_calendar_config_outlook from "../functions/calendar/config/outlook.js";
 import type * as functions_chat from "../functions/chat.js";
 import type * as functions_task from "../functions/task.js";
 
@@ -25,6 +26,7 @@ import type * as functions_task from "../functions/task.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "functions/calendar/config/outlook": typeof functions_calendar_config_outlook;
   "functions/chat": typeof functions_chat;
   "functions/task": typeof functions_task;
 }>;
