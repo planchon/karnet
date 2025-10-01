@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         return new Promise((resolve) => {
             resolve([
                 {
+                    source: "/.well-known/microsoft-identity-association.json",
+                    destination: "/api/azure/verify",
+                },
+                {
                     source: "/login(.*)",
                     destination: "/login",
                 },
