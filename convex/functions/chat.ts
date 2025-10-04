@@ -51,8 +51,8 @@ export const getLastChats = query({
         // we dont want to get the "New chat..." in the chat
         const chats = await ctx.db
             .query("chats")
-            .filter((q) => q.eq(q.field("subject"), identity.subject))
-            .filter((q) => q.not(q.field("is_new")))
+            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+            .filter((q) => q.not(q.eq(q.field("is_new"), true)))
             .order("desc")
             .take(limit);
 
