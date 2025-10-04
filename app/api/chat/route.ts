@@ -1,3 +1,4 @@
+import { withTracing } from "@posthog/ai";
 import * as Sentry from "@sentry/nextjs";
 import { geolocation } from "@vercel/functions";
 import { convertToModelMessages, generateId, generateText, smoothStream, streamText } from "ai";
@@ -9,6 +10,7 @@ import { supportedModels } from "@/ai/models";
 import type { ChatUIMessage } from "@/components/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { phClient } from "@/lib/posthog";
 import { generatePrompt } from "@/lib/prompt";
 import { getSession } from "@/lib/session";
 
@@ -57,13 +59,15 @@ export async function POST(req: Request) {
 
             const openRouter = openRouterGateway();
 
+            const _model = withTracing(openRouter(webSearch ? `${model.id}:online` : model.id), phClient, {});
+
             const geo = geolocation(req);
             const geoString = geo.city ? `${geo.city}, ${geo.country}` : "Paris France";
 
             const prompt = generatePrompt(model.name, new Date().toLocaleString(), geoString);
 
             const res = streamText({
-                model: openRouter(webSearch ? `${model.id}:online` : model.id),
+                model: _model,
                 system: prompt,
                 messages: convertToModelMessages(messages),
                 experimental_transform: smoothStream({ chunking: "word" }),
@@ -158,8 +162,17 @@ export async function POST(req: Request) {
                                 async (titleSpan) => {
                                     // generate a title for the chat
                                     const titlePrompt = `Generate a title for the chat based on the following messages (put an emoji at the beginning, keep the title short): ${JSON.stringify(preparedMessages)}`;
+                                    const _modelTitle = withTracing(
+                                        openRouter("google/gemini-2.5-flash-lite"),
+                                        phClient,
+                                        {
+                                            posthogProperties: {
+                                                is_generating_title: true,
+                                            },
+                                        }
+                                    );
                                     const title = await generateText({
-                                        model: openRouter("google/gemini-2.5-flash-lite"),
+                                        model: _modelTitle,
                                         prompt: titlePrompt,
                                     });
 
