@@ -29,10 +29,7 @@ export const microsoftLogin = task({
 
     const formData = new FormData();
     formData.append("client_id", clientId);
-    formData.append(
-      "scope",
-      "https://graph.microsoft.com/User.Read https://graph.microsoft.com/Calendars.ReadWrite offline_access"
-    );
+    formData.append("scope", "https://graph.microsoft.com/.default offline_access");
     formData.append("code", payload.code);
     formData.append("grant_type", "authorization_code");
     formData.append("redirect_uri", "http://localhost:3000/account/microsoft");
