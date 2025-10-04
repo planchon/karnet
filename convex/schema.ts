@@ -44,6 +44,7 @@ const chatTable = defineTable({
     smallId: v.optional(v.string()),
     messages: v.array(chatMessage),
     parent_id: v.optional(v.id("chats")),
+    is_new: v.optional(v.boolean()),
     // for the resumable stream option
     stream: v.object({
         status: v.union(v.literal("active"), v.literal("inactive"), v.literal("error"), v.literal("starting")),

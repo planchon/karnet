@@ -79,7 +79,7 @@ export async function POST(req: Request) {
                 },
                 async () => {
                     fetchMutation(
-                        api.functions.chat.updateChatMessages,
+                        api.functions.chat.updateChat,
                         {
                             id: chatId as Id<"chats">,
                             messages: messages.map((m) => ({
