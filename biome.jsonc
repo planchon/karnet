@@ -3,12 +3,16 @@
   "extends": ["ultracite"],
   "linter": {
     "rules": {
+      "performance": {
+        "noNamespaceImport": "off"
+      },
       "style": {
         "useNamingConvention": "off",
         "noMagicNumbers": "off"
       },
       "suspicious": {
         "noConsole": {
+          "level": "info",
           "options": {
             "allow": ["assert", "error", "info", "warn"]
           }

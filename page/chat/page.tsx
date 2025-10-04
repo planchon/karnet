@@ -12,25 +12,24 @@ import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useNavigate } from "react-router";
 import { Chat } from "@/components/chat";
 import { ConversationComp } from "@/components/conversation/conversation";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 
 export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();
-    const navigate = useNavigate();
     const location = usePathname();
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
+    const chatId = useRef<Id<"chats"> | null>(null);
 
     usePageTitle("New Chat - Karnet AI Assistant");
 
     const { messages, sendMessage, setMessages, stop, status } = useChat({
-        // biome-ignore lint/style/useNamingConvention: i dont control the API
         experimental_throttle: 200,
     });
 
@@ -44,6 +43,17 @@ export const NewChatPage = observer(function ChatPage() {
             setMessages([]);
         }
     }, [location, stop, setMessages]);
+
+    // we get the "New chat" from the user when the page is loaded.
+    // that way we dont have to wait when a message is sent
+    useEffect(() => {
+        const fetchChat = async () => {
+            const newChat = await createEmptyChat();
+            const id = newChat._id;
+            chatId.current = id;
+        };
+        fetchChat();
+    }, [createEmptyChat]);
 
     useHotkeys("t", () => {
         editorRef.current?.commands.focus();
@@ -60,6 +70,7 @@ export const NewChatPage = observer(function ChatPage() {
             !chatStore.dropdownOpen
         ) {
             e.preventDefault();
+
             onSend();
         }
     };
@@ -72,7 +83,13 @@ export const NewChatPage = observer(function ChatPage() {
         };
     }, []);
 
-    const onSend = async () => {
+    // we try to not block anything on the UI thread
+    // we want to have the message rendered immediately
+    const onSend = () => {
+        if (!chatId.current) {
+            return;
+        }
+
         setInputPosition("bottom");
 
         const text = editorRef.current?.getText();
@@ -90,29 +107,21 @@ export const NewChatPage = observer(function ChatPage() {
 
         const streamId = generateId();
 
-        const chat = await createEmptyChat({
-            model: {
-                id: chatStore.selectedModel.id,
-                name: chatStore.selectedModel.name,
-                provider: chatStore.selectedModel.provider,
-            },
-            userInputMessage: text,
-            streamId,
-        });
-
         sendMessage(
             { text },
             {
                 body: {
                     modelId: chatStore.selectedModel.id,
-                    chatId: chat._id,
+                    chatId: chatId.current,
                     streamId,
                     webSearch: chatStore.selectedMcp === "search",
                 },
             }
         );
 
-        navigate(`/chat/${chat._id}`, { replace: true });
+        // replace the url without navigate because we dont want to trigger a re-render
+        // this would trigger flickering on the messages
+        window.history.replaceState({}, "", `/chat/${chatId.current}`);
     };
 
     return (
@@ -144,7 +153,11 @@ export const NewChatPage = observer(function ChatPage() {
                                 <Chat.MCPSelect editorRef={editorRef} />
                             </div>
                             <div className="pb-2">
-                                <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>
+                                <Button
+                                    className="h-8 rounded-sm pr-[6px]! pl-[8px]!"
+                                    disabled={!chatId.current}
+                                    onClick={() => onSend()}
+                                >
                                     <IconSend className="size-4" />
                                     Send
                                     <Shortcut nothen shortcut={["⌘", "↵"]} />

@@ -48,9 +48,11 @@ export const getLastChats = query({
             });
         }
 
+        // we dont want to get the "New chat..." in the chat
         const chats = await ctx.db
             .query("chats")
             .filter((q) => q.eq(q.field("subject"), identity.subject))
+            .filter((q) => q.not(q.field("is_new")))
             .order("desc")
             .take(limit);
 
@@ -58,7 +60,7 @@ export const getLastChats = query({
     },
 });
 
-export const updateChatMessages = mutation({
+export const updateChat = mutation({
     args: {
         id: v.id("chats"),
         messages: v.array(chatMessage),
@@ -83,6 +85,7 @@ export const updateChatMessages = mutation({
         }
 
         chat.messages = args.messages;
+        chat.is_new = false;
 
         await ctx.db.patch(args.id, chat);
 
@@ -193,16 +196,8 @@ export const updateChatTitle = mutation({
 
 // this function is used to create an id
 export const createEmptyChat = mutation({
-    args: {
-        model: v.object({
-            id: v.string(),
-            name: v.string(),
-            provider: v.string(),
-        }),
-        userInputMessage: v.string(),
-        streamId: v.string(),
-    },
-    handler: async (ctx, args) => {
+    args: {},
+    handler: async (ctx) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
             throw new ConvexError({
@@ -212,26 +207,25 @@ export const createEmptyChat = mutation({
             });
         }
 
-        const MAX_TITLE_LENGTH = 35;
+        // see if we have a new chat
+        const newChat = await ctx.db
+            .query("chats")
+            .filter((q) => q.eq(q.field("is_new"), true))
+            .filter((q) => q.eq(q.field("subject"), identity.subject))
+            .first();
+
+        if (newChat) {
+            return newChat;
+        }
 
         const chat = {
-            title: `${args.userInputMessage.slice(0, MAX_TITLE_LENGTH)}...`,
+            title: "New chat...",
             created_at_iso: new Date().toISOString(),
+            is_new: true,
             created_at_ts: Date.now(),
             subject: identity.subject,
             is_deleted: false,
-            messages: [
-                {
-                    role: "user" as const,
-                    parts: JSON.stringify([
-                        {
-                            type: "text" as const,
-                            text: args.userInputMessage,
-                        },
-                    ]),
-                    id: "",
-                },
-            ],
+            messages: [],
             stream: {
                 status: "starting" as const,
             },

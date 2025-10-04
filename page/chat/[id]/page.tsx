@@ -39,8 +39,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
 
     const { messages, sendMessage, setMessages, status } = useChat({
         id: chatId as Id<"chats">,
-        resume: chat.data?.stream.status === "active",
-        // biome-ignore lint/style/useNamingConvention: i dont control the API
+        resume: true,
         experimental_throttle: 200,
     });
 
@@ -52,6 +51,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 parts: JSON.parse(m.parts),
                 metadata: m.metadata ? JSON.parse(m.metadata) : undefined,
             }));
+            console.log("setting messages");
             setMessages(parsedMessage);
         }
     }, [chat.data, setMessages]);

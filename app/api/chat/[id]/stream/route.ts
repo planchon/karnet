@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { UI_MESSAGE_STREAM_HEADERS } from "ai";
 import { fetchQuery } from "convex/nextjs";
 import { after } from "next/server";
@@ -7,49 +8,72 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { getSession } from "@/lib/session";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-
-    console.log("[Stream] getting chat", id);
-
-    const tokenRes = await getSession();
-
-    if (!tokenRes) {
-        return new Response("Unauthorized", { status: 401 });
-    }
-
-    const chat = await fetchQuery(
-        api.functions.chat.getChat,
+    return await Sentry.startSpan(
         {
-            id: id as Id<"chats">,
+            name: "GET /api/chat/[id]/stream",
+            op: "http.server",
         },
-        {
-            token: tokenRes,
+        async (span) => {
+            const { id } = await params;
+
+            span.setAttributes({
+                chatId: id,
+            });
+
+            const tokenRes = await getSession();
+
+            if (!tokenRes) {
+                span.setStatus({ code: 1, message: "Unauthorized" });
+                return new Response("Unauthorized", { status: 401 });
+            }
+
+            const chat = await Sentry.startSpan(
+                {
+                    name: "fetchQuery getChat",
+                    op: "db.query",
+                },
+                async (querySpan) => {
+                    querySpan.setAttributes({
+                        function: "api.functions.chat.getChat",
+                        chatId: id,
+                    });
+
+                    return await fetchQuery(
+                        api.functions.chat.getChat,
+                        {
+                            id: id as Id<"chats">,
+                        },
+                        {
+                            token: tokenRes,
+                        }
+                    );
+                }
+            );
+
+            if (!chat) {
+                span.setStatus({ code: 1, message: "Chat not found" });
+                return new Response("Chat not found", { status: 404 });
+            }
+
+            span.setAttributes({
+                streamStatus: chat.stream.status,
+                streamId: chat.stream.id,
+            });
+
+            if (chat.stream.status !== "active" || !chat.stream.id) {
+                // no content response when there is no active stream
+                span.setStatus({ code: 0, message: "No active stream" });
+                return new Response(null, { status: 204 });
+            }
+
+            const streamContext = createResumableStreamContext({
+                waitUntil: after,
+            });
+
+            span.setStatus({ code: 0, message: "Stream resumed successfully" });
+            return new Response(await streamContext.resumeExistingStream(chat.stream.id), {
+                headers: UI_MESSAGE_STREAM_HEADERS,
+            });
         }
     );
-
-    if (!chat) {
-        return new Response("Chat not found", { status: 404 });
-    }
-
-    if (chat.stream.status !== "active" || !chat.stream.id) {
-        console.log("[Stream] no active stream", {
-            status: chat.stream.status,
-            streamId: chat.stream.id,
-            chatId: chat._id,
-        });
-        // no content response when there is no active stream
-        return new Response(null, { status: 204 });
-    }
-
-    console.log("[Stream] resuming stream", {
-        id: chat.stream.id,
-    });
-
-    const streamContext = createResumableStreamContext({
-        waitUntil: after,
-    });
-
-    return new Response(await streamContext.resumeExistingStream(chat.stream.id), {
-        headers: UI_MESSAGE_STREAM_HEADERS,
-    });
 }
