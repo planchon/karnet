@@ -254,6 +254,9 @@ importers:
       framer-motion:
         specifier: ^12.23.6
         version: 12.23.9(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      import-in-the-middle:
+        specifier: ^1.14.4
+        version: 1.14.4
       js-md5:
         specifier: ^0.8.3
         version: 0.8.3
@@ -347,6 +350,9 @@ importers:
       remeda:
         specifier: ^2.26.1
         version: 2.26.1
+      require-in-the-middle:
+        specifier: ^8.0.0
+        version: 8.0.0
       resumable-stream:
         specifier: ^2.2.4
         version: 2.2.4
@@ -7777,6 +7783,10 @@ packages:
   require-in-the-middle@7.5.2:
     resolution: {integrity: sha512-gAZ+kLqBdHarXB64XpAe2VCjB7rIRv+mU8tfRWziHRJ5umKsIHN2tLLv6EtMw7WCdP19S0ERVMldNvxYCHnhSQ==}
     engines: {node: '>=8.6.0'}
+
+  require-in-the-middle@8.0.0:
+    resolution: {integrity: sha512-9s0pnM5tH8G4dSI3pms2GboYOs25LwOGnRMxN/Hx3TYT1K0rh6OjaWf4dI0DAQnMyaEXWoGVnSTPQasqwzTTAA==}
+    engines: {node: '>=9.3.0 || >=8.10.0 <9.0.0'}
 
   reselect@5.1.1:
     resolution: {integrity: sha512-K/BG6eIky/SBpzfHZv/dd+9JBFiS4SWV7FIujVyJRux6e45+73RaUHXLmIR1f7WOMaQ0U1km6qwklRQxpJJY0w==}
@@ -16814,6 +16824,13 @@ snapshots:
       debug: 4.4.1
       module-details-from-path: 1.0.4
       resolve: 1.22.10
+    transitivePeerDependencies:
+      - supports-color
+
+  require-in-the-middle@8.0.0:
+    dependencies:
+      debug: 4.4.1
+      module-details-from-path: 1.0.4
     transitivePeerDependencies:
       - supports-color
 
