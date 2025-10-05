@@ -5,7 +5,7 @@ import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList, CommandS
 import { Command as Cmd } from "cmdk";
 import React, { useEffect, useState } from "react";
 import { FaImage, FaInternetExplorer, FaReact } from "react-icons/fa";
-import { commands } from "@/data/tools";
+import { commands } from "@/ai/tools";
 
 export const ToolsSuggestion = [
     {

@@ -7,7 +7,7 @@ import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
 import { openRouterGateway } from "@/ai/gateway";
 import { supportedModels } from "@/ai/models";
-import type { ChatUIMessage } from "@/components/chat/chat.types";
+import type { ChatUIMessage } from "@/components/ai/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { phClient } from "@/lib/posthog";

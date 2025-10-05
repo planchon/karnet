@@ -16,7 +16,7 @@ import { observer } from "mobx-react";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from "@/ai/models";
-import { commands } from "@/data/tools";
+import { commands } from "@/ai/tools";
 import { useStores } from "@/hooks/useStores";
 import { capitalize, cn } from "@/lib/utils";
 import { RewriteEnter } from "./extensions/enter";
