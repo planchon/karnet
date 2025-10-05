@@ -24,7 +24,7 @@ import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/primitive/ui
 import { Switch } from "@/primitive/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/primitive/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../../primitive/super-ui/select";
-import { TaskInputComp } from "../task-input/task-input.comp";
+import { TaskInputComp } from "../task/task-input.comp";
 
 const PRIORITY_DEFAULT = 4;
 

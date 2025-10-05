@@ -14,11 +14,12 @@ import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
-import { Loader } from "@/components/ai-elements/loader";
-import { Chat } from "@/components/chat";
-import { ConversationComp } from "@/components/conversation/conversation";
+import { Loader } from "@/components/ai/ai-elements/loader";
+import { Chat } from "@/components/ai/chat";
+import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 
@@ -28,6 +29,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
     const { chatId } = useParams();
     const { chatStore } = useStores();
     const editorRef = useRef<Editor | null>(null);
+    const { models } = useModels();
     const chat = useQuery({
         ...convexQuery(api.functions.chat.getChat, {
             id: chatId as Id<"chats">,
@@ -35,7 +37,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || "null"),
     });
 
-    usePageTitle(`My Chat: ${chat.data?.title} - Karnet AI Assistant`);
+    usePageTitle(`${chat.data?.title} - Karnet AI Assistant`);
 
     const { messages, sendMessage, setMessages, status } = useChat({
         id: chatId as Id<"chats">,
@@ -51,7 +53,6 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 parts: JSON.parse(m.parts),
                 metadata: m.metadata ? JSON.parse(m.metadata) : undefined,
             }));
-            console.log("setting messages");
             setMessages(parsedMessage);
         }
     }, [chat.data, setMessages]);
@@ -87,6 +88,13 @@ export const ChatWithIdPage = observer(function ChatPage() {
     }, []);
 
     const onSend = () => {
+        const model = chatStore.selectedModel || models.find((m) => m.default);
+        if (!model) {
+            // biome-ignore lint/suspicious/noAlert: please
+            alert("Please select a model");
+            return;
+        }
+
         const text = editorRef.current?.getText();
         if (!text) {
             // biome-ignore lint/suspicious/noAlert: alert is used for UX
@@ -106,7 +114,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
             { text },
             {
                 body: {
-                    modelId: chatStore.selectedModel.id,
+                    model,
                     chatId: chatId as Id<"chats">,
                     streamId,
                     webSearch: chatStore.selectedMcp === "search",

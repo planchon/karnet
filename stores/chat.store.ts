@@ -1,12 +1,15 @@
 "use client";
 
 import { action, makeObservable, observable } from "mobx";
-import { defaultModel, type GeneralKarnetModel } from "@/ai/models";
+import type { KarnetModel } from "@/hooks/useModels";
 
 export class ChatStore {
     dropdownOpen = false;
-    selectedModel: GeneralKarnetModel = defaultModel;
+
+    selectedModel: KarnetModel | null = null;
     selectedMcp: string | null = null;
+
+    availableModels: KarnetModel[] = [];
 
     constructor() {
         makeObservable(this, {
@@ -19,8 +22,7 @@ export class ChatStore {
         });
     }
 
-    setModel(model: GeneralKarnetModel) {
-        console.log("[ChatStore] setting model", model);
+    setModel(model: KarnetModel) {
         this.selectedModel = model;
     }
 

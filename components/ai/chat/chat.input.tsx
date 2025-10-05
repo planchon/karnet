@@ -1,6 +1,5 @@
 "use client";
 
-import { MCP } from "@lobehub/icons";
 import Document from "@tiptap/extension-document";
 import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -15,8 +14,9 @@ import { Wrench } from "lucide-react";
 import { observer } from "mobx-react";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from "@/ai/models";
-import { commands } from "@/data/tools";
+import { ProviderIcons } from "@/ai/models";
+import { commands } from "@/ai/tools";
+import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
 import { capitalize, cn } from "@/lib/utils";
 import { RewriteEnter } from "./extensions/enter";
@@ -31,6 +31,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
 }) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
+    const { models } = useModels();
 
     useHotkeys(
         "m",
@@ -44,19 +45,32 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
         }
     );
 
-    function handleSelect(value: GeneralKarnetModel) {
+    function handleSelect(value: KarnetModel) {
         chatStore.setModel(value);
         setOpen(false);
         chatStore.setDropdownOpen(false);
         editorRef.current?.commands.focus();
     }
 
+    const groupedByProvider = models
+        .filter((model) => model.active)
+        .reduce(
+            (acc, model) => {
+                acc[model.provider] = acc[model.provider] || [];
+                acc[model.provider].push(model);
+                return acc;
+            },
+            {} as Record<string, KarnetModel[]>
+        );
+
+    const defaultModel = models.find((model) => model.default);
+
     return (
         <Popover onOpenChange={setOpen} open={open}>
             <PopoverTrigger asChild className="outline-none ring-0">
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
-                    <ProviderIcons provider={chatStore.selectedModel?.provider || ""} />
-                    {chatStore.selectedModel ? chatStore.selectedModel.name : "Model"}
+                    <ProviderIcons provider={chatStore.selectedModel?.provider || defaultModel?.provider || ""} />
+                    {chatStore.selectedModel ? chatStore.selectedModel.name : defaultModel?.name || "No model selected"}
                     <Shortcut shortcut={["M"]} />
                 </Button>
             </PopoverTrigger>
@@ -65,9 +79,9 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
                     <CommandInput placeholder="Search model..." />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
                         <CommandEmpty>No model found.</CommandEmpty>
-                        {Object.entries(groupedByProvider).map(([provider, models]) => (
+                        {Object.entries(groupedByProvider).map(([provider, providerModels]) => (
                             <CommandGroup heading={capitalize(provider)} key={provider}>
-                                {models.map((m) => (
+                                {providerModels.map((m) => (
                                     <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
                                         <ProviderIcons provider={provider} />
                                         {m.name}
@@ -199,15 +213,19 @@ export const ChatInput = observer(function ChatInputInside({
                         char: "/",
                         render: () =>
                             renderItems(ToolsSuggestionComponent, (props: { id?: string }) => {
-                                if (!props.id) return;
+                                if (!props.id) {
+                                    return;
+                                }
                                 chatStore.setMcp(props.id);
                             }),
                     },
                     {
                         char: "@",
                         render: () =>
-                            renderItems(ModelSuggestionComponent, (props: { model?: GeneralKarnetModel }) => {
-                                if (!props.model) return;
+                            renderItems(ModelSuggestionComponent, (props: { model?: KarnetModel }) => {
+                                if (!props.model) {
+                                    return;
+                                }
                                 chatStore.setModel(props.model);
                             }),
                     },

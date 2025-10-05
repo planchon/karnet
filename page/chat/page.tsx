@@ -12,10 +12,11 @@ import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Chat } from "@/components/chat";
-import { ConversationComp } from "@/components/conversation/conversation";
+import { Chat } from "@/components/ai/chat";
+import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ export const NewChatPage = observer(function ChatPage() {
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
     const chatId = useRef<Id<"chats"> | null>(null);
+    const { models } = useModels();
 
     usePageTitle("New Chat - Karnet AI Assistant");
 
@@ -90,6 +92,13 @@ export const NewChatPage = observer(function ChatPage() {
             return;
         }
 
+        const model = chatStore.selectedModel || models.find((m) => m.default);
+        if (!model) {
+            // biome-ignore lint/suspicious/noAlert: please
+            alert("Please select a model");
+            return;
+        }
+
         setInputPosition("bottom");
 
         const text = editorRef.current?.getText();
@@ -111,7 +120,7 @@ export const NewChatPage = observer(function ChatPage() {
             { text },
             {
                 body: {
-                    modelId: chatStore.selectedModel.id,
+                    model,
                     chatId: chatId.current,
                     streamId,
                     webSearch: chatStore.selectedMcp === "search",
