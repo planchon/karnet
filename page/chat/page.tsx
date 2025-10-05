@@ -90,6 +90,12 @@ export const NewChatPage = observer(function ChatPage() {
             return;
         }
 
+        if (!chatStore.selectedModel) {
+            // biome-ignore lint/suspicious/noAlert: please
+            alert("Please select a model");
+            return;
+        }
+
         setInputPosition("bottom");
 
         const text = editorRef.current?.getText();

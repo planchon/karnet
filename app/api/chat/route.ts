@@ -5,22 +5,31 @@ import { convertToModelMessages, generateId, generateText, smoothStream, streamT
 import { fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
+import { z } from "zod";
 import { openRouterGateway } from "@/ai/gateway";
+import { OpenRouterModelSchema } from "@/ai/schema/model";
 import type { ChatUIMessage } from "@/components/ai/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import type { KarnetModel } from "@/hooks/useModels";
 import { phClient } from "@/lib/posthog";
 import { generatePrompt } from "@/lib/prompt";
 import { getSession } from "@/lib/session";
 
-type BodyData = {
-    messages: ChatUIMessage[];
-    chatId: string;
-    model: KarnetModel;
-    streamId: string;
-    webSearch?: boolean;
-};
+const bodySchema = z.object({
+    messages: z.array(z.any()).transform((messages) => messages as ChatUIMessage[]),
+    chatId: z.string(),
+    streamId: z.string(),
+    webSearch: z.boolean().optional(),
+    model: OpenRouterModelSchema,
+});
+
+// type BodyData = {
+//     messages: ChatUIMessage[];
+//     chatId: string;
+//     model: KarnetModel;
+//     streamId: string;
+//     webSearch?: boolean;
+// };
 
 export async function POST(req: Request) {
     return await Sentry.startSpan(
@@ -33,7 +42,10 @@ export async function POST(req: Request) {
                 // start by getting the token async
                 getSession();
 
-                const { messages, model, chatId, streamId, webSearch } = (await req.json()) as BodyData;
+                const body = await req.json();
+                console.log("body", body);
+
+                const { messages, model, chatId, streamId, webSearch } = bodySchema.parse(body);
 
                 span.setAttributes({
                     modelId: model.id,

@@ -86,6 +86,12 @@ export const ChatWithIdPage = observer(function ChatPage() {
     }, []);
 
     const onSend = () => {
+        if (!chatStore.selectedModel) {
+            // biome-ignore lint/suspicious/noAlert: please
+            alert("Please select a model");
+            return;
+        }
+
         const text = editorRef.current?.getText();
         if (!text) {
             // biome-ignore lint/suspicious/noAlert: alert is used for UX
