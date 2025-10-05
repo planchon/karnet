@@ -29,24 +29,18 @@ export const providerIcons = {
     alibaba: Alibaba,
     anthropic: Anthropic,
     azure: Azure,
-    baseten: Baseten,
     bedrock: Bedrock,
     cohere: Cohere,
-    deepinfra: DeepInfra,
     deepseek: DeepSeek,
-    fireworks: Fireworks,
     google: Google,
     groq: Groq,
     mistral: Mistral,
-    novita: Novita,
     openai: OpenAI,
-    parasail: Parasail,
     perplexity: Perplexity,
     vercel: Vercel,
     vertex: VertexAI,
-    voyage: Voyage,
-    xai: XAI,
-    zai: ZAI,
+    "x-ai": XAI,
+    "z-ai": ZAI,
 };
 
 export type Provider = keyof typeof providerIcons;
@@ -63,20 +57,48 @@ export const ProviderIcons = ({ provider, ...props }: { provider: string } & HTM
 export type GeneralKarnetModel = {
     name: string;
     id: string;
+    description: string;
     provider: Provider;
+    metadata?: {
+        ai: {
+            context: string;
+            max_output: string;
+        };
+        cost: {
+            input: number;
+            output: number;
+            cache_read: number;
+            cache_write: number;
+        };
+    };
 };
 
 export const supportedModels: GeneralKarnetModel[] = [
     // google models
+    {
+        id: "x-ai/grok-4-fast",
+        name: "xAI: Grok 4 Fast",
+        provider: "xai",
+    },
+    {
+        name: "Gemini 2.5 Flash",
+        id: "google/gemini-2.5-flash",
+        provider: "google",
+    },
     {
         name: "Gemini 2.5 Lite",
         id: "google/gemini-2.5-flash-lite",
         provider: "google",
     },
     {
-        name: "Gemini 2.5 Flash",
-        id: "google/gemini-2.5-flash",
-        provider: "google",
+        id: "x-ai/grok-code-fast-1",
+        name: "xAI: Grok Code Fast",
+        provider: "xai",
+    },
+    {
+        id: "z-ai/glm-4.6",
+        name: "Z-AI: GLM 4.6",
+        provider: "zai",
     },
     {
         id: "google/gemini-2.5-pro",
@@ -85,56 +107,11 @@ export const supportedModels: GeneralKarnetModel[] = [
     },
     // xai models
     {
-        id: "x-ai/grok-3-mini",
-        name: "xAI: Grok 3 Mini",
-        provider: "xai",
-    },
-    {
-        id: "x-ai/grok-3",
-        name: "xAI: Grok 3",
-        provider: "xai",
-    },
-    {
         id: "x-ai/grok-4",
         name: "xAI: Grok 4",
         provider: "xai",
     },
-    {
-        id: "x-ai/grok-code-fast-1",
-        name: "xAI: Grok Code Fast",
-        provider: "xai",
-    },
-    {
-        id: "x-ai/grok-4-fast:free",
-        name: "xAI: Grok 4 Fast free",
-        provider: "xai",
-    },
-    {
-        id: "x-ai/grok-4-fast",
-        name: "xAI: Grok 4 Fast",
-        provider: "xai",
-    },
     // open ai
-    {
-        id: "openai/o4-mini-high",
-        name: "OpenAI: o4 Mini High",
-        provider: "openai",
-    },
-    {
-        id: "openai/o4-mini",
-        name: "OpenAI: o4 Mini High",
-        provider: "openai",
-    },
-    {
-        id: "openai/o3-mini-high",
-        name: "OpenAI: o3 Mini High",
-        provider: "openai",
-    },
-    {
-        id: "openai/o3",
-        name: "OpenAI: o3",
-        provider: "openai",
-    },
     {
         id: "openai/gpt-5-chat",
         name: "OpenAI: GPT-5 Chat",

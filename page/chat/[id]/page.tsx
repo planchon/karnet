@@ -35,7 +35,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || "null"),
     });
 
-    usePageTitle(`My Chat: ${chat.data?.title} - Karnet AI Assistant`);
+    usePageTitle(`${chat.data?.title} - Karnet AI Assistant`);
 
     const { messages, sendMessage, setMessages, status } = useChat({
         id: chatId as Id<"chats">,
@@ -51,7 +51,6 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 parts: JSON.parse(m.parts),
                 metadata: m.metadata ? JSON.parse(m.metadata) : undefined,
             }));
-            console.log("setting messages");
             setMessages(parsedMessage);
         }
     }, [chat.data, setMessages]);
@@ -106,7 +105,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
             { text },
             {
                 body: {
-                    modelId: chatStore.selectedModel.id,
+                    model: chatStore.selectedModel,
                     chatId: chatId as Id<"chats">,
                     streamId,
                     webSearch: chatStore.selectedMcp === "search",

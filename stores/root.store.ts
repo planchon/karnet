@@ -38,7 +38,7 @@ export class RootStore {
         this.chatStore = new ChatStore();
         this.viewStore = new ViewStore(this);
 
-        this.settingsStore = new SettingsStore(this);
+        this.settingsStore = new SettingsStore();
         this.commandStore = new CommandStore(this);
 
         this.focusManager = new FocusManager();

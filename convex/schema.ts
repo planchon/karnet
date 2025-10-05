@@ -56,7 +56,16 @@ const chatTable = defineTable({
     .index("by_updated_at", ["updated_at_ts"])
     .index("by_subject", ["subject"]);
 
+const modelTable = defineTable({
+    subject: v.string(),
+    model_id: v.string(),
+    name: v.string(),
+    provider: v.string(),
+    features: v.array(v.string()),
+}).index("by_subject", ["subject"]);
+
 export default defineSchema({
     tasks: taskTable,
     chats: chatTable,
+    models: modelTable,
 });

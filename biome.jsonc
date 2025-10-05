@@ -6,6 +6,11 @@
       "performance": {
         "noNamespaceImport": "off"
       },
+      "a11y": {
+        "useSemanticElements": "off",
+        "useKeyWithClickEvents": "off",
+        "noNoninteractiveElementInteractions": "off"
+      },
       "style": {
         "useNamingConvention": "off",
         "noMagicNumbers": "off"

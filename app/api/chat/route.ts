@@ -10,6 +10,7 @@ import { supportedModels } from "@/ai/models";
 import type { ChatUIMessage } from "@/components/ai/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import type { KarnetModel } from "@/hooks/useModels";
 import { phClient } from "@/lib/posthog";
 import { generatePrompt } from "@/lib/prompt";
 import { getSession } from "@/lib/session";
@@ -17,7 +18,7 @@ import { getSession } from "@/lib/session";
 type BodyData = {
     messages: ChatUIMessage[];
     chatId: string;
-    modelId: string;
+    model: KarnetModel;
     streamId: string;
     webSearch?: boolean;
 };
@@ -32,13 +33,12 @@ export async function POST(req: Request) {
             // start by getting the token async
             getSession();
 
-            const [{ messages, modelId, chatId, streamId, webSearch }] = await Promise.all([
+            const [{ messages, model, chatId, streamId, webSearch }] = await Promise.all([
                 req.json() as Promise<BodyData>,
             ]);
-            const model = supportedModels.find((m) => m.id === modelId);
 
             span.setAttributes({
-                modelId,
+                modelId: model.id,
                 chatId,
                 streamId,
                 messages: JSON.stringify(messages),

@@ -4,22 +4,23 @@ import type { Editor, Range } from "@tiptap/react";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@ui/command";
 import { Command as Cmd } from "cmdk";
 import { useEffect, useRef, useState } from "react";
-import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from "@/ai/models";
-import { useStores } from "@/hooks/useStores";
+import { ProviderIcons } from "@/ai/models";
+import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { capitalize } from "@/lib/utils";
 
 export const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
 
-interface ModelSuggestionComponentProps {
+type ModelSuggestionComponentProps = {
     query: string;
     range: Range;
     editor: Editor;
-    callback: (props: { model: GeneralKarnetModel }) => void;
-}
+    callback: (props: { model: KarnetModel }) => void;
+};
 
 export const ModelSuggestionComponent = (props: ModelSuggestionComponentProps) => {
     const [query, setQuery] = useState("");
     const ref = useRef<HTMLDivElement>(null);
+    const { models } = useModels();
 
     const callback = props.callback;
 
@@ -65,12 +66,23 @@ export const ModelSuggestionComponent = (props: ModelSuggestionComponentProps) =
         };
     }, []);
 
-    const handleSelect = (model: GeneralKarnetModel) => {
+    const handleSelect = (model: KarnetModel) => {
         props.editor.chain().focus().deleteRange(props.range).run();
         callback({
             model,
         });
     };
+
+    const groupedByProvider = models
+        .filter((model) => model.active)
+        .reduce(
+            (acc, model) => {
+                acc[model.provider] = acc[model.provider] || [];
+                acc[model.provider].push(model);
+                return acc;
+            },
+            {} as Record<string, KarnetModel[]>
+        );
 
     return (
         <Command className="min-w-[200px] border" onKeyDown={(e) => e.stopPropagation()} ref={ref}>
@@ -78,9 +90,9 @@ export const ModelSuggestionComponent = (props: ModelSuggestionComponentProps) =
             <CommandEmpty>No results.</CommandEmpty>
             <CommandList className="scrollbar-thin max-h-[300px] overflow-y-auto">
                 <CommandEmpty>No model found.</CommandEmpty>
-                {Object.entries(groupedByProvider).map(([provider, models]) => (
+                {Object.entries(groupedByProvider).map(([provider, providerModels]) => (
                     <CommandGroup heading={capitalize(provider)} key={provider}>
-                        {models.map((m) => (
+                        {providerModels.map((m) => (
                             <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
                                 <ProviderIcons provider={provider} />
                                 {m.name}

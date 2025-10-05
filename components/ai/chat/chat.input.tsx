@@ -1,6 +1,5 @@
 "use client";
 
-import { MCP } from "@lobehub/icons";
 import Document from "@tiptap/extension-document";
 import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -15,8 +14,9 @@ import { Wrench } from "lucide-react";
 import { observer } from "mobx-react";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { type GeneralKarnetModel, groupedByProvider, ProviderIcons } from "@/ai/models";
+import { type GeneralKarnetModel, ProviderIcons } from "@/ai/models";
 import { commands } from "@/ai/tools";
+import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
 import { capitalize, cn } from "@/lib/utils";
 import { RewriteEnter } from "./extensions/enter";
@@ -31,6 +31,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
 }) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
+    const { models, isLoading, error } = useModels();
 
     useHotkeys(
         "m",
@@ -44,12 +45,23 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
         }
     );
 
-    function handleSelect(value: GeneralKarnetModel) {
+    function handleSelect(value: KarnetModel) {
         chatStore.setModel(value);
         setOpen(false);
         chatStore.setDropdownOpen(false);
         editorRef.current?.commands.focus();
     }
+
+    const groupedByProvider = models
+        .filter((model) => model.active)
+        .reduce(
+            (acc, model) => {
+                acc[model.provider] = acc[model.provider] || [];
+                acc[model.provider].push(model);
+                return acc;
+            },
+            {} as Record<string, KarnetModel[]>
+        );
 
     return (
         <Popover onOpenChange={setOpen} open={open}>
@@ -65,9 +77,9 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
                     <CommandInput placeholder="Search model..." />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
                         <CommandEmpty>No model found.</CommandEmpty>
-                        {Object.entries(groupedByProvider).map(([provider, models]) => (
+                        {Object.entries(groupedByProvider).map(([provider, providerModels]) => (
                             <CommandGroup heading={capitalize(provider)} key={provider}>
-                                {models.map((m) => (
+                                {providerModels.map((m) => (
                                     <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
                                         <ProviderIcons provider={provider} />
                                         {m.name}

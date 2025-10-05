@@ -111,7 +111,7 @@ export const NewChatPage = observer(function ChatPage() {
             { text },
             {
                 body: {
-                    modelId: chatStore.selectedModel.id,
+                    model: chatStore.selectedModel,
                     chatId: chatId.current,
                     streamId,
                     webSearch: chatStore.selectedMcp === "search",

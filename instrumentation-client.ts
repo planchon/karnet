@@ -1,14 +1,14 @@
 import * as Sentry from "@sentry/nextjs";
 import posthog from "posthog-js";
 
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-    api_host: "/ingest",
-    ui_host: "https://eu.posthog.com",
-    defaults: "2025-05-24",
-    capture_exceptions: true,
-    debug: process.env.NODE_ENV === "development",
-});
-
+if (window.location.hostname !== "localhost") {
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+        api_host: "/ingest",
+        ui_host: "https://eu.posthog.com",
+        defaults: "2025-05-24",
+        capture_exceptions: true,
+    });
+}
 Sentry.init({
     dsn: "https://85c164d195e3a6452b517ec4aa7e4194@o4509537188249600.ingest.de.sentry.io/4510130457608272",
 
