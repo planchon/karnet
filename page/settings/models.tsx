@@ -1,4 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { IconChevronDown } from "@tabler/icons-react";
+import { Button } from "@ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@ui/dropdown-menu";
 import { Input } from "@ui/input";
 import { Switch } from "@ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
@@ -6,10 +8,9 @@ import { useMutation } from "convex/react";
 import { debounce } from "lodash";
 import { AudioLines, Eye, File } from "lucide-react";
 import { observer } from "mobx-react";
-import { memo, useEffect, useRef, useState } from "react";
-import z from "zod";
+import { memo, useEffect, useState } from "react";
 import { ProviderIcons } from "@/ai/models";
-import { type InputModalities, type OpenRouterModel, OpenRouterModelSchema } from "@/ai/schema/model";
+import type { InputModalities } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
@@ -109,6 +110,7 @@ export const ModelsPage = observer(function ModelsPageInner() {
 
     const activateModel = useMutation(api.functions.models.activateModel);
     const deactivateModel = useMutation(api.functions.models.deactivateModel);
+    const setDefaultModelMutation = useMutation(api.functions.models.setDefaultModel);
 
     useEffect(() => {
         const debouncedSetFilter = debounce(() => {
@@ -132,8 +134,6 @@ export const ModelsPage = observer(function ModelsPageInner() {
             )
     );
 
-    console.log(models?.filter((model) => model.active));
-
     const toggleModel = (model: KarnetModel) => {
         if (model.active) {
             deactivateModel({ id: model.active_id });
@@ -147,12 +147,42 @@ export const ModelsPage = observer(function ModelsPageInner() {
         }
     };
 
+    const setDefaultModel = (model: KarnetModel & { active_id: Id<"models"> }) => {
+        setDefaultModelMutation({ id: model.active_id });
+    };
+
+    const defaultModel = models?.find((model) => model.default);
+
     return (
         <div className="flex h-full w-full flex-col items-center overflow-y-auto">
             <div className="container flex h-full w-full flex-col gap-4 md:max-w-1/2">
                 <h2 className="pt-16 font-normal text-xl">Model preferences</h2>
-                <p className="font-normal text-sm">Configure the model you want to appear in the model selector.</p>
+                <p className="font-normal text-sm">
+                    Configure and tweak your model preferences. Models are updated daily.
+                </p>
                 {error && <p>Error: {error.message}</p>}
+                <h3>Default model</h3>
+                <p className="font-normal text-sm">Choose the model selected by default</p>
+                <div className="w-full">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <Button variant="outline">
+                                {defaultModel?.name || "Select model"} <IconChevronDown />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            {models
+                                .filter((model) => model.active)
+                                .map((model) => (
+                                    <DropdownMenuItem key={model.id} onClick={() => setDefaultModel(model)}>
+                                        {model.name}
+                                    </DropdownMenuItem>
+                                ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+                <h3>Activate models</h3>
+                <p className="font-normal text-sm">Configure the model you want to appear in the model selector.</p>
                 <Input
                     className="h-auto w-full"
                     onChange={(e) => setSearch(e.target.value)}

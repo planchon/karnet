@@ -68,3 +68,31 @@ export const getModels = query({
         return models;
     },
 });
+
+export const setDefaultModel = mutation({
+    args: {
+        id: v.id("models"),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new Error("User not authenticated");
+        }
+
+        const model = await ctx.db
+            .query("models")
+            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+            .filter((q) => q.eq(q.field("default"), true))
+            .first();
+
+        if (model) {
+            await ctx.db.patch(model._id, {
+                default: false,
+            });
+        }
+
+        await ctx.db.patch(args.id, {
+            default: true,
+        });
+    },
+});

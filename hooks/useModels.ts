@@ -15,6 +15,7 @@ const userActiveModelsSchema = z.array(
         name: z.string(),
         provider: z.string(),
         features: z.array(z.string()),
+        default: z.boolean().optional(),
     })
 );
 
@@ -80,9 +81,14 @@ export const useModels = () => {
             allModels?.map((model) => {
                 const userActiveModel = userActiveModels?.find((activeModel) => activeModel.model_id === model.id);
                 if (userActiveModel) {
-                    return { ...model, active: true as const, active_id: userActiveModel._id };
+                    return {
+                        ...model,
+                        active: true as const,
+                        active_id: userActiveModel._id,
+                        default: userActiveModel.default,
+                    };
                 }
-                return { ...model, active: false as const };
+                return { ...model, active: false as const, default: false };
             }),
         [allModels, userActiveModels]
     );

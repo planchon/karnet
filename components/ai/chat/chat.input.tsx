@@ -31,7 +31,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
 }) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
-    const { models, isLoading, error } = useModels();
+    const { models } = useModels();
 
     useHotkeys(
         "m",
@@ -63,12 +63,14 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
             {} as Record<string, KarnetModel[]>
         );
 
+    const defaultModel = models.find((model) => model.default);
+
     return (
         <Popover onOpenChange={setOpen} open={open}>
             <PopoverTrigger asChild className="outline-none ring-0">
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
-                    <ProviderIcons provider={chatStore.selectedModel?.provider || ""} />
-                    {chatStore.selectedModel ? chatStore.selectedModel.name : "Model"}
+                    <ProviderIcons provider={chatStore.selectedModel?.provider || defaultModel?.provider || ""} />
+                    {chatStore.selectedModel ? chatStore.selectedModel.name : defaultModel?.name || "No model selected"}
                     <Shortcut shortcut={["M"]} />
                 </Button>
             </PopoverTrigger>
