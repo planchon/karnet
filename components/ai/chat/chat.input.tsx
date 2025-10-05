@@ -14,7 +14,7 @@ import { Wrench } from "lucide-react";
 import { observer } from "mobx-react";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { type GeneralKarnetModel, ProviderIcons } from "@/ai/models";
+import { ProviderIcons } from "@/ai/models";
 import { commands } from "@/ai/tools";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
@@ -213,15 +213,19 @@ export const ChatInput = observer(function ChatInputInside({
                         char: "/",
                         render: () =>
                             renderItems(ToolsSuggestionComponent, (props: { id?: string }) => {
-                                if (!props.id) return;
+                                if (!props.id) {
+                                    return;
+                                }
                                 chatStore.setMcp(props.id);
                             }),
                     },
                     {
                         char: "@",
                         render: () =>
-                            renderItems(ModelSuggestionComponent, (props: { model?: GeneralKarnetModel }) => {
-                                if (!props.model) return;
+                            renderItems(ModelSuggestionComponent, (props: { model?: KarnetModel }) => {
+                                if (!props.model) {
+                                    return;
+                                }
                                 chatStore.setModel(props.model);
                             }),
                     },

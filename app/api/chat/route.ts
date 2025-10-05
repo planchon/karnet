@@ -6,7 +6,6 @@ import { fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
 import { openRouterGateway } from "@/ai/gateway";
-import { supportedModels } from "@/ai/models";
 import type { ChatUIMessage } from "@/components/ai/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";

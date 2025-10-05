@@ -14,7 +14,7 @@ type ModelSuggestionComponentProps = {
     query: string;
     range: Range;
     editor: Editor;
-    callback: (props: { model: KarnetModel }) => void;
+    callback: (props: { model?: KarnetModel }) => void;
 };
 
 export const ModelSuggestionComponent = (props: ModelSuggestionComponentProps) => {
