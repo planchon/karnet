@@ -23,14 +23,6 @@ const bodySchema = z.object({
     model: OpenRouterModelSchema,
 });
 
-// type BodyData = {
-//     messages: ChatUIMessage[];
-//     chatId: string;
-//     model: KarnetModel;
-//     streamId: string;
-//     webSearch?: boolean;
-// };
-
 export async function POST(req: Request) {
     return await Sentry.startSpan(
         {
@@ -43,8 +35,6 @@ export async function POST(req: Request) {
                 getSession();
 
                 const body = await req.json();
-                console.log("body", body);
-
                 const { messages, model, chatId, streamId, webSearch } = bodySchema.parse(body);
 
                 span.setAttributes({

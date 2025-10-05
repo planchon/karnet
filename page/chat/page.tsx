@@ -16,6 +16,7 @@ import { Chat } from "@/components/ai/chat";
 import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ export const NewChatPage = observer(function ChatPage() {
     const editorRef = useRef<Editor | null>(null);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
     const chatId = useRef<Id<"chats"> | null>(null);
+    const { models } = useModels();
 
     usePageTitle("New Chat - Karnet AI Assistant");
 
@@ -90,7 +92,8 @@ export const NewChatPage = observer(function ChatPage() {
             return;
         }
 
-        if (!chatStore.selectedModel) {
+        const model = chatStore.selectedModel || models.find((m) => m.default);
+        if (!model) {
             // biome-ignore lint/suspicious/noAlert: please
             alert("Please select a model");
             return;
@@ -117,7 +120,7 @@ export const NewChatPage = observer(function ChatPage() {
             { text },
             {
                 body: {
-                    model: chatStore.selectedModel,
+                    model,
                     chatId: chatId.current,
                     streamId,
                     webSearch: chatStore.selectedMcp === "search",

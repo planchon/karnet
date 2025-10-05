@@ -19,6 +19,7 @@ import { Chat } from "@/components/ai/chat";
 import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 
@@ -28,6 +29,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
     const { chatId } = useParams();
     const { chatStore } = useStores();
     const editorRef = useRef<Editor | null>(null);
+    const { models } = useModels();
     const chat = useQuery({
         ...convexQuery(api.functions.chat.getChat, {
             id: chatId as Id<"chats">,
@@ -86,7 +88,8 @@ export const ChatWithIdPage = observer(function ChatPage() {
     }, []);
 
     const onSend = () => {
-        if (!chatStore.selectedModel) {
+        const model = chatStore.selectedModel || models.find((m) => m.default);
+        if (!model) {
             // biome-ignore lint/suspicious/noAlert: please
             alert("Please select a model");
             return;
@@ -111,7 +114,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
             { text },
             {
                 body: {
-                    model: chatStore.selectedModel,
+                    model,
                     chatId: chatId as Id<"chats">,
                     streamId,
                     webSearch: chatStore.selectedMcp === "search",
