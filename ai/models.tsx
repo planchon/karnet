@@ -36,6 +36,23 @@ export const providerIcons = {
     "z-ai": ZAI,
 };
 
+export const providerNames = {
+    alibaba: "Alibaba",
+    anthropic: "Anthropic",
+    azure: "Azure",
+    bedrock: "Bedrock",
+    cohere: "Cohere",
+    deepseek: "DeepSeek",
+    google: "Google",
+    groq: "Groq",
+    mistral: "Mistral",
+    openai: "OpenAI",
+    perplexity: "Perplexity",
+    vercel: "Vercel",
+    vertex: "VertexAI",
+    "x-ai": "X.ai",
+    "z-ai": "Z.ai",
+};
 export type Provider = keyof typeof providerIcons;
 
 export const ProviderIcons = ({ provider, ...props }: { provider: string } & HTMLAttributes<HTMLDivElement>) => {

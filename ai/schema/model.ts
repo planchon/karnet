@@ -66,7 +66,13 @@ const DefaultParametersSchema = z.object({
 const OpenRouterModelSchema = z
     .object({
         id: z.string(),
-        name: z.string(),
+        name: z.string().transform((val) => {
+            const data = val.split(":");
+            if (data.length === 2) {
+                return data[1];
+            }
+            return val;
+        }),
         created: z.number().int().positive(), // Unix timestamp, so an integer
         description: z.string().optional(),
         architecture: ArchitectureSchema,
