@@ -85,7 +85,7 @@ export async function POST(req: Request) {
                         fetchMutation(
                             api.functions.chat.updateChat,
                             {
-                                id: chatId as Id<"chats">,
+                                chat_id: chatId,
                                 messages: messages.map((m) => ({
                                     id: m.id,
                                     role: m.role,
@@ -141,7 +141,7 @@ export async function POST(req: Request) {
                                         await fetchMutation(
                                             api.functions.chat.finishChatStream,
                                             {
-                                                id: chatId as Id<"chats">,
+                                                chat_id: chatId,
                                                 messages: preparedMessages,
                                             },
                                             {
@@ -183,7 +183,7 @@ export async function POST(req: Request) {
                                         await fetchMutation(
                                             api.functions.chat.updateChatTitle,
                                             {
-                                                id: chatId as Id<"chats">,
+                                                chat_id: chatId,
                                                 title: title.text,
                                             },
                                             {
@@ -216,7 +216,7 @@ export async function POST(req: Request) {
                                 await fetchMutation(
                                     api.functions.chat.updateChatStream,
                                     {
-                                        id: chatId as Id<"chats">,
+                                        chat_id: chatId,
                                         stream: {
                                             status: "active",
                                             id: streamId,

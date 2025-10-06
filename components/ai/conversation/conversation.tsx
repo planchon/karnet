@@ -94,7 +94,7 @@ export const RenderOneMessage = memo(({ message, status }: { message: UIMessage;
 
     return (
         <Message from={message.role} key={message.id}>
-            <MessageContent messageId={message.id} variant="flat">
+            <MessageContent message={message} variant="flat">
                 <RenderReasoning messageId={message.id} offsetPartIndex={0} part={reasoningParts} status={status} />
                 <RenderText messageId={message.id} offsetPartIndex={0} part={textParts} />
                 <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} status={status} />

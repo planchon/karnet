@@ -3,7 +3,7 @@
 import { AnimatePresence, LayoutGroup } from "framer-motion";
 import { Navigate, Route, Routes } from "react-router";
 import { ChatWithIdPage } from "@/page/chat/[id]/page";
-import { NewChatPage } from "@/page/chat/page";
+import { RedirectToPageID } from "@/page/chat/page";
 import DocumentPage from "@/page/document/page";
 import { ModelsPage } from "@/page/settings/models";
 import TaskPage from "@/page/task/page";
@@ -20,7 +20,7 @@ export const GeneralAppRouter = () => (
                     </Route>
                     <Route path="/chat/">
                         <Route element={<ChatWithIdPage />} path=":chatId" />
-                        <Route element={<NewChatPage />} index />
+                        <Route element={<RedirectToPageID />} index />
                     </Route>
                     <Route element={<TaskPage />} path="/task" />
                     <Route element={<DocumentPage />} path="/document" />

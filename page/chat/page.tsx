@@ -12,6 +12,7 @@ import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { Navigate } from "react-router";
 import { Chat } from "@/components/ai/chat";
 import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { api } from "@/convex/_generated/api";
@@ -20,6 +21,12 @@ import { useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
+
+export const RedirectToPageID = () => {
+    const id = generateId();
+
+    return <Navigate to={`/chat/${id}`} />;
+};
 
 export const NewChatPage = observer(function ChatPage() {
     const { chatStore } = useStores();

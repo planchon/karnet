@@ -14,6 +14,7 @@ import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
 import { CopyIcon, SplitIcon } from "lucide-react";
 import { type ComponentProps, type HTMLAttributes, useState } from "react";
+import { useNavigate } from "react-router";
 import { ProviderIcons, providerNames } from "@/ai/models";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useModels } from "@/hooks/useModels";
@@ -55,23 +56,35 @@ const messageContentVariants = cva("is-user:dark flex flex-col gap-2 overflow-hi
 
 export type MessageContentProps = HTMLAttributes<HTMLDivElement> &
     VariantProps<typeof messageContentVariants> & {
-        messageId: string;
+        message: UIMessage;
     };
 
-export const MessageContent = ({ children, className, variant, messageId, ...props }: MessageContentProps) => (
+export const MessageContent = ({ children, className, variant, message, ...props }: MessageContentProps) => (
     <div className={cn("group flex w-full flex-col gap-2", className)}>
         <div className="flex w-full flex-col gap-2 group-[.is-user]:items-end group-[.is-user]:justify-end">
             <div className={cn(messageContentVariants({ variant, className }))} {...props}>
                 {children}
             </div>
-            <MessageActions messageId={messageId} />
+            <MessageActions message={message} />
         </div>
     </div>
 );
 
-export const MessageActions = ({ messageId }: { messageId: string }) => {
+export const MessageActions = ({ message }: { message: UIMessage }) => {
     const [visible, setVisible] = useState(false);
     const { activeGroupedByProvider } = useModels();
+    const navigate = useNavigate();
+
+    const retryMessage = (modelId: string) => {
+        const messageText = message.parts.find((p) => p.type === "text")?.text;
+
+        navigate("/chat", {
+            state: {
+                retryMessage: messageText,
+                retryModel: modelId,
+            },
+        });
+    };
 
     return (
         <div
@@ -83,39 +96,41 @@ export const MessageActions = ({ messageId }: { messageId: string }) => {
             <Button size="icon" variant="ghost">
                 <CopyIcon />
             </Button>
-            <DropdownMenu onOpenChange={setVisible} open={visible}>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        className="rotate-180 focus-visible:outline-none focus-visible:ring-0"
-                        size="icon"
-                        variant="ghost"
-                    >
-                        <SplitIcon />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="min-w-40">
-                    {Object.entries(activeGroupedByProvider).map(([provider, providerModels]) => (
-                        <DropdownMenuGroup key={provider}>
-                            <DropdownMenuSub>
-                                <DropdownMenuSubTrigger className="flex h-9 w-full items-center justify-between gap-2">
-                                    <ProviderIcons className="size-4 w-6" provider={provider} />
-                                    {providerNames[provider]}
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuPortal>
-                                    <DropdownMenuSubContent>
-                                        {providerModels.map((model) => (
-                                            <DropdownMenuItem key={model.id}>
-                                                <ProviderIcons provider={model.provider} />
-                                                {model.name}
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </DropdownMenuSubContent>
-                                </DropdownMenuPortal>
-                            </DropdownMenuSub>
-                        </DropdownMenuGroup>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+            {message.role === "user" && (
+                <DropdownMenu onOpenChange={setVisible} open={visible}>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            className="rotate-180 focus-visible:outline-none focus-visible:ring-0"
+                            size="icon"
+                            variant="ghost"
+                        >
+                            <SplitIcon />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="min-w-40">
+                        {Object.entries(activeGroupedByProvider).map(([provider, providerModels]) => (
+                            <DropdownMenuGroup key={provider}>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger className="flex h-9 w-full items-center justify-between gap-2">
+                                        <ProviderIcons className="size-4 w-6" provider={provider} />
+                                        {providerNames[provider]}
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            {providerModels.map((model) => (
+                                                <DropdownMenuItem key={model.id} onClick={() => retryMessage(model.id)}>
+                                                    <ProviderIcons provider={model.provider} />
+                                                    {model.name}
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                            </DropdownMenuGroup>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )}
         </div>
     );
 };

@@ -44,13 +44,14 @@ const chatTable = defineTable({
     smallId: v.optional(v.string()),
     messages: v.array(chatMessage),
     parent_id: v.optional(v.id("chats")),
-    is_new: v.optional(v.boolean()),
+    chat_id: v.string(),
     // for the resumable stream option
     stream: v.object({
         status: v.union(v.literal("active"), v.literal("inactive"), v.literal("error"), v.literal("starting")),
         id: v.optional(v.string()),
     }),
 })
+    .index("by_chat_id", ["chat_id"])
     .index("by_parent_id", ["parent_id"])
     .index("by_created_at", ["created_at_ts"])
     .index("by_updated_at", ["updated_at_ts"])

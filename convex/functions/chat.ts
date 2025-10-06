@@ -4,7 +4,7 @@ import { chatMessage } from "../schema";
 
 export const getChat = query({
     args: {
-        id: v.id("chats"),
+        chat_id: v.string(),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -19,7 +19,7 @@ export const getChat = query({
         const chat = await ctx.db
             .query("chats")
             .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
-            .filter((q) => q.eq(q.field("_id"), args.id))
+            .filter((q) => q.eq(q.field("chat_id"), args.chat_id))
             .first();
 
         if (!chat || chat.subject !== identity.subject) {
@@ -52,7 +52,6 @@ export const getLastChats = query({
         const chats = await ctx.db
             .query("chats")
             .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
-            .filter((q) => q.not(q.eq(q.field("is_new"), true)))
             .order("desc")
             .take(limit);
 
@@ -62,7 +61,7 @@ export const getLastChats = query({
 
 export const updateChat = mutation({
     args: {
-        id: v.id("chats"),
+        chat_id: v.string(),
         messages: v.array(chatMessage),
     },
     handler: async (ctx, args) => {
@@ -75,7 +74,11 @@ export const updateChat = mutation({
             });
         }
 
-        const chat = await ctx.db.get(args.id);
+        const chat = await ctx.db
+            .query("chats")
+            .withIndex("by_chat_id", (q) => q.eq("chat_id", args.chat_id))
+            .first();
+
         if (!chat || chat.subject !== identity.subject) {
             throw new ConvexError({
                 uniqueId: "CHAT_0001",
@@ -85,9 +88,8 @@ export const updateChat = mutation({
         }
 
         chat.messages = args.messages;
-        chat.is_new = false;
 
-        await ctx.db.patch(args.id, chat);
+        await ctx.db.patch(chat._id, chat);
 
         return chat;
     },
@@ -95,7 +97,7 @@ export const updateChat = mutation({
 
 export const updateChatStream = mutation({
     args: {
-        id: v.id("chats"),
+        chat_id: v.string(),
         stream: v.object({
             status: v.union(v.literal("active"), v.literal("inactive"), v.literal("error"), v.literal("starting")),
             id: v.optional(v.string()),
@@ -111,7 +113,10 @@ export const updateChatStream = mutation({
             });
         }
 
-        const chat = await ctx.db.get(args.id);
+        const chat = await ctx.db
+            .query("chats")
+            .withIndex("by_chat_id", (q) => q.eq("chat_id", args.chat_id))
+            .first();
         if (!chat || chat.subject !== identity.subject) {
             throw new ConvexError({
                 uniqueId: "CHAT_0001",
@@ -122,7 +127,7 @@ export const updateChatStream = mutation({
 
         chat.stream = args.stream;
 
-        await ctx.db.patch(args.id, chat);
+        await ctx.db.patch(chat._id, chat);
 
         return chat;
     },
@@ -130,7 +135,7 @@ export const updateChatStream = mutation({
 
 export const finishChatStream = mutation({
     args: {
-        id: v.id("chats"),
+        chat_id: v.string(),
         messages: v.array(chatMessage),
     },
     handler: async (ctx, args) => {
@@ -143,7 +148,11 @@ export const finishChatStream = mutation({
             });
         }
 
-        const chat = await ctx.db.get(args.id);
+        const chat = await ctx.db
+            .query("chats")
+            .withIndex("by_chat_id", (q) => q.eq("chat_id", args.chat_id))
+            .first();
+
         if (!chat || chat.subject !== identity.subject) {
             throw new ConvexError({
                 uniqueId: "CHAT_0001",
@@ -156,7 +165,7 @@ export const finishChatStream = mutation({
         chat.stream.status = "inactive";
         chat.stream.id = undefined;
 
-        await ctx.db.patch(args.id, chat);
+        await ctx.db.patch(chat._id, chat);
 
         return chat;
     },
@@ -164,7 +173,7 @@ export const finishChatStream = mutation({
 
 export const updateChatTitle = mutation({
     args: {
-        id: v.id("chats"),
+        chat_id: v.string(),
         title: v.string(),
     },
     handler: async (ctx, args) => {
@@ -177,7 +186,10 @@ export const updateChatTitle = mutation({
             });
         }
 
-        const chat = await ctx.db.get(args.id);
+        const chat = await ctx.db
+            .query("chats")
+            .withIndex("by_chat_id", (q) => q.eq("chat_id", args.chat_id))
+            .first();
         if (!chat || chat.subject !== identity.subject) {
             throw new ConvexError({
                 uniqueId: "CHAT_0001",
@@ -188,54 +200,8 @@ export const updateChatTitle = mutation({
 
         chat.title = args.title;
 
-        await ctx.db.patch(args.id, chat);
+        await ctx.db.patch(chat._id, chat);
 
         return chat;
-    },
-});
-
-// this function is used to create an id
-export const createEmptyChat = mutation({
-    args: {},
-    handler: async (ctx) => {
-        const identity = await ctx.auth.getUserIdentity();
-        if (!identity) {
-            throw new ConvexError({
-                uniqueId: "CHAT_0002",
-                httpStatusCode: 401,
-                message: "User not authenticated",
-            });
-        }
-
-        // see if we have a new chat
-        const newChat = await ctx.db
-            .query("chats")
-            .filter((q) => q.eq(q.field("is_new"), true))
-            .filter((q) => q.eq(q.field("subject"), identity.subject))
-            .first();
-
-        if (newChat) {
-            return newChat;
-        }
-
-        const chat = {
-            title: "New chat...",
-            created_at_iso: new Date().toISOString(),
-            is_new: true,
-            created_at_ts: Date.now(),
-            subject: identity.subject,
-            is_deleted: false,
-            messages: [],
-            stream: {
-                status: "starting" as const,
-            },
-        };
-
-        const id = await ctx.db.insert("chats", chat);
-
-        return {
-            ...chat,
-            _id: id,
-        };
     },
 });

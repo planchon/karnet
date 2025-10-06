@@ -4,7 +4,6 @@ import { fetchQuery } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { getSession } from "@/lib/session";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -38,21 +37,25 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
                         chatId: id,
                     });
 
-                    return await fetchQuery(
-                        api.functions.chat.getChat,
-                        {
-                            id: id as Id<"chats">,
-                        },
-                        {
-                            token: tokenRes,
-                        }
-                    );
+                    try {
+                        return await fetchQuery(
+                            api.functions.chat.getChat,
+                            {
+                                chat_id: id,
+                            },
+                            {
+                                token: tokenRes,
+                            }
+                        );
+                    } catch (error) {
+                        return null;
+                    }
                 }
             );
 
             if (!chat) {
                 span.setStatus({ code: 1, message: "Chat not found" });
-                return new Response("Chat not found", { status: 404 });
+                return new Response("Chat not found", { status: 204 });
             }
 
             span.setAttributes({
