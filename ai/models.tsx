@@ -55,6 +55,15 @@ export const providerNames = {
 };
 export type Provider = keyof typeof providerIcons;
 
+export const getProviderName = (provider: string) => {
+    // @ts-expect-error
+    let value = providerNames[provider];
+    if (!value) {
+        value = provider;
+    }
+    return value;
+};
+
 export const ProviderIcons = ({ provider, ...props }: { provider: string } & HTMLAttributes<HTMLDivElement>) => {
     // @ts-expect-error
     const Icon = providerIcons[provider];

@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { type ComponentProps, type HTMLAttributes, useState } from "react";
 import { z } from "zod";
-import { ProviderIcons, providerNames } from "@/ai/models";
+import { getProviderName, ProviderIcons, providerNames } from "@/ai/models";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { useModels } from "@/hooks/useModels";
@@ -207,7 +207,7 @@ export const MessageActions = ({ message, regenerate }: { message: UIMessage; re
                                 <DropdownMenuSub>
                                     <DropdownMenuSubTrigger className="flex h-9 w-full items-center justify-between gap-2">
                                         <ProviderIcons className="size-4 w-6" provider={provider} />
-                                        {providerNames[provider]}
+                                        {getProviderName(provider)}
                                     </DropdownMenuSubTrigger>
                                     <DropdownMenuPortal>
                                         <DropdownMenuSubContent>
