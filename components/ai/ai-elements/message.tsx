@@ -14,7 +14,18 @@ import {
 import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckIcon, ClockIcon, CopyIcon, CpuIcon, RotateCcwIcon, SplitIcon, Zap, ZapIcon } from "lucide-react";
+import _ from "lodash";
+import {
+    BrainIcon,
+    CheckIcon,
+    ClockIcon,
+    CopyIcon,
+    CpuIcon,
+    RotateCcwIcon,
+    SplitIcon,
+    Zap,
+    ZapIcon,
+} from "lucide-react";
 import { type ComponentProps, type HTMLAttributes, useState } from "react";
 import { z } from "zod";
 import { ProviderIcons, providerNames } from "@/ai/models";
@@ -22,6 +33,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { useModels } from "@/hooks/useModels";
 import { cn } from "@/lib/utils";
+import type { Regenerate } from "@/types/regenerate";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
     from: UIMessage["role"];
@@ -60,7 +72,7 @@ const messageContentVariants = cva("is-user:dark flex flex-col gap-2 overflow-hi
 export type MessageContentProps = HTMLAttributes<HTMLDivElement> &
     VariantProps<typeof messageContentVariants> & {
         message: UIMessage;
-        regenerate: ReturnType<typeof useChat>["regenerate"];
+        regenerate: Regenerate;
     };
 
 export const MessageContent = ({
@@ -82,32 +94,37 @@ export const MessageContent = ({
 );
 
 const MetadataSchema = z.object({
-    model: z.string(),
+    model: z.object({
+        name: z.string(),
+        id: z.string(),
+        provider: z.string(),
+    }),
     usage: z.object({
         inputTokens: z.number(),
         outputTokens: z.number(),
-        reasoningTokens: z.number(),
-        cachedInputTokens: z.number(),
+        reasoningTokens: z.number().nullish(),
+        cachedInputTokens: z.number().nullish(),
         totalTokens: z.number(),
     }),
     time: z.number(),
 });
 
-export const MessageActions = ({
-    message,
-    regenerate,
-}: {
-    message: UIMessage;
-    regenerate: ReturnType<typeof useChat>["regenerate"];
-}) => {
+export type Metadata = z.infer<typeof MetadataSchema>;
+
+export const MessageActions = ({ message, regenerate }: { message: UIMessage; regenerate: Regenerate }) => {
     const [visible, setVisible] = useState(false);
     const [isCopied, handleCopy] = useCopyToClipboard();
     const { activeGroupedByProvider } = useModels();
 
     const text = message.parts.find((part) => part.type === "text")?.text;
 
-    const metadataParsed = MetadataSchema.safeParse(message.metadata);
-    const metadata = metadataParsed.success ? metadataParsed.data : null;
+    let metadata: Metadata | null = null;
+    if (message.role === "assistant") {
+        const metadataParsed = MetadataSchema.safeParse(message.metadata);
+        if (metadataParsed.success) {
+            metadata = metadataParsed.data;
+        }
+    }
 
     return (
         <div
@@ -149,12 +166,18 @@ export const MessageActions = ({
                     {metadata && (
                         <div className="flex gap-2">
                             <div className="flex items-center gap-1 font-semibold text-muted-foreground text-xs">
-                                {metadata.model}
+                                {metadata.model.name}
                             </div>
                             <div className="flex items-center gap-1 text-muted-foreground text-xs">
                                 <CpuIcon className="size-3" />
                                 {metadata.usage.outputTokens} tokens
                             </div>
+                            {_.isNumber(metadata.usage.reasoningTokens) && metadata.usage.reasoningTokens > 0 && (
+                                <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                                    <BrainIcon className="size-3" />
+                                    {metadata.usage.reasoningTokens} tokens
+                                </div>
+                            )}
                             <div className="flex items-center gap-1 text-muted-foreground text-xs">
                                 <ClockIcon className="size-3" />
                                 {(metadata.time / 1000).toFixed(2)}s
@@ -189,7 +212,10 @@ export const MessageActions = ({
                                     <DropdownMenuPortal>
                                         <DropdownMenuSubContent>
                                             {providerModels.map((model) => (
-                                                <DropdownMenuItem key={model.id}>
+                                                <DropdownMenuItem
+                                                    key={model.id}
+                                                    onClick={() => regenerate({ messageId: message.id }, model)}
+                                                >
                                                     <ProviderIcons provider={model.provider} />
                                                     {model.name}
                                                 </DropdownMenuItem>

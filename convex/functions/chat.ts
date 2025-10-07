@@ -132,7 +132,6 @@ export const finishChatStream = mutation({
     args: {
         id: v.id("chats"),
         messages: v.array(chatMessage),
-        time: v.number(),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -152,20 +151,6 @@ export const finishChatStream = mutation({
                 message: "Chat not found",
             });
         }
-
-        const lastMessage = args.messages.at(-1);
-        if (!lastMessage) {
-            throw new ConvexError({
-                uniqueId: "CHAT_0003",
-                httpStatusCode: 404,
-                message: "Last message not found",
-            });
-        }
-
-        lastMessage.metadata = JSON.stringify({
-            ...(lastMessage.metadata ? JSON.parse(lastMessage.metadata) : {}),
-            time: args.time,
-        });
 
         chat.messages = args.messages;
         chat.stream.status = "inactive";

@@ -66,6 +66,8 @@ export async function POST(req: Request) {
 
                 const prompt = generatePrompt(model.name, new Date().toLocaleString(), geoString);
 
+                const streamStartTime = new Date();
+
                 const res = streamText({
                     model: _model,
                     system: prompt,
@@ -104,8 +106,6 @@ export async function POST(req: Request) {
                     waitUntil: after,
                 });
 
-                const streamStartTime = new Date();
-
                 return res.toUIMessageStreamResponse({
                     originalMessages: messages,
                     generateMessageId: generateId,
@@ -115,8 +115,13 @@ export async function POST(req: Request) {
                     messageMetadata: ({ part }) => {
                         if (part.type === "finish") {
                             return {
-                                model: model.name,
+                                model: {
+                                    name: model.name,
+                                    id: model.id,
+                                    provider: model.provider,
+                                },
                                 usage: part.totalUsage,
+                                time: Date.now() - streamStartTime.getTime(),
                             };
                         }
                     },
@@ -130,9 +135,6 @@ export async function POST(req: Request) {
                                 },
                             },
                             async () => {
-                                const streamEndTime = new Date();
-                                const totalTime = streamEndTime.getTime() - streamStartTime.getTime();
-
                                 const preparedMessages = _messages.map((m) => ({
                                     role: m.role,
                                     id: m.id,
@@ -152,7 +154,6 @@ export async function POST(req: Request) {
                                             {
                                                 id: chatId as Id<"chats">,
                                                 messages: preparedMessages,
-                                                time: totalTime,
                                             },
                                             {
                                                 token: await getSession(),

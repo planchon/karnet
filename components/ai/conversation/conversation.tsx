@@ -1,6 +1,6 @@
-import type { useChat } from "@ai-sdk/react";
 import type { ChatStatus, ReasoningUIPart, SourceUrlUIPart, TextUIPart, UIMessage } from "ai";
 import { memo } from "react";
+import type { Regenerate } from "@/types/regenerate";
 import { Conversation, ConversationContent, ConversationScrollButton } from "../ai-elements/conversation";
 import { Message, MessageContent } from "../ai-elements/message";
 import { Reasoning, ReasoningContent, ReasoningTrigger } from "../ai-elements/reasoning";
@@ -82,37 +82,35 @@ const isEmptyMessage = (message: UIMessage | undefined) =>
     message.parts.every((p) => p.type === "source-url" && p.url === "") ||
     message.parts.every((p) => p.type === "reasoning" && p.text === "");
 
-export const RenderOneMessage = memo(
-    ({
-        message,
-        status,
-        regenerate,
-    }: {
-        message: UIMessage;
-        status: ChatStatus;
-        regenerate: ReturnType<typeof useChat>["regenerate"];
-    }) => {
-        const isEmpty = isEmptyMessage(message);
+export const RenderOneMessage = ({
+    message,
+    status,
+    regenerate,
+}: {
+    message: UIMessage;
+    status: ChatStatus;
+    regenerate: Regenerate;
+}) => {
+    const isEmpty = isEmptyMessage(message);
 
-        if (isEmpty) {
-            return null;
-        }
-
-        const reasoningParts = message.parts.filter((p) => p.type === "reasoning");
-        const textParts = message.parts.filter((p) => p.type === "text");
-        const sourceParts = message.parts.filter((p) => p.type === "source-url");
-
-        return (
-            <Message from={message.role} key={message.id}>
-                <MessageContent message={message} regenerate={regenerate} variant="flat">
-                    <RenderReasoning messageId={message.id} offsetPartIndex={0} part={reasoningParts} status={status} />
-                    <RenderText messageId={message.id} offsetPartIndex={0} part={textParts} />
-                    <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} status={status} />
-                </MessageContent>
-            </Message>
-        );
+    if (isEmpty) {
+        return null;
     }
-);
+
+    const reasoningParts = message.parts.filter((p) => p.type === "reasoning");
+    const textParts = message.parts.filter((p) => p.type === "text");
+    const sourceParts = message.parts.filter((p) => p.type === "source-url");
+
+    return (
+        <Message from={message.role} key={message.id}>
+            <MessageContent message={message} regenerate={regenerate} variant="flat">
+                <RenderReasoning messageId={message.id} offsetPartIndex={0} part={reasoningParts} status={status} />
+                <RenderText messageId={message.id} offsetPartIndex={0} part={textParts} />
+                <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} status={status} />
+            </MessageContent>
+        </Message>
+    );
+};
 
 const allCoolLoadingPhrases = [
     "Asking the magician...",
@@ -133,7 +131,7 @@ export const ConversationComp = ({
 }: {
     messages: UIMessage[];
     status: ChatStatus;
-    regenerate: ReturnType<typeof useChat>["regenerate"];
+    regenerate: Regenerate;
 }) => {
     // the random index is the minute we are on
     const randomIndex = Math.floor(new Date().getMinutes() % allCoolLoadingPhrases.length);

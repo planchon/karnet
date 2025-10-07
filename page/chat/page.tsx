@@ -16,7 +16,7 @@ import { Chat } from "@/components/ai/chat";
 import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { useModels } from "@/hooks/useModels";
+import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
@@ -85,8 +85,15 @@ export const NewChatPage = observer(function ChatPage() {
         };
     }, []);
 
-    const regenerateMessage: typeof regenerate = (args: Parameters<typeof regenerate>[0]) => {
-        const model = chatStore.selectedModel || models.find((m) => m.default);
+    const regenerateMessage: typeof regenerate = (
+        args: Parameters<typeof regenerate>[0],
+        overrideModel?: KarnetModel
+    ) => {
+        const messageId = args?.messageId;
+        const message = messages.find((m) => m.id === messageId);
+        // @ts-expect-error
+        const modelId = message?.metadata?.model.id;
+        const model = overrideModel || models.find((m) => m.id === modelId);
 
         const body = {
             model: JSON.parse(JSON.stringify(model)),
