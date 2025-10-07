@@ -11,7 +11,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@ui/dropdown-menu";
-import { RetryError, type UIMessage } from "ai";
+import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon, CopyIcon, RotateCcwIcon, SplitIcon } from "lucide-react";
@@ -19,7 +19,7 @@ import { type ComponentProps, type HTMLAttributes, useState } from "react";
 import { ProviderIcons, providerNames } from "@/ai/models";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import { type KarnetModel, useModels } from "@/hooks/useModels";
+import { useModels } from "@/hooks/useModels";
 import { cn } from "@/lib/utils";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
@@ -125,48 +125,45 @@ export const MessageActions = ({
                     )}
                 </AnimatePresence>
             </Button>
+            {message.role === "assistant" && (
+                <Button onClick={() => regenerate({ messageId: message.id })} size="icon" variant="ghost">
+                    <RotateCcwIcon />
+                </Button>
+            )}
             {message.role === "user" && (
-                <>
-                    <Button onClick={() => regenerate({ messageId: message.id })} size="icon" variant="ghost">
-                        <RotateCcwIcon />
-                    </Button>
-                    <DropdownMenu onOpenChange={setVisible} open={visible}>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                className="rotate-180 focus-visible:outline-none focus-visible:ring-0"
-                                size="icon"
-                                variant="ghost"
-                            >
-                                <SplitIcon />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="min-w-40">
-                            {Object.entries(activeGroupedByProvider).map(([provider, providerModels]) => (
-                                <DropdownMenuGroup key={provider}>
-                                    <DropdownMenuSub>
-                                        <DropdownMenuSubTrigger className="flex h-9 w-full items-center justify-between gap-2">
-                                            <ProviderIcons className="size-4 w-6" provider={provider} />
-                                            {providerNames[provider]}
-                                        </DropdownMenuSubTrigger>
-                                        <DropdownMenuPortal>
-                                            <DropdownMenuSubContent>
-                                                {providerModels.map((model) => (
-                                                    <DropdownMenuItem
-                                                        key={model.id}
-                                                        onClick={() => retryMessage(model)}
-                                                    >
-                                                        <ProviderIcons provider={model.provider} />
-                                                        {model.name}
-                                                    </DropdownMenuItem>
-                                                ))}
-                                            </DropdownMenuSubContent>
-                                        </DropdownMenuPortal>
-                                    </DropdownMenuSub>
-                                </DropdownMenuGroup>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </>
+                <DropdownMenu onOpenChange={setVisible} open={visible}>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            className="rotate-180 focus-visible:outline-none focus-visible:ring-0"
+                            size="icon"
+                            variant="ghost"
+                        >
+                            <SplitIcon />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="min-w-40">
+                        {Object.entries(activeGroupedByProvider).map(([provider, providerModels]) => (
+                            <DropdownMenuGroup key={provider}>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger className="flex h-9 w-full items-center justify-between gap-2">
+                                        <ProviderIcons className="size-4 w-6" provider={provider} />
+                                        {providerNames[provider]}
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            {providerModels.map((model) => (
+                                                <DropdownMenuItem key={model.id}>
+                                                    <ProviderIcons provider={model.provider} />
+                                                    {model.name}
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                            </DropdownMenuGroup>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
             )}
         </div>
     );

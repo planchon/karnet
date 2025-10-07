@@ -23,7 +23,7 @@ export function useCopyToClipboard(): [CopiedValue, CopyFn] {
                 setCopiedText(null);
             }, 1500);
             return true;
-        } catch (error) {
+        } catch {
             toast.warning("Your browser does not support copying to clipboard");
             setCopiedText(null);
             return false;
