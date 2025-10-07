@@ -36,10 +36,11 @@ export const ChatWithIdPage = observer(function ChatPage() {
         }),
         initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || "null"),
     });
+    const streamId = useRef<string | null>(null);
 
     usePageTitle(`${chat.data?.title} - Karnet AI Assistant`);
 
-    const { messages, sendMessage, setMessages, status } = useChat({
+    const { messages, sendMessage, setMessages, status, regenerate } = useChat({
         id: chatId as Id<"chats">,
         resume: true,
         experimental_throttle: 200,
@@ -87,6 +88,25 @@ export const ChatWithIdPage = observer(function ChatPage() {
         };
     }, []);
 
+    const regenerateMessage: typeof regenerate = (args: Parameters<typeof regenerate>[0]) => {
+        const model = chatStore.selectedModel || models.find((m) => m.default);
+
+        const body = {
+            model: JSON.parse(JSON.stringify(model)),
+            chatId: chatId as Id<"chats">,
+            streamId: generateId(),
+            webSearch: chatStore.selectedMcp === "search",
+        };
+
+        return regenerate({
+            ...args,
+            body: {
+                ...args?.body,
+                ...body,
+            },
+        });
+    };
+
     const onSend = () => {
         const model = chatStore.selectedModel || models.find((m) => m.default);
         if (!model) {
@@ -108,7 +128,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         // clear the editor
         editorRef.current?.commands.setContent("");
 
-        const streamId = generateId();
+        streamId.current = generateId();
 
         sendMessage(
             { text },
@@ -116,7 +136,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
                 body: {
                     model,
                     chatId: chatId as Id<"chats">,
-                    streamId,
+                    streamId: streamId.current,
                     webSearch: chatStore.selectedMcp === "search",
                 },
             }
@@ -133,7 +153,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
 
     return (
         <div className="flex h-full w-full flex-col">
-            <ConversationComp messages={messages} status={status} />
+            <ConversationComp messages={messages} regenerate={regenerateMessage} status={status} />
             <div
                 className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{

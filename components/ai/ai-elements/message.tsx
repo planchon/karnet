@@ -1,3 +1,4 @@
+import type { useChat } from "@ai-sdk/react";
 import { Button } from "@ui/button";
 import {
     DropdownMenu,
@@ -10,13 +11,13 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@ui/dropdown-menu";
-import type { UIMessage } from "ai";
+import { RetryError, type UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
-import { CopyIcon, SplitIcon } from "lucide-react";
+import { CopyIcon, RotateCcwIcon, SplitIcon } from "lucide-react";
 import { type ComponentProps, type HTMLAttributes, useState } from "react";
 import { ProviderIcons, providerNames } from "@/ai/models";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useModels } from "@/hooks/useModels";
+import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { cn } from "@/lib/utils";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
@@ -56,22 +57,40 @@ const messageContentVariants = cva("is-user:dark flex flex-col gap-2 overflow-hi
 export type MessageContentProps = HTMLAttributes<HTMLDivElement> &
     VariantProps<typeof messageContentVariants> & {
         message: UIMessage;
+        regenerate: ReturnType<typeof useChat>["regenerate"];
     };
 
-export const MessageContent = ({ children, className, variant, message, ...props }: MessageContentProps) => (
+export const MessageContent = ({
+    children,
+    className,
+    variant,
+    message,
+    regenerate,
+    ...props
+}: MessageContentProps) => (
     <div className={cn("group flex w-full flex-col gap-2", className)}>
         <div className="flex w-full flex-col gap-2 group-[.is-user]:items-end group-[.is-user]:justify-end">
             <div className={cn(messageContentVariants({ variant, className }))} {...props}>
                 {children}
             </div>
-            <MessageActions message={message} />
+            <MessageActions message={message} regenerate={regenerate} />
         </div>
     </div>
 );
 
-export const MessageActions = ({ message }: { message: UIMessage }) => {
+export const MessageActions = ({
+    message,
+    regenerate,
+}: {
+    message: UIMessage;
+    regenerate: ReturnType<typeof useChat>["regenerate"];
+}) => {
     const [visible, setVisible] = useState(false);
     const { activeGroupedByProvider } = useModels();
+
+    const retryMessage = (model: KarnetModel) => {
+        console.log(model);
+    };
 
     return (
         <div
@@ -84,39 +103,47 @@ export const MessageActions = ({ message }: { message: UIMessage }) => {
                 <CopyIcon />
             </Button>
             {message.role === "user" && (
-                <DropdownMenu onOpenChange={setVisible} open={visible}>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            className="rotate-180 focus-visible:outline-none focus-visible:ring-0"
-                            size="icon"
-                            variant="ghost"
-                        >
-                            <SplitIcon />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="min-w-40">
-                        {Object.entries(activeGroupedByProvider).map(([provider, providerModels]) => (
-                            <DropdownMenuGroup key={provider}>
-                                <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger className="flex h-9 w-full items-center justify-between gap-2">
-                                        <ProviderIcons className="size-4 w-6" provider={provider} />
-                                        {providerNames[provider]}
-                                    </DropdownMenuSubTrigger>
-                                    <DropdownMenuPortal>
-                                        <DropdownMenuSubContent>
-                                            {providerModels.map((model) => (
-                                                <DropdownMenuItem key={model.id}>
-                                                    <ProviderIcons provider={model.provider} />
-                                                    {model.name}
-                                                </DropdownMenuItem>
-                                            ))}
-                                        </DropdownMenuSubContent>
-                                    </DropdownMenuPortal>
-                                </DropdownMenuSub>
-                            </DropdownMenuGroup>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <>
+                    <Button onClick={() => regenerate({ messageId: message.id })} size="icon" variant="ghost">
+                        <RotateCcwIcon />
+                    </Button>
+                    <DropdownMenu onOpenChange={setVisible} open={visible}>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                className="rotate-180 focus-visible:outline-none focus-visible:ring-0"
+                                size="icon"
+                                variant="ghost"
+                            >
+                                <SplitIcon />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="min-w-40">
+                            {Object.entries(activeGroupedByProvider).map(([provider, providerModels]) => (
+                                <DropdownMenuGroup key={provider}>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="flex h-9 w-full items-center justify-between gap-2">
+                                            <ProviderIcons className="size-4 w-6" provider={provider} />
+                                            {providerNames[provider]}
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent>
+                                                {providerModels.map((model) => (
+                                                    <DropdownMenuItem
+                                                        key={model.id}
+                                                        onClick={() => retryMessage(model)}
+                                                    >
+                                                        <ProviderIcons provider={model.provider} />
+                                                        {model.name}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                </DropdownMenuGroup>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </>
             )}
         </div>
     );
