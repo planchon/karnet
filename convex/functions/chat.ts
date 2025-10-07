@@ -132,6 +132,7 @@ export const finishChatStream = mutation({
     args: {
         id: v.id("chats"),
         messages: v.array(chatMessage),
+        time: v.number(),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -151,6 +152,20 @@ export const finishChatStream = mutation({
                 message: "Chat not found",
             });
         }
+
+        const lastMessage = args.messages.at(-1);
+        if (!lastMessage) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0003",
+                httpStatusCode: 404,
+                message: "Last message not found",
+            });
+        }
+
+        lastMessage.metadata = JSON.stringify({
+            ...(lastMessage.metadata ? JSON.parse(lastMessage.metadata) : {}),
+            time: args.time,
+        });
 
         chat.messages = args.messages;
         chat.stream.status = "inactive";
@@ -191,6 +206,63 @@ export const updateChatTitle = mutation({
         await ctx.db.patch(args.id, chat);
 
         return chat;
+    },
+});
+
+export const updateChatMetadata = mutation({
+    args: {
+        id: v.id("chats"),
+        metadata: v.object({
+            input_tokens: v.number(),
+            output_tokens: v.number(),
+        }),
+        model: v.object({
+            name: v.string(),
+            id: v.string(),
+        }),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
+        }
+
+        const chat = await ctx.db.get(args.id);
+
+        if (!chat || chat.subject !== identity.subject) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
+        }
+
+        const messages = chat.messages;
+        const lastMessage = messages.at(-1);
+
+        if (!lastMessage) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0003",
+                httpStatusCode: 404,
+                message: "Last message not found",
+            });
+        }
+
+        const metadata = JSON.stringify({
+            ...(lastMessage.metadata ? JSON.parse(lastMessage.metadata) : {}),
+            ...args.metadata,
+            model: args.model,
+        });
+
+        lastMessage.metadata = metadata;
+
+        chat.messages = messages;
+
+        await ctx.db.patch(args.id, chat);
     },
 });
 

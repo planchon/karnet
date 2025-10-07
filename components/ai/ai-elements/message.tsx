@@ -14,8 +14,9 @@ import {
 import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckIcon, CopyIcon, RotateCcwIcon, SplitIcon } from "lucide-react";
+import { CheckIcon, ClockIcon, CopyIcon, CpuIcon, RotateCcwIcon, SplitIcon, Zap, ZapIcon } from "lucide-react";
 import { type ComponentProps, type HTMLAttributes, useState } from "react";
+import { z } from "zod";
 import { ProviderIcons, providerNames } from "@/ai/models";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
@@ -80,6 +81,18 @@ export const MessageContent = ({
     </div>
 );
 
+const MetadataSchema = z.object({
+    model: z.string(),
+    usage: z.object({
+        inputTokens: z.number(),
+        outputTokens: z.number(),
+        reasoningTokens: z.number(),
+        cachedInputTokens: z.number(),
+        totalTokens: z.number(),
+    }),
+    time: z.number(),
+});
+
 export const MessageActions = ({
     message,
     regenerate,
@@ -92,6 +105,9 @@ export const MessageActions = ({
     const { activeGroupedByProvider } = useModels();
 
     const text = message.parts.find((part) => part.type === "text")?.text;
+
+    const metadataParsed = MetadataSchema.safeParse(message.metadata);
+    const metadata = metadataParsed.success ? metadataParsed.data : null;
 
     return (
         <div
@@ -126,9 +142,30 @@ export const MessageActions = ({
                 </AnimatePresence>
             </Button>
             {message.role === "assistant" && (
-                <Button onClick={() => regenerate({ messageId: message.id })} size="icon" variant="ghost">
-                    <RotateCcwIcon />
-                </Button>
+                <div className="flex items-center gap-1">
+                    <Button onClick={() => regenerate({ messageId: message.id })} size="icon" variant="ghost">
+                        <RotateCcwIcon />
+                    </Button>
+                    {metadata && (
+                        <div className="flex gap-2">
+                            <div className="flex items-center gap-1 font-semibold text-muted-foreground text-xs">
+                                {metadata.model}
+                            </div>
+                            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                                <CpuIcon className="size-3" />
+                                {metadata.usage.outputTokens} tokens
+                            </div>
+                            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                                <ClockIcon className="size-3" />
+                                {(metadata.time / 1000).toFixed(2)}s
+                            </div>
+                            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                                <ZapIcon className="size-3" />
+                                {(metadata.usage.outputTokens / (metadata.time / 1000)).toFixed(2)} tok/s
+                            </div>
+                        </div>
+                    )}
+                </div>
             )}
             {message.role === "user" && (
                 <DropdownMenu onOpenChange={setVisible} open={visible}>

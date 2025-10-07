@@ -104,27 +104,36 @@ export async function POST(req: Request) {
                     waitUntil: after,
                 });
 
+                const streamStartTime = new Date();
+
                 return res.toUIMessageStreamResponse({
                     originalMessages: messages,
                     generateMessageId: generateId,
                     sendSources: true,
                     sendReasoning: true,
                     sendStart: true,
-                    messageMetadata: (metadata) => ({
-                        model: model.name,
-                        ...metadata,
-                    }),
-                    onFinish: (message) => {
+                    messageMetadata: ({ part }) => {
+                        if (part.type === "finish") {
+                            return {
+                                model: model.name,
+                                usage: part.totalUsage,
+                            };
+                        }
+                    },
+                    onFinish: ({ messages: _messages }) => {
                         return Sentry.startSpan(
                             {
                                 name: "finishChatStream",
                                 attributes: {
                                     chatId,
-                                    messages: JSON.stringify(message.messages),
+                                    messages: JSON.stringify(messages),
                                 },
                             },
                             async () => {
-                                const preparedMessages = message.messages.map((m) => ({
+                                const streamEndTime = new Date();
+                                const totalTime = streamEndTime.getTime() - streamStartTime.getTime();
+
+                                const preparedMessages = _messages.map((m) => ({
                                     role: m.role,
                                     id: m.id,
                                     // we cannot store the metadata because the type is unknown
@@ -143,6 +152,7 @@ export async function POST(req: Request) {
                                             {
                                                 id: chatId as Id<"chats">,
                                                 messages: preparedMessages,
+                                                time: totalTime,
                                             },
                                             {
                                                 token: await getSession(),
