@@ -13,10 +13,12 @@ import {
 } from "@ui/dropdown-menu";
 import { RetryError, type UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
-import { CopyIcon, RotateCcwIcon, SplitIcon } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckIcon, CopyIcon, RotateCcwIcon, SplitIcon } from "lucide-react";
 import { type ComponentProps, type HTMLAttributes, useState } from "react";
 import { ProviderIcons, providerNames } from "@/ai/models";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { cn } from "@/lib/utils";
 
@@ -86,11 +88,10 @@ export const MessageActions = ({
     regenerate: ReturnType<typeof useChat>["regenerate"];
 }) => {
     const [visible, setVisible] = useState(false);
+    const [isCopied, handleCopy] = useCopyToClipboard();
     const { activeGroupedByProvider } = useModels();
 
-    const retryMessage = (model: KarnetModel) => {
-        console.log(model);
-    };
+    const text = message.parts.find((part) => part.type === "text")?.text;
 
     return (
         <div
@@ -99,8 +100,30 @@ export const MessageActions = ({
                 visible && "opacity-100"
             )}
         >
-            <Button size="icon" variant="ghost">
-                <CopyIcon />
+            <Button onClick={() => handleCopy(text || "wtf")} size="icon" variant="ghost">
+                <AnimatePresence initial={false} mode="wait">
+                    {isCopied ? (
+                        <motion.div
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0 }}
+                            initial={{ opacity: 0, scale: 0 }}
+                            key="copied"
+                            transition={{ duration: 0.1, ease: "easeInOut" }}
+                        >
+                            <CheckIcon />
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0 }}
+                            initial={{ opacity: 0, scale: 0 }}
+                            key="copy"
+                            transition={{ duration: 0.1, ease: "easeInOut" }}
+                        >
+                            <CopyIcon />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </Button>
             {message.role === "user" && (
                 <>

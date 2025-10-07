@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Authenticated, ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { Outlet, useNavigate } from "react-router";
+import { Toaster } from "sonner";
 import { CommandChat } from "@/components/command/command-chat";
 import { CreateEventCommand } from "@/components/command/command-events";
 import { CommandK } from "@/components/command/command-k";
@@ -64,6 +65,7 @@ export function GeneralOutlet() {
                         <SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">
                             <Outlet />
                         </SidebarInset>
+                        <Toaster />
                     </SidebarProvider>
                 </Authenticated>
             </QueryClientProvider>
