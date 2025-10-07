@@ -1,5 +1,6 @@
 import type { ChatStatus, ReasoningUIPart, SourceUrlUIPart, TextUIPart, UIMessage } from "ai";
 import { memo } from "react";
+import type { Regenerate } from "@/types/regenerate";
 import { Conversation, ConversationContent, ConversationScrollButton } from "../ai-elements/conversation";
 import { Message, MessageContent } from "../ai-elements/message";
 import { Reasoning, ReasoningContent, ReasoningTrigger } from "../ai-elements/reasoning";
@@ -81,7 +82,15 @@ const isEmptyMessage = (message: UIMessage | undefined) =>
     message.parts.every((p) => p.type === "source-url" && p.url === "") ||
     message.parts.every((p) => p.type === "reasoning" && p.text === "");
 
-export const RenderOneMessage = memo(({ message, status }: { message: UIMessage; status: ChatStatus }) => {
+export const RenderOneMessage = ({
+    message,
+    status,
+    regenerate,
+}: {
+    message: UIMessage;
+    status: ChatStatus;
+    regenerate: Regenerate;
+}) => {
     const isEmpty = isEmptyMessage(message);
 
     if (isEmpty) {
@@ -94,14 +103,14 @@ export const RenderOneMessage = memo(({ message, status }: { message: UIMessage;
 
     return (
         <Message from={message.role} key={message.id}>
-            <MessageContent variant="flat">
+            <MessageContent message={message} regenerate={regenerate} variant="flat">
                 <RenderReasoning messageId={message.id} offsetPartIndex={0} part={reasoningParts} status={status} />
                 <RenderText messageId={message.id} offsetPartIndex={0} part={textParts} />
                 <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} status={status} />
             </MessageContent>
         </Message>
     );
-});
+};
 
 const allCoolLoadingPhrases = [
     "Asking the magician...",
@@ -115,14 +124,22 @@ const allCoolLoadingPhrases = [
     "Googling for you...",
 ];
 
-export const ConversationComp = ({ messages, status }: { messages: UIMessage[]; status: ChatStatus }) => {
+export const ConversationComp = ({
+    messages,
+    status,
+    regenerate,
+}: {
+    messages: UIMessage[];
+    status: ChatStatus;
+    regenerate: Regenerate;
+}) => {
     // the random index is the minute we are on
     const randomIndex = Math.floor(new Date().getMinutes() % allCoolLoadingPhrases.length);
     return (
         <Conversation className="relative h-full w-full" isGenerating={status === "streaming"}>
             <ConversationContent className="mx-auto w-8/12 pb-64">
                 {messages.map((message) => (
-                    <RenderOneMessage key={message.id} message={message} status={status} />
+                    <RenderOneMessage key={message.id} message={message} regenerate={regenerate} status={status} />
                 ))}
                 {(status === "submitted" || (status === "streaming" && isEmptyMessage(messages.at(-1)))) && (
                     <TextShimmer className="text-sm">{allCoolLoadingPhrases[randomIndex]}</TextShimmer>

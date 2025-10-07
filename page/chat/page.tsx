@@ -16,7 +16,7 @@ import { Chat } from "@/components/ai/chat";
 import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { useModels } from "@/hooks/useModels";
+import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ export const NewChatPage = observer(function ChatPage() {
 
     usePageTitle("New Chat - Karnet AI Assistant");
 
-    const { messages, sendMessage, setMessages, stop, status } = useChat({
+    const { messages, sendMessage, setMessages, stop, status, regenerate } = useChat({
         experimental_throttle: 200,
     });
 
@@ -85,6 +85,32 @@ export const NewChatPage = observer(function ChatPage() {
         };
     }, []);
 
+    const regenerateMessage: typeof regenerate = (
+        args: Parameters<typeof regenerate>[0],
+        overrideModel?: KarnetModel
+    ) => {
+        const messageId = args?.messageId;
+        const message = messages.find((m) => m.id === messageId);
+        // @ts-expect-error
+        const modelId = message?.metadata?.model.id;
+        const model = overrideModel || models.find((m) => m.id === modelId);
+
+        const body = {
+            model: JSON.parse(JSON.stringify(model)),
+            chatId: chatId.current,
+            streamId: generateId(),
+            webSearch: chatStore.selectedMcp === "search",
+        };
+
+        return regenerate({
+            ...args,
+            body: {
+                ...args?.body,
+                ...body,
+            },
+        });
+    };
+
     // we try to not block anything on the UI thread
     // we want to have the message rendered immediately
     const onSend = () => {
@@ -135,7 +161,7 @@ export const NewChatPage = observer(function ChatPage() {
 
     return (
         <div className="flex h-full w-full flex-col">
-            <ConversationComp messages={messages} status={status} />
+            <ConversationComp messages={messages} regenerate={regenerateMessage} status={status} />
             <div
                 className={cn("pointer-events-none absolute bottom-0 z-0 flex h-full w-full flex-col items-center")}
                 style={{

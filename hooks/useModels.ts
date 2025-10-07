@@ -93,5 +93,25 @@ export const useModels = () => {
         [allModels, userActiveModels]
     );
 
-    return { models, isLoading, error };
+    const groupedByProvider = models.reduce(
+        (acc, model) => {
+            acc[model.provider] = acc[model.provider] || [];
+            acc[model.provider].push(model);
+            return acc;
+        },
+        {} as Record<string, (typeof models)[number][]>
+    );
+
+    const activeGroupedByProvider = models
+        .filter((model) => model.active)
+        .reduce(
+            (acc, model) => {
+                acc[model.provider] = acc[model.provider] || [];
+                acc[model.provider].push(model);
+                return acc;
+            },
+            {} as Record<string, (typeof models)[number][]>
+        );
+
+    return { models, isLoading, error, groupedByProvider, activeGroupedByProvider };
 };

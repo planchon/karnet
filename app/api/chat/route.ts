@@ -66,6 +66,8 @@ export async function POST(req: Request) {
 
                 const prompt = generatePrompt(model.name, new Date().toLocaleString(), geoString);
 
+                const streamStartTime = new Date();
+
                 const res = streamText({
                     model: _model,
                     system: prompt,
@@ -110,21 +112,30 @@ export async function POST(req: Request) {
                     sendSources: true,
                     sendReasoning: true,
                     sendStart: true,
-                    messageMetadata: (metadata) => ({
-                        model: model.name,
-                        ...metadata,
-                    }),
-                    onFinish: (message) => {
+                    messageMetadata: ({ part }) => {
+                        if (part.type === "finish") {
+                            return {
+                                model: {
+                                    name: model.name,
+                                    id: model.id,
+                                    provider: model.provider,
+                                },
+                                usage: part.totalUsage,
+                                time: Date.now() - streamStartTime.getTime(),
+                            };
+                        }
+                    },
+                    onFinish: ({ messages: _messages }) => {
                         return Sentry.startSpan(
                             {
                                 name: "finishChatStream",
                                 attributes: {
                                     chatId,
-                                    messages: JSON.stringify(message.messages),
+                                    messages: JSON.stringify(messages),
                                 },
                             },
                             async () => {
-                                const preparedMessages = message.messages.map((m) => ({
+                                const preparedMessages = _messages.map((m) => ({
                                     role: m.role,
                                     id: m.id,
                                     // we cannot store the metadata because the type is unknown
