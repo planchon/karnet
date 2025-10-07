@@ -1,4 +1,3 @@
-import type { useChat } from "@ai-sdk/react";
 import { Button } from "@ui/button";
 import {
     DropdownMenu,
@@ -15,20 +14,10 @@ import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
 import { AnimatePresence, motion } from "framer-motion";
 import _ from "lodash";
-import {
-    BrainIcon,
-    CheckIcon,
-    ClockIcon,
-    CopyIcon,
-    CpuIcon,
-    RotateCcwIcon,
-    SplitIcon,
-    Zap,
-    ZapIcon,
-} from "lucide-react";
+import { BrainIcon, CheckIcon, ClockIcon, CopyIcon, CpuIcon, RotateCcwIcon, SplitIcon, ZapIcon } from "lucide-react";
 import { type ComponentProps, type HTMLAttributes, useState } from "react";
 import { z } from "zod";
-import { getProviderName, ProviderIcons, providerNames } from "@/ai/models";
+import { getProviderName, ProviderIcons } from "@/ai/models";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { useModels } from "@/hooks/useModels";
