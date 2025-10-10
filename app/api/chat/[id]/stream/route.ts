@@ -20,9 +20,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
                 chatId: id,
             });
 
-            const tokenRes = await getSession();
+            const { jwt } = await getSession();
 
-            if (!tokenRes) {
+            if (!jwt) {
                 span.setStatus({ code: 1, message: "Unauthorized" });
                 return new Response("Unauthorized", { status: 401 });
             }
@@ -44,7 +44,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
                             id: id as Id<"chats">,
                         },
                         {
-                            token: tokenRes,
+                            token: jwt,
                         }
                     );
                 }

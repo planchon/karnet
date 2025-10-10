@@ -5,23 +5,13 @@ import { convertToModelMessages, generateId, generateText, smoothStream, streamT
 import { fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
-import { z } from "zod";
 import { openRouterGateway } from "@/ai/gateway";
-import { OpenRouterModelSchema } from "@/ai/schema/model";
-import type { ChatUIMessage } from "@/components/ai/chat/chat.types";
+import { bodySchema } from "@/ai/schema/chat";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { phClient } from "@/lib/posthog";
 import { generatePrompt } from "@/lib/prompt";
 import { getSession } from "@/lib/session";
-
-const bodySchema = z.object({
-    messages: z.array(z.any()).transform((messages) => messages as ChatUIMessage[]),
-    chatId: z.string(),
-    streamId: z.string(),
-    webSearch: z.boolean().optional(),
-    model: OpenRouterModelSchema,
-});
 
 export async function POST(req: Request) {
     return await Sentry.startSpan(
@@ -35,44 +25,62 @@ export async function POST(req: Request) {
                 getSession();
 
                 const body = await req.json();
-                const { messages, model, chatId, streamId, webSearch } = bodySchema.parse(body);
+                const { messages, model, chatId, streamId, tools } = bodySchema.parse(body);
 
                 span.setAttributes({
                     modelId: model.id,
                     chatId,
                     streamId,
                     messages: JSON.stringify(messages),
-                    webSearch,
+                    tools,
                 });
 
-                if (!model) {
-                    return new Response("Model not found", { status: 404 });
-                }
-
-                const userInputMessage = messages
-                    .filter((m) => m.role === "user")[0]
-                    .parts.find((p) => p.type === "text")?.text;
-
-                if (!userInputMessage) {
-                    throw new Error("User input message not found");
-                }
-
                 const openRouter = openRouterGateway();
+                const plugins: unknown[] = [];
 
-                const _model = withTracing(openRouter(webSearch ? `${model.id}:online` : model.id), phClient, {});
+                if (tools?.includes("ocr")) {
+                    plugins.push({
+                        id: "file-parser",
+                        engine: {
+                            pdf: "mistra",
+                        },
+                    });
+                }
+
+                if (tools?.includes("web")) {
+                    plugins.push({
+                        id: "web",
+                        engine: "exa",
+                        max_results: 5,
+                    });
+                }
+
+                const _model = withTracing(
+                    openRouter(model.id, {
+                        extraBody: {
+                            plugins,
+                        },
+                    }),
+                    phClient,
+                    {
+                        posthogDistinctId: (await getSession()).session.userId,
+                    }
+                );
 
                 const geo = geolocation(req);
                 const geoString = geo.city ? `${geo.city}, ${geo.country}` : "Paris France";
-
                 const prompt = generatePrompt(model.name, new Date().toLocaleString(), geoString);
 
                 const streamStartTime = new Date();
 
+                const modelMessages = convertToModelMessages(messages);
+
                 const res = streamText({
                     model: _model,
                     system: prompt,
-                    messages: convertToModelMessages(messages),
+                    messages: modelMessages,
                     experimental_transform: smoothStream({ chunking: "word" }),
+                    providerOptions: {},
                 });
 
                 Sentry.startSpan(
@@ -95,9 +103,7 @@ export async function POST(req: Request) {
                                     metadata: JSON.stringify(m.metadata),
                                 })),
                             },
-                            {
-                                token: await getSession(),
-                            }
+                            { token: (await getSession()).jwt }
                         );
                     }
                 );
@@ -156,7 +162,7 @@ export async function POST(req: Request) {
                                                 messages: preparedMessages,
                                             },
                                             {
-                                                token: await getSession(),
+                                                token: (await getSession()).jwt,
                                             }
                                         );
                                     }
@@ -198,7 +204,7 @@ export async function POST(req: Request) {
                                                 title: title.text,
                                             },
                                             {
-                                                token: await getSession(),
+                                                token: (await getSession()).jwt,
                                             }
                                         );
                                     }
@@ -234,7 +240,7 @@ export async function POST(req: Request) {
                                         },
                                     },
                                     {
-                                        token: await getSession(),
+                                        token: (await getSession()).jwt,
                                     }
                                 );
                             }

@@ -8,13 +8,14 @@ import Text from "@tiptap/extension-text";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
-import { Wrench } from "lucide-react";
+import { CheckIcon, Wrench } from "lucide-react";
 import { observer } from "mobx-react";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ProviderIcons } from "@/ai/models";
+import type { ChatMessageBody } from "@/ai/schema/chat";
 import { commands } from "@/ai/tools";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
@@ -63,7 +64,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
             {} as Record<string, KarnetModel[]>
         );
 
-    const defaultModel = models.find((model) => model.default);
+    const defaultModel = models.find((model) => model.default && chatStore.canUseModel(model));
 
     return (
         <Popover onOpenChange={setOpen} open={open}>
@@ -74,7 +75,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
                     <Shortcut shortcut={["M"]} />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
+            <PopoverContent className="w-full p-0" side="top">
                 <Command>
                     <CommandInput placeholder="Search model..." />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
@@ -116,60 +117,83 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
         }
     );
 
-    function handleSelect(value: string) {
-        chatStore.setMcp(value);
-        setOpen(false);
-        chatStore.setDropdownOpen(false);
-        editorRef.current?.commands.focus();
+    function handleSelect(value: ChatMessageBody["tools"][number]) {
+        chatStore.toggleTool(value);
+        // editorRef.current?.commands.focus();
     }
 
-    function getRenderingName() {
-        const mcpItem = commands
-            .flatMap((provider) => provider.tools)
-            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMcp);
-        return mcpItem?.name;
+    function getRenderingNames() {
+        if (chatStore.selectedTool.length === 0) {
+            return "No tools";
+        }
+
+        return commands
+            .filter((f) => chatStore.selectedTool.includes(f.id))
+            .map((f) => f.name)
+            .join(", ");
     }
 
-    function getRenderingIcon() {
-        const mcpItem = commands
-            .flatMap((provider) => provider.tools)
-            .find((mcpItemIterator) => mcpItemIterator.id === chatStore.selectedMcp);
-
-        if (!mcpItem) {
+    function getRenderingIcons() {
+        if (chatStore.selectedTool.length === 0) {
             return <Wrench className="size-4" />;
         }
 
-        return <mcpItem.icon className="size-4" />;
+        if (chatStore.selectedTool.length === 1) {
+            const command = commands.find((f) => chatStore.selectedTool.includes(f.id));
+            if (!command) {
+                return <Wrench className="size-4" />;
+            }
+
+            return <command.icon className="size-4" key={command.id} />;
+        }
+
+        const allIconsSelected = commands.filter((f) => chatStore.selectedTool.includes(f.id));
+
+        return (
+            <div className="-space-x-2 flex items-center">
+                {allIconsSelected.map((command) => (
+                    <command.icon className="size-5 rounded-full border bg-white p-[2px]" key={command.id} />
+                ))}
+            </div>
+        );
     }
 
     return (
-        <Popover onOpenChange={setOpen} open={open}>
-            <PopoverTrigger asChild className="outline-none ring-0">
-                <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
-                    {getRenderingIcon()}
-                    {chatStore.selectedMcp ? getRenderingName() : "No tools"}
-                    <Shortcut nothen shortcut={["s"]} />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-                <Command>
-                    <CommandInput placeholder="Search tools..." />
-                    <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
-                        <CommandEmpty>No tools found.</CommandEmpty>
-                        {commands.map((provider) => (
-                            <CommandGroup heading={provider.name} key={provider.name}>
-                                {provider.tools.map((item) => (
-                                    <CommandItem key={item.id} onSelect={() => handleSelect(item.id)} value={item.id}>
-                                        <item.icon />
-                                        {item.name}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        ))}
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
+        <div className="relative flex items-center">
+            <Popover onOpenChange={setOpen} open={open}>
+                <PopoverAnchor className="absolute top-[-2px] left-15" />
+                <PopoverTrigger asChild className="outline-none ring-0">
+                    <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
+                        {getRenderingIcons()}
+                        {getRenderingNames()}
+                        <Shortcut nothen shortcut={["s"]} />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0" side="top">
+                    <Command>
+                        <CommandInput placeholder="Search tools..." />
+                        <CommandList className="scrollbar-thin flex max-h-48 flex-col gap-1 overflow-y-auto px-1 pt-1">
+                            <CommandEmpty>No tools found.</CommandEmpty>
+                            {chatStore.getAvailableTools().map((command) => (
+                                <CommandItem
+                                    className="flex justify-between"
+                                    disabled={command.disabled}
+                                    key={command.id}
+                                    onSelect={() => handleSelect(command.id)}
+                                    value={command.name}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <command.icon />
+                                        {command.name}
+                                    </div>
+                                    {chatStore.selectedTool.includes(command.id) && <CheckIcon className="size-4" />}
+                                </CommandItem>
+                            ))}
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+        </div>
     );
 });
 
@@ -212,12 +236,15 @@ export const ChatInput = observer(function ChatInputInside({
                     {
                         char: "/",
                         render: () =>
-                            renderItems(ToolsSuggestionComponent, (props: { id?: string }) => {
-                                if (!props.id) {
-                                    return;
+                            renderItems(
+                                ToolsSuggestionComponent,
+                                (props: { id?: ChatMessageBody["tools"][number] }) => {
+                                    if (!props.id) {
+                                        return;
+                                    }
+                                    chatStore.toggleTool(props.id);
                                 }
-                                chatStore.setMcp(props.id);
-                            }),
+                            ),
                     },
                     {
                         char: "@",

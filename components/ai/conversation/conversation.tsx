@@ -1,5 +1,6 @@
-import type { ChatStatus, ReasoningUIPart, SourceUrlUIPart, TextUIPart, UIMessage } from "ai";
+import type { ChatStatus, FileUIPart, ReasoningUIPart, SourceUrlUIPart, TextUIPart, UIMessage } from "ai";
 import { memo } from "react";
+import { FilePreview } from "@/components/ui/file";
 import type { Regenerate } from "@/types/regenerate";
 import { Conversation, ConversationContent, ConversationScrollButton } from "../ai-elements/conversation";
 import { Message, MessageContent } from "../ai-elements/message";
@@ -74,6 +75,28 @@ const RenderSource = memo(
     }
 );
 
+const RenderFile = ({
+    part,
+    messageId,
+    offsetPartIndex,
+}: {
+    part: FileUIPart[];
+    messageId: string;
+    offsetPartIndex: number;
+}) => {
+    if (part.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {part.map((p, i) => (
+                <FilePreview filePart={p} key={`${messageId}-${offsetPartIndex + i}`} />
+            ))}
+        </div>
+    );
+};
+
 const isEmptyMessage = (message: UIMessage | undefined) =>
     message === undefined ||
     message.parts.length === 0 ||
@@ -100,6 +123,7 @@ export const RenderOneMessage = ({
     const reasoningParts = message.parts.filter((p) => p.type === "reasoning");
     const textParts = message.parts.filter((p) => p.type === "text");
     const sourceParts = message.parts.filter((p) => p.type === "source-url");
+    const fileParts = message.parts.filter((p) => p.type === "file");
 
     return (
         <Message from={message.role} key={message.id}>
@@ -107,6 +131,7 @@ export const RenderOneMessage = ({
                 <RenderReasoning messageId={message.id} offsetPartIndex={0} part={reasoningParts} status={status} />
                 <RenderText messageId={message.id} offsetPartIndex={0} part={textParts} />
                 <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} status={status} />
+                <RenderFile messageId={message.id} offsetPartIndex={0} part={fileParts} />
             </MessageContent>
         </Message>
     );

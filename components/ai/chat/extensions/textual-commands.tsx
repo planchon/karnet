@@ -2,12 +2,13 @@
 
 import { ReactRenderer } from "@tiptap/react";
 import tippy, { type Instance, type Props } from "tippy.js";
+import type { ChatMessageBody } from "@/ai/schema/chat";
 import type { KarnetModel } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
 
 export const renderItems = (
     RenderingComponent: any,
-    callback: (props: { model?: KarnetModel; id?: string }) => void
+    callback: (props: { model?: KarnetModel; id?: ChatMessageBody["tools"][number] }) => void
 ) => {
     let component: ReactRenderer | null = null;
     let popup: Instance<Props>[] | null = null;
