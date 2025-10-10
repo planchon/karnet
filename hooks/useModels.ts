@@ -5,7 +5,6 @@ import z from "zod";
 import { isImageGeneratingModel, type OpenRouterModel, OpenRouterModelSchema } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { canUseModel } from "@/stores/chat.store";
 import { useStores } from "./useStores";
 
 const userActiveModelsSchema = z.array(
