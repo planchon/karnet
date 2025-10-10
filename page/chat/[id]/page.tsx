@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { useUploadFile } from "@convex-dev/r2/react";
 import { convexQuery } from "@convex-dev/react-query";
 import { cn } from "@editor/utils/tiptap-utils";
 import { IconSend } from "@tabler/icons-react";
@@ -8,15 +9,20 @@ import { useQuery } from "@tanstack/react-query";
 import type { Editor } from "@tiptap/core";
 import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
 import { generateId } from "ai";
+import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
-import { debounce } from "lodash";
+import _, { debounce } from "lodash";
+import { Paperclip } from "lucide-react";
 import { observer } from "mobx-react";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { Loader } from "@/components/ai/ai-elements/loader";
 import { Chat } from "@/components/ai/chat";
 import { ConversationComp } from "@/components/ai/conversation/conversation";
+import type { FileWithUploadProcess } from "@/components/ui/file";
+import { File } from "@/components/ui/file";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
@@ -27,6 +33,10 @@ import type { Regenerate } from "@/types/regenerate";
 const DEBOUNCE_TIME = 5000;
 
 export const ChatWithIdPage = observer(function ChatPage() {
+    const uploadFile = useUploadFile(api.functions.files);
+    const deleteFile = useMutation(api.functions.files.deleteFile);
+    const assignFile = useMutation(api.functions.files.assignFileToUser);
+
     const { chatId } = useParams();
     const { chatStore } = useStores();
     const editorRef = useRef<Editor | null>(null);
@@ -38,6 +48,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         initialData: JSON.parse(localStorage.getItem(`chat:${chatId}`) || "null"),
     });
     const streamId = useRef<string | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     usePageTitle(`${chat.data?.title} - Karnet AI Assistant`);
 
@@ -100,7 +111,8 @@ export const ChatWithIdPage = observer(function ChatPage() {
             model: JSON.parse(JSON.stringify(model)),
             chatId: chatId as Id<"chats">,
             streamId: generateId(),
-            webSearch: chatStore.selectedTool === "search",
+            // TODO: get the used tools from the message (could be differents)
+            tools: chatStore.selectedTool,
         };
 
         return regenerate({
@@ -130,22 +142,30 @@ export const ChatWithIdPage = observer(function ChatPage() {
         // for the history feature
         localStorage.setItem("chat-history", text);
 
+        const tools = _.cloneDeep(chatStore.selectedTool);
+        chatStore.resetTools();
+
         // clear the editor
         editorRef.current?.commands.setContent("");
 
         streamId.current = generateId();
 
         sendMessage(
-            { text },
+            {
+                text,
+                files: chatStore.getFilesForChat(),
+            },
             {
                 body: {
                     model,
                     chatId: chatId as Id<"chats">,
                     streamId: streamId.current,
-                    webSearch: chatStore.selectedTool === "search",
+                    tools: tools || [],
                 },
             }
         );
+
+        chatStore.resetFiles();
     };
 
     if (!chat) {
@@ -155,6 +175,32 @@ export const ChatWithIdPage = observer(function ChatPage() {
             </div>
         );
     }
+    const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newFiles = Object.values(e.target.files || {}).map((file) => ({
+            file,
+            upload: "in_progress" as const,
+        }));
+        chatStore.addFiles(newFiles);
+        e.target.value = "";
+
+        // upload all the files
+        for (const file of newFiles) {
+            uploadFile(file.file).then(async (id) => {
+                // move to the convex id
+                const { url, id: cid } = await assignFile({ id, media_type: file.file.type, filename: file.file.name });
+                chatStore.updateFile({ ...file, upload: "success" as const, id: cid, url });
+            });
+        }
+    };
+
+    const removeFile = (file: FileWithUploadProcess) => {
+        if (file.upload === "success") {
+            deleteFile({ id: file.id }).catch((error) => {
+                console.error("error deleting file", error);
+            });
+        }
+        chatStore.removeFile(file);
+    };
 
     return (
         <div className="flex h-full w-full flex-col">
@@ -176,8 +222,41 @@ export const ChatWithIdPage = observer(function ChatPage() {
                     }}
                 >
                     <Chat.Root>
-                        <div className="h-full w-full rounded-b-xl bg-white p-2 shadow-md">
+                        <div className="relative h-full w-full rounded-b-xl bg-white p-2 shadow-md">
+                            {chatStore.getFiles().length > 0 && (
+                                <div className="flex w-full flex-row flex-wrap gap-2 pb-3">
+                                    {chatStore.getFiles().map((file) => (
+                                        <File file={file} key={file.file.name} onRemove={() => removeFile(file)} />
+                                    ))}
+                                </div>
+                            )}
                             <Chat.Input className="h-auto max-h-96 min-h-20 overflow-y-auto" ref={editorRef} />
+                            <div className="absolute right-0 bottom-0 p-1">
+                                <input
+                                    accept="application/pdf, image/*"
+                                    className="hidden"
+                                    multiple
+                                    onChange={handleFiles}
+                                    ref={inputRef}
+                                    type="file"
+                                    // to upload the same file multiple times
+                                    value=""
+                                />
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button
+                                            className="flex items-center gap-2 overflow-hidden rounded-full bg-gray-50 p-2 hover:cursor-pointer"
+                                            onClick={() => inputRef.current?.click()}
+                                            type="button"
+                                        >
+                                            <Paperclip className="size-4 text-gray-500" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent sideOffset={5}>
+                                        <span>Attach files to your message</span>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
                         </div>
                         <div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
                             <div className="flex items-center gap-0">

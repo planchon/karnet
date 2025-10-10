@@ -30,8 +30,8 @@ import { cn } from "@/lib/utils";
 export const NewChatPage = observer(function ChatPage() {
     const uploadFile = useUploadFile(api.functions.files);
     const deleteFile = useMutation(api.functions.files.deleteFile);
-    const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
     const assignFile = useMutation(api.functions.files.assignFileToUser);
+    const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
 
     const { chatStore } = useStores();
     const location = usePathname();

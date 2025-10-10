@@ -83,13 +83,19 @@ const RenderFile = ({
     part: FileUIPart[];
     messageId: string;
     offsetPartIndex: number;
-}) => (
-    <div className="flex flex-wrap gap-2">
-        {part.map((p, i) => (
-            <FilePreview filePart={p} key={`${messageId}-${offsetPartIndex + i}`} />
-        ))}
-    </div>
-);
+}) => {
+    if (part.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {part.map((p, i) => (
+                <FilePreview filePart={p} key={`${messageId}-${offsetPartIndex + i}`} />
+            ))}
+        </div>
+    );
+};
 
 const isEmptyMessage = (message: UIMessage | undefined) =>
     message === undefined ||
