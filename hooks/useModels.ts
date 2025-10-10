@@ -2,9 +2,10 @@ import { convexQuery } from "@convex-dev/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import z from "zod";
-import { type OpenRouterModel, OpenRouterModelSchema } from "@/ai/schema/model";
+import { isImageGeneratingModel, type OpenRouterModel, OpenRouterModelSchema } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { canUseModel } from "@/stores/chat.store";
 import { useStores } from "./useStores";
 
 const userActiveModelsSchema = z.array(
@@ -82,7 +83,17 @@ export const useModels = () => {
     const models = useMemo(
         () =>
             allModels
-                ?.filter((model) => chatStore.canUseModel(model))
+                .filter((model) => {
+                    if (isImageGeneratingModel(model) && chatStore.selectedTool.includes("image")) {
+                        return true;
+                    }
+
+                    if (!(isImageGeneratingModel(model) || chatStore.selectedTool.includes("image"))) {
+                        return true;
+                    }
+
+                    return false;
+                })
                 .map((model) => {
                     const userActiveModel = userActiveModels?.find((activeModel) => activeModel.model_id === model.id);
                     if (userActiveModel) {
@@ -95,7 +106,7 @@ export const useModels = () => {
                     }
                     return { ...model, active: false as const, default: false };
                 }),
-        [allModels, userActiveModels, chatStore.selectedTool.includes("image")]
+        [allModels, userActiveModels, chatStore.selectedTool]
     );
 
     const groupedByProvider = models.reduce(

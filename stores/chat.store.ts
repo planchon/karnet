@@ -77,7 +77,7 @@ export class ChatStore {
         this.dropdownOpen = open;
     }
 
-    canUseModel(model) {
+    canUseModel(model: KarnetModel) {
         if (isImageGeneratingModel(model) && this.selectedTool.includes("image")) {
             return true;
         }
