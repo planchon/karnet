@@ -93,3 +93,11 @@ const OpenRouterModelSchema = z
 // Export the schema for use
 export type OpenRouterModel = z.infer<typeof OpenRouterModelSchema>;
 export { OpenRouterModelSchema };
+
+export function isImageGeneratingModel(model: OpenRouterModel | null | undefined) {
+    if (!model) {
+        return false;
+    }
+
+    return model.architecture.output_modalities.includes("image");
+}

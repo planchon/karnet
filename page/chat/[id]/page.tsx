@@ -100,7 +100,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
             model: JSON.parse(JSON.stringify(model)),
             chatId: chatId as Id<"chats">,
             streamId: generateId(),
-            webSearch: chatStore.selectedMcp === "search",
+            webSearch: chatStore.selectedTool === "search",
         };
 
         return regenerate({
@@ -142,7 +142,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
                     model,
                     chatId: chatId as Id<"chats">,
                     streamId: streamId.current,
-                    webSearch: chatStore.selectedMcp === "search",
+                    webSearch: chatStore.selectedTool === "search",
                 },
             }
         );

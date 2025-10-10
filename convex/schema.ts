@@ -66,8 +66,16 @@ const modelTable = defineTable({
     modality: v.optional(v.union(v.literal("text"), v.literal("image"))),
 }).index("by_subject", ["subject"]);
 
+const fileTable = defineTable({
+    subject: v.string(),
+    file_id: v.string(),
+    media_type: v.string(),
+    filename: v.string(),
+}).index("by_subject", ["subject"]);
+
 export default defineSchema({
     tasks: taskTable,
     chats: chatTable,
     models: modelTable,
+    files: fileTable,
 });

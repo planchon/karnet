@@ -13,16 +13,20 @@ export const getSession = () => {
         async () => {
             const redis = await getRedis();
 
-            const { sessionId } = await auth();
+            const session = await auth();
 
-            if (!sessionId) {
+            if (!session.sessionId) {
                 throw new Error("No session id");
             }
 
-            const jwt = await redis.get(`session:${sessionId}`);
+            const jwt = await redis.get(`session:${session.sessionId}`);
 
             if (!jwt) {
-                const tokenRes = await (await clerkClient()).sessions.getToken(sessionId, "convex", SESSION_EXPIRATION);
+                const tokenRes = await (await clerkClient()).sessions.getToken(
+                    session.sessionId,
+                    "convex",
+                    SESSION_EXPIRATION
+                );
 
                 if (!tokenRes) {
                     throw new Error("No token");
@@ -30,7 +34,7 @@ export const getSession = () => {
 
                 // set the session in redis after the request is complete
                 after(async () => {
-                    await redis.set(`session:${sessionId}`, tokenRes.jwt, {
+                    await redis.set(`session:${session.sessionId}`, tokenRes.jwt, {
                         expiration: {
                             value: SESSION_EXPIRATION,
                             type: "EX",
@@ -38,10 +42,10 @@ export const getSession = () => {
                     });
                 });
 
-                return tokenRes.jwt;
+                return { jwt: tokenRes.jwt, session };
             }
 
-            return jwt;
+            return { jwt, session };
         }
     );
 };

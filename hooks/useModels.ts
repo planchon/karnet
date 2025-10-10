@@ -5,6 +5,7 @@ import z from "zod";
 import { type OpenRouterModel, OpenRouterModelSchema } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useStores } from "./useStores";
 
 const userActiveModelsSchema = z.array(
     z.object({
@@ -24,6 +25,8 @@ export type UserActiveModel = z.infer<typeof userActiveModelsSchema>;
 export type KarnetModel = ReturnType<typeof useModels>["models"][number];
 
 export const useModels = () => {
+    const { chatStore } = useStores();
+
     const {
         data: allModels,
         isLoading,
@@ -78,19 +81,21 @@ export const useModels = () => {
 
     const models = useMemo(
         () =>
-            allModels?.map((model) => {
-                const userActiveModel = userActiveModels?.find((activeModel) => activeModel.model_id === model.id);
-                if (userActiveModel) {
-                    return {
-                        ...model,
-                        active: true as const,
-                        active_id: userActiveModel._id,
-                        default: userActiveModel.default,
-                    };
-                }
-                return { ...model, active: false as const, default: false };
-            }),
-        [allModels, userActiveModels]
+            allModels
+                ?.filter((model) => chatStore.canUseModel(model))
+                .map((model) => {
+                    const userActiveModel = userActiveModels?.find((activeModel) => activeModel.model_id === model.id);
+                    if (userActiveModel) {
+                        return {
+                            ...model,
+                            active: true as const,
+                            active_id: userActiveModel._id,
+                            default: userActiveModel.default,
+                        };
+                    }
+                    return { ...model, active: false as const, default: false };
+                }),
+        [allModels, userActiveModels, chatStore.selectedTool.includes("image")]
     );
 
     const groupedByProvider = models.reduce(
