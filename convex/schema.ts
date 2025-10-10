@@ -63,6 +63,7 @@ const modelTable = defineTable({
     provider: v.string(),
     features: v.array(v.string()),
     default: v.optional(v.boolean()),
+    modality: v.optional(v.union(v.literal("text"), v.literal("image"))),
 }).index("by_subject", ["subject"]);
 
 export default defineSchema({

@@ -72,6 +72,7 @@ export const getModels = query({
 export const setDefaultModel = mutation({
     args: {
         id: v.id("models"),
+        modality: v.union(v.literal("text"), v.literal("image")),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -83,16 +84,19 @@ export const setDefaultModel = mutation({
             .query("models")
             .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
             .filter((q) => q.eq(q.field("default"), true))
+            .filter((q) => q.eq(q.field("modality"), args.modality))
             .first();
 
         if (model) {
             await ctx.db.patch(model._id, {
                 default: false,
+                modality: args.modality,
             });
         }
 
         await ctx.db.patch(args.id, {
             default: true,
+            modality: args.modality,
         });
     },
 });

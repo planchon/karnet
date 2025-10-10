@@ -6,7 +6,7 @@ import { Switch } from "@ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
 import { useMutation } from "convex/react";
 import { debounce } from "lodash";
-import { AudioLines, Eye, File } from "lucide-react";
+import { AudioLines, File, ImageIcon, Ligature, TextIcon } from "lucide-react";
 import { observer } from "mobx-react";
 import { memo, useEffect, useState } from "react";
 import { ProviderIcons } from "@/ai/models";
@@ -31,8 +31,8 @@ export const BaseModality = ({ icon, name, tooltip }: { icon: React.ReactNode; n
 
 const VisionModality = () => (
     <BaseModality
-        icon={<Eye className="size-3 text-gray-900/70" />}
-        name="Vision"
+        icon={<ImageIcon className="size-3 text-gray-900/70" />}
+        name="Image"
         tooltip="This model can process images."
     />
 );
@@ -72,6 +72,13 @@ const ModelCard = memo(({ model, toggleModel }: { model: KarnetModel; toggleMode
 
     const shortDescription = `${model.description?.slice(0, 128)}...`;
 
+    const showOutputModalities =
+        model.architecture.output_modalities.filter((modality) => modality !== "text").length > 0;
+
+    const outputModalities = showOutputModalities
+        ? model.architecture.output_modalities.filter((modality) => modality !== "text")
+        : [];
+
     return (
         <div className="rounded-md border border-gray-200 p-4">
             <div className="flex items-start gap-4">
@@ -86,10 +93,21 @@ const ModelCard = memo(({ model, toggleModel }: { model: KarnetModel; toggleMode
                         <div className="font-normal">{model.name}</div>
                         <Switch checked={model.active} onCheckedChange={() => toggleModel(model)} />
                     </div>
-                    <div className="flex flex-row gap-2">
-                        {model.architecture.input_modalities.map((modality) => (
-                            <div key={modality}>{ModalityMap[modality]}</div>
-                        ))}
+                    <div className="flex flex-col gap-1">
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="font-normal text-sm">Input modalities:</div>
+                            {model.architecture.input_modalities.map((modality) => (
+                                <div key={modality}>{ModalityMap[modality]}</div>
+                            ))}
+                        </div>
+                        {showOutputModalities && (
+                            <div className="flex flex-row items-center gap-2">
+                                <div className="font-normal text-sm">Output modalities:</div>
+                                {outputModalities.map((modality) => (
+                                    <div key={modality}>{ModalityMap[modality]}</div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                     <div className="font-normal text-sm">{isExpanded ? model.description : shortDescription}</div>
                     <p
@@ -147,11 +165,16 @@ export const ModelsPage = observer(function ModelsPageInner() {
         }
     };
 
-    const setDefaultModel = (model: KarnetModel & { active_id: Id<"models"> }) => {
-        setDefaultModelMutation({ id: model.active_id });
+    const setDefaultModel = (model: KarnetModel & { active_id: Id<"models"> }, modality: "text" | "image") => {
+        setDefaultModelMutation({ id: model.active_id, modality });
     };
 
-    const defaultModel = models?.find((model) => model.default);
+    const defaultModelText = models?.find(
+        (model) => model.default && !model.architecture.output_modalities.includes("image")
+    );
+    const defaultModelImage = models?.find(
+        (model) => model.default && model.architecture.output_modalities.includes("image")
+    );
 
     return (
         <div className="flex h-full w-full flex-col items-center overflow-y-auto">
@@ -162,24 +185,64 @@ export const ModelsPage = observer(function ModelsPageInner() {
                 </p>
                 {error && <p>Error: {error.message}</p>}
                 <h3>Default model</h3>
-                <p className="font-normal text-sm">Choose the model selected by default</p>
-                <div className="w-full">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <Button variant="outline">
-                                {defaultModel?.name || "Select model"} <IconChevronDown />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            {models
-                                .filter((model) => model.active)
-                                .map((model) => (
-                                    <DropdownMenuItem key={model.id} onClick={() => setDefaultModel(model)}>
-                                        {model.name}
-                                    </DropdownMenuItem>
-                                ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                <div className="flex flex-row gap-6">
+                    <div className="flex min-w-1/3 flex-col gap-2">
+                        <p className="flex flex-row items-center gap-1 font-normal text-sm">
+                            <Ligature className="size-4 text-gray-900/70" />
+                            Default text generation model
+                        </p>
+                        <div className="w-full">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Button variant="outline">
+                                        {defaultModelText?.name || "Select model"} <IconChevronDown />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    {models
+                                        .filter((model) => model.active)
+                                        .filter((model) => model.architecture.output_modalities.includes("text"))
+                                        .filter((model) => !model.architecture.output_modalities.includes("image"))
+                                        .map((model) => (
+                                            <DropdownMenuItem
+                                                key={model.id}
+                                                onClick={() => setDefaultModel(model, "text")}
+                                            >
+                                                {model.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <p className="flex flex-row items-center gap-1 font-normal text-sm">
+                            <ImageIcon className="size-4 text-gray-900/70" />
+                            Default image generation model
+                        </p>
+                        <div className="w-full">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Button variant="outline">
+                                        {defaultModelImage?.name || "Select model"} <IconChevronDown />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    {models
+                                        .filter((model) => model.active)
+                                        .filter((model) => model.architecture.output_modalities.includes("image"))
+                                        .map((model) => (
+                                            <DropdownMenuItem
+                                                key={model.id}
+                                                onClick={() => setDefaultModel(model, "image")}
+                                            >
+                                                {model.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    </div>
                 </div>
                 <h3>Activate models</h3>
                 <p className="font-normal text-sm">Configure the model you want to appear in the model selector.</p>
