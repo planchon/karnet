@@ -318,7 +318,7 @@ export const ChatInput = observer(function ChatInputInside({
             escapeCount.current++;
             setTimeout(() => {
                 escapeCount.current = 0;
-            }, 300);
+            }, 600);
             if (escapeCount.current < 2) {
                 return;
             }
