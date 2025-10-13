@@ -16,7 +16,8 @@ import { motion } from "framer-motion";
 import _, { debounce } from "lodash";
 import { Paperclip } from "lucide-react";
 import { observer } from "mobx-react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useParams } from "react-router";
 import { Loader } from "@/components/ai/ai-elements/loader";
 import { Chat } from "@/components/ai/chat";
@@ -49,6 +50,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
     });
     const streamId = useRef<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const sendingDisabled = !chatStore.allFilesAreUploaded();
 
     usePageTitle(`${chat.data?.title} - Karnet AI Assistant`);
 
@@ -56,6 +58,10 @@ export const ChatWithIdPage = observer(function ChatPage() {
         id: chatId as Id<"chats">,
         resume: true,
         experimental_throttle: 200,
+    });
+
+    useHotkeys("i, t", () => {
+        editorRef.current?.commands.focus();
     });
 
     useEffect(() => {
@@ -98,7 +104,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         return () => {
             document.removeEventListener("keydown", listenToEnter, { capture: true });
         };
-    }, []);
+    }, [chatId]);
 
     const regenerateMessage: Regenerate = (args: Parameters<typeof regenerate>[0], overrideModel?: KarnetModel) => {
         const messageId = args?.messageId;
@@ -124,17 +130,20 @@ export const ChatWithIdPage = observer(function ChatPage() {
         });
     };
 
-    const onSend = () => {
+    const onSend = useCallback(() => {
+        if (sendingDisabled) {
+            alert("Please wait for the files to be uploaded");
+            return;
+        }
+
         const model = chatStore.selectedModel || models.find((m) => m.default);
         if (!model) {
-            // biome-ignore lint/suspicious/noAlert: please
             alert("Please select a model");
             return;
         }
 
         const text = editorRef.current?.getText();
         if (!text) {
-            // biome-ignore lint/suspicious/noAlert: alert is used for UX
             alert("Please enter a message");
             return;
         }
@@ -166,7 +175,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         );
 
         chatStore.resetFiles();
-    };
+    }, [chatId, chatStore, models, sendMessage]);
 
     if (!chat) {
         return (
@@ -175,6 +184,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
             </div>
         );
     }
+
     const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newFiles = Object.values(e.target.files || {}).map((file) => ({
             file,
@@ -264,7 +274,11 @@ export const ChatWithIdPage = observer(function ChatPage() {
                                 <Chat.MCPSelect editorRef={editorRef} />
                             </div>
                             <div className="pb-2">
-                                <Button className="h-8 rounded-sm pr-[6px]! pl-[8px]!" onClick={onSend}>
+                                <Button
+                                    className="h-8 rounded-sm pr-[6px]! pl-[8px]!"
+                                    disabled={sendingDisabled}
+                                    onClick={onSend}
+                                >
                                     <IconSend className="size-4" />
                                     Send
                                     <Shortcut nothen shortcut={["⌘", "↵"]} />

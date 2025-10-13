@@ -56,6 +56,9 @@ export const renderItems = (
         // @ts-expect-error
         onKeyDown: (props) => {
             if (props.event.key === "Escape") {
+                // @ts-expect-error
+                component?.ref?.onKeyDown(props);
+
                 popup?.[0]?.hide();
 
                 return true;

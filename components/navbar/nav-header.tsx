@@ -52,7 +52,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
                     height={20}
                     loading="eager"
                     priority
-                    src="/karnet.png"
+                    src="/new-logo.svg"
                     width={20}
                 />
             </SidebarHeaderLogo>

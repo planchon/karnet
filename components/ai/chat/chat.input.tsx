@@ -12,7 +12,7 @@ import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@ui/popo
 import { Shortcut } from "@ui/shortcut";
 import { CheckIcon, Wrench } from "lucide-react";
 import { observer } from "mobx-react";
-import { useEffect, useImperativeHandle, useState } from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ProviderIcons } from "@/ai/models";
 import type { ChatMessageBody } from "@/ai/schema/chat";
@@ -46,11 +46,25 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
         }
     );
 
+    function focusEditor() {
+        if (!editorRef.current?.isFocused) {
+            editorRef.current?.commands.focus();
+        }
+    }
+
     function handleSelect(value: KarnetModel) {
         chatStore.setModel(value);
         setOpen(false);
         chatStore.setDropdownOpen(false);
-        editorRef.current?.commands.focus();
+        focusEditor();
+    }
+
+    function toggleDropdown(isOpen: boolean) {
+        setOpen(isOpen);
+        chatStore.setDropdownOpen(isOpen);
+        if (!isOpen) {
+            focusEditor();
+        }
     }
 
     const groupedByProvider = models
@@ -67,7 +81,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
     const defaultModel = models.find((model) => model.default && chatStore.canUseModel(model));
 
     return (
-        <Popover onOpenChange={setOpen} open={open}>
+        <Popover onOpenChange={toggleDropdown} open={open}>
             <PopoverTrigger asChild className="outline-none ring-0">
                 <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
                     <ProviderIcons provider={chatStore.selectedModel?.provider || defaultModel?.provider || ""} />
@@ -75,13 +89,20 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
                     <Shortcut shortcut={["M"]} />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0" side="top">
+            <PopoverContent
+                className="w-full p-0"
+                onEscapeKeyDown={(e) => {
+                    toggleDropdown(false);
+                    e.stopPropagation();
+                }}
+                side="top"
+            >
                 <Command>
                     <CommandInput placeholder="Search model..." />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
                         <CommandEmpty>No model found.</CommandEmpty>
                         {Object.entries(groupedByProvider).map(([provider, providerModels]) => (
-                            <CommandGroup heading={capitalize(provider)} key={provider}>
+                            <CommandGroup className="py-0" heading={capitalize(provider)} key={provider}>
                                 {providerModels.map((m) => (
                                     <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
                                         <ProviderIcons provider={provider} />
@@ -119,7 +140,14 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
 
     function handleSelect(value: ChatMessageBody["tools"][number]) {
         chatStore.toggleTool(value);
-        // editorRef.current?.commands.focus();
+    }
+
+    function toggleDropdown(isOpen: boolean) {
+        setOpen(isOpen);
+        chatStore.setDropdownOpen(isOpen);
+        if (!isOpen) {
+            editorRef.current?.commands.focus();
+        }
     }
 
     function getRenderingNames() {
@@ -160,7 +188,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
 
     return (
         <div className="relative flex items-center">
-            <Popover onOpenChange={setOpen} open={open}>
+            <Popover onOpenChange={toggleDropdown} open={open}>
                 <PopoverAnchor className="absolute top-[-2px] left-15" />
                 <PopoverTrigger asChild className="outline-none ring-0">
                     <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
@@ -169,7 +197,14 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
                         <Shortcut nothen shortcut={["s"]} />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0" side="top">
+                <PopoverContent
+                    className="w-full p-0"
+                    onEscapeKeyDown={(e) => {
+                        toggleDropdown(false);
+                        e.stopPropagation();
+                    }}
+                    side="top"
+                >
                     <Command>
                         <CommandInput placeholder="Search tools..." />
                         <CommandList className="scrollbar-thin flex max-h-48 flex-col gap-1 overflow-y-auto px-1 pt-1">
@@ -276,25 +311,37 @@ export const ChatInput = observer(function ChatInputInside({
     // @ts-expect-error
     useImperativeHandle(ref, () => editor);
 
-    useEffect(() => {
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") {
-                e.preventDefault();
-                // biome-ignore lint/style/useBlockStatements: useless
-                if (!editor) return;
-                editor.commands.blur();
+    const escapeCount = useRef(0);
+    useHotkeys(
+        "esc",
+        () => {
+            escapeCount.current++;
+            setTimeout(() => {
+                escapeCount.current = 0;
+            }, 600);
+            if (escapeCount.current < 2) {
+                return;
             }
 
-            if (["/", " "].includes(e.key)) {
+            if (!editor) return;
+            if (!editor?.isFocused) return;
+            editor.commands.blur();
+        },
+        {
+            enableOnContentEditable: true,
+        }
+    );
+
+    useEffect(() => {
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "/") {
                 e.preventDefault();
-                // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
                 editor.commands.focus();
             }
 
             if (e.key === "ArrowUp" && editor?.getText() === "" && editor.isFocused) {
                 e.preventDefault();
-                // biome-ignore lint/style/useBlockStatements: useless
                 if (!editor) return;
 
                 const history = localStorage.getItem("chat-history");
@@ -315,7 +362,6 @@ export const ChatInput = observer(function ChatInputInside({
         }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: mcp change every render
     useEffect(() => {
         document.addEventListener("keydown", modelMcpHandler);
 
@@ -324,7 +370,6 @@ export const ChatInput = observer(function ChatInputInside({
         };
     }, []);
 
-    // biome-ignore lint/style/useBlockStatements: useless
     if (!editor) return null;
 
     return (

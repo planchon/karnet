@@ -38,6 +38,12 @@ export const ModelSuggestionComponent = (props: ModelSuggestionComponentProps) =
         document.addEventListener(
             "keydown",
             (event) => {
+                if (event.key === "Escape") {
+                    console.log("escape keydown fovus");
+                    props.editor.commands.focus();
+                    return false;
+                }
+
                 if (navigationKeys.includes(event.key)) {
                     // prevent default behavior of the key
                     event.preventDefault();
@@ -91,7 +97,7 @@ export const ModelSuggestionComponent = (props: ModelSuggestionComponentProps) =
             <CommandList className="scrollbar-thin max-h-[300px] overflow-y-auto">
                 <CommandEmpty>No model found.</CommandEmpty>
                 {Object.entries(groupedByProvider).map(([provider, providerModels]) => (
-                    <CommandGroup heading={capitalize(provider)} key={provider}>
+                    <CommandGroup className="py-0" heading={capitalize(provider)} key={provider}>
                         {providerModels.map((m) => (
                             <CommandItem key={m.id} onSelect={() => handleSelect(m)} value={m.id}>
                                 <ProviderIcons provider={provider} />
