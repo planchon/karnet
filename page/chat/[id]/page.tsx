@@ -26,7 +26,6 @@ import type { FileWithUploadProcess } from "@/components/ui/file";
 import { File } from "@/components/ui/file";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { useChatHotkeys } from "@/hooks/useChatHotkeys";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
