@@ -61,7 +61,7 @@ export const ChatWithIdPage = observer(function ChatPage() {
         experimental_throttle: 200,
     });
 
-    useHotkeys("i", () => {
+    useHotkeys("i, t", () => {
         editorRef.current?.commands.focus();
     });
 

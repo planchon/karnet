@@ -71,7 +71,7 @@ export const NewChatPage = observer(function ChatPage() {
     }, []);
 
     // i for insert like in vim
-    useHotkeys("i", () => {
+    useHotkeys("i, t", () => {
         editorRef.current?.commands.focus();
     });
 
