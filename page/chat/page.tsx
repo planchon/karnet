@@ -53,22 +53,25 @@ export const NewChatPage = observer(function ChatPage() {
         if (location === "/chat") {
             setInputPosition("center");
             stop();
+            fetchChat();
             setMessages([]);
         }
     }, [location, stop, setMessages]);
 
+    const fetchChat = async () => {
+        const newChat = await createEmptyChat();
+        const id = newChat._id;
+        chatId.current = id;
+    };
+
     // we get the "New chat" from the user when the page is loaded.
     // that way we dont have to wait when a message is sent
     useEffect(() => {
-        const fetchChat = async () => {
-            const newChat = await createEmptyChat();
-            const id = newChat._id;
-            chatId.current = id;
-        };
         fetchChat();
-    }, [createEmptyChat]);
+    }, []);
 
-    useHotkeys("t", () => {
+    // i for insert like in vim
+    useHotkeys("i", () => {
         editorRef.current?.commands.focus();
     });
 
@@ -126,20 +129,23 @@ export const NewChatPage = observer(function ChatPage() {
     // we try to not block anything on the UI thread
     // we want to have the message rendered immediately
     const onSend = () => {
+        if (!chatStore.allFilesAreUploaded()) {
+            alert("Please wait for the files to be uploaded");
+            return;
+        }
+
         if (!chatId.current) {
-            console.error("No chat id");
+            alert("Please wait for the ID to be generated");
             return;
         }
 
         const model = chatStore.selectedModel || models.find((m) => m.default && chatStore.canUseModel(m));
         if (!model) {
-            // biome-ignore lint/suspicious/noAlert: please
             alert("Please select a model");
             return;
         }
 
         if (!chatStore.allFilesAreUploaded()) {
-            // biome-ignore lint/suspicious/noAlert: please
             alert("wait for all the file to be uploaded");
             return;
         }
@@ -148,7 +154,6 @@ export const NewChatPage = observer(function ChatPage() {
 
         const text = editorRef.current?.getText();
         if (!text) {
-            // biome-ignore lint/suspicious/noAlert: alert is used for UX
             alert("Please enter a message");
             return;
         }
@@ -171,7 +176,7 @@ export const NewChatPage = observer(function ChatPage() {
             {
                 body: {
                     model,
-                    chatId: chatId.current,
+                    chatId: chatId.current as Id<"chats">,
                     streamId,
                     tools: tools || [],
                 } satisfies Omit<ChatMessageBody, "messages">,
@@ -275,7 +280,7 @@ export const NewChatPage = observer(function ChatPage() {
                             <div className="pb-2">
                                 <Button
                                     className="h-8 rounded-sm pr-[6px]! pl-[8px]!"
-                                    disabled={!(chatId.current && chatStore.allFilesAreUploaded())}
+                                    disabled={!chatStore.allFilesAreUploaded()}
                                     onClick={() => onSend()}
                                 >
                                     <IconSend className="size-4" />

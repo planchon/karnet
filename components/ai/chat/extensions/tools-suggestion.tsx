@@ -4,6 +4,7 @@ import type { Editor, Range } from "@tiptap/react";
 import { Command, CommandEmpty, CommandItem, CommandList } from "@ui/command";
 import { Command as Cmd } from "cmdk";
 import { CheckIcon } from "lucide-react";
+import { eventNames } from "process";
 import React, { useEffect, useState } from "react";
 import { FaImage, FaInternetExplorer, FaReact } from "react-icons/fa";
 import { commands } from "@/ai/tools";
@@ -43,7 +44,7 @@ export const ToolsSuggestion = [
     },
 ];
 
-export const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
+export const navigationKeys = ["ArrowUp", "ArrowDown", "Enter", "Space"];
 
 type ToolsSuggestionComponentProps = {
     query: string;
@@ -109,7 +110,14 @@ export const ToolsSuggestionComponent = (props: ToolsSuggestionComponentProps) =
     };
 
     return (
-        <Command className="min-w-[200px] border" onKeyDown={(e) => e.stopPropagation()} ref={ref}>
+        <Command
+            className="min-w-[200px] border"
+            onKeyDown={(e) => {
+                console.log("keydown", e);
+                e.stopPropagation();
+            }}
+            ref={ref}
+        >
             <Cmd.Input onValueChange={onChange} style={{ display: "none" }} value={query} />
             <CommandEmpty>No results.</CommandEmpty>
             <CommandList className="scrollbar-thin flex max-h-48 flex-col gap-1 overflow-y-auto px-1 pt-1">

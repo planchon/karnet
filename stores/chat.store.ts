@@ -11,6 +11,9 @@ import type { KarnetModel } from "@/hooks/useModels";
 export class ChatStore {
     dropdownOpen = false;
 
+    modelDropdownOpen = false;
+    toolDropdownOpen = false;
+
     selectedModel: KarnetModel | null = null;
     selectedTool: ChatMessageBody["tools"] = [];
     files: FileWithUploadProcess[] = [];
@@ -19,6 +22,7 @@ export class ChatStore {
         selected: boolean;
         disabled: boolean;
     })[] = [];
+
     availableModels: KarnetModel[] = [];
 
     constructor() {
@@ -77,6 +81,14 @@ export class ChatStore {
         this.dropdownOpen = open;
     }
 
+    setModelDropdownOpen(open: boolean) {
+        this.modelDropdownOpen = open;
+    }
+
+    setToolDropdownOpen(open: boolean) {
+        this.toolDropdownOpen = open;
+    }
+
     canUseModel(model: KarnetModel) {
         if (isImageGeneratingModel(model) && this.selectedTool.includes("image")) {
             return true;
@@ -110,6 +122,9 @@ export class ChatStore {
     }
 
     allFilesAreUploaded() {
+        if (this.files.length === 0) {
+            return true;
+        }
         return this.files.every((f) => f.upload === "success");
     }
 
