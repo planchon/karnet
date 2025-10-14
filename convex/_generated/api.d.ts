@@ -9,6 +9,7 @@
  */
 
 import type * as functions_chat from "../functions/chat.js";
+import type * as functions_documents from "../functions/documents.js";
 import type * as functions_files from "../functions/files.js";
 import type * as functions_models from "../functions/models.js";
 import type * as functions_task from "../functions/task.js";
@@ -29,6 +30,7 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   "functions/chat": typeof functions_chat;
+  "functions/documents": typeof functions_documents;
   "functions/files": typeof functions_files;
   "functions/models": typeof functions_models;
   "functions/task": typeof functions_task;

@@ -4,9 +4,10 @@ import type { IconProps } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 import { Checkbox } from "@ui/checkbox";
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from "@ui/context-menu";
+import dayjs from "dayjs";
 import { observer } from "mobx-react";
-import Link from "next/link";
 import React from "react";
+import { Link } from "react-router";
 import { useSettings } from "@/hooks/useStores";
 import { cn, slugify } from "@/lib/utils";
 import { Status } from "@/primitive/status";
@@ -46,13 +47,12 @@ export const ViewItemLine = observer(
                 <ContextMenuTrigger asChild>
                     <Component
                         className={cn(
-                            "z-50 flex h-10 w-full select-none items-center justify-between py-2 pr-5 pl-3 focus:outline-none",
+                            "z-50 flex h-10 w-full select-none items-center justify-between py-2 pr-5 pl-3 transition-all duration-300 hover:bg-accent focus:outline-none",
                             settings.disableLinks && "pointer-events-none select-none",
                             className
                         )}
                         data-document-id={item._id}
                         data-list-index={listIndex}
-                        href={`/${item.type}/${item.smallId}/${slugify(item.title)}`}
                         id={`view-item-line-${item.smallId}`}
                         key={item._id}
                         onFocus={() => {
@@ -64,6 +64,7 @@ export const ViewItemLine = observer(
                                 viewModel.setSelectedIndex(listIndex);
                             }
                         }}
+                        to={`/${item.type}/${item.smallId}/${slugify(item.title)}`}
                         {...props}
                     >
                         {everythingElse}
@@ -108,11 +109,22 @@ export const ViewItemLabels = ({ children }: { children: React.ReactNode }) => (
     </div>
 );
 
-export const ViewItemDate = () => (
-    <div className="text-[12px] text-accent-foreground/70" id="view-item-date">
-        Mer 24.06
-    </div>
-);
+export const ViewItemDate = () => {
+    const { item } = useLocalItemContext("ViewItemDate");
+
+    if (!("created_at_iso" in item)) {
+        return null;
+    }
+
+    // @ts-expect-error
+    const date = dayjs(item.created_at_iso);
+
+    return (
+        <div className="text-[12px] text-accent-foreground/70" id="view-item-date">
+            {date.format("DD/MM/YYYY")}
+        </div>
+    );
+};
 
 export const ViewItemAuthor = () => (
     <div id="view-item-author">
@@ -132,15 +144,16 @@ export const ViewItemCheckbox = observer(({ isChecked }: { isChecked: boolean })
     const { viewModel } = useViewContext("ViewItemCheckbox");
 
     return (
-        <div
+        <button
             className="group z-1000 flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
             onClick={(e) => {
                 viewModel.checkItem(item);
                 e.stopPropagation();
             }}
+            type="button"
         >
             <Checkbox checked={isChecked} className="size-4 group-hover:border-accent-foreground/50" />
-        </div>
+        </button>
     );
 });
 

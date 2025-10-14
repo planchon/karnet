@@ -1,6 +1,5 @@
 "use client";
 
-import { isEqual } from "lodash";
 import { action, computed, makeObservable, observable, reaction } from "mobx";
 
 export type ViewItem = {

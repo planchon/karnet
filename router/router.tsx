@@ -4,8 +4,11 @@ import { AnimatePresence, LayoutGroup } from "framer-motion";
 import { Navigate, Route, Routes } from "react-router";
 import { ChatWithIdPage } from "@/page/chat/[id]/page";
 import { NewChatPage } from "@/page/chat/page";
+import { DiagramPage } from "@/page/diagram/page";
 import DocumentPage from "@/page/document/page";
+import { PaperPage } from "@/page/paper/page";
 import { ModelsPage } from "@/page/settings/models";
+import { SketchPage } from "@/page/sketch/page";
 import TaskPage from "@/page/task/page";
 import { GeneralOutlet } from "./outlet/general.outlet";
 
@@ -22,6 +25,9 @@ export const GeneralAppRouter = () => (
                         <Route element={<ChatWithIdPage />} path=":chatId" />
                         <Route element={<NewChatPage />} index />
                     </Route>
+                    <Route element={<PaperPage />} path="/paper/:paperId/:paperSlug" />
+                    <Route element={<DiagramPage />} path="/diagram/:diagramId/:diagramSlug" />
+                    <Route element={<SketchPage />} path="/sketch/:sketchId/:sketchSlug" />
                     <Route element={<TaskPage />} path="/task" />
                     <Route element={<DocumentPage />} path="/document" />
                     <Route element={<Navigate to="/chat" />} index />

@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import type { Icon } from '@tabler/icons-react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { observer } from 'mobx-react';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { SidebarGroup, SidebarGroupContent, SidebarMenu } from '@/primitive/ui/sidebar';
-import { SuperLink } from '../../primitive/super-ui/link';
+import type { Icon } from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { observer } from "mobx-react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import { SidebarGroup, SidebarGroupContent, SidebarMenu } from "@/primitive/ui/sidebar";
+import { SuperLink } from "../../primitive/super-ui/link";
 
 export const NavMain = observer(function NavMainInner({
     items,
@@ -17,14 +17,22 @@ export const NavMain = observer(function NavMainInner({
         icon?: Icon;
         tooltip: {
             title: string;
-            side?: 'top' | 'right' | 'bottom' | 'left';
+            side?: "top" | "right" | "bottom" | "left";
             shortcut?: string[];
         };
     }[];
 }) {
-    const location = usePathname();
+    const location = useLocation();
 
-    const selectedIndex = items.findIndex((item) => location.includes(item.url));
+    const isSelected = (url: string) => {
+        if (location.pathname.match(/paper|sketch|diagram/g)) {
+            return url.includes("document");
+        }
+
+        return location.pathname.includes(url);
+    };
+
+    const selectedIndex = items.findIndex((item) => isSelected(item.url));
     const initialSelectedStartPosition = selectedIndex !== -1 ? selectedIndex * 32 + 8 : 8;
     const [selectedStartPosition, setSelectedStartPosition] = useState(initialSelectedStartPosition);
 
@@ -46,7 +54,7 @@ export const NavMain = observer(function NavMainInner({
                                 animate={{
                                     x: 0,
                                     y: selectedStartPosition,
-                                    width: '100%',
+                                    width: "100%",
                                     height: 32,
                                     opacity: 1,
                                 }}
@@ -54,20 +62,20 @@ export const NavMain = observer(function NavMainInner({
                                 exit={{
                                     x: 0,
                                     y: selectedStartPosition,
-                                    width: '100%',
+                                    width: "100%",
                                     height: 32,
                                     opacity: 0,
                                 }}
                                 initial={{
                                     x: 0,
                                     y: selectedStartPosition,
-                                    width: '100%',
+                                    width: "100%",
                                     height: 32,
                                     opacity: 0,
                                 }}
                                 transition={{
                                     duration: 0.1,
-                                    ease: 'easeOut',
+                                    ease: "easeOut",
                                 }}
                             />
                         )}
