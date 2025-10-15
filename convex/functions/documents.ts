@@ -76,7 +76,7 @@ export const createEmptyDocument = mutation({
             created_at_ts: Date.now(),
             title: `New ${args.type}`,
             smallId,
-            data: "",
+            data: args.type === "sketch" ? "[]" : "",
         };
 
         const document = await ctx.db.insert("documents", base);
