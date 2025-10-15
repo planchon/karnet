@@ -47,7 +47,7 @@ export const ViewItemLine = observer(
                 <ContextMenuTrigger asChild>
                     <Component
                         className={cn(
-                            "z-50 flex h-10 w-full select-none items-center justify-between py-2 pr-5 pl-3 transition-all duration-300 hover:bg-accent focus:outline-none",
+                            "group/item z-50 flex h-10 w-full select-none items-center justify-between py-2 pr-5 pl-3 transition-all duration-300 hover:bg-accent focus:outline-none",
                             settings.disableLinks && "pointer-events-none select-none",
                             className
                         )}
@@ -145,14 +145,17 @@ export const ViewItemCheckbox = observer(({ isChecked }: { isChecked: boolean })
 
     return (
         <button
-            className="group z-1000 flex size-8 items-center justify-center transition-all duration-300 hover:cursor-pointer"
+            className="group/check z-1000 flex size-8 items-center justify-center opacity-0 shadow-none transition-all duration-300 hover:cursor-pointer group-hover/check:cursor-pointer group-hover/item:opacity-100"
             onClick={(e) => {
                 viewModel.checkItem(item);
                 e.stopPropagation();
             }}
             type="button"
         >
-            <Checkbox checked={isChecked} className="size-4 group-hover:border-accent-foreground/50" />
+            <Checkbox
+                checked={isChecked}
+                className="size-4 group-hover/check:cursor-pointer group-hover/check:border-accent-foreground/50"
+            />
         </button>
     );
 });

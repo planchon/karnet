@@ -24,14 +24,6 @@ const nextConfig: NextConfig = {
         return new Promise((resolve) => {
             resolve([
                 {
-                    source: "/login(.*)",
-                    destination: "/login",
-                },
-                {
-                    source: "/api/:path*",
-                    destination: "/api/:path*",
-                },
-                {
                     source: "/((?!api).*)",
                     destination: "/",
                 },
@@ -93,5 +85,5 @@ export default withSentryConfig(nextConfig, {
     // See the following for more information:
     // https://docs.sentry.io/product/crons/
     // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
+    automaticVercelMonitors: false,
 });

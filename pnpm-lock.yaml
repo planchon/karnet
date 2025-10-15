@@ -15,17 +15,17 @@ importers:
         specifier: ^2.0.44
         version: 2.0.44(react@19.1.0)(zod@4.0.5)
       '@clerk/nextjs':
-        specifier: ^6.32.0
-        version: 6.32.0(next@15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^6.33.5
+        version: 6.33.5(next@15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/react-router':
         specifier: ^1.10.0
         version: 1.10.0(react-dom@19.1.0(react@19.1.0))(react-router@7.9.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       '@convex-dev/r2':
         specifier: ^0.7.3
-        version: 0.7.3(@standard-schema/spec@1.0.0)(convex-svelte@0.0.11(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11))(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.39.11)(typescript@5.9.2)(zod@4.0.5)
+        version: 0.7.3(@standard-schema/spec@1.0.0)(convex-svelte@0.0.11(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11))(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.39.11)(typescript@5.9.2)(zod@4.0.5)
       '@convex-dev/react-query':
         specifier: 0.0.0-alpha.11
-        version: 0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.85.5(react@19.1.0))(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)
+        version: 0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.85.5(react@19.1.0))(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -141,8 +141,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(@types/react@19.1.8)(react@19.1.0)
       '@sentry/nextjs':
-        specifier: ^10.17.0
-        version: 10.17.0(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(next@15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0))(react@19.1.0)(webpack@5.101.3)
+        specifier: ^10.20.0
+        version: 10.20.0(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(next@15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0))(react@19.1.0)(webpack@5.101.3)
       '@sentry/react':
         specifier: ^9.40.0
         version: 9.40.0(react@19.1.0)
@@ -253,7 +253,7 @@ importers:
         version: 1.1.1(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       convex:
         specifier: ^1.27.3
-        version: 1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -263,9 +263,6 @@ importers:
       framer-motion:
         specifier: ^12.23.6
         version: 12.23.9(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      import-in-the-middle:
-        specifier: ^1.14.4
-        version: 1.14.4
       js-md5:
         specifier: ^0.8.3
         version: 0.8.3
@@ -359,15 +356,15 @@ importers:
       remeda:
         specifier: ^2.26.1
         version: 2.26.1
-      require-in-the-middle:
-        specifier: ^8.0.0
-        version: 8.0.0
       resumable-stream:
         specifier: ^2.2.4
         version: 2.2.4
       sass:
         specifier: ^1.91.0
         version: 1.91.0
+      server:
+        specifier: link:@clerk/nextjs/server
+        version: link:@clerk/nextjs/server
       shiki:
         specifier: ^3.8.1
         version: 3.12.2
@@ -932,6 +929,12 @@ packages:
       zod:
         optional: true
 
+  '@apm-js-collab/code-transformer@0.8.2':
+    resolution: {integrity: sha512-YRjJjNq5KFSjDUoqu5pFUWrrsvGOxl6c3bu+uMFc9HNNptZ2rNU/TI2nLw4jnhQNtka972Ee2m3uqbvDQtPeCA==}
+
+  '@apm-js-collab/tracing-hooks@0.3.1':
+    resolution: {integrity: sha512-Vu1CbmPURlN5fTboVuKMoJjbO5qcq9fA5YXpskx3dXe/zTBvjODFoerw+69rVBlRLrJpwPqSDqEuJDEKIrTldw==}
+
   '@auth/core@0.37.4':
     resolution: {integrity: sha512-HOXJwXWXQRhbBDHlMU0K/6FT1v+wjtzdKhsNg0ZN7/gne6XPsIrjZ4daMcFnbq0Z/vsAbYBinQhhua0d77v7qw==}
     peerDependencies:
@@ -1327,6 +1330,10 @@ packages:
     resolution: {integrity: sha512-EaPXIaOb3IVyn+3NRX9GVZeKk1eL1ugWOiyPzy7hfJvxRYhTBatZrwd32+nCkQ6igvRpRG4O+o5vWS1tSErbrg==}
     engines: {node: '>=18.17.0'}
 
+  '@clerk/backend@2.18.1':
+    resolution: {integrity: sha512-E2gV4T1kIMzS/XpM+BU9l/+be7r6x16Qgx7BDEb/n56Iwn5sD27fa7CCCxgUZ+Zp/nO4etS/4q6NCFaPKr5Xew==}
+    engines: {node: '>=18.17.0'}
+
   '@clerk/clerk-react@5.47.0':
     resolution: {integrity: sha512-of2Y6dg36eL7TwAP4DbGOMWW6DJpJSIuCn6g1jJqJkh4NGljHC7vz3H18OERRM5UQXmBG3twjC8CNAQxQrquRA==}
     engines: {node: '>=18.17.0'}
@@ -1334,8 +1341,23 @@ packages:
       react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
       react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
 
+  '@clerk/clerk-react@5.53.0':
+    resolution: {integrity: sha512-7HYMuT2eCYOhjVx5W9ZHWqOdQ+7VR84ZzTGXifyfe9qb5oiXi1P2n2QcdUzBaSN+e9aY712hr2nvv7aC9d7NGQ==}
+    engines: {node: '>=18.17.0'}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+
   '@clerk/nextjs@6.32.0':
     resolution: {integrity: sha512-K35+Fxfe7F/VJCZQkpgMj2VCy020vqYIi0FQRtLcu7MsCAbllyHVj9lss1lx6oh3NjOOGpRe6EN71pO9wgqu+w==}
+    engines: {node: '>=18.17.0'}
+    peerDependencies:
+      next: ^13.5.7 || ^14.2.25 || ^15.2.3
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+
+  '@clerk/nextjs@6.33.5':
+    resolution: {integrity: sha512-vfQ0dtLQkwzkyJLF7WDFWkoTomb10o19fKeSRfvKpjkcXj1nYiRmt2QrZ0NHHX6zo0xFRyvseoyTlXwLmSyEkg==}
     engines: {node: '>=18.17.0'}
     peerDependencies:
       next: ^13.5.7 || ^14.2.25 || ^15.2.3
@@ -1362,8 +1384,24 @@ packages:
       react-dom:
         optional: true
 
+  '@clerk/shared@3.28.0':
+    resolution: {integrity: sha512-2Zhm1NGb85bMcQd6DmS3JgCzQkHsfSNeOAe0LC2owEMJ3yPaIXFlbLMjdFxYjt6NWAOvVKd4Im3k81GX6xixQw==}
+    engines: {node: '>=18.17.0'}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
   '@clerk/types@4.86.0':
     resolution: {integrity: sha512-YFaOYIAZWbpXehAmtgUB0YNf1v5b/hlwePvdqxlD5vdwrNsap28RpupWZat0hp1+PTtb9uAwSa5AFCOxkYLUJQ==}
+    engines: {node: '>=18.17.0'}
+
+  '@clerk/types@4.94.0':
+    resolution: {integrity: sha512-gl2WR1+G/4QdykJvbJcBwAhRsPs/8G2q4mRaBaYTLtApaPPKb6GM1XLoYQOMKnYbmlUK6faPDtto9np8MYKaYA==}
     engines: {node: '>=18.17.0'}
 
   '@convex-dev/action-retrier@0.2.1':
@@ -3952,32 +3990,32 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sentry-internal/browser-utils@10.17.0':
-    resolution: {integrity: sha512-jXC7dtItZYNGP+K9Lo+3MWaWaGVI6uDIPGB9BAZkZntc/1lGfhMPm7Fo2qb1N1bUP0vOTJ2TmSUA8GNxyxgekQ==}
+  '@sentry-internal/browser-utils@10.20.0':
+    resolution: {integrity: sha512-9+NybrYs+dEM2iW5uRAYEhKkNK0XhDea5jovtDUXEvdSCMJFcdR88uztkftnCur45/hpvbgSULsGPUdHPb5ITw==}
     engines: {node: '>=18'}
 
   '@sentry-internal/browser-utils@9.40.0':
     resolution: {integrity: sha512-Ajvz6jN+EEMKrOHcUv2+HlhbRUh69uXhhRoBjJw8sc61uqA2vv3QWyBSmTRoHdTnLGboT5bKEhHIkzVXb+YgEw==}
     engines: {node: '>=18'}
 
-  '@sentry-internal/feedback@10.17.0':
-    resolution: {integrity: sha512-KIIF/dDQqYENbx4vn6B0evy/qx1QtEZsSZRvXNX6tUm14CCyrZeDymBMyEzu8RQ5PeZXibbPEkz7xOXiG3q+eQ==}
+  '@sentry-internal/feedback@10.20.0':
+    resolution: {integrity: sha512-R/eGLKl7WDccLKBorEbyTsy5b99w/k4v80SntE8HL2rsO7DCDXma8TGmtHd+iZnw8dUci+EVrw7LbeGSgf3QzA==}
     engines: {node: '>=18'}
 
   '@sentry-internal/feedback@9.40.0':
     resolution: {integrity: sha512-39UbLdGWGvSJ7bAzRnkv91cBdd6fLbdkLVVvqE2ZUfegm7+rH1mRPglmEhw4VE4mQfKZM1zWr/xus2+XPqJcYw==}
     engines: {node: '>=18'}
 
-  '@sentry-internal/replay-canvas@10.17.0':
-    resolution: {integrity: sha512-GXKZIraXrboP03+XS+KwkkKVJO+cSlM0HrfjePSfFqiNbbnjRhOLekoLuDvvH/ZEXPUoUJD1We5IPBg+sZZQfQ==}
+  '@sentry-internal/replay-canvas@10.20.0':
+    resolution: {integrity: sha512-8DBawFi4F4e2Cu2ToiitCnYsK8idrDOv66Vq+N6c8e3qFitTTuoPQwOihb2+HY4CB06ABPW3WvfZntJJmsf91w==}
     engines: {node: '>=18'}
 
   '@sentry-internal/replay-canvas@9.40.0':
     resolution: {integrity: sha512-GLoJ4R4Uipd7Vb+0LzSJA2qCyN1J6YalQIoDuOJTfYyykHvKltds5D8a/5S3Q6d8PcL/nxTn93fynauGEZt2Ow==}
     engines: {node: '>=18'}
 
-  '@sentry-internal/replay@10.17.0':
-    resolution: {integrity: sha512-9kirOPp3wbf+TMyHmA8iStKAysklZPcrPlB0v2zh0qRj1zNFY0xAD2WSgxuCvD9rEo5qKhmAKcaT7Ujin64uSw==}
+  '@sentry-internal/replay@10.20.0':
+    resolution: {integrity: sha512-+XPYp0CuJnf+c36/c+hHrY6wAPHCdnqllZeyU7+9LAiKsdhN8Oo4eF1v5zd097qDZBg1NrKhU44ScJIzz+vygw==}
     engines: {node: '>=18'}
 
   '@sentry-internal/replay@9.40.0':
@@ -3988,12 +4026,12 @@ packages:
     resolution: {integrity: sha512-zmvUa4RpzDG3LQJFpGCE8lniz8Rk1Wa6ZvvK+yEH+snZeaHHRbSnAQBMR607GOClP+euGHNO2YtaY4UAdNTYbg==}
     engines: {node: '>= 14'}
 
-  '@sentry/babel-plugin-component-annotate@4.3.0':
-    resolution: {integrity: sha512-OuxqBprXRyhe8Pkfyz/4yHQJc5c3lm+TmYWSSx8u48g5yKewSQDOxkiLU5pAk3WnbLPy8XwU/PN+2BG0YFU9Nw==}
+  '@sentry/babel-plugin-component-annotate@4.4.0':
+    resolution: {integrity: sha512-Pzjpn9MZg6yR61ThJgOoD28dLNCj457O0/t8d276K+Bzf8iOZKbrNO4sltp1vUB1yqhV+ulvIZO8xu8ABohtsg==}
     engines: {node: '>= 14'}
 
-  '@sentry/browser@10.17.0':
-    resolution: {integrity: sha512-X4OiGECzkp6tIyAKXB/9beBC2oX1xKOEkDo4v/phIKGPzrmQ4o55j2a6/V20jSfSN7w+kfZ56ILE71SzC9w1aQ==}
+  '@sentry/browser@10.20.0':
+    resolution: {integrity: sha512-zcf8HwFiRbzjZL9KbLev44eEOf+yl+3svQbs2BlR2KAYGaB10swV5abij0UTTGO7ClnqUZdcGpwiyyfPS6mjHg==}
     engines: {node: '>=18'}
 
   '@sentry/browser@9.40.0':
@@ -4004,8 +4042,8 @@ packages:
     resolution: {integrity: sha512-/ubWjPwgLep84sUPzHfKL2Ns9mK9aQrEX4aBFztru7ygiJidKJTxYGtvjh4dL2M1aZ0WRQYp+7PF6+VKwdZXcQ==}
     engines: {node: '>= 14'}
 
-  '@sentry/bundler-plugin-core@4.3.0':
-    resolution: {integrity: sha512-dmR4DJhJ4jqVWGWppuTL2blNFqOZZnt4aLkewbD1myFG3KVfUx8CrMQWEmGjkgPOtj5TO6xH9PyTJjXC6o5tnA==}
+  '@sentry/bundler-plugin-core@4.4.0':
+    resolution: {integrity: sha512-WTGhgwxzyolzOg0sudULK0rRgLndtsEiBt4QwltKW/WYArMtFyf286aZx19uQ+rD+bSx3Il81SD23nqDOTtnzg==}
     engines: {node: '>= 14'}
 
   '@sentry/cli-darwin@2.50.0':
@@ -4013,8 +4051,8 @@ packages:
     engines: {node: '>=10'}
     os: [darwin]
 
-  '@sentry/cli-darwin@2.56.0':
-    resolution: {integrity: sha512-CzXFWbv3GrjU0gFlUM9jt0fvJmyo5ktty4HGxRFfS/eMC6xW58Gg/sEeMVEkdvk5osKooX/YEgfLBdo4zvuWDA==}
+  '@sentry/cli-darwin@2.56.1':
+    resolution: {integrity: sha512-zfhT8MrvB5x/xRdIVGwg+sG0Cx3i0G6RH2zCrdQ/moWn8TfkwsM0O1k/AxpwbpcRfAHCkVb04CU/yKciKwg2KA==}
     engines: {node: '>=10'}
     os: [darwin]
 
@@ -4024,8 +4062,8 @@ packages:
     cpu: [arm64]
     os: [linux, freebsd, android]
 
-  '@sentry/cli-linux-arm64@2.56.0':
-    resolution: {integrity: sha512-91d5ZlC989j/t+TXor/glPyx6SnLFS/SlJ9fIrHIQohdGKyWWSFb4VKUan8Ok3GYu9SUzKTMByryIOoYEmeGVw==}
+  '@sentry/cli-linux-arm64@2.56.1':
+    resolution: {integrity: sha512-AypXIwZvOMJb9RgjI/98hTAd06FcOjqjIm6G9IR0OI4pJCOcaAXz9NKXdJqxpZd7phSMJnD+Bx/8iYOUPeY73A==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux, freebsd, android]
@@ -4036,8 +4074,8 @@ packages:
     cpu: [arm]
     os: [linux, freebsd, android]
 
-  '@sentry/cli-linux-arm@2.56.0':
-    resolution: {integrity: sha512-vQCCMhZLugPmr25XBoP94dpQsFa110qK5SBUVJcRpJKyzMZd+6ueeHNslq2mB0OF4BwL1qd/ZDIa4nxa1+0rjQ==}
+  '@sentry/cli-linux-arm@2.56.1':
+    resolution: {integrity: sha512-fNB/Ng11HrkGOSEIDg+fc3zfTCV7q6kJddp6ndK3QlYFsCffRSnclaX1SMp+mqxdWkHqe1kkp85OY8G/x5uAWw==}
     engines: {node: '>=10'}
     cpu: [arm]
     os: [linux, freebsd, android]
@@ -4048,8 +4086,8 @@ packages:
     cpu: [x86, ia32]
     os: [linux, freebsd, android]
 
-  '@sentry/cli-linux-i686@2.56.0':
-    resolution: {integrity: sha512-MZzXuq1Q/TktN81DUs6XSBU752pG3XWSJdZR+NCStIg3l8s3O/Pwh6OcDHTYqgwsYJaGBpA0fP2Afl5XeSAUNg==}
+  '@sentry/cli-linux-i686@2.56.1':
+    resolution: {integrity: sha512-vnH+WJEsUq7Lf7xc9udzE/M4hoDXXsniFFYr/7BvdnXtCQlNNaWFMXHbEDYAql3baIlHkWoG8cEHWuB/YKyniw==}
     engines: {node: '>=10'}
     cpu: [x86, ia32]
     os: [linux, freebsd, android]
@@ -4060,8 +4098,8 @@ packages:
     cpu: [x64]
     os: [linux, freebsd, android]
 
-  '@sentry/cli-linux-x64@2.56.0':
-    resolution: {integrity: sha512-INOO2OQ90Y3UzYgHRdrHdKC/0es3YSHLv0iNNgQwllL0YZihSVNYSSrZqcPq8oSDllEy9Vt9oOm/7qEnUP2Kfw==}
+  '@sentry/cli-linux-x64@2.56.1':
+    resolution: {integrity: sha512-3/BlKe5Vdnia36MeovghHJD8lbcum5TFIxLp+PSfH2sVb09+5Jo0L95oRTI2JkD8Fs+QNssvTqTxJj5eIo/n+A==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux, freebsd, android]
@@ -4072,8 +4110,8 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@sentry/cli-win32-arm64@2.56.0':
-    resolution: {integrity: sha512-eUvkVk9KK01q6/qyugQPh7dAxqFPbgOa62QAoSwo11WQFYc3NPgJLilFWLQo+nahHGYKh6PKuCJ5tcqnQq5Hkg==}
+  '@sentry/cli-win32-arm64@2.56.1':
+    resolution: {integrity: sha512-Gg8RV7CV7Tz4fiR1EN1Af5AVhJsnEXiZvfvfQXI4lp51MKAhcxZIMtEfg9HaWsn3Dm/wgwYBinyeywfWbTXYDg==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
@@ -4084,8 +4122,8 @@ packages:
     cpu: [x86, ia32]
     os: [win32]
 
-  '@sentry/cli-win32-i686@2.56.0':
-    resolution: {integrity: sha512-mpCA8hKXuvT17bl1H/54KOa5i+02VBBHVlOiP3ltyBuQUqfvX/30Zl/86Spy+ikodovZWAHv5e5FpyXbY1/mPw==}
+  '@sentry/cli-win32-i686@2.56.1':
+    resolution: {integrity: sha512-6u6a060yC3i76Ze1apqgWr5luQSyhuD5ND84eWfh/UbddsEa42UHjoVHOiBwmpZqf/hvNZAtzLnE4NCvU4zOMg==}
     engines: {node: '>=10'}
     cpu: [x86, ia32]
     os: [win32]
@@ -4096,8 +4134,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sentry/cli-win32-x64@2.56.0':
-    resolution: {integrity: sha512-UV0pXNls+/ViAU/3XsHLLNEHCsRYaGEwJdY3HyGIufSlglxrX6BVApkV9ziGi4WAxcJWLjQdfcEs6V5B+wBy0A==}
+  '@sentry/cli-win32-x64@2.56.1':
+    resolution: {integrity: sha512-11cdflajBrDWlRZqI9MOu7ok2vnPzFjKmbU3YvBYWQapNE+HHAsWdsRL/u/P1RmU62vj7Y42iSUcj6x1SNrdPw==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
@@ -4107,27 +4145,27 @@ packages:
     engines: {node: '>= 10'}
     hasBin: true
 
-  '@sentry/cli@2.56.0':
-    resolution: {integrity: sha512-br6+1nTPUV5EG1oaxLzxv31kREFKr49Y1+3jutfMUz9Nl8VyVP7o9YwakB/YWl+0Vi0NXg5vq7qsd/OOuV5j8w==}
+  '@sentry/cli@2.56.1':
+    resolution: {integrity: sha512-VDAIg+gmjNtJS5VUZQMDSK9RaKC9hYQi3PoXpNa+owNfQNk60bCi8z8jkbWRcKbNGn3V51WqvrQAqLoNAdPc9w==}
     engines: {node: '>= 10'}
     hasBin: true
 
-  '@sentry/core@10.17.0':
-    resolution: {integrity: sha512-UVIvxSzS0n5QbIDPyFf0WX9I77Of1bcr6a0sCEKfjhJGmGQ8mFWoWgR2gF4wcPw60XUrzbryCr79eOsIHLQ5cw==}
+  '@sentry/core@10.20.0':
+    resolution: {integrity: sha512-S291KihnOIB8i7mVJIJBVHBMcCfIoY/KDJBHEfBoHY9M56g2An4FVhM9+/xR85+IoMkTySdXN08k9LEyQz4FpQ==}
     engines: {node: '>=18'}
 
   '@sentry/core@9.40.0':
     resolution: {integrity: sha512-cZkuz6BDna6VXSqvlWnrRsaDx4QBKq1PcfQrqhVz8ljs0M7Gcl+Mtj8dCzUxx12fkYM62hQXG72DEGNlAQpH/Q==}
     engines: {node: '>=18'}
 
-  '@sentry/nextjs@10.17.0':
-    resolution: {integrity: sha512-sjASqjo/B8MspmjBb47AnVaHQW2TILiOumpwMGslXKEHEZwL2Ra88Obz1G0WpuHhuThR/GqKfkj9qYK67TnZZw==}
+  '@sentry/nextjs@10.20.0':
+    resolution: {integrity: sha512-DVipePKV2EimRTE2fXUY3o4ypzbxeeoWQCuR6IvwCqiCTgWcbm8yFTjxK/YoiBztQqMete4LJv8T+6UrcyAPsA==}
     engines: {node: '>=18'}
     peerDependencies:
-      next: ^13.2.0 || ^14.0 || ^15.0.0-rc.0
+      next: ^13.2.0 || ^14.0 || ^15.0.0-rc.0 || ^16.0.0-0
 
-  '@sentry/node-core@10.17.0':
-    resolution: {integrity: sha512-x6av2pFtsAeN+nZKkhI07cOCugTKux908DCGBlwQEw8ZjghcO5jn3unfAlKZqxZ0ktWgBcSrCM/iJ5Gk2nxPFg==}
+  '@sentry/node-core@10.20.0':
+    resolution: {integrity: sha512-9BelcS9722jionzuyUNff4Bqx6fMFlYlK+5gMZYxAzOdS1AYZeFiYNVV2GlCGXfDLSHTnE1rOGH6QOsUdgCdbg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
@@ -4138,12 +4176,12 @@ packages:
       '@opentelemetry/sdk-trace-base': ^1.30.1 || ^2.1.0
       '@opentelemetry/semantic-conventions': ^1.37.0
 
-  '@sentry/node@10.17.0':
-    resolution: {integrity: sha512-rM+ANC4NKkYHAFa73lqBXq024/YrflcUKBxkqSuo/0jc/Q/svLZfoZ8FW0IVZ4uhXXFZL3PZbkceZYmoOG9ePg==}
+  '@sentry/node@10.20.0':
+    resolution: {integrity: sha512-Hv6cxQ2ilL54lF6+WwvvrvJEkt0fwUAAQZNwfAR0CfuP4Zg8FPQvxDeLhryd2Qr0nwPMNi3eYjypORjD3dcMLg==}
     engines: {node: '>=18'}
 
-  '@sentry/opentelemetry@10.17.0':
-    resolution: {integrity: sha512-kZONokjkIQjhDUEZLsi7TZ1Bay0g4VFC2rT1MvZqa1fkFZff7Th9qQr0Lv7gt3nrbD6qIctEzmpf75OQN1cR8A==}
+  '@sentry/opentelemetry@10.20.0':
+    resolution: {integrity: sha512-91hr3RbMSUWgZb1BpW0gjlPsFaPtx0oNY2HYoC12T//1E0RMV183McBKbghBdT9swjhw112jeTFEERMJCaJyNw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
@@ -4152,8 +4190,8 @@ packages:
       '@opentelemetry/sdk-trace-base': ^1.30.1 || ^2.1.0
       '@opentelemetry/semantic-conventions': ^1.37.0
 
-  '@sentry/react@10.17.0':
-    resolution: {integrity: sha512-vSJ1+HruWBoQtWlK8r/SSTUyA6cQ2Xc+NNRzIdsVHWUCSo/lAA4UvxqLXyIkEtftqS1+N/+WrMOCf09XuHWpqg==}
+  '@sentry/react@10.20.0':
+    resolution: {integrity: sha512-8W+gMkMxQhqlGHCW7kjLhcLgBJ/YSHbLhVd36s0GRudxjXh61K8rdCaAXToD8akgZ76DtLbx5PPQ5fLfQCOnpw==}
     engines: {node: '>=18'}
     peerDependencies:
       react: ^16.14.0 || 17.x || 18.x || 19.x
@@ -4164,16 +4202,16 @@ packages:
     peerDependencies:
       react: ^16.14.0 || 17.x || 18.x || 19.x
 
-  '@sentry/vercel-edge@10.17.0':
-    resolution: {integrity: sha512-pJyxISLhkXsUvyqnbsI6oBd7PnF9WybFcNIwaZriRgVFiKCT6A1QcXcpR1IobJmBp8sWfnWL84U75cjpEZXCyA==}
+  '@sentry/vercel-edge@10.20.0':
+    resolution: {integrity: sha512-lYEru0t/aFClvUpdHHWKaUVc+QUfmBf8UD12SXfwtwmQrN/siyrRqM4AGQJBANvTvQsxsvMamJ2WD8QEPUZzWg==}
     engines: {node: '>=18'}
 
   '@sentry/vite-plugin@3.6.1':
     resolution: {integrity: sha512-x8WMdv2K2HcGS2ezEUIEZXpT/fNeWQ9rsEeF0K9DfKXK8Z9lzRmCr6TVA6I9+yW39Is+1/0cv1Rsu0LhO7lHzg==}
     engines: {node: '>= 14'}
 
-  '@sentry/webpack-plugin@4.3.0':
-    resolution: {integrity: sha512-K4nU1SheK/tvyakBws2zfd+MN6hzmpW+wPTbSbDWn1+WL9+g9hsPh8hjFFiVe47AhhUoUZ3YgiH2HyeHXjHflA==}
+  '@sentry/webpack-plugin@4.4.0':
+    resolution: {integrity: sha512-s9Js4v++pbZaKu6ddG1LSXbSKfM71UxkS6PzmOWj4HyTHdiZr+469tbdanTJwz8XO87neFAP1mteuo1Cur3iHg==}
     engines: {node: '>= 14'}
     peerDependencies:
       webpack: '>=4.40.0'
@@ -6666,8 +6704,8 @@ packages:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
 
-  import-in-the-middle@1.14.4:
-    resolution: {integrity: sha512-eWjxh735SJLFJJDs5X82JQ2405OdJeAHDBnaoFCfdr5GVc7AWc9xU7KbrF+3Xd5F2ccP1aQFKtY+65X6EfKZ7A==}
+  import-in-the-middle@1.15.0:
+    resolution: {integrity: sha512-bpQy+CrsRmYmoPMAE/0G33iwRqwW4ouqdRg8jgbH3aKuCtOc8lxgmYXg2dMM92CRiGP660EtBcymH/eVUpCSaA==}
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -8749,10 +8787,6 @@ packages:
     resolution: {integrity: sha512-gAZ+kLqBdHarXB64XpAe2VCjB7rIRv+mU8tfRWziHRJ5umKsIHN2tLLv6EtMw7WCdP19S0ERVMldNvxYCHnhSQ==}
     engines: {node: '>=8.6.0'}
 
-  require-in-the-middle@8.0.0:
-    resolution: {integrity: sha512-9s0pnM5tH8G4dSI3pms2GboYOs25LwOGnRMxN/Hx3TYT1K0rh6OjaWf4dI0DAQnMyaEXWoGVnSTPQasqwzTTAA==}
-    engines: {node: '>=9.3.0 || >=8.10.0 <9.0.0'}
-
   reselect@5.1.1:
     resolution: {integrity: sha512-K/BG6eIky/SBpzfHZv/dd+9JBFiS4SWV7FIujVyJRux6e45+73RaUHXLmIR1f7WOMaQ0U1km6qwklRQxpJJY0w==}
 
@@ -9879,6 +9913,16 @@ snapshots:
     optionalDependencies:
       zod: 4.1.11
 
+  '@apm-js-collab/code-transformer@0.8.2': {}
+
+  '@apm-js-collab/tracing-hooks@0.3.1':
+    dependencies:
+      '@apm-js-collab/code-transformer': 0.8.2
+      debug: 4.4.1
+      module-details-from-path: 1.0.4
+    transitivePeerDependencies:
+      - supports-color
+
   '@auth/core@0.37.4':
     dependencies:
       '@panva/hkdf': 1.2.1
@@ -10691,10 +10735,29 @@ snapshots:
       - react
       - react-dom
 
+  '@clerk/backend@2.18.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@clerk/shared': 3.28.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@clerk/types': 4.94.0
+      cookie: 1.0.2
+      standardwebhooks: 1.0.0
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   '@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@clerk/shared': 3.25.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/types': 4.86.0
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      tslib: 2.8.1
+
+  '@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@clerk/shared': 3.28.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@clerk/types': 4.94.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       tslib: 2.8.1
@@ -10705,6 +10768,18 @@ snapshots:
       '@clerk/clerk-react': 5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/shared': 3.25.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/types': 4.86.0
+      next: 15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0)
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      server-only: 0.0.1
+      tslib: 2.8.1
+
+  '@clerk/nextjs@6.33.5(next@15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@clerk/backend': 2.18.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@clerk/clerk-react': 5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@clerk/shared': 3.28.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@clerk/types': 4.94.0
       next: 15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -10735,13 +10810,29 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
+  '@clerk/shared@3.28.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@clerk/types': 4.94.0
+      dequal: 2.0.3
+      glob-to-regexp: 0.4.1
+      js-cookie: 3.0.5
+      std-env: 3.9.0
+      swr: 2.3.4(react@19.1.0)
+    optionalDependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
   '@clerk/types@4.86.0':
     dependencies:
       csstype: 3.1.3
 
-  '@convex-dev/action-retrier@0.2.1(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))':
+  '@clerk/types@4.94.0':
     dependencies:
-      convex: 1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      csstype: 3.1.3
+
+  '@convex-dev/action-retrier@0.2.1(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))':
+    dependencies:
+      convex: 1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
 
   '@convex-dev/auth@0.0.83(@auth/core@0.37.4)(convex@1.26.2(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)':
     dependencies:
@@ -10759,10 +10850,10 @@ snapshots:
     optionalDependencies:
       react: 19.1.0
 
-  '@convex-dev/auth@0.0.83(@auth/core@0.37.4)(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)':
+  '@convex-dev/auth@0.0.83(@auth/core@0.37.4)(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@auth/core': 0.37.4
-      convex: 1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      convex: 1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       cookie: 1.0.2
       is-network-error: 1.1.0
       jose: 5.10.0
@@ -10775,14 +10866,14 @@ snapshots:
     optionalDependencies:
       react: 19.1.0
 
-  '@convex-dev/r2@0.7.3(@standard-schema/spec@1.0.0)(convex-svelte@0.0.11(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11))(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.39.11)(typescript@5.9.2)(zod@4.0.5)':
+  '@convex-dev/r2@0.7.3(@standard-schema/spec@1.0.0)(convex-svelte@0.0.11(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11))(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svelte@5.39.11)(typescript@5.9.2)(zod@4.0.5)':
     dependencies:
       '@aws-sdk/client-s3': 3.726.1
       '@aws-sdk/s3-request-presigner': 3.907.0
-      '@convex-dev/action-retrier': 0.2.1(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))
-      convex: 1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
-      convex-helpers: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)
-      convex-svelte: 0.0.11(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11)
+      '@convex-dev/action-retrier': 0.2.1(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))
+      convex: 1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      convex-helpers: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)
+      convex-svelte: 0.0.11(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11)
       file-type: 20.5.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -10813,13 +10904,13 @@ snapshots:
       - typescript
       - zod
 
-  '@convex-dev/react-query@0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.85.5(react@19.1.0))(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)':
+  '@convex-dev/react-query@0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.85.5(react@19.1.0))(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)':
     dependencies:
       '@auth/core': 0.37.4
-      '@convex-dev/auth': 0.0.83(@auth/core@0.37.4)(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      '@convex-dev/auth': 0.0.83(@auth/core@0.37.4)(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)
       '@tanstack/react-query': 5.85.5(react@19.1.0)
-      convex: 1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
-      convex-helpers: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)
+      convex: 1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      convex-helpers: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5)
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
       - '@simplewebauthn/server'
@@ -11985,7 +12076,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.204.0
-      import-in-the-middle: 1.14.4
+      import-in-the-middle: 1.15.0
       require-in-the-middle: 7.5.2
     transitivePeerDependencies:
       - supports-color
@@ -11995,7 +12086,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.57.2
       '@types/shimmer': 1.2.0
-      import-in-the-middle: 1.14.4
+      import-in-the-middle: 1.15.0
       require-in-the-middle: 7.5.2
       semver: 7.7.2
       shimmer: 1.2.1
@@ -13481,36 +13572,36 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.52.0':
     optional: true
 
-  '@sentry-internal/browser-utils@10.17.0':
+  '@sentry-internal/browser-utils@10.20.0':
     dependencies:
-      '@sentry/core': 10.17.0
+      '@sentry/core': 10.20.0
 
   '@sentry-internal/browser-utils@9.40.0':
     dependencies:
       '@sentry/core': 9.40.0
 
-  '@sentry-internal/feedback@10.17.0':
+  '@sentry-internal/feedback@10.20.0':
     dependencies:
-      '@sentry/core': 10.17.0
+      '@sentry/core': 10.20.0
 
   '@sentry-internal/feedback@9.40.0':
     dependencies:
       '@sentry/core': 9.40.0
 
-  '@sentry-internal/replay-canvas@10.17.0':
+  '@sentry-internal/replay-canvas@10.20.0':
     dependencies:
-      '@sentry-internal/replay': 10.17.0
-      '@sentry/core': 10.17.0
+      '@sentry-internal/replay': 10.20.0
+      '@sentry/core': 10.20.0
 
   '@sentry-internal/replay-canvas@9.40.0':
     dependencies:
       '@sentry-internal/replay': 9.40.0
       '@sentry/core': 9.40.0
 
-  '@sentry-internal/replay@10.17.0':
+  '@sentry-internal/replay@10.20.0':
     dependencies:
-      '@sentry-internal/browser-utils': 10.17.0
-      '@sentry/core': 10.17.0
+      '@sentry-internal/browser-utils': 10.20.0
+      '@sentry/core': 10.20.0
 
   '@sentry-internal/replay@9.40.0':
     dependencies:
@@ -13519,15 +13610,15 @@ snapshots:
 
   '@sentry/babel-plugin-component-annotate@3.6.1': {}
 
-  '@sentry/babel-plugin-component-annotate@4.3.0': {}
+  '@sentry/babel-plugin-component-annotate@4.4.0': {}
 
-  '@sentry/browser@10.17.0':
+  '@sentry/browser@10.20.0':
     dependencies:
-      '@sentry-internal/browser-utils': 10.17.0
-      '@sentry-internal/feedback': 10.17.0
-      '@sentry-internal/replay': 10.17.0
-      '@sentry-internal/replay-canvas': 10.17.0
-      '@sentry/core': 10.17.0
+      '@sentry-internal/browser-utils': 10.20.0
+      '@sentry-internal/feedback': 10.20.0
+      '@sentry-internal/replay': 10.20.0
+      '@sentry-internal/replay-canvas': 10.20.0
+      '@sentry/core': 10.20.0
 
   '@sentry/browser@9.40.0':
     dependencies:
@@ -13551,11 +13642,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sentry/bundler-plugin-core@4.3.0':
+  '@sentry/bundler-plugin-core@4.4.0':
     dependencies:
       '@babel/core': 7.28.0
-      '@sentry/babel-plugin-component-annotate': 4.3.0
-      '@sentry/cli': 2.56.0
+      '@sentry/babel-plugin-component-annotate': 4.4.0
+      '@sentry/cli': 2.56.1
       dotenv: 16.6.1
       find-up: 5.0.0
       glob: 9.3.5
@@ -13568,49 +13659,49 @@ snapshots:
   '@sentry/cli-darwin@2.50.0':
     optional: true
 
-  '@sentry/cli-darwin@2.56.0':
+  '@sentry/cli-darwin@2.56.1':
     optional: true
 
   '@sentry/cli-linux-arm64@2.50.0':
     optional: true
 
-  '@sentry/cli-linux-arm64@2.56.0':
+  '@sentry/cli-linux-arm64@2.56.1':
     optional: true
 
   '@sentry/cli-linux-arm@2.50.0':
     optional: true
 
-  '@sentry/cli-linux-arm@2.56.0':
+  '@sentry/cli-linux-arm@2.56.1':
     optional: true
 
   '@sentry/cli-linux-i686@2.50.0':
     optional: true
 
-  '@sentry/cli-linux-i686@2.56.0':
+  '@sentry/cli-linux-i686@2.56.1':
     optional: true
 
   '@sentry/cli-linux-x64@2.50.0':
     optional: true
 
-  '@sentry/cli-linux-x64@2.56.0':
+  '@sentry/cli-linux-x64@2.56.1':
     optional: true
 
   '@sentry/cli-win32-arm64@2.50.0':
     optional: true
 
-  '@sentry/cli-win32-arm64@2.56.0':
+  '@sentry/cli-win32-arm64@2.56.1':
     optional: true
 
   '@sentry/cli-win32-i686@2.50.0':
     optional: true
 
-  '@sentry/cli-win32-i686@2.56.0':
+  '@sentry/cli-win32-i686@2.56.1':
     optional: true
 
   '@sentry/cli-win32-x64@2.50.0':
     optional: true
 
-  '@sentry/cli-win32-x64@2.56.0':
+  '@sentry/cli-win32-x64@2.56.1':
     optional: true
 
   '@sentry/cli@2.50.0':
@@ -13633,7 +13724,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sentry/cli@2.56.0':
+  '@sentry/cli@2.56.1':
     dependencies:
       https-proxy-agent: 5.0.1
       node-fetch: 2.7.0
@@ -13641,35 +13732,35 @@ snapshots:
       proxy-from-env: 1.1.0
       which: 2.0.2
     optionalDependencies:
-      '@sentry/cli-darwin': 2.56.0
-      '@sentry/cli-linux-arm': 2.56.0
-      '@sentry/cli-linux-arm64': 2.56.0
-      '@sentry/cli-linux-i686': 2.56.0
-      '@sentry/cli-linux-x64': 2.56.0
-      '@sentry/cli-win32-arm64': 2.56.0
-      '@sentry/cli-win32-i686': 2.56.0
-      '@sentry/cli-win32-x64': 2.56.0
+      '@sentry/cli-darwin': 2.56.1
+      '@sentry/cli-linux-arm': 2.56.1
+      '@sentry/cli-linux-arm64': 2.56.1
+      '@sentry/cli-linux-i686': 2.56.1
+      '@sentry/cli-linux-x64': 2.56.1
+      '@sentry/cli-win32-arm64': 2.56.1
+      '@sentry/cli-win32-i686': 2.56.1
+      '@sentry/cli-win32-x64': 2.56.1
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@sentry/core@10.17.0': {}
+  '@sentry/core@10.20.0': {}
 
   '@sentry/core@9.40.0': {}
 
-  '@sentry/nextjs@10.17.0(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(next@15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0))(react@19.1.0)(webpack@5.101.3)':
+  '@sentry/nextjs@10.20.0(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(next@15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0))(react@19.1.0)(webpack@5.101.3)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.37.0
       '@rollup/plugin-commonjs': 28.0.1(rollup@4.52.0)
-      '@sentry-internal/browser-utils': 10.17.0
-      '@sentry/bundler-plugin-core': 4.3.0
-      '@sentry/core': 10.17.0
-      '@sentry/node': 10.17.0
-      '@sentry/opentelemetry': 10.17.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
-      '@sentry/react': 10.17.0(react@19.1.0)
-      '@sentry/vercel-edge': 10.17.0
-      '@sentry/webpack-plugin': 4.3.0(webpack@5.101.3)
+      '@sentry-internal/browser-utils': 10.20.0
+      '@sentry/bundler-plugin-core': 4.4.0
+      '@sentry/core': 10.20.0
+      '@sentry/node': 10.20.0
+      '@sentry/opentelemetry': 10.20.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
+      '@sentry/react': 10.20.0(react@19.1.0)
+      '@sentry/vercel-edge': 10.20.0
+      '@sentry/webpack-plugin': 4.4.0(webpack@5.101.3)
       chalk: 3.0.0
       next: 15.5.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.91.0)
       resolve: 1.22.8
@@ -13684,8 +13775,9 @@ snapshots:
       - supports-color
       - webpack
 
-  '@sentry/node-core@10.17.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.204.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)':
+  '@sentry/node-core@10.20.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.204.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)':
     dependencies:
+      '@apm-js-collab/tracing-hooks': 0.3.1
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/context-async-hooks': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/core': 2.1.0(@opentelemetry/api@1.9.0)
@@ -13693,11 +13785,13 @@ snapshots:
       '@opentelemetry/resources': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.37.0
-      '@sentry/core': 10.17.0
-      '@sentry/opentelemetry': 10.17.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
-      import-in-the-middle: 1.14.4
+      '@sentry/core': 10.20.0
+      '@sentry/opentelemetry': 10.20.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
+      import-in-the-middle: 1.15.0
+    transitivePeerDependencies:
+      - supports-color
 
-  '@sentry/node@10.17.0':
+  '@sentry/node@10.20.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/context-async-hooks': 2.1.0(@opentelemetry/api@1.9.0)
@@ -13729,27 +13823,27 @@ snapshots:
       '@opentelemetry/sdk-trace-base': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.37.0
       '@prisma/instrumentation': 6.15.0(@opentelemetry/api@1.9.0)
-      '@sentry/core': 10.17.0
-      '@sentry/node-core': 10.17.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.204.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
-      '@sentry/opentelemetry': 10.17.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
-      import-in-the-middle: 1.14.4
+      '@sentry/core': 10.20.0
+      '@sentry/node-core': 10.20.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.204.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
+      '@sentry/opentelemetry': 10.20.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)
+      import-in-the-middle: 1.15.0
       minimatch: 9.0.5
     transitivePeerDependencies:
       - supports-color
 
-  '@sentry/opentelemetry@10.17.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)':
+  '@sentry/opentelemetry@10.20.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.1.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.37.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/context-async-hooks': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/core': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.37.0
-      '@sentry/core': 10.17.0
+      '@sentry/core': 10.20.0
 
-  '@sentry/react@10.17.0(react@19.1.0)':
+  '@sentry/react@10.20.0(react@19.1.0)':
     dependencies:
-      '@sentry/browser': 10.17.0
-      '@sentry/core': 10.17.0
+      '@sentry/browser': 10.20.0
+      '@sentry/core': 10.20.0
       hoist-non-react-statics: 3.3.2
       react: 19.1.0
 
@@ -13760,11 +13854,11 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 19.1.0
 
-  '@sentry/vercel-edge@10.17.0':
+  '@sentry/vercel-edge@10.20.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/resources': 2.1.0(@opentelemetry/api@1.9.0)
-      '@sentry/core': 10.17.0
+      '@sentry/core': 10.20.0
 
   '@sentry/vite-plugin@3.6.1':
     dependencies:
@@ -13774,9 +13868,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sentry/webpack-plugin@4.3.0(webpack@5.101.3)':
+  '@sentry/webpack-plugin@4.4.0(webpack@5.101.3)':
     dependencies:
-      '@sentry/bundler-plugin-core': 4.3.0
+      '@sentry/bundler-plugin-core': 4.4.0
       unplugin: 1.0.1
       uuid: 9.0.1
       webpack: 5.101.3
@@ -15694,18 +15788,18 @@ snapshots:
       typescript: 5.9.2
       zod: 4.0.5
 
-  convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5):
+  convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.0.5):
     dependencies:
-      convex: 1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      convex: 1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
     optionalDependencies:
       '@standard-schema/spec': 1.0.0
       react: 19.1.0
       typescript: 5.9.2
       zod: 4.0.5
 
-  convex-svelte@0.0.11(convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11):
+  convex-svelte@0.0.11(convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(svelte@5.39.11):
     dependencies:
-      convex: 1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      convex: 1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       svelte: 5.39.11
 
   convex@1.26.2(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
@@ -15717,13 +15811,13 @@ snapshots:
       '@clerk/clerk-react': 5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
-  convex@1.27.3(@clerk/clerk-react@5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
+  convex@1.27.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
     dependencies:
       esbuild: 0.25.4
       jwt-decode: 4.0.0
       prettier: 3.6.2
     optionalDependencies:
-      '@clerk/clerk-react': 5.47.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@clerk/clerk-react': 5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
   cookie@0.7.2: {}
@@ -16765,7 +16859,7 @@ snapshots:
       parent-module: 1.0.1
       resolve-from: 4.0.0
 
-  import-in-the-middle@1.14.4:
+  import-in-the-middle@1.15.0:
     dependencies:
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
@@ -19450,13 +19544,6 @@ snapshots:
       debug: 4.4.1
       module-details-from-path: 1.0.4
       resolve: 1.22.10
-    transitivePeerDependencies:
-      - supports-color
-
-  require-in-the-middle@8.0.0:
-    dependencies:
-      debug: 4.4.1
-      module-details-from-path: 1.0.4
     transitivePeerDependencies:
       - supports-color
 

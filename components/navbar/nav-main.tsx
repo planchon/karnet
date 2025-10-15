@@ -41,7 +41,7 @@ export const NavMain = observer(function NavMainInner({
     }, [selectedIndex]);
 
     return (
-        <AnimatePresence>
+        <AnimatePresence initial={false} mode="wait">
             <SidebarGroup
                 onMouseLeave={() => {
                     setSelectedStartPosition(initialSelectedStartPosition);

@@ -2,7 +2,8 @@
 
 import { IconChevronLeft, IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
-import { useNavigate } from "react-router";
+import { HiOutlineCog6Tooth } from "react-icons/hi2";
+import { Link, useNavigate } from "react-router";
 import { useCommands } from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
@@ -56,8 +57,16 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
                     width={20}
                 />
             </SidebarHeaderLogo>
-            <SidebarHeaderAction>
-                <Button className="size-6" onClick={commands.toggleCommandK} size="icon" variant="ghost">
+            <SidebarHeaderAction className="gap-1">
+                <Link className="size-6 p-1" to="/settings">
+                    <HiOutlineCog6Tooth className="text-gray-500" />
+                </Link>
+                <Button
+                    className="size-6 border bg-white shadow"
+                    onClick={commands.toggleCommandK}
+                    size="icon"
+                    variant="ghost"
+                >
                     <IconSearch />
                 </Button>
             </SidebarHeaderAction>
