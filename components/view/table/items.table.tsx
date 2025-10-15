@@ -7,42 +7,44 @@ import { createContext } from "@/lib/create-context";
 import type { ViewItem as ViewItemType } from "@/view/abstract.view";
 import { useViewContext } from "./root.table";
 
-export const ViewItemsRoot = observer(
-    ({
-        children,
-    }: {
-        children: [React.ReactElement<typeof ViewItemsList>, React.ReactElement<typeof ViewItemsContextMenu>];
-    }) => {
-        // find the component with id = view-items-list
-        const list = children.filter((c) => c.type !== ViewItemsContextMenu);
-        // find the component with id = view-item-context-menu
-        const menu = children.filter((c) => c.type === ViewItemsContextMenu);
-
-        if (list.length !== 1) {
-            throw new Error("ViewItemsRoot must have childrens");
-        }
-
-        if (menu.length !== 1) {
-            throw new Error("ViewItemsRoot must have a ViewItemContextMenu");
-        }
-
-        return (
-            <div className="h-full w-full">
-                <div className="flex flex-col overflow-y-auto" id="view-body">
-                    {list}
-                </div>
-                <div className="h-full w-full">
-                    <ContextMenu>
-                        <ContextMenuTrigger>
-                            <div className="h-full w-full" />
-                        </ContextMenuTrigger>
-                        {menu}
-                    </ContextMenu>
-                </div>
-            </div>
-        );
+export const ViewItemsRoot = observer(({ children }: { children: React.ReactNode }) => {
+    if (!children) {
+        throw new Error("ViewItemsRoot must have children");
     }
-);
+
+    if (!Array.isArray(children)) {
+        throw new Error("Missing ViewItemsList and ViewItemContextMenu components in ViewItemsRoot");
+    }
+
+    // find the component with id = view-items-list
+    const list = children.filter((c) => c.type !== ViewItemsContextMenu);
+    // find the component with id = view-item-context-menu
+    const menu = children.filter((c) => c.type === ViewItemsContextMenu);
+
+    if (list.length !== 1) {
+        throw new Error("ViewItemsRoot must have childrens");
+    }
+
+    if (menu.length !== 1) {
+        throw new Error("ViewItemsRoot must have a ViewItemContextMenu");
+    }
+
+    return (
+        <div className="h-full w-full">
+            <div className="flex flex-col overflow-y-auto" id="view-body">
+                {list}
+            </div>
+            <div className="h-full w-full">
+                <ContextMenu>
+                    <ContextMenuTrigger>
+                        <div className="h-full w-full" />
+                    </ContextMenuTrigger>
+                    {menu}
+                </ContextMenu>
+            </div>
+        </div>
+    );
+});
 
 export const ViewItemsList = observer(({ children }: { children: React.ReactNode }) => {
     const { viewModel } = useViewContext("ViewBody");

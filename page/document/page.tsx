@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    IconCalendar,
     IconChartDots3,
     IconCopy,
     IconFile,
@@ -23,7 +22,7 @@ import {
 } from "@ui/context-menu";
 import { useMutation, usePaginatedQuery } from "convex/react";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { View } from "@/components/view/table";
 import { api } from "@/convex/_generated/api";
@@ -47,12 +46,6 @@ export default observer(() => {
     const createEmptyDocument = useMutation(api.functions.documents.createEmptyDocument);
     const deleteDocument = useMutation(api.functions.documents.deleteDocument);
 
-    useEffect(() => {
-        if (viewModel) {
-            viewModel.updateData(documents);
-        }
-    }, [viewModel, documents]);
-
     return (
         <View.Root viewModel={viewModel}>
             <View.Header.Body>
@@ -61,7 +54,6 @@ export default observer(() => {
                 <View.Header.Search />
             </View.Header.Body>
             <View.Items.Root>
-                {/* <View.Items.List> */}
                 {documents.map((doc) => (
                     <View.Items.Item item={doc} key={doc._id} listIndex={0}>
                         <View.Item.Line>
@@ -143,7 +135,6 @@ export default observer(() => {
                         </View.Item.Line>
                     </View.Items.Item>
                 ))}
-                {/* </View.Items.List> */}
                 <View.Items.Menu>
                     <ContextMenuSub>
                         <ContextMenuSubTrigger>
