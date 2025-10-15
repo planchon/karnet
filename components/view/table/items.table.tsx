@@ -3,53 +3,51 @@
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from "@ui/context-menu";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react";
-import type { JSX } from "react";
-import type { Doc } from "@/convex/_generated/dataModel";
 import { createContext } from "@/lib/create-context";
 import type { ViewItem as ViewItemType } from "@/view/abstract.view";
 import { useViewContext } from "./root.table";
 
-export const ViewItemsRoot = observer(
-    ({
-        children,
-    }: {
-        children: [React.ReactElement<typeof ViewItemsList>, React.ReactElement<typeof ViewItemsContextMenu>];
-    }) => {
-        // find the component with id = view-items-list
-        const list = children.filter((c) => c.type === ViewItemsList);
-        // find the component with id = view-item-context-menu
-        const menu = children.filter((c) => c.type === ViewItemsContextMenu);
-
-        if (list.length !== 1) {
-            throw new Error("ViewItemsRoot must have a ViewItemsList");
-        }
-
-        if (menu.length !== 1) {
-            throw new Error("ViewItemsRoot must have a ViewItemContextMenu");
-        }
-
-        return (
-            <div className="h-full w-full">
-                <div className="flex flex-col overflow-y-auto" id="view-body">
-                    {list}
-                </div>
-                <div className="h-full w-full">
-                    <ContextMenu>
-                        <ContextMenuTrigger>
-                            <div className="h-full w-full" />
-                        </ContextMenuTrigger>
-                        {menu}
-                    </ContextMenu>
-                </div>
-            </div>
-        );
+export const ViewItemsRoot = observer(({ children }: { children: React.ReactNode }) => {
+    if (!children) {
+        throw new Error("ViewItemsRoot must have children");
     }
-);
 
-export const ViewItemsList = observer(({ children }: { children: (item: Doc<"tasks">) => JSX.Element }) => {
+    if (!Array.isArray(children)) {
+        throw new Error("Missing ViewItemsList and ViewItemContextMenu components in ViewItemsRoot");
+    }
+
+    // find the component with id = view-items-list
+    const list = children.filter((c) => c.type !== ViewItemsContextMenu);
+    // find the component with id = view-item-context-menu
+    const menu = children.filter((c) => c.type === ViewItemsContextMenu);
+
+    if (list.length !== 1) {
+        throw new Error("ViewItemsRoot must have childrens");
+    }
+
+    if (menu.length !== 1) {
+        throw new Error("ViewItemsRoot must have a ViewItemContextMenu");
+    }
+
+    return (
+        <div className="h-full w-full">
+            <div className="flex flex-col overflow-y-auto" id="view-body">
+                {list}
+            </div>
+            <div className="h-full w-full">
+                <ContextMenu>
+                    <ContextMenuTrigger>
+                        <div className="h-full w-full" />
+                    </ContextMenuTrigger>
+                    {menu}
+                </ContextMenu>
+            </div>
+        </div>
+    );
+});
+
+export const ViewItemsList = observer(({ children }: { children: React.ReactNode }) => {
     const { viewModel } = useViewContext("ViewBody");
-    const data = viewModel.getItems;
-
     const selectedStartPosition = viewModel._selectedIndex * 40 + 39;
 
     return (
@@ -84,11 +82,7 @@ export const ViewItemsList = observer(({ children }: { children: (item: Doc<"tas
                     }}
                 />
             )}
-            {data.map((item: Doc<"tasks">, index: number) => (
-                <__ViewItem item={item} key={item._id} listIndex={index}>
-                    {children}
-                </__ViewItem>
-            ))}
+            {children}
         </div>
     );
 });
@@ -102,18 +96,10 @@ export const [LocalItemContextProvider, useLocalItemContext] = createContext<{
     listIndex: number;
 }>("ViewItemContext");
 
-const __ViewItem = observer(
-    <R extends ViewItemType>({
-        item,
-        listIndex,
-        children,
-    }: {
-        item: R;
-        listIndex: number;
-        children: (item: R) => React.ReactNode;
-    }) => (
+export const ViewItem = observer(
+    ({ item, listIndex, children }: { item: any; listIndex: number; children: React.ReactNode }) => (
         <LocalItemContextProvider item={item} listIndex={listIndex}>
-            {children(item)}
+            {children}
         </LocalItemContextProvider>
     )
 );

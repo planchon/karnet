@@ -14,7 +14,6 @@ import { observer } from "mobx-react";
 import { useNavigate } from "react-router";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { useSettings, useStores } from "@/hooks/useStores";
-import { generateId } from "@/lib/utils";
 import {
     CommandDialog,
     CommandEmpty,
@@ -36,7 +35,6 @@ export const CommandK = observer(function CommandKInner() {
     const settings = useSettings();
     const commands = useCommands();
     const commandStore = useStores().commandStore;
-    const store = useStores();
 
     useShortcut("Command+k", () => {
         commands.toggleCommandK();
@@ -121,9 +119,9 @@ export const CommandK = observer(function CommandKInner() {
                 name: "Create a new paper",
                 shortcut: "c+f",
                 action: () => {
-                    const id = generateId();
-                    store.paperStore.createModel(id);
-                    navigate(`/paper/${id}`);
+                    // const id = generateId();
+                    // store.paperStore.createModel(id);
+                    // navigate(`/paper/${id}`);
                 },
                 icon: FilePlus,
             },
@@ -137,9 +135,9 @@ export const CommandK = observer(function CommandKInner() {
                 name: "Create a new sketch",
                 shortcut: "c+s",
                 action: () => {
-                    const id = generateId();
-                    store.sketchesStore.createModel(id);
-                    navigate(`/sketch/${id}`);
+                    // const id = generateId();
+                    // store.sketchesStore.createModel(id);
+                    // navigate(`/sketch/${id}`);
                 },
                 icon: Brush,
             },

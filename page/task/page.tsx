@@ -24,10 +24,9 @@ import {
 import { useMutation, usePaginatedQuery } from "convex/react";
 import dayjs from "dayjs";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View } from "@/components/view/table";
 import { api } from "@/convex/_generated/api";
-import type { Doc } from "@/convex/_generated/dataModel";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { getLabel } from "@/lib/date";
@@ -50,12 +49,6 @@ export default observer(() => {
     const deleteTaskMutation = useMutation(api.functions.task.deleteTask);
 
     usePageTitle("My Tasks - Karnet AI Assistant");
-
-    useEffect(() => {
-        if (viewModel) {
-            viewModel.updateData(tasks);
-        }
-    }, [viewModel, tasks]);
 
     useShortcut("v", () => {
         const index = viewModel._selectedIndex;
@@ -150,8 +143,8 @@ export default observer(() => {
                 <View.Header.Search />
             </View.Header.Body>
             <View.Items.Root>
-                <View.Items.List>
-                    {(item: Doc<"tasks">) => (
+                {tasks.map((item) => (
+                    <View.Items.Item item={item} key={item._id} listIndex={0}>
                         <View.Item.Line isLink={false}>
                             <View.Item.Checkbox isChecked={!!item.completed_at_ts} />
                             <View.Item.Infos>
@@ -334,8 +327,8 @@ export default observer(() => {
                                 </ContextMenuItem>
                             </View.Item.ContextMenu>
                         </View.Item.Line>
-                    )}
-                </View.Items.List>
+                    </View.Items.Item>
+                ))}
                 <View.Items.Menu>
                     <ContextMenuItem
                         onSelect={() => {

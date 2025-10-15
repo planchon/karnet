@@ -73,9 +73,18 @@ const fileTable = defineTable({
     filename: v.string(),
 }).index("by_subject", ["subject"]);
 
+const documentTable = defineTable({
+    ...baseViewItem,
+    type: v.union(v.literal("paper"), v.literal("sketch"), v.literal("diagram")),
+    title: v.string(),
+    smallId: v.string(),
+    data: v.string(),
+}).index("by_subject", ["subject"]);
+
 export default defineSchema({
     tasks: taskTable,
     chats: chatTable,
     models: modelTable,
     files: fileTable,
+    documents: documentTable,
 });

@@ -24,45 +24,43 @@ import "@editor/nodes/list-node/list-node.scss";
 import "@editor/nodes/image-node/image-node.scss";
 import "@editor/nodes/paragraph-node/paragraph-node.scss";
 
-import { useCursorVisibility } from "@editor/hooks/use-cursor-visibility";
 // --- Hooks ---
 import { useMobile } from "@editor/hooks/use-mobile";
-import { useWindowSize } from "@editor/hooks/use-window-size";
 
 // --- Lib ---
-import { cn, handleImageUpload, MAX_FILE_SIZE } from "@editor/utils/tiptap-utils";
+import { handleImageUpload, MAX_FILE_SIZE } from "@editor/utils/tiptap-utils";
 
 // --- Styles ---
 import "./editor.scss";
 
-import { DiagramMenu } from "@editor/extension/bubble-menu/diagram-menu";
-import { SketchMenu } from "@editor/extension/bubble-menu/tldraw-menu";
+// import { DiagramMenu } from "@editor/extension/bubble-menu/diagram-menu";
+// import { SketchMenu } from "@editor/extension/bubble-menu/tldraw-menu";
 import { Shortcut } from "@editor/extension/shortcut/shortcut";
 import { SlashCommand } from "@editor/extension/slash/slash-extension";
-import { allSuggestions, navigationKeys } from "@editor/extension/slash/suggestions";
-import { DiagramNode } from "@editor/nodes/diagram/diagram.node";
-import { TldrawNode } from "@editor/nodes/tldraw/TldrawNode";
+import { navigationKeys } from "@editor/extension/slash/suggestions";
+// import { DiagramNode } from "@editor/nodes/diagram/diagram.node";
+// import { TldrawNode } from "@editor/nodes/tldraw/TldrawNode";
 import Collaboration from "@tiptap/extension-collaboration";
-import { throttle } from "lodash";
+import { useConvex, useMutation } from "convex/react";
+import { debounce } from "lodash";
+import { useRef } from "react";
 import * as Y from "yjs";
-import { useStores } from "@/hooks/useStores";
+import { api } from "@/convex/_generated/api";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { BubbleMenuComp } from "../extension/bubble-menu/bubble-menu";
 
 type Props = {
-    id: string;
+    paperId: string;
 };
 
 const doc = new Y.Doc();
 
-const suggestions = allSuggestions.flatMap((group) => group.items);
-
-export function SimpleEditor({ id }: Props) {
-    const { paperStore } = useStores();
-
+export function SimpleEditor({ paperId }: Props) {
     const isMobile = useMobile();
-    const windowSize = useWindowSize();
     const [mobileView, setMobileView] = React.useState<"main" | "highlighter" | "link">("main");
-    const toolbarRef = React.useRef<HTMLDivElement>(null);
+    const convex = useConvex();
+    const updateDocument = useMutation(api.functions.documents.updateDocument);
+    const paperRef = useRef<Doc<"documents"> | null>(null);
 
     const editor: Editor | null = useEditor({
         immediatelyRender: false,
@@ -122,8 +120,8 @@ export function SimpleEditor({ id }: Props) {
                     return "";
                 },
             }),
-            TldrawNode,
-            DiagramNode,
+            // TldrawNode,
+            // DiagramNode,
         ],
     });
 
@@ -134,23 +132,40 @@ export function SimpleEditor({ id }: Props) {
     }, [isMobile, mobileView]);
 
     React.useEffect(() => {
-        if (!(id && editor)) return;
+        if (!(paperId && editor)) return;
 
-        const paper = paperStore.getById(id);
-
-        if (paper) {
-            editor.commands.setContent(paper.getContent() as any);
-        } else {
-            editor.commands.setContent("");
+        if (!paperRef.current) {
+            const initialData = JSON.parse(localStorage.getItem(`paper:${paperId}`) || "null");
+            if (initialData) {
+                editor.commands.setContent(initialData);
+            }
         }
 
-        const save = throttle(() => {
-            if (paper) {
-                paper.setContent(editor.getJSON());
+        const fetchPaper = async () => {
+            const paper = await convex.query(api.functions.documents.getDocumentBySmallId, {
+                smallId: paperId,
+                type: "paper",
+            });
+
+            paperRef.current = paper;
+
+            if (paper.data !== "") {
+                editor.commands.setContent(JSON.parse(paper.data));
             } else {
-                console.error("Paper not found while saving");
+                editor.commands.setContent("");
             }
-        }, 300);
+        };
+
+        fetchPaper();
+
+        const saveToServer = debounce(() => {
+            updateDocument({ id: paperRef.current?._id as Id<"documents">, data: JSON.stringify(editor.getJSON()) });
+        }, 1000);
+
+        const save = debounce(() => {
+            localStorage.setItem(`paper:${paperRef.current?.smallId}`, JSON.stringify(editor.getJSON()));
+            saveToServer();
+        }, 500);
 
         editor.on("update", () => {
             save();
@@ -159,7 +174,7 @@ export function SimpleEditor({ id }: Props) {
         return () => {
             editor.off("update");
         };
-    }, [id, editor, paperStore]);
+    }, [paperId, editor]);
 
     if (!editor) return null;
 
@@ -167,8 +182,8 @@ export function SimpleEditor({ id }: Props) {
         <EditorContext.Provider value={{ editor }}>
             <div className="content-wrapper">
                 <BubbleMenuComp editor={editor} />
-                <SketchMenu editor={editor} />
-                <DiagramMenu editor={editor} />
+                {/* <SketchMenu editor={editor} />
+                <DiagramMenu editor={editor} /> */}
                 <EditorContent className="simple-editor-content" editor={editor} role="presentation" />
             </div>
         </EditorContext.Provider>

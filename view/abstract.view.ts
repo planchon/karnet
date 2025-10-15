@@ -1,6 +1,5 @@
 "use client";
 
-import { isEqual } from "lodash";
 import { action, computed, makeObservable, observable, reaction } from "mobx";
 
 export type ViewItem = {
@@ -169,7 +168,7 @@ export abstract class AbstractView<T extends { _id: string }> {
         }
 
         this._selectedIndex = index;
-        this._selectedId = this.baseItems.values().toArray()[index]._id;
+        // this._selectedId = this.baseItems.values().toArray()[index]._id;
 
         return this._selectedIndex;
     }

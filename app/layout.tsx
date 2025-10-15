@@ -2,7 +2,6 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Root } from "@/router/root";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -30,7 +29,7 @@ export default function RootLayout({
                 <meta content="width=device-width, initial-scale=1" name="viewport" />
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                {typeof window === "undefined" ? null : <Root>{children}</Root>}
+                {typeof window === "undefined" ? null : children}
             </body>
         </html>
     );
