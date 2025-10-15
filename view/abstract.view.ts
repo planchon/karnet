@@ -168,7 +168,7 @@ export abstract class AbstractView<T extends { _id: string }> {
         }
 
         this._selectedIndex = index;
-        this._selectedId = this.baseItems.values().toArray()[index]._id;
+        // this._selectedId = this.baseItems.values().toArray()[index]._id;
 
         return this._selectedIndex;
     }

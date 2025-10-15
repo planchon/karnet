@@ -16,7 +16,7 @@ import "@excalidraw/excalidraw/index.css";
 import type { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { useConvex, useMutation } from "convex/react";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const SketchHeader = observer(function SketchHeaderInner() {
     const { sketchId } = useParams<{ sketchId: string }>();
@@ -89,9 +89,14 @@ export const SketchPage = observer(function DrawPage() {
             }
         }
 
+        if (!sketchId) {
+            console.error("No sketch id");
+            return;
+        }
+
         convex
             .query(api.functions.documents.getDocumentBySmallId, {
-                smallId: sketchId ?? "",
+                smallId: sketchId,
                 type: "sketch",
             })
             .then((sketch) => {
@@ -101,22 +106,30 @@ export const SketchPage = observer(function DrawPage() {
             });
     }, [sketchId]);
 
+    const saveDocumentToServer = useCallback(
+        debounce(
+            (el: readonly OrderedExcalidrawElement[]) => {
+                if (!sketchData?._id) {
+                    console.error("No sketch id while saving to server");
+                    return;
+                }
+
+                updateDocument({
+                    id: sketchData?._id,
+                    data: JSON.stringify(el),
+                });
+            },
+            2500,
+            {
+                trailing: true,
+            }
+        ),
+        [sketchData?._id]
+    );
+
     if (!sketchData) {
         return <div>Loading...</div>;
     }
-
-    const saveDocumentToServer = debounce(
-        (el: readonly OrderedExcalidrawElement[]) => {
-            updateDocument({
-                id: sketchData._id,
-                data: JSON.stringify(el),
-            });
-        },
-        2500,
-        {
-            trailing: true,
-        }
-    );
 
     const onExcalidrawChange: ExcalidrawProps["onChange"] = debounce(
         (elements: readonly OrderedExcalidrawElement[]) => {
