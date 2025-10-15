@@ -127,7 +127,7 @@ export const SketchPage = observer(function DrawPage() {
         [sketchData?._id]
     );
 
-    if (!sketchData) {
+    if (!(sketchData && sketchData.data)) {
         return <div>Loading...</div>;
     }
 
@@ -143,7 +143,7 @@ export const SketchPage = observer(function DrawPage() {
     );
 
     const data: ExcalidrawInitialDataState = {
-        elements: sketchData.data ? JSON.parse(sketchData.data) : [],
+        elements: JSON.parse(sketchData.data),
     };
 
     return (
