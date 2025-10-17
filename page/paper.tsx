@@ -7,46 +7,30 @@ import { Button } from "@/primitive/ui/button";
 import { Input } from "@/primitive/ui/input";
 import "@editor/styles/_variables.scss";
 import "@editor/styles/_keyframe-animations.scss";
-import { convexQuery } from "@convex-dev/react-query";
-import { useQuery } from "@tanstack/react-query";
-import { useMutation } from "convex/react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
-import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useDocument } from "@/hooks/useDocument";
 import { slugify } from "@/lib/utils";
 
 export const PaperPage = observer(function PaperPageInner() {
-    const { paperId } = useParams<{ paperId: string }>();
-    const { data: paper } = useQuery({
-        ...convexQuery(api.functions.documents.getDocumentBySmallId, {
-            smallId: paperId ?? "",
+    const { paperId } = useParams() as { paperId: string };
+
+    const { document: paper, updateData: updateDocument } = useDocument({
+        args: {
+            smallId: paperId,
             type: "paper",
-        }),
+        },
+        options: {
+            isLocallyStored: true,
+        },
     });
-    const updateDocument = useMutation(api.functions.documents.updateDocument).withOptimisticUpdate(
-        (localStore, args) => {
-            const { title } = args;
-            const current = localStore.getQuery(api.functions.documents.getDocumentBySmallId, {
-                smallId: paperId ?? "",
-                type: "paper",
-            });
-            if (current && paperId && title) {
-                localStore.setQuery(
-                    api.functions.documents.getDocumentBySmallId,
-                    {
-                        smallId: paperId,
-                        type: "paper",
-                    },
-                    {
-                        ...current,
-                        title,
-                    }
-                );
-                // change the url to the new slug
-                window.history.replaceState({}, "", `/paper/${paperId}/${slugify(title)}`);
-            }
+
+    useEffect(() => {
+        if (paper) {
+            window.history.replaceState({}, "", `/paper/${paperId}/${slugify(paper.title)}`);
         }
-    );
+    }, [paper]);
 
     if (!paperId) {
         return <div>No id</div>;

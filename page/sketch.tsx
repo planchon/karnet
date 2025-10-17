@@ -1,51 +1,34 @@
 "use client";
 
-import { convexQuery } from "@convex-dev/react-query";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
 import { observer } from "mobx-react";
 import { Navigate, useParams } from "react-router";
-import { api } from "@/convex/_generated/api";
 import { cn, slugify } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 import { Input } from "@/primitive/ui/input";
 import "@excalidraw/excalidraw/index.css";
 import { Draw } from "@draw/draw";
-import { useMutation } from "convex/react";
+import { useEffect } from "react";
+import { useDocument } from "@/hooks/useDocument";
 
 const SketchHeader = observer(function SketchHeaderInner() {
-    const { sketchId } = useParams<{ sketchId: string }>();
-    const { data: sketch } = useQuery({
-        ...convexQuery(api.functions.documents.getDocumentBySmallId, {
-            smallId: sketchId ?? "",
+    const { sketchId } = useParams() as { sketchId: string };
+
+    const { document: sketch, updateData: updateDocument } = useDocument({
+        args: {
+            smallId: sketchId,
             type: "sketch",
-        }),
+        },
+        options: {
+            isLocallyStored: true,
+        },
     });
 
-    const updateDocument = useMutation(api.functions.documents.updateDocument).withOptimisticUpdate(
-        (localStore, args) => {
-            const { title } = args;
-            const current = localStore.getQuery(api.functions.documents.getDocumentBySmallId, {
-                smallId: sketchId ?? "",
-                type: "sketch",
-            });
-            if (current && sketchId && title) {
-                localStore.setQuery(
-                    api.functions.documents.getDocumentBySmallId,
-                    {
-                        smallId: sketchId,
-                        type: "sketch",
-                    },
-                    {
-                        ...current,
-                        title,
-                    }
-                );
-                // change the url to the new slug
-                window.history.replaceState({}, "", `/sketch/${sketchId}/${slugify(title)}`);
-            }
+    useEffect(() => {
+        if (sketch) {
+            window.history.replaceState({}, "", `/sketch/${sketchId}/${slugify(sketch.title)}`);
         }
-    );
+    }, [sketch]);
 
     if (!sketch) {
         return null;

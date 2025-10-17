@@ -1,13 +1,9 @@
-import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import type { Id } from "../_generated/dataModel";
 import { mutation, query } from "../_generated/server";
 
 export const getPaginatedTasks = query({
-    args: {
-        paginationOpts: paginationOptsValidator,
-    },
-    handler: async (ctx, { paginationOpts }) => {
+    handler: async (ctx) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
             throw new ConvexError({
@@ -22,7 +18,7 @@ export const getPaginatedTasks = query({
             .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
             .filter((q) => q.eq(q.field("is_deleted"), false))
             .order("desc")
-            .paginate(paginationOpts);
+            .collect();
 
         return tasks;
     },

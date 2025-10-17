@@ -5,6 +5,7 @@ import { ConvexQueryClient } from "@convex-dev/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Authenticated, ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Outlet, useNavigate } from "react-router";
 import { Toaster } from "sonner";
 import { CommandChat } from "@/components/command/command-chat";
@@ -14,7 +15,6 @@ import { CreateProjectCommand } from "@/components/command/command-project";
 import { CreateTaskCommand } from "@/components/command/command-task";
 import { HelpComponent } from "@/components/help/help.comp";
 import { AppSidebar } from "@/components/navbar/app-sidebar";
-import { useLinkShortcut, useShortcut } from "@/hooks/useShortcut";
 import { SidebarInset, SidebarProvider } from "@/primitive/ui/sidebar";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
@@ -32,6 +32,12 @@ convexQueryClient.connect(queryClient);
 export function GeneralOutlet() {
     const navigate = useNavigate();
 
+    const useLinkShortcut = (shortcut: string, href: string) => {
+        useHotkeys(shortcut, () => {
+            navigate(href);
+        });
+    };
+
     useLinkShortcut("g+a", "/agenda");
     useLinkShortcut("g+t", "/task");
 
@@ -42,11 +48,11 @@ export function GeneralOutlet() {
     useLinkShortcut("g+f", "/document?type=file");
     useLinkShortcut("g+s", "/document?type=sketch");
 
-    useShortcut("Control+o", () => {
+    useHotkeys("Control+o", () => {
         navigate(-1);
     });
 
-    useShortcut("Command+o", () => {
+    useHotkeys("Command+o", () => {
         navigate(-1);
     });
 

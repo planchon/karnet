@@ -4,7 +4,7 @@ import { IconChevronLeft, IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router";
-import { useCommands } from "@/hooks/useShortcut";
+import { useCommands } from "@/hooks/useCommand";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 
