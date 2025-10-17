@@ -20,13 +20,14 @@ import {
     ContextMenuSubContent,
     ContextMenuSubTrigger,
 } from "@ui/context-menu";
-import { useMutation, usePaginatedQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { View } from "@/components/view/table";
 import { api } from "@/convex/_generated/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useSync } from "@/hooks/useSync";
 import { slugify } from "@/lib/utils";
 import { GenericView } from "@/view/generic.view";
 
@@ -36,15 +37,19 @@ export default observer(() => {
     const navigate = useNavigate();
 
     const [viewModel, _] = useState(new GenericView());
-    const { results: documents } = usePaginatedQuery(
-        api.functions.documents.getUserDocuments,
-        {},
-        {
-            initialNumItems: 500,
-        }
-    );
+    const { data: documents } = useSync({
+        args: {},
+        queryFn: api.functions.documents.getUserDocuments,
+        key: () => "documents",
+        options: {
+            isLocallyStored: true,
+        },
+    });
+
     const createEmptyDocument = useMutation(api.functions.documents.createEmptyDocument);
     const deleteDocument = useMutation(api.functions.documents.deleteDocument);
+
+    if (!documents) return null;
 
     return (
         <View.Root viewModel={viewModel}>

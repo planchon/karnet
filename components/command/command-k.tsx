@@ -11,8 +11,9 @@ import {
 } from "@tabler/icons-react";
 import { ArrowRight, Briefcase, Brush, CalendarPlus, FilePlus, Moon, Sparkles, Sun } from "lucide-react";
 import { observer } from "mobx-react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useNavigate } from "react-router";
-import { useCommands, useShortcut } from "@/hooks/useShortcut";
+import { useCommands } from "@/hooks/useCommand";
 import { useSettings, useStores } from "@/hooks/useStores";
 import {
     CommandDialog,
@@ -36,11 +37,11 @@ export const CommandK = observer(function CommandKInner() {
     const commands = useCommands();
     const commandStore = useStores().commandStore;
 
-    useShortcut("Command+k", () => {
+    useHotkeys("Command+k", () => {
         commands.toggleCommandK();
     });
 
-    useShortcut("Control+k", () => {
+    useHotkeys("Control+k", () => {
         commands.toggleCommandK();
     });
 

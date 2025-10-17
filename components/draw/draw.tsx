@@ -12,10 +12,9 @@ import {
 import { Grid } from "./grid";
 import { Toolbar } from "./toolbar";
 import "tldraw/tldraw.css";
-import { useConvex, useMutation } from "convex/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { api } from "@/convex/_generated/api";
-import type { Doc, Id } from "@/convex/_generated/dataModel";
+import { useCallback, useEffect, useMemo } from "react";
+import type { Id } from "@/convex/_generated/dataModel";
+import { useDocumentOnce } from "@/hooks/useDocument";
 
 const components: TLUiComponents & { Grid: typeof Grid } = {
     MenuPanel: null,
@@ -42,26 +41,23 @@ const overrides: TLUiOverrides = {
 };
 
 function Draw({ id }: DrawProps) {
-    const convex = useConvex();
-    const updateDocument = useMutation(api.functions.documents.updateDocument);
-    const [sketch, setSketch] = useState<Doc<"documents"> | undefined>(undefined);
+    const { data: sketch, updateData: updateDocument } = useDocumentOnce({
+        args: {
+            smallId: id,
+            type: "sketch",
+        },
+        options: {
+            isLocallyStored: true,
+        },
+    });
+
     const store = useMemo(() => createTLStore(), []);
 
     useEffect(() => {
-        convex
-            .query(api.functions.documents.getDocumentBySmallId, {
-                smallId: id,
-                type: "sketch",
-            })
-            .then((s) => {
-                setSketch(s);
-                try {
-                    loadSnapshot(store, JSON.parse(s.data) as unknown as TLEditorSnapshot);
-                } catch (error) {
-                    console.error("Error loading snapshot", error);
-                }
-            });
-    }, []);
+        if (sketch) {
+            loadSnapshot(store, JSON.parse(sketch.data) as unknown as TLEditorSnapshot);
+        }
+    }, [sketch]);
 
     const onStoreChange = useCallback(() => {
         if (sketch) {

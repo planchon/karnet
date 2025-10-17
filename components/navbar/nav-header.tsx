@@ -3,8 +3,8 @@
 import { IconChevronLeft, IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
-import { Link, useNavigate } from "react-router";
-import { useCommands } from "@/hooks/useShortcut";
+import { Link } from "react-router";
+import { useCommands } from "@/hooks/useCommand";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 
@@ -75,14 +75,15 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function SidebarHeaderSettings({ className, ...props }: React.ComponentProps<"div">) {
-    const navigate = useNavigate();
-
     return (
         <SidebarHeaderContainer className={className} {...props}>
-            <Button className="absolute top-2 left-1 pl-0" onClick={() => navigate("/")} variant="ghost">
+            <Link
+                className="absolute top-2 left-2 flex items-center gap-2 rounded-md p-2 text-sm hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+                to="/chat"
+            >
                 <IconChevronLeft className="size-4" />
                 Back to app
-            </Button>
+            </Link>
         </SidebarHeaderContainer>
     );
 }

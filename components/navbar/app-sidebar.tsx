@@ -15,7 +15,7 @@ import { observer } from "mobx-react";
 import type * as React from "react";
 import { useLocation } from "react-router";
 import { NavMain } from "@/components/navbar/nav-main";
-import { useCommands } from "@/hooks/useShortcut";
+import { useCommands } from "@/hooks/useCommand";
 import { SuperLink } from "@/primitive/super-ui/link";
 import { Sidebar, SidebarContent } from "@/primitive/ui/sidebar";
 import { ChatSidebar } from "./chat-sidebar";

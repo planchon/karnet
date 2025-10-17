@@ -12,9 +12,10 @@ import { useMutation } from "convex/react";
 import dayjs from "dayjs";
 import { observer } from "mobx-react";
 import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { api } from "@/convex/_generated/api";
+import { useCommands } from "@/hooks/useCommand";
 import usePreventAutoFocus from "@/hooks/usePreventAutoFocus";
-import { useCommands, useShortcut } from "@/hooks/useShortcut";
 import { useStores } from "@/hooks/useStores";
 import { DAY_TO_NUMBER, theNext } from "@/lib/date";
 import { useResetFocus } from "@/lib/focus-manager";
@@ -37,7 +38,7 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
     const preventAutoFocus = usePreventAutoFocus();
     const resetFocus = useResetFocus();
 
-    useShortcut("c+t", () => {
+    useHotkeys("c+t", () => {
         commands.toggleTask();
     });
 
@@ -66,11 +67,11 @@ export const CreateTaskCommand = observer(function CreateTaskCommandComp() {
         taskStore.reset();
     };
 
-    useShortcut("Control+Enter", () => {
+    useHotkeys("Control+Enter", () => {
         onCreateTask();
     });
 
-    useShortcut("Command+Enter", () => {
+    useHotkeys("Command+Enter", () => {
         onCreateTask();
     });
 

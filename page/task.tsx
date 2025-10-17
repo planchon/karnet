@@ -21,14 +21,16 @@ import {
     ContextMenuSubContent,
     ContextMenuSubTrigger,
 } from "@ui/context-menu";
-import { useMutation, usePaginatedQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import dayjs from "dayjs";
 import { observer } from "mobx-react";
 import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { View } from "@/components/view/table";
 import { api } from "@/convex/_generated/api";
+import { useCommands } from "@/hooks/useCommand";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { useCommands, useShortcut } from "@/hooks/useShortcut";
+import { useSync } from "@/hooks/useSync";
 import { getLabel } from "@/lib/date";
 import { Priority } from "@/primitive/priority";
 import { Label } from "@/primitive/super-ui/label";
@@ -36,13 +38,14 @@ import { GenericView } from "@/view/generic.view";
 
 export default observer(() => {
     const commands = useCommands();
-    const { results: tasks } = usePaginatedQuery(
-        api.functions.task.getPaginatedTasks,
-        {},
-        {
-            initialNumItems: 500,
-        }
-    );
+    const { data: tasks } = useSync({
+        args: {},
+        queryFn: api.functions.task.getPaginatedTasks,
+        key: () => "tasks",
+        options: {
+            isLocallyStored: true,
+        },
+    });
     const [viewModel, _] = useState(new GenericView());
     const updateTaskMutation = useMutation(api.functions.task.updateTask);
     const toggleTaskMutation = useMutation(api.functions.task.toggleTask);
@@ -50,7 +53,9 @@ export default observer(() => {
 
     usePageTitle("My Tasks - Karnet AI Assistant");
 
-    useShortcut("v", () => {
+    useHotkeys("v", () => {
+        if (!tasks) return;
+
         const index = viewModel._selectedIndex;
         const item = tasks[index];
 
@@ -88,7 +93,9 @@ export default observer(() => {
         }
     });
 
-    useShortcut("f", () => {
+    useHotkeys("f", () => {
+        if (!tasks) return;
+
         const index = viewModel._selectedIndex;
         const item = tasks[index];
 
@@ -122,7 +129,9 @@ export default observer(() => {
         });
     });
 
-    useShortcut("x", () => {
+    useHotkeys("x", () => {
+        if (!tasks) return;
+
         const index = viewModel._selectedIndex;
         const item = tasks[index];
 
@@ -134,6 +143,8 @@ export default observer(() => {
             id: item._id,
         });
     });
+
+    if (!tasks) return;
 
     return (
         <View.Root viewModel={viewModel}>
