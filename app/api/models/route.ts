@@ -4,14 +4,21 @@ import { OpenRouterModelSchema } from "../../../ai/schema/model";
 
 const allModelsSchema = z.array(OpenRouterModelSchema);
 
-const allowedProviders = ["anthropic", "vercel", "azure", "openai", "google", "vertex", "x-ai", "z-ai", "perplexity"];
+const allowedProviders = [
+    "anthropic",
+    "vercel",
+    "azure",
+    "openai",
+    "google",
+    "vertex",
+    "x-ai",
+    "z-ai",
+    "perplexity",
+    "mistralai",
+];
 
 export async function GET() {
-    const models = await fetch("https://openrouter.ai/api/v1/models", {
-        next: {
-            revalidate: 60 * 60 * 24,
-        },
-    });
+    const models = await fetch("https://openrouter.ai/api/v1/models");
     const data = await models.json();
     const allModels = allModelsSchema.safeParse(data.data);
 
