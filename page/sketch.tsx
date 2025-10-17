@@ -1,23 +1,17 @@
 "use client";
 
 import { convexQuery } from "@convex-dev/react-query";
-import { Excalidraw } from "@excalidraw/excalidraw";
-import type { ExcalidrawInitialDataState, ExcalidrawProps } from "@excalidraw/excalidraw/types";
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { observer } from "mobx-react";
 import { Navigate, useParams } from "react-router";
 import { api } from "@/convex/_generated/api";
-import type { Doc } from "@/convex/_generated/dataModel";
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 import { Input } from "@/primitive/ui/input";
 import "@excalidraw/excalidraw/index.css";
 import { Draw } from "@draw/draw";
-import type { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
-import { useConvex, useMutation } from "convex/react";
-import { debounce } from "lodash";
-import { useCallback, useEffect, useState } from "react";
+import { useMutation } from "convex/react";
 
 const SketchHeader = observer(function SketchHeaderInner() {
     const { sketchId } = useParams<{ sketchId: string }>();
@@ -47,6 +41,8 @@ const SketchHeader = observer(function SketchHeaderInner() {
                         title,
                     }
                 );
+                // change the url to the new slug
+                window.history.replaceState({}, "", `/sketch/${sketchId}/${slugify(title)}`);
             }
         }
     );

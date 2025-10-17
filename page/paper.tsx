@@ -13,6 +13,7 @@ import { useMutation } from "convex/react";
 import { useParams } from "react-router";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { slugify } from "@/lib/utils";
 
 export const PaperPage = observer(function PaperPageInner() {
     const { paperId } = useParams<{ paperId: string }>();
@@ -41,6 +42,8 @@ export const PaperPage = observer(function PaperPageInner() {
                         title,
                     }
                 );
+                // change the url to the new slug
+                window.history.replaceState({}, "", `/paper/${paperId}/${slugify(title)}`);
             }
         }
     );
