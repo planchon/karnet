@@ -1,105 +1,105 @@
-// "use client";
+"use client";
 
-// import { throttle } from "lodash";
-// import {
-//     createTLStore,
-//     type Editor,
-//     getSnapshot,
-//     loadSnapshot,
-//     type TLEditorSnapshot,
-//     type TLUiComponents,
-//     type TLUiOverrides,
-//     Tldraw,
-//     useEditor,
-// } from "tldraw";
-// import { Grid } from "./grid";
-// import { Toolbar } from "./toolbar";
-// import "tldraw/tldraw.css";
-// import { Excalidraw } from "@excalidraw/excalidraw";
-// import type { ExcalidrawInitialDataState, ExcalidrawProps } from "@excalidraw/excalidraw/types";
-// import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-// import { useStores } from "@/hooks/useStores";
+import { throttle } from "lodash";
+import {
+    createTLStore,
+    loadSnapshot,
+    type TLEditorSnapshot,
+    type TLUiComponents,
+    type TLUiOverrides,
+    Tldraw,
+} from "tldraw";
+import { Grid } from "./grid";
+import { Toolbar } from "./toolbar";
+import "tldraw/tldraw.css";
+import { useConvex, useMutation } from "convex/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { api } from "@/convex/_generated/api";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
 
-// const components: TLUiComponents & { Grid: typeof Grid } = {
-//     MenuPanel: null,
-//     Grid,
-//     Toolbar: Toolbar as TLUiComponents["Toolbar"],
-// };
+const components: TLUiComponents & { Grid: typeof Grid } = {
+    MenuPanel: null,
+    Grid,
+    Toolbar: Toolbar as TLUiComponents["Toolbar"],
+};
 
-// type DrawProps = {
-//     id: string;
-//     callback: (editor: Editor) => void;
-// };
-// const overrides: TLUiOverrides = {
-//     // @ts-expect-error
-//     actions(editor, actions, helpers) {
-//         const newActions = {
-//             ...actions,
-//             "toggle-grid": {
-//                 ...actions["toggle-grid"],
-//                 id: "toggle-grid",
-//                 kbd: "Shift+G",
-//             },
-//         };
+type DrawProps = {
+    id: string;
+};
+const overrides: TLUiOverrides = {
+    actions(_editor, actions, _helpers) {
+        const newActions = {
+            ...actions,
+            "toggle-grid": {
+                ...actions["toggle-grid"],
+                id: "toggle-grid",
+                kbd: "Shift+G",
+            },
+        };
 
-//         return newActions;
-//     },
-// };
+        return newActions;
+    },
+};
 
-// function Draw({ id, callback }: DrawProps) {
-//     const store = useMemo(() => createTLStore(), []);
-//     const { sketchesStore } = useStores();
+function Draw({ id }: DrawProps) {
+    const convex = useConvex();
+    const updateDocument = useMutation(api.functions.documents.updateDocument);
+    const [sketch, setSketch] = useState<Doc<"documents"> | undefined>(undefined);
+    const store = useMemo(() => createTLStore(), []);
 
-//     const sketch = sketchesStore.getById(id);
+    useEffect(() => {
+        convex
+            .query(api.functions.documents.getDocumentBySmallId, {
+                smallId: id,
+                type: "sketch",
+            })
+            .then((s) => {
+                setSketch(s);
+                try {
+                    loadSnapshot(store, JSON.parse(s.data) as unknown as TLEditorSnapshot);
+                } catch (error) {
+                    console.error("Error loading snapshot", error);
+                }
+            });
+    }, []);
 
-//     useLayoutEffect(() => {
-//         if (!sketch) {
-//             return;
-//         }
+    const onStoreChange = useCallback(() => {
+        if (sketch) {
+            const snapshot = store.getStoreSnapshot("document");
+            updateDocument({ id: sketch._id as Id<"documents">, data: JSON.stringify(snapshot) });
+        } else {
+            console.error("Sketch not found");
+        }
+    }, [sketch]);
 
-//         loadSnapshot(store, sketch.getSnapshot() as TLEditorSnapshot);
+    useEffect(() => {
+        const cleanUpFunction = store.listen(throttle(onStoreChange, 1000, { trailing: true }), {
+            source: "user",
+            scope: "document",
+        });
 
-//         const cleanUp = store.listen(
-//             throttle(() => {
-//                 const snapshot = getSnapshot(store);
-//                 sketch.setContent(snapshot);
-//             }, 500),
-//             {
-//                 source: "user",
-//                 scope: "document",
-//             }
-//         );
+        return () => {
+            cleanUpFunction();
+        };
+    }, [sketch]);
 
-//         return () => {
-//             cleanUp();
-//         };
-//     }, [sketch]);
+    return (
+        <div className="relative h-full w-full">
+            <Tldraw
+                components={components}
+                onMount={(e) => {
+                    e.user.updateUserPreferences({
+                        isSnapMode: true,
+                    });
+                    e.updateInstanceState({
+                        isGridMode: true,
+                    });
+                }}
+                overrides={overrides}
+                store={store}
+            />
+        </div>
+    );
+}
 
-//     if (!sketch) {
-//         return null;
-//     }
-
-//     let data: ExcalidrawInitialDataState = {
-//         elements: [],
-//         appState: {
-//             viewBackgroundColor: "white",
-//         },
-//         scrollToContent: true,
-//     };
-
-//     const onChange = (args: ExcalidrawProps["onChange"]) => {
-//         console.log(args);
-//     };
-
-//     if (sketch.content && "elements" in sketch.content) {
-//         data = sketch.content as ExcalidrawInitialDataState;
-//     }
-
-//     return (
-//         <div className="relative h-full w-full">
-//             <Excalidraw initialData={data} onChange={onChange} />
-//         </div>
-//     );
-// }
-
-// export { Draw };
+export { Draw };

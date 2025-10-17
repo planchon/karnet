@@ -6,13 +6,14 @@ import type { ExcalidrawInitialDataState, ExcalidrawProps } from "@excalidraw/ex
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { observer } from "mobx-react";
-import { useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 import { Input } from "@/primitive/ui/input";
 import "@excalidraw/excalidraw/index.css";
+import { Draw } from "@draw/draw";
 import type { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { useConvex, useMutation } from "convex/react";
 import { debounce } from "lodash";
@@ -77,80 +78,16 @@ const SketchHeader = observer(function SketchHeaderInner() {
 
 export const SketchPage = observer(function DrawPage() {
     const { sketchId } = useParams<{ sketchId: string }>();
-    const [sketchData, setSketchData] = useState<Doc<"documents"> | null>(null);
-    const convex = useConvex();
-    const updateDocument = useMutation(api.functions.documents.updateDocument);
 
-    useEffect(() => {
-        if (!sketchData) {
-            const initialData = JSON.parse(localStorage.getItem(`sketch:${sketchId}`) || "null");
-            if (initialData) {
-                setSketchData(initialData);
-            }
-        }
-
-        if (!sketchId) {
-            console.error("No sketch id");
-            return;
-        }
-
-        convex
-            .query(api.functions.documents.getDocumentBySmallId, {
-                smallId: sketchId,
-                type: "sketch",
-            })
-            .then((sketch) => {
-                setSketchData(sketch);
-                // data is already a string
-                localStorage.setItem(`sketch:${sketchId}`, sketch.data);
-            });
-    }, [sketchId]);
-
-    const saveDocumentToServer = useCallback(
-        debounce(
-            (el: readonly OrderedExcalidrawElement[]) => {
-                if (!sketchData?._id) {
-                    console.error("No sketch id while saving to server");
-                    return;
-                }
-
-                updateDocument({
-                    id: sketchData?._id,
-                    data: JSON.stringify(el),
-                });
-            },
-            2500,
-            {
-                trailing: true,
-            }
-        ),
-        [sketchData?._id]
-    );
-
-    if (!(sketchData && sketchData.data)) {
-        return <div>Loading...</div>;
+    if (!sketchId) {
+        return <Navigate to="/document" />;
     }
-
-    const onExcalidrawChange: ExcalidrawProps["onChange"] = debounce(
-        (elements: readonly OrderedExcalidrawElement[]) => {
-            localStorage.setItem(`sketch:${sketchId}`, JSON.stringify(elements));
-            saveDocumentToServer(elements);
-        },
-        1000,
-        {
-            trailing: true,
-        }
-    );
-
-    const data: ExcalidrawInitialDataState = {
-        elements: JSON.parse(sketchData.data),
-    };
 
     return (
         <div className="h-full w-full">
             <SketchHeader />
             <div className="h-[calc(100%-40px)] w-full">
-                <Excalidraw initialData={data} onChange={onExcalidrawChange} />
+                <Draw id={sketchId} />
             </div>
         </div>
     );
