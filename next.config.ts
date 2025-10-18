@@ -23,10 +23,10 @@ const nextConfig: NextConfig = {
     rewrites() {
         return new Promise((resolve) => {
             resolve([
-                {
-                    source: "/((?!api).*)",
-                    destination: "/",
-                },
+                // {
+                //     source: "/((?!api).*)",
+                //     destination: "/",
+                // },
                 {
                     source: "/ingest/static/:path*",
                     destination: "https://eu-assets.i.posthog.com/static/:path*",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Mozilla_Headline } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +10,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
     variable: "--font-geist-mono",
+    subsets: ["latin"],
+});
+
+const mozillaHeadline = Mozilla_Headline({
+    variable: "--font-mozilla-headline",
     subsets: ["latin"],
 });
 
@@ -28,7 +33,7 @@ export default function RootLayout({
                 <meta content="Karnet is your magical notebook" name="description" />
                 <meta content="width=device-width, initial-scale=1" name="viewport" />
             </head>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} ${mozillaHeadline.variable} antialiased`}>
                 {typeof window === "undefined" ? null : children}
             </body>
         </html>
