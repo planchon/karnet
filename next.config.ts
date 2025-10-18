@@ -49,6 +49,11 @@ const nextConfig: NextConfig = {
                 pathname: "/api/www/avatar/**",
             },
         ],
+        localPatterns: [
+            {
+                pathname: "/public/**",
+            },
+        ],
         dangerouslyAllowSVG: true,
         contentDispositionType: "attachment",
         contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
