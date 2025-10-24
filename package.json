@@ -85,6 +85,7 @@
     "@tiptap/react": "^3.0.7",
     "@tiptap/starter-kit": "^3.0.7",
     "@tiptap/suggestion": "^3.0.7",
+    "@vercel/analytics": "^1.5.0",
     "@vercel/functions": "^3.1.0",
     "ai": "^5.0.44",
     "class-validator": "^0.14.2",
