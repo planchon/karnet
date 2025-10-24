@@ -23,10 +23,10 @@ const nextConfig: NextConfig = {
     rewrites() {
         return new Promise((resolve) => {
             resolve([
-                {
-                    source: "/((?!api).*)",
-                    destination: "/",
-                },
+                // {
+                //     source: "/((?!api).*)",
+                //     destination: "/",
+                // },
                 {
                     source: "/ingest/static/:path*",
                     destination: "https://eu-assets.i.posthog.com/static/:path*",
@@ -47,6 +47,12 @@ const nextConfig: NextConfig = {
                 hostname: "vercel.com",
                 port: "",
                 pathname: "/api/www/avatar/**",
+            },
+        ],
+        localPatterns: [
+            {
+                pathname: "/**",
+                search: "",
             },
         ],
         dangerouslyAllowSVG: true,
