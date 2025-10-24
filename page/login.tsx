@@ -1,9 +1,0 @@
-import { SignIn } from "@clerk/react-router";
-
-export default function LoginPage() {
-    return (
-        <div className="flex h-screen w-screen items-center justify-center">
-            <SignIn />
-        </div>
-    );
-}
