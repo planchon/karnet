@@ -35,7 +35,7 @@ export default function RootLayout({
                 <meta content="width=device-width, initial-scale=1" name="viewport" />
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable} ${mozillaHeadline.variable} antialiased`}>
-                {typeof window === "undefined" ? null : children}
+                {children}
                 <Analytics />
             </body>
         </html>
