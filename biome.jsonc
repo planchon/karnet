@@ -29,7 +29,8 @@
         "useExhaustiveDependencies": "warn"
       },
       "complexity": {
-        "noExcessiveCognitiveComplexity": "off"
+        "noExcessiveCognitiveComplexity": "off",
+        "noForEach": "off"
       }
     }
   },

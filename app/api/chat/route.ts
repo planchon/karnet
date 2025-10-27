@@ -1,7 +1,7 @@
 import { withTracing } from "@posthog/ai";
 import * as Sentry from "@sentry/nextjs";
 import { geolocation } from "@vercel/functions";
-import { convertToModelMessages, generateId, generateText, smoothStream, streamText } from "ai";
+import { convertToModelMessages, generateId, generateText, smoothStream, streamText, type TextPart } from "ai";
 import { fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
@@ -83,6 +83,56 @@ export async function POST(req: Request) {
                     providerOptions: {},
                 });
 
+                const generateTitle = async () =>
+                    await Sentry.startSpan(
+                        {
+                            name: "generateTitle",
+                            attributes: {
+                                chatId,
+                            },
+                        },
+                        async (titleSpan) => {
+                            let text = "";
+                            for (const message of messages) {
+                                if (message.role === "user") {
+                                    text += message.parts
+                                        .filter((p) => p.type === "text")
+                                        .map((p) => p.text)
+                                        .join(" ");
+                                }
+                            }
+
+                            // generate a title for the chat
+                            const titlePrompt = `You are a title generator that generates titles for LLM chats. The text is: "${text}". Most of the time, the first message is the most important one. Generate a title for the chat based on the text (put an emoji at the beginning, keep the title short):`;
+                            const _modelTitle = withTracing(openRouter("google/gemini-2.5-flash-lite"), phClient, {
+                                posthogProperties: {
+                                    is_generating_title: true,
+                                },
+                            });
+                            const title = await generateText({
+                                model: _modelTitle,
+                                prompt: titlePrompt,
+                            });
+
+                            titleSpan.setAttributes({
+                                title: title.text,
+                            });
+
+                            await fetchMutation(
+                                api.functions.chat.updateChatTitle,
+                                {
+                                    id: chatId as Id<"chats">,
+                                    title: title.text,
+                                },
+                                {
+                                    token: (await getSession()).jwt,
+                                }
+                            );
+                        }
+                    );
+
+                generateTitle();
+
                 Sentry.startSpan(
                     {
                         name: "updateChatMessages",
@@ -160,48 +210,6 @@ export async function POST(req: Request) {
                                             {
                                                 id: chatId as Id<"chats">,
                                                 messages: preparedMessages,
-                                            },
-                                            {
-                                                token: (await getSession()).jwt,
-                                            }
-                                        );
-                                    }
-                                );
-
-                                await Sentry.startSpan(
-                                    {
-                                        name: "generateTitle",
-                                        attributes: {
-                                            chatId,
-                                            messages: JSON.stringify(preparedMessages),
-                                        },
-                                    },
-                                    async (titleSpan) => {
-                                        // generate a title for the chat
-                                        const titlePrompt = `Generate a title for the chat based on the following messages (put an emoji at the beginning, keep the title short): ${JSON.stringify(preparedMessages)}`;
-                                        const _modelTitle = withTracing(
-                                            openRouter("google/gemini-2.5-flash-lite"),
-                                            phClient,
-                                            {
-                                                posthogProperties: {
-                                                    is_generating_title: true,
-                                                },
-                                            }
-                                        );
-                                        const title = await generateText({
-                                            model: _modelTitle,
-                                            prompt: titlePrompt,
-                                        });
-
-                                        titleSpan.setAttributes({
-                                            title: title.text,
-                                        });
-
-                                        await fetchMutation(
-                                            api.functions.chat.updateChatTitle,
-                                            {
-                                                id: chatId as Id<"chats">,
-                                                title: title.text,
                                             },
                                             {
                                                 token: (await getSession()).jwt,
