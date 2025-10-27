@@ -18,8 +18,8 @@ export const getChat = query({
 
         const chat = await ctx.db
             .query("chats")
-            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
-            .filter((q) => q.eq(q.field("_id"), args.id))
+            .withIndex("by_id", (q) => q.eq("_id", args.id))
+            .filter((q) => q.eq(q.field("subject"), identity.subject))
             .first();
 
         if (!chat || chat.subject !== identity.subject) {
@@ -51,8 +51,7 @@ export const getLastChats = query({
         // we dont want to get the "New chat..." in the chat
         const chats = await ctx.db
             .query("chats")
-            .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
-            .filter((q) => q.not(q.eq(q.field("is_new"), true)))
+            .withIndex("by_is_new_and_subject", (q) => q.eq("is_new", false).eq("subject", identity.subject))
             .order("desc")
             .take(limit);
 
