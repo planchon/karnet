@@ -311,20 +311,12 @@ export const ChatInput = observer(function ChatInputInside({
     // @ts-expect-error
     useImperativeHandle(ref, () => editor);
 
-    const escapeCount = useRef(0);
     useHotkeys(
         "esc",
         () => {
-            escapeCount.current++;
-            setTimeout(() => {
-                escapeCount.current = 0;
-            }, 600);
-            if (escapeCount.current < 2) {
-                return;
-            }
-
             if (!editor) return;
             if (!editor?.isFocused) return;
+            if (editor.getText() !== "") return;
             editor.commands.blur();
         },
         {
@@ -334,12 +326,6 @@ export const ChatInput = observer(function ChatInputInside({
 
     useEffect(() => {
         document.addEventListener("keydown", (e) => {
-            if (e.key === "/") {
-                e.preventDefault();
-                if (!editor) return;
-                editor.commands.focus();
-            }
-
             if (e.key === "ArrowUp" && editor?.getText() === "" && editor.isFocused) {
                 e.preventDefault();
                 if (!editor) return;
