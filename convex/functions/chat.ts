@@ -267,8 +267,7 @@ export const createEmptyChat = mutation({
         // see if we have a new chat
         const newChat = await ctx.db
             .query("chats")
-            .filter((q) => q.eq(q.field("is_new"), true))
-            .filter((q) => q.eq(q.field("subject"), identity.subject))
+            .withIndex("by_is_new_and_subject", (q) => q.eq("is_new", true).eq("subject", identity.subject))
             .first();
 
         if (newChat) {
