@@ -15,8 +15,8 @@ export const ArchitectureSchema = z.object({
 // Define the schema for the 'top_provider' object
 const TopProviderSchema = z.object({
     is_moderated: z.boolean(),
-    context_length: z.number().int().positive().nullish(), // Context length should be a positive integer
-    max_completion_tokens: z.number().int().positive().nullish(), // Max completion tokens should be a positive integer
+    context_length: z.number().nullish(), // Context length should be a positive integer
+    max_completion_tokens: z.number().nullish(), // Max completion tokens should be a positive integer
 });
 
 // Define the schema for the 'pricing' object
@@ -79,7 +79,7 @@ const OpenRouterModelSchema = z
         top_provider: TopProviderSchema,
         pricing: PricingSchema,
         canonical_slug: z.string().nullish(),
-        context_length: z.number().int().positive().nullish(),
+        context_length: z.number().nullish(),
         hugging_face_id: z.string().nullish(),
         per_request_limits: z.record(z.string(), z.any()).nullish(), // Assuming an object with arbitrary keys/values, and optional
         supported_parameters: z.array(z.string()).nullish(),
