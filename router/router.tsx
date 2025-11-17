@@ -14,14 +14,12 @@ export const GeneralAppRouter = () => (
             <Routes>
                 <Route element={<LoginPage />} path="/login" />
                 <Route element={<Protected />} path="/">
-                    <Route element={<GeneralOutlet />} path="/">
-                        <Route path="/chat/">
-                            <Route element={<ChatWithIdPage />} path=":chatId" />
-                            <Route element={<NewChatPage />} index />
-                        </Route>
-                        <Route element={<Navigate to="/chat" />} index />
+                    <Route element={<GeneralOutlet />} path="/chat">
+                        <Route element={<ChatWithIdPage />} path=":chatId" />
+                        <Route element={<NewChatPage />} index />
                     </Route>
                 </Route>
+                <Route element={<SettingsPage />} index />
             </Routes>
         </AnimatePresence>
     </LayoutGroup>
