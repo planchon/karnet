@@ -6,6 +6,7 @@ import { ChatWithIdPage } from "@/page/chat/[id]/page";
 import { NewChatPage } from "@/page/chat/page";
 import { DiagramPage } from "@/page/diagram";
 import DocumentPage from "@/page/document";
+import { LoginPage } from "@/page/login";
 import { PaperPage } from "@/page/paper";
 import { ModelsPage } from "@/page/settings/models";
 import { SketchPage } from "@/page/sketch";
@@ -18,6 +19,7 @@ export const GeneralAppRouter = () => (
         <AnimatePresence mode="wait">
             <Routes>
                 <Route element={<Protected />} path="/">
+                    <Route element={<LoginPage />} path="/login" />
                     <Route element={<GeneralOutlet />} path="/">
                         <Route path="/settings">
                             <Route element={<ModelsPage />} path="models" />
