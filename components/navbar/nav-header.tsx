@@ -5,6 +5,7 @@ import Image from "next/image";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { Link } from "react-router";
 import { useCommands } from "@/hooks/useCommand";
+import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 
@@ -42,6 +43,8 @@ function SidebarHeaderAction({ className, ...props }: React.ComponentProps<"div"
 }
 
 function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
+    const { settingsStore } = useStores();
+
     return (
         <SidebarHeaderContainer className={className} {...props}>
             <SidebarHeaderLogo>
@@ -56,12 +59,15 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
                 />
             </SidebarHeaderLogo>
             <SidebarHeaderAction className="gap-1">
-                <Link className="size-6 p-1" to="/settings">
+                <Button
+                    className="size-6 bg-transparent p-1 shadow-none hover:bg-transparent"
+                    onClick={() => settingsStore.setIsSettingsOpen(true)}
+                >
                     <HiOutlineCog6Tooth className="text-gray-500" />
-                </Link>
+                </Button>
                 {/* <Button
                     className="size-6 border bg-white shadow"
-                    onClick={commands.toggleCommandK}
+                    onClick={settingsStore.setIsSettingsOpen(true)}
                     size="icon"
                     variant="ghost"
                 >

@@ -91,7 +91,7 @@ export const useModels = () => {
                         return true;
                     }
 
-                    return false;
+                    return true;
                 })
                 .map((model) => {
                     const userActiveModel = userActiveModels?.find((activeModel) => activeModel.model_id === model.id);

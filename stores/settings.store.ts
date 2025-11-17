@@ -7,6 +7,7 @@ import { action, makeObservable, observable } from "mobx";
 export class SettingsStore {
     theme: "light" | "dark" = "light";
     disableLinks = false;
+    isSettingsOpen = false;
 
     constructor() {
         makeObservable(this, {
@@ -14,7 +15,13 @@ export class SettingsStore {
             setTheme: action,
             disableLinks: observable,
             setDisableLinks: action,
+            isSettingsOpen: observable,
+            setIsSettingsOpen: action,
         });
+    }
+
+    setIsSettingsOpen(isSettingsOpen: boolean) {
+        this.isSettingsOpen = isSettingsOpen;
     }
 
     setTheme(theme: "light" | "dark") {

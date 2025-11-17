@@ -5,7 +5,7 @@ import { Navigate, Route, Routes } from "react-router";
 import { ChatWithIdPage } from "@/page/chat/[id]/page";
 import { NewChatPage } from "@/page/chat/page";
 import { LoginPage } from "@/page/login";
-import { ModelsPage } from "@/page/settings/models";
+import { ModelsPage } from "@/page/settings/settings-dialog";
 import { GeneralOutlet } from "./outlet/general.outlet";
 import { Protected } from "./page-wrapper";
 

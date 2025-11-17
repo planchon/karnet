@@ -14,10 +14,10 @@ import {
 import { observer } from "mobx-react";
 import type * as React from "react";
 import { useLocation } from "react-router";
-import { SuperLink } from "@/primitive/super-ui/link";
 import { Sidebar, SidebarContent } from "@/primitive/ui/sidebar";
+import { SettingsDialog } from "../settings/settings";
 import { ChatSidebar } from "./chat-sidebar";
-import { SidebarHeader, SidebarHeaderSettings } from "./nav-header";
+import { SidebarHeader } from "./nav-header";
 import { NewChatButton } from "./new-chat";
 
 export const AppSidebar = observer(function AppSidebarInner({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -43,13 +43,7 @@ export const AppSidebar = observer(function AppSidebarInner({ ...props }: React.
                     </SidebarContent>
                 </>
             )}
-            {isSettings && (
-                <SidebarContent>
-                    <SidebarHeaderSettings />
-                    <div className="h-[16px]" />
-                    <SuperLink icon={IconBrain} title="Models" to="/settings/models" tooltip={{ title: "Models" }} />
-                </SidebarContent>
-            )}
+            <SettingsDialog />
             <div className="flex items-center justify-center">
                 <div className="flex w-full flex-row items-center justify-between gap-4 p-2">
                     <div className="flex select-none flex-col">
