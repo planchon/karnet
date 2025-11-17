@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, LayoutGroup } from "framer-motion";
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import { ChatWithIdPage } from "@/page/chat/[id]/page";
 import { NewChatPage } from "@/page/chat/page";
 import { LoginPage } from "@/page/login";
@@ -19,7 +19,6 @@ export const GeneralAppRouter = () => (
                         <Route element={<NewChatPage />} index />
                     </Route>
                 </Route>
-                <Route element={<SettingsPage />} index />
             </Routes>
         </AnimatePresence>
     </LayoutGroup>

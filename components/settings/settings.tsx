@@ -1,6 +1,4 @@
-"use client";
-
-import { IconBrain, IconDatabase, IconSettings, IconUser } from "@tabler/icons-react";
+import { IconBrain, IconSettings } from "@tabler/icons-react";
 import { XIcon } from "lucide-react";
 import { observer } from "mobx-react";
 import { useState } from "react";

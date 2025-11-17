@@ -1,3 +1,4 @@
+import { IconBrandGithub } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -37,9 +38,17 @@ export default function Home() {
                         Access all the latest AI models on a beautiful and responsive interface. Use keyboard shortcuts
                         to navigate and chat. Blazing fast and responsive.
                     </h3>
-                    <div className="pt-4">
+                    <div className="flex flex-row gap-2 pt-4">
                         <Link
-                            className="rounded-md bg-accent-foreground p-2 px-4 text-accent text-sm transition-all duration-100 hover:bg-gray-100"
+                            className="flex flex-row items-center gap-2 rounded-md bg-accent-foreground p-2 px-4 text-accent text-sm transition-all duration-100"
+                            href="https://github.com/planchon/karnet"
+                            target="_blank"
+                        >
+                            <IconBrandGithub className="size-4" />
+                            Browse the code
+                        </Link>
+                        <Link
+                            className="rounded-md border border-border p-2 px-4 text-sm transition-all duration-100 hover:bg-gray-100"
                             href="/waitlist"
                         >
                             Join waitlist

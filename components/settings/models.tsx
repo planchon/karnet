@@ -1,18 +1,13 @@
-import { IconChevronDown } from "@tabler/icons-react";
-import { Button } from "@ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@ui/dropdown-menu";
 import { Input } from "@ui/input";
 import { Switch } from "@ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
 import { useMutation } from "convex/react";
 import { debounce } from "lodash";
-import { AudioLines, File, ImageIcon, Ligature, TextIcon, VideoIcon } from "lucide-react";
-import { observer } from "mobx-react";
+import { AudioLines, File, ImageIcon, VideoIcon } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { ProviderIcons } from "@/ai/models";
 import type { InputModalities } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 
 export const BaseModality = ({ icon, name, tooltip }: { icon: React.ReactNode; name: string; tooltip: string }) => (
