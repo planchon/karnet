@@ -1,23 +1,11 @@
 "use client";
 
 import { useClerk, useUser } from "@clerk/react-router";
-import {
-    IconBrain,
-    IconDatabase,
-    IconFileText,
-    IconFileWord,
-    IconHelp,
-    IconListCheck,
-    IconLogout,
-    IconMessageCircle,
-    IconReport,
-    IconUserCircle,
-} from "@tabler/icons-react";
+import { IconBrain, IconLogout } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
@@ -26,106 +14,20 @@ import {
 import { observer } from "mobx-react";
 import type * as React from "react";
 import { useLocation } from "react-router";
-import { NavMain } from "@/components/navbar/nav-main";
-import { useCommands } from "@/hooks/useCommand";
 import { SuperLink } from "@/primitive/super-ui/link";
 import { Sidebar, SidebarContent } from "@/primitive/ui/sidebar";
 import { ChatSidebar } from "./chat-sidebar";
 import { SidebarHeader, SidebarHeaderSettings } from "./nav-header";
+import { NewChatButton } from "./new-chat";
 
 export const AppSidebar = observer(function AppSidebarInner({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const commands = useCommands();
     const url = useLocation();
     const clerk = useClerk();
 
     const isSettings = url.pathname.startsWith("/settings");
 
-    const data = {
-        user: {
-            name: "shadcn",
-            email: "m@example.com",
-            avatar: "/avatars/shadcn.jpg",
-        },
-        navMain: [
-            // {
-            //   title: "Agenda",
-            //   url: "/agenda",
-            //   icon: IconCalendar,
-            //   tooltip: {
-            //     title: "Go to agenda",
-            //     side: "right" as const,
-            //     shortcut: ["g", "a"]
-            //   }
-            // },
-            {
-                title: "Documents",
-                url: "/document",
-                icon: IconFileText,
-                tooltip: {
-                    title: "Go to documents",
-                    side: "right" as const,
-                    shortcut: ["g", "d"],
-                },
-            },
-            {
-                title: "Tasks",
-                url: "/task",
-                icon: IconListCheck,
-                tooltip: {
-                    title: "Go to tasks",
-                    side: "right" as const,
-                    shortcut: ["g", "t"],
-                },
-            },
-            {
-                title: "Chat",
-                url: "/chat",
-                icon: IconMessageCircle,
-                tooltip: {
-                    title: "Chat with an AI",
-                    side: "right" as const,
-                    shortcut: ["g", "c"],
-                },
-            },
-        ],
-        navSecondary: [
-            {
-                title: "Get Help",
-                url: "#",
-                icon: IconHelp,
-                action: () => {
-                    commands.toggleHelp();
-                },
-            },
-        ],
-        documents: [
-            {
-                name: "Data Library",
-                url: "#",
-                icon: IconDatabase,
-            },
-            {
-                name: "Reports",
-                url: "#",
-                icon: IconReport,
-            },
-            {
-                name: "Word Assistant",
-                url: "#",
-                icon: IconFileWord,
-            },
-        ],
-    };
-
     const handleLogout = async () => {
-        await clerk
-            .signOut()
-            .then(() => {
-                window.location.href = "/";
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        await clerk.signOut();
     };
 
     const { user } = useUser();
@@ -136,8 +38,7 @@ export const AppSidebar = observer(function AppSidebarInner({ ...props }: React.
                 <>
                     <SidebarHeader />
                     <SidebarContent>
-                        <NavMain items={data.navMain} />
-                        <div className="flex-1" />
+                        <NewChatButton />
                         <ChatSidebar />
                     </SidebarContent>
                 </>

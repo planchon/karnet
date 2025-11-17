@@ -11,6 +11,6 @@ export const Root = () => (
                 <GeneralAppRouter />
             </ClerkProvider>
         </BrowserRouter>
-        <div className="absolute h-screen w-screen bg-sidebar" />
+        {/* <div className="absolute h-screen w-screen bg-sidebar" /> */}
     </div>
 );

@@ -1,12 +1,11 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/nextjs";
-import { after } from "next/server";
 import { getRedis } from "./cache";
 
 const SESSION_EXPIRATION = 1800;
 
-export const getSession = () => {
-    return Sentry.startSpan(
+export const getSession = () =>
+    Sentry.startSpan(
         {
             name: "getToken",
         },
@@ -32,20 +31,9 @@ export const getSession = () => {
                     throw new Error("No token");
                 }
 
-                // set the session in redis after the request is complete
-                after(async () => {
-                    await redis.set(`session:${session.sessionId}`, tokenRes.jwt, {
-                        expiration: {
-                            value: SESSION_EXPIRATION,
-                            type: "EX",
-                        },
-                    });
-                });
-
                 return { jwt: tokenRes.jwt, session };
             }
 
             return { jwt, session };
         }
     );
-};

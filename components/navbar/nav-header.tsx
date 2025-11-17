@@ -42,8 +42,6 @@ function SidebarHeaderAction({ className, ...props }: React.ComponentProps<"div"
 }
 
 function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
-    const commands = useCommands();
-
     return (
         <SidebarHeaderContainer className={className} {...props}>
             <SidebarHeaderLogo>
@@ -61,14 +59,14 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
                 <Link className="size-6 p-1" to="/settings">
                     <HiOutlineCog6Tooth className="text-gray-500" />
                 </Link>
-                <Button
+                {/* <Button
                     className="size-6 border bg-white shadow"
                     onClick={commands.toggleCommandK}
                     size="icon"
                     variant="ghost"
                 >
                     <IconSearch />
-                </Button>
+                </Button> */}
             </SidebarHeaderAction>
         </SidebarHeaderContainer>
     );

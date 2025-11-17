@@ -1,6 +1,7 @@
 "use client";
 
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist, Geist_Mono, Mozilla_Headline } from "next/font/google";
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable} ${mozillaHeadline.variable} antialiased`}>
                 {children}
+                <SpeedInsights />
                 <Analytics />
             </body>
         </html>

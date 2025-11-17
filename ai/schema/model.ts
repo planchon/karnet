@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const InputModalitiesSchema = z.enum(["text", "image", "audio", "file"]);
+export const InputModalitiesSchema = z.enum(["text", "image", "audio", "file", "video"]);
 
 export type InputModalities = z.infer<typeof InputModalitiesSchema>;
 
