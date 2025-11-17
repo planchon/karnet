@@ -5,7 +5,6 @@ import { Navigate, Route, Routes } from "react-router";
 import { ChatWithIdPage } from "@/page/chat/[id]/page";
 import { NewChatPage } from "@/page/chat/page";
 import { LoginPage } from "@/page/login";
-import { ModelsPage } from "@/page/settings/settings-dialog";
 import { GeneralOutlet } from "./outlet/general.outlet";
 import { Protected } from "./page-wrapper";
 
@@ -16,10 +15,6 @@ export const GeneralAppRouter = () => (
                 <Route element={<LoginPage />} path="/login" />
                 <Route element={<Protected />} path="/">
                     <Route element={<GeneralOutlet />} path="/">
-                        <Route path="/settings">
-                            <Route element={<ModelsPage />} path="models" />
-                            <Route element={<Navigate to="models" />} index />
-                        </Route>
                         <Route path="/chat/">
                             <Route element={<ChatWithIdPage />} path=":chatId" />
                             <Route element={<NewChatPage />} index />
