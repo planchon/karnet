@@ -103,7 +103,8 @@ const RenderFile = ({
     return (
         <div className="flex flex-wrap gap-2">
             {part.map((p, i) => (
-                <FilePreview filePart={p} key={`${messageId}-${offsetPartIndex + i}`} />
+                // @ts-expect-error
+                <FilePreview filePart={p as FileUIPart} key={`${messageId}-${offsetPartIndex + i}`} />
             ))}
         </div>
     );
