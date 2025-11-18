@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 export const ChatSidebar = observer(function ChatSidebarInner() {
     const { data: oldChat, isLoading } = useQuery({
         ...convexQuery(api.functions.chat.getLastChats, {
-            limit: 50,
+            limit: 20,
         }),
         initialData: JSON.parse(localStorage.getItem("chats-history") || "[]"),
     });
@@ -31,7 +31,7 @@ export const ChatSidebar = observer(function ChatSidebarInner() {
         <SidebarGroup>
             <SidebarGroupContent>
                 <SidebarGroupLabel className="flex items-center gap-2">History</SidebarGroupLabel>
-                <div className="flex h-full flex-col gap-2 overflow-y-auto overflow-x-hidden px-1">
+                <div className="flex h-full flex-col gap-2 overflow-x-hidden overflow-y-hidden px-1">
                     {oldChat.map((chat) => (
                         <Link
                             className={cn(
