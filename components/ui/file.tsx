@@ -17,7 +17,7 @@ type FileProps = {
     onRemove: () => void;
 };
 
-const _FileExtensions = {
+export const _FileExtensions = {
     pdf: "pdf",
     doc: "doc",
     docx: "docx",
@@ -26,7 +26,7 @@ const _FileExtensions = {
     "application/pdf": "pdf",
 } as const;
 
-const _ImageExtensions = {
+export const _ImageExtensions = {
     webp: "webp",
     jpg: "jpg",
     jpeg: "jpeg",

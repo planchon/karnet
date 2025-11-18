@@ -81,31 +81,28 @@ export const useModels = () => {
 
     const models = useMemo(
         () =>
-            allModels
-                .filter((model) => {
-                    if (isImageGeneratingModel(model) && chatStore.selectedTool.includes("image")) {
-                        return true;
-                    }
-
-                    if (!(isImageGeneratingModel(model) || chatStore.selectedTool.includes("image"))) {
-                        return true;
-                    }
-
-                    return true;
-                })
-                .map((model) => {
-                    const userActiveModel = userActiveModels?.find((activeModel) => activeModel.model_id === model.id);
-                    if (userActiveModel) {
-                        return {
-                            ...model,
-                            active: true as const,
-                            active_id: userActiveModel._id,
-                            default: userActiveModel.default,
-                        };
-                    }
-                    return { ...model, active: false as const, default: false };
-                }),
+            allModels.map((model) => {
+                const userActiveModel = userActiveModels?.find((activeModel) => activeModel.model_id === model.id);
+                if (userActiveModel) {
+                    return {
+                        ...model,
+                        active: true as const,
+                        active_id: userActiveModel._id,
+                        default: userActiveModel.default,
+                    };
+                }
+                return { ...model, active: false as const, default: false };
+            }),
         [allModels, userActiveModels, chatStore.selectedTool]
+    );
+
+    const textModels = useMemo(
+        () => models.filter((model) => model.architecture.output_modalities.includes("text")),
+        [models]
+    );
+    const imageModels = useMemo(
+        () => models.filter((model) => model.architecture.output_modalities.includes("image")),
+        [models]
     );
 
     const groupedByProvider = models.reduce(
@@ -128,5 +125,5 @@ export const useModels = () => {
             {} as Record<string, (typeof models)[number][]>
         );
 
-    return { models, isLoading, error, groupedByProvider, activeGroupedByProvider };
+    return { models, textModels, imageModels, isLoading, error, groupedByProvider, activeGroupedByProvider };
 };

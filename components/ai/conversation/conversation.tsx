@@ -1,6 +1,18 @@
-import type { ChatStatus, FileUIPart, ReasoningUIPart, SourceUrlUIPart, TextUIPart, UIMessage } from "ai";
+import type {
+    ChatStatus,
+    ReasoningUIPart,
+    SourceUrlUIPart,
+    TextUIPart,
+    UIDataTypes,
+    UIMessage,
+    UIMessagePart,
+    UITools,
+} from "ai";
+import { Download } from "lucide-react";
 import { memo } from "react";
-import { FilePreview } from "@/components/ui/file";
+import { _ImageExtensions, FilePreview } from "@/components/ui/file";
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
+import { cn } from "@/lib/utils";
 import type { Regenerate } from "@/types/regenerate";
 import { Conversation, ConversationContent, ConversationScrollButton } from "../ai-elements/conversation";
 import { Message, MessageContent } from "../ai-elements/message";
@@ -80,11 +92,11 @@ const RenderFile = ({
     messageId,
     offsetPartIndex,
 }: {
-    part: FileUIPart[];
+    part: UIMessagePart<UIDataTypes, UITools>[];
     messageId: string;
     offsetPartIndex: number;
 }) => {
-    if (part.length === 0) {
+    if (part.length === 0 || part.every((p) => p.type !== "file")) {
         return null;
     }
 
@@ -93,6 +105,63 @@ const RenderFile = ({
             {part.map((p, i) => (
                 <FilePreview filePart={p} key={`${messageId}-${offsetPartIndex + i}`} />
             ))}
+        </div>
+    );
+};
+
+const RenderImage = ({
+    part,
+    message,
+    offsetPartIndex,
+}: {
+    part: UIMessagePart<UIDataTypes, UITools>[];
+    message: UIMessage;
+    offsetPartIndex: number;
+}) => {
+    const messageId = message.id;
+    const isUser = message.role === "user";
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {part
+                .filter((p) => p.type === "file")
+                .map((p, i) => (
+                    <div className="group relative pb-2" key={`${messageId}-${offsetPartIndex + i}`}>
+                        {!isUser && (
+                            <button
+                                className="absolute top-2 right-2 z-10 cursor-pointer rounded-sm border bg-white/80 p-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                                onClick={() => {
+                                    const link = document.createElement("a");
+                                    link.href = p.url;
+                                    link.download = `image-${messageId}-${offsetPartIndex + i}.png`;
+                                    link.click();
+                                }}
+                                type="button"
+                            >
+                                <Download className="size-4" />
+                            </button>
+                        )}
+                        <ImageZoom
+                            backdropClassName={cn('[&_[data-rmiz-modal-overlay="visible"]]:bg-black/10')}
+                            key={`${messageId}-${offsetPartIndex + i}`}
+                            zoomMargin={100}
+                        >
+                            <picture className="relative" key={`${messageId}-${offsetPartIndex + i}`}>
+                                <img
+                                    alt="generated ai"
+                                    className={cn(
+                                        "rounded-md border bg-muted object-cover",
+                                        isUser && "size-12",
+                                        !isUser && "size-92 shadow-md"
+                                    )}
+                                    height={isUser ? 20 : 400}
+                                    src={p.url}
+                                    width={isUser ? 20 : 400}
+                                />
+                            </picture>
+                        </ImageZoom>
+                    </div>
+                ))}
         </div>
     );
 };
@@ -123,7 +192,12 @@ export const RenderOneMessage = ({
     const reasoningParts = message.parts.filter((p) => p.type === "reasoning");
     const textParts = message.parts.filter((p) => p.type === "text");
     const sourceParts = message.parts.filter((p) => p.type === "source-url");
-    const fileParts = message.parts.filter((p) => p.type === "file");
+    const fileParts = message.parts.filter(
+        (p) => p.type === "file" && !Object.keys(_ImageExtensions).includes(p.mediaType)
+    );
+    const imageParts = message.parts.filter(
+        (p) => p.type === "file" && Object.keys(_ImageExtensions).includes(p.mediaType)
+    );
 
     return (
         <Message from={message.role} key={message.id}>
@@ -132,6 +206,7 @@ export const RenderOneMessage = ({
                 <RenderText messageId={message.id} offsetPartIndex={0} part={textParts} />
                 <RenderSource messageId={message.id} offsetPartIndex={0} part={sourceParts} status={status} />
                 <RenderFile messageId={message.id} offsetPartIndex={0} part={fileParts} />
+                <RenderImage message={message} offsetPartIndex={0} part={imageParts} />
             </MessageContent>
         </Message>
     );

@@ -53,7 +53,6 @@ const chatTable = defineTable({
 })
     .index("by_parent_id", ["parent_id"])
     .index("by_created_at", ["created_at_ts"])
-    .index("by_updated_at", ["updated_at_ts"])
     .index("by_subject", ["subject"])
     .index("by_is_new_and_subject", ["is_new", "subject"]);
 

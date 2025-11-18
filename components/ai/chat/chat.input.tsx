@@ -1,5 +1,6 @@
 "use client";
 
+import { useUploadFile } from "@convex-dev/r2/react";
 import Document from "@tiptap/extension-document";
 import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -10,13 +11,15 @@ import { Button } from "@ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@ui/command";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
+import { useMutation } from "convex/react";
 import { CheckIcon, Wrench } from "lucide-react";
 import { observer } from "mobx-react";
-import { useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ProviderIcons } from "@/ai/models";
 import type { ChatMessageBody } from "@/ai/schema/chat";
 import { commands } from "@/ai/tools";
+import { api } from "@/convex/_generated/api";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
 import { capitalize, cn } from "@/lib/utils";
@@ -32,7 +35,9 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
 }) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
-    const { models } = useModels();
+    const { textModels, imageModels } = useModels();
+
+    const models = chatStore.selectedTool.includes("image") ? imageModels : textModels;
 
     useHotkeys(
         "m",
@@ -242,6 +247,8 @@ export const ChatInput = observer(function ChatInputInside({
     ref?: React.RefObject<Editor | null>;
 }) {
     const { chatStore } = useStores();
+    const uploadFile = useUploadFile(api.functions.files);
+    const assignFile = useMutation(api.functions.files.assignFileToUser);
 
     const editor = useEditor({
         immediatelyRender: false,
@@ -300,6 +307,26 @@ export const ChatInput = observer(function ChatInputInside({
         editorProps: {
             attributes: {
                 style: "font-size: 13px;",
+            },
+            handlePaste: (_view, event) => {
+                // check if the paste is an image
+                if (event?.clipboardData?.files?.length && event.clipboardData.files.length > 0) {
+                    const file = event.clipboardData?.files[0];
+                    if (file) {
+                        chatStore.addFiles([{ file, upload: "in_progress" }]);
+
+                        uploadFile(file).then(async (id) => {
+                            // move to the convex id
+                            const { url, id: cid } = await assignFile({
+                                id,
+                                media_type: file.type,
+                                filename: file.name,
+                            });
+                            chatStore.updateFile({ file, upload: "success" as const, id: cid, url });
+                        });
+                    }
+                    return true;
+                }
             },
         },
         onUpdate: ({ editor: e }) => {

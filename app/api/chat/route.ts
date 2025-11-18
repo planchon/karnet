@@ -1,8 +1,8 @@
 import { withTracing } from "@posthog/ai";
 import * as Sentry from "@sentry/nextjs";
 import { geolocation } from "@vercel/functions";
-import { convertToModelMessages, generateId, generateText, smoothStream, streamText, type TextPart } from "ai";
-import { fetchMutation } from "convex/nextjs";
+import { convertToModelMessages, generateId, generateText, smoothStream, streamText } from "ai";
+import { fetchAction, fetchMutation } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
 import { openRouterGateway } from "@/ai/gateway";
@@ -142,7 +142,7 @@ export async function POST(req: Request) {
                         },
                     },
                     async () => {
-                        fetchMutation(
+                        await fetchMutation(
                             api.functions.chat.updateChat,
                             {
                                 id: chatId as Id<"chats">,
@@ -205,7 +205,7 @@ export async function POST(req: Request) {
                                         name: "finishChatStream",
                                     },
                                     async () => {
-                                        await fetchMutation(
+                                        await fetchAction(
                                             api.functions.chat.finishChatStream,
                                             {
                                                 id: chatId as Id<"chats">,

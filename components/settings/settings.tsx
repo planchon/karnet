@@ -20,8 +20,6 @@ type NavItem = {
 const navItems: NavItem[] = [
     { id: "general", label: "General", icon: IconSettings },
     { id: "models", label: "Models", icon: IconBrain },
-    // { id: "data", label: "Data", icon: IconDatabase },
-    // { id: "account", label: "Account", icon: IconUser },
 ];
 
 export const SettingsDialog = observer(function SettingsDialogInner() {

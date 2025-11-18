@@ -48,7 +48,7 @@ const messageContentVariants = cva("is-user:dark flex flex-col gap-2 overflow-hi
                 "group-[.is-assistant]:bg-secondary group-[.is-assistant]:text-foreground",
             ],
             flat: [
-                "group-[.is-user]:w-fit group-[.is-user]:max-w-[80%] group-[.is-user]:border group-[.is-user]:bg-secondary group-[.is-user]:px-4 group-[.is-user]:py-3 group-[.is-user]:text-foreground",
+                "group-[.is-user]:w-fit group-[.is-user]:max-w-[80%] group-[.is-user]:border group-[.is-user]:bg-secondary group-[.is-user]:px-4 group-[.is-user]:py-3 group-[.is-user]:pb-1 group-[.is-user]:text-foreground",
                 "group-[.is-assistant]:text-foreground",
             ],
         },
