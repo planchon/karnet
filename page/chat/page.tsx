@@ -158,6 +158,21 @@ export const NewChatPage = observer(function ChatPage() {
             return;
         }
 
+        // for the history feature - sauvegarder dans un tableau
+        const historyStr = localStorage.getItem("chat-history-array");
+        const history: string[] = historyStr ? JSON.parse(historyStr) : [];
+        
+        // Ajouter le nouveau prompt à la fin (éviter les doublons consécutifs)
+        if (history[history.length - 1] !== text) {
+            history.push(text);
+            // Limiter à 50 prompts maximum
+            if (history.length > 50) {
+                history.shift();
+            }
+            localStorage.setItem("chat-history-array", JSON.stringify(history));
+        }
+        
+        // Garder la compatibilité avec l'ancien format
         localStorage.setItem("chat-history", text);
 
         const tools = _.cloneDeep(chatStore.selectedTool);
