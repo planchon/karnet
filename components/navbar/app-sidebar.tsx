@@ -13,7 +13,6 @@ import {
 } from "@ui/dropdown-menu";
 import { observer } from "mobx-react";
 import type * as React from "react";
-import { useLocation } from "react-router";
 import { Sidebar, SidebarContent } from "@/primitive/ui/sidebar";
 import { SettingsDialog } from "../settings/settings";
 import { ChatSidebar } from "./chat-sidebar";
@@ -21,10 +20,7 @@ import { SidebarHeader } from "./nav-header";
 import { NewChatButton } from "./new-chat";
 
 export const AppSidebar = observer(function AppSidebarInner({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const url = useLocation();
     const clerk = useClerk();
-
-    const isSettings = url.pathname.startsWith("/settings");
 
     const handleLogout = async () => {
         await clerk.signOut();
@@ -33,16 +29,16 @@ export const AppSidebar = observer(function AppSidebarInner({ ...props }: React.
     const { user } = useUser();
 
     return (
-        <Sidebar collapsible="offcanvas" {...props}>
-            {!isSettings && (
-                <>
-                    <SidebarHeader />
-                    <SidebarContent>
-                        <NewChatButton />
-                        <ChatSidebar />
-                    </SidebarContent>
-                </>
-            )}
+        <Sidebar
+            collapsible="offcanvas"
+            {...props}
+            className="sticky top-[calc(var(--header-height)+1px)] z-30 hidden h-[calc(100svh)] overscroll-none bg-transparent lg:flex"
+        >
+            <SidebarHeader />
+            <NewChatButton />
+            <SidebarContent className="no-scrollbar overflow-x-hidden">
+                <ChatSidebar />
+            </SidebarContent>
             <SettingsDialog />
             <div className="flex items-center justify-center">
                 <div className="flex w-full flex-row items-center justify-between gap-4 p-2">

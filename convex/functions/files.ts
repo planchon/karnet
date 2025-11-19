@@ -1,7 +1,7 @@
 import { R2 } from "@convex-dev/r2";
 import { ConvexError, v } from "convex/values";
 import { components } from "../_generated/api";
-import { internalAction, internalQuery, mutation, query } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 
 export const r2 = new R2(components.r2);
 

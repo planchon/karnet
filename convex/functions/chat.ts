@@ -339,3 +339,23 @@ export const createEmptyChat = mutation({
         };
     },
 });
+
+export const deleteChat = mutation({
+    args: {
+        id: v.id("chats"),
+    },
+    handler: async (ctx, args) => {
+        const identity = await getIdentity(ctx as MutationCtx);
+        const chat = await ctx.db.get(args.id);
+
+        if (!chat || chat.subject !== identity.subject) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
+        }
+
+        await ctx.db.delete(args.id);
+    },
+});

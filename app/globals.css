@@ -161,70 +161,13 @@
         }
     }
 }
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 
-.fc-scrollgrid {
-    border: none !important;
-}
-
-.tlui-style-panel {
-    max-width: 150px !important;
-    width: 150px !important;
-}
-
-.tlui-style-panel__wrapper {
-    box-shadow: none !important;
-    border: 1px solid var(--border) !important;
-}
-
-.tlui-toolbar__tools {
-    border: 1px solid var(--border) !important;
-    box-shadow: none !important;
-}
-
-.tl-background {
-    background-color: var(--background) !important;
-}
-
-.fc-col-header-cell-cushion {
-    width: 100% !important;
-}
-
-.fc-col-header-cell {
-    border-right: none !important;
-    border-left: none !important;
-}
-
-.fc-timegrid-event-harness-inset .fc-timegrid-event,
-.fc-timegrid-event.fc-event-mirror,
-.fc-timegrid-more-link {
-    box-shadow: none !important;
-}
-
-.fc-theme-standard td {
-    border: 1px solid var(--border) !important;
-    border-left: none !important;
-}
-
-.fc-theme-standard th {
-    border-top: none !important;
-}
-
-.fc-timegrid-axis {
-    border-right: none !important;
-    border-left: none !important;
-    border-bottom: none !important;
-}
-
-.fc-col-header-cell {
-    border-bottom: none !important;
-}
-
-.tl-watermark_SEE-LICENSE {
-    display: none !important;
-}
-
-.tl-container__focused {
-    border: none !important;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* Target paragraph elements that are NOT the first child of their parent */

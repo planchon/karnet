@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { Button } from "../ui/button";
 
 export const NewChatButton = () => (
-    <div className="w-full">
+    <div className="w-full pb-2">
         <Link to="/chat">
             <Button className="w-full" variant="outline">
                 <PlusIcon className="size-3" />
