@@ -8,12 +8,6 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Outlet, useNavigate } from "react-router";
 import { Toaster } from "sonner";
-import { CommandChat } from "@/components/command/command-chat";
-import { CreateEventCommand } from "@/components/command/command-events";
-import { CommandK } from "@/components/command/command-k";
-import { CreateProjectCommand } from "@/components/command/command-project";
-import { CreateTaskCommand } from "@/components/command/command-task";
-import { HelpComponent } from "@/components/help/help.comp";
 import { AppSidebar } from "@/components/navbar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/primitive/ui/sidebar";
 
@@ -61,12 +55,6 @@ export function GeneralOutlet() {
             <QueryClientProvider client={queryClient}>
                 <Authenticated>
                     <SidebarProvider>
-                        <CommandK />
-                        <CreateEventCommand />
-                        <CommandChat />
-                        <HelpComponent />
-                        <CreateTaskCommand />
-                        <CreateProjectCommand />
                         <AppSidebar variant="inset" />
                         <SidebarInset className="max-h-[calc(100vh-16px)] overflow-hidden rounded-md border">
                             <Outlet />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useClerk, useUser } from "@clerk/react-router";
-import { IconBrain, IconLogout } from "@tabler/icons-react";
+import { IconLogout } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 import {
     DropdownMenu,

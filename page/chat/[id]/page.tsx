@@ -3,7 +3,6 @@
 import { useChat } from "@ai-sdk/react";
 import { useUploadFile } from "@convex-dev/r2/react";
 import { convexQuery } from "@convex-dev/react-query";
-import { cn } from "@editor/utils/tiptap-utils";
 import { IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import type { Editor } from "@tiptap/core";
@@ -29,6 +28,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
+import { cn } from "@/lib/utils";
 import type { Regenerate } from "@/types/regenerate";
 
 const DEBOUNCE_TIME = 5000;

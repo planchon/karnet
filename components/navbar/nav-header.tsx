@@ -1,10 +1,9 @@
 "use client";
 
-import { IconChevronLeft, IconSearch } from "@tabler/icons-react";
+import { IconChevronLeft } from "@tabler/icons-react";
 import Image from "next/image";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { Link } from "react-router";
-import { useCommands } from "@/hooks/useCommand";
 import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
@@ -65,14 +64,6 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
                 >
                     <HiOutlineCog6Tooth className="text-gray-500" />
                 </Button>
-                {/* <Button
-                    className="size-6 border bg-white shadow"
-                    onClick={settingsStore.setIsSettingsOpen(true)}
-                    size="icon"
-                    variant="ghost"
-                >
-                    <IconSearch />
-                </Button> */}
             </SidebarHeaderAction>
         </SidebarHeaderContainer>
     );
