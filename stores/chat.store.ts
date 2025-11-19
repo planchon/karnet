@@ -34,6 +34,10 @@ export class ChatStore {
             this.selectedTool = this.selectedTool.filter((t) => t !== "image");
         }
 
+        if (isImageGeneratingModel(model)) {
+            this.selectedTool = this.selectedTool.filter((t) => t !== "web");
+        }
+
         this.selectedModel = model;
 
         if (isImageGeneratingModel(model)) {

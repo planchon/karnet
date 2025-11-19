@@ -1,6 +1,7 @@
 "use client";
 
 import { useUploadFile } from "@convex-dev/r2/react";
+import { IconWorld } from "@tabler/icons-react";
 import Document from "@tiptap/extension-document";
 import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -12,12 +13,13 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
 import { useMutation } from "convex/react";
-import { CheckIcon, Wrench } from "lucide-react";
+import { CheckIcon, Globe, GlobeIcon, GlobeLockIcon, Wrench } from "lucide-react";
 import { observer } from "mobx-react";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ProviderIcons } from "@/ai/models";
 import type { ChatMessageBody } from "@/ai/schema/chat";
+import { isImageGeneratingModel } from "@/ai/schema/model";
 import { commands } from "@/ai/tools";
 import { api } from "@/convex/_generated/api";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
@@ -35,9 +37,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
 }) {
     const { chatStore } = useStores();
     const [open, setOpen] = useState(false);
-    const { textModels, imageModels } = useModels();
-
-    const models = chatStore.selectedTool.includes("image") ? imageModels : textModels;
+    const { models } = useModels();
 
     useHotkeys(
         "m",
@@ -129,110 +129,28 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
     editorRef: React.RefObject<Editor | null>;
 }) {
     const { chatStore } = useStores();
-    const [open, setOpen] = useState(false);
 
-    useHotkeys(
-        "s",
-        () => {
-            setOpen(true);
-            chatStore.setDropdownOpen(true);
-        },
-        {
-            preventDefault: true,
-            useKey: true,
-        }
-    );
-
-    function handleSelect(value: ChatMessageBody["tools"][number]) {
-        chatStore.toggleTool(value);
-    }
-
-    function toggleDropdown(isOpen: boolean) {
-        setOpen(isOpen);
-        chatStore.setDropdownOpen(isOpen);
-        if (!isOpen) {
-            editorRef.current?.commands.focus();
-        }
-    }
-
-    function getRenderingNames() {
-        if (chatStore.selectedTool.length === 0) {
-            return "No tools";
-        }
-
-        return commands
-            .filter((f) => chatStore.selectedTool.includes(f.id))
-            .map((f) => f.name)
-            .join(", ");
-    }
-
-    function getRenderingIcons() {
-        if (chatStore.selectedTool.length === 0) {
-            return <Wrench className="size-4" />;
-        }
-
-        if (chatStore.selectedTool.length === 1) {
-            const command = commands.find((f) => chatStore.selectedTool.includes(f.id));
-            if (!command) {
-                return <Wrench className="size-4" />;
-            }
-
-            return <command.icon className="size-4" key={command.id} />;
-        }
-
-        const allIconsSelected = commands.filter((f) => chatStore.selectedTool.includes(f.id));
-
-        return (
-            <div className="-space-x-2 flex items-center">
-                {allIconsSelected.map((command) => (
-                    <command.icon className="size-5 rounded-full border bg-white p-[2px]" key={command.id} />
-                ))}
-            </div>
-        );
-    }
+    const isDisabled = isImageGeneratingModel(chatStore.selectedModel);
+    const isSelected = chatStore.selectedTool.includes("web");
+    const SearchIcon = isSelected ? <GlobeIcon className="size-4" /> : <GlobeLockIcon className="size-4" />;
 
     return (
         <div className="relative flex items-center">
-            <Popover onOpenChange={toggleDropdown} open={open}>
-                <PopoverAnchor className="absolute top-[-2px] left-15" />
-                <PopoverTrigger asChild className="outline-none ring-0">
-                    <Button className="h-6 px-2 text-gray-700 outline-none ring-0" size="sm" variant="ghost">
-                        {getRenderingIcons()}
-                        {getRenderingNames()}
-                        <Shortcut nothen shortcut={["s"]} />
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                    className="w-full p-0"
-                    onEscapeKeyDown={(e) => {
-                        toggleDropdown(false);
-                        e.stopPropagation();
-                    }}
-                    side="top"
-                >
-                    <Command>
-                        <CommandInput placeholder="Search tools..." />
-                        <CommandList className="scrollbar-thin flex max-h-48 flex-col gap-1 overflow-y-auto px-1 pt-1">
-                            <CommandEmpty>No tools found.</CommandEmpty>
-                            {chatStore.getAvailableTools().map((command) => (
-                                <CommandItem
-                                    className="flex justify-between"
-                                    disabled={command.disabled}
-                                    key={command.id}
-                                    onSelect={() => handleSelect(command.id)}
-                                    value={command.name}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <command.icon />
-                                        {command.name}
-                                    </div>
-                                    {chatStore.selectedTool.includes(command.id) && <CheckIcon className="size-4" />}
-                                </CommandItem>
-                            ))}
-                        </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover>
+            <Button
+                className={cn(
+                    "h-7 rounded-full px-2 text-gray-600 outline-none ring-0 transition-all duration-100 hover:cursor-pointer hover:bg-gray-200/60",
+                    chatStore.selectedTool.includes("web") && "bg-gray-200 text-gray-800"
+                )}
+                disabled={isDisabled}
+                onClick={() => {
+                    chatStore.toggleTool("web");
+                }}
+                size="sm"
+                variant="ghost"
+            >
+                {SearchIcon}
+                Search
+            </Button>
         </div>
     );
 });
