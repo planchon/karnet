@@ -11,9 +11,10 @@ import { Button } from "@ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
-import { useMutation } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { GlobeIcon, GlobeLockIcon } from "lucide-react";
 import { observer } from "mobx-react";
+import { nanoid } from "nanoid";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ProviderIcons } from "@/ai/models";
@@ -163,8 +164,8 @@ export const ChatInput = observer(function ChatInputInside({
     ref?: React.RefObject<Editor | null>;
 }) {
     const { chatStore } = useStores();
-    const uploadFile = useUploadFile(api.functions.files);
-    const assignFile = useMutation(api.functions.files.assignFileToUser);
+    const generateImageUploadUrl = useMutation(api.functions.files.generateImageUploadUrl);
+    const client = useConvex();
 
     const editor = useEditor({
         immediatelyRender: false,
@@ -227,19 +228,31 @@ export const ChatInput = observer(function ChatInputInside({
             handlePaste: (_view, event) => {
                 // check if the paste is an image
                 if (event?.clipboardData?.files?.length && event.clipboardData.files.length > 0) {
-                    const file = event.clipboardData?.files[0];
+                    const inputFile = event.clipboardData?.files[0];
+                    const file = new File([inputFile], `${nanoid()}.${inputFile.name.split(".").pop()}`, {
+                        type: inputFile.type,
+                    });
                     if (file) {
                         chatStore.addFiles([{ file, upload: "in_progress" }]);
 
-                        uploadFile(file).then(async (id) => {
-                            // move to the convex id
-                            const { url, id: cid } = await assignFile({
-                                id,
-                                media_type: file.type,
-                                filename: file.name,
+                        (async () => {
+                            const uploadUrl = await generateImageUploadUrl({});
+                            const uploadResponse = await fetch(uploadUrl, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": file.type,
+                                },
+                                body: file,
                             });
-                            chatStore.updateFile({ file, upload: "success" as const, id: cid, url });
-                        });
+                            const { storageId } = await uploadResponse.json();
+                            const { url } = await client.query(api.functions.files.getImageUrl, { id: storageId });
+                            if (!url) {
+                                console.error("error getting image url", storageId);
+                                return;
+                            }
+
+                            chatStore.updateFile({ file, upload: "success" as const, id: storageId, url });
+                        })();
                     }
                     return true;
                 }

@@ -1,6 +1,7 @@
 import { R2 } from "@convex-dev/r2";
 import { ConvexError, v } from "convex/values";
 import { components } from "../_generated/api";
+import type { Id } from "../_generated/dataModel";
 import { mutation, query } from "../_generated/server";
 
 export const r2 = new R2(components.r2);
@@ -71,9 +72,7 @@ export const assignFileToUser = mutation({
             filename: args.filename,
         });
 
-        const url = await r2.getUrl(args.id, {
-            expiresIn: 60 * 60 * 24,
-        });
+        const url = (await ctx.storage.getUrl(args.id as Id<"_storage">)) as string;
 
         return {
             id,
@@ -113,5 +112,20 @@ export const getFile = query({
             ...file,
             url,
         };
+    },
+});
+
+export const generateImageUploadUrl = mutation({
+    args: {},
+    handler: async (ctx) => await ctx.storage.generateUploadUrl(),
+});
+
+export const getImageUrl = query({
+    args: {
+        id: v.id("_storage"),
+    },
+    handler: async (_ctx, args) => {
+        const url = await _ctx.storage.getUrl(args.id);
+        return { url };
     },
 });

@@ -1,14 +1,13 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { useUploadFile } from "@convex-dev/r2/react";
 import { IconSend } from "@tabler/icons-react";
 import type { Editor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
 import { generateId } from "ai";
-import { useMutation } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { motion } from "framer-motion";
 import _ from "lodash";
 import { Paperclip } from "lucide-react";
@@ -28,10 +27,11 @@ import { useStores } from "@/hooks/useStores";
 import { cn } from "@/lib/utils";
 
 export const NewChatPage = observer(function ChatPage() {
-    const uploadFile = useUploadFile(api.functions.files);
     const deleteFile = useMutation(api.functions.files.deleteFile);
-    const assignFile = useMutation(api.functions.files.assignFileToUser);
     const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
+
+    const generateImageUploadUrl = useMutation(api.functions.files.generateImageUploadUrl);
+    const client = useConvex();
 
     const { chatStore } = useStores();
     const location = usePathname();
@@ -161,7 +161,7 @@ export const NewChatPage = observer(function ChatPage() {
         // for the history feature - sauvegarder dans un tableau
         const historyStr = localStorage.getItem("chat-history-array");
         const history: string[] = historyStr ? JSON.parse(historyStr) : [];
-        
+
         // Ajouter le nouveau prompt à la fin (éviter les doublons consécutifs)
         if (history[history.length - 1] !== text) {
             history.push(text);
@@ -171,7 +171,7 @@ export const NewChatPage = observer(function ChatPage() {
             }
             localStorage.setItem("chat-history-array", JSON.stringify(history));
         }
-        
+
         // Garder la compatibilité avec l'ancien format
         localStorage.setItem("chat-history", text);
 
@@ -204,7 +204,7 @@ export const NewChatPage = observer(function ChatPage() {
         chatStore.resetFiles();
     };
 
-    const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const newFiles = Object.values(e.target.files || {}).map((file) => ({
             file,
             upload: "in_progress" as const,
@@ -214,11 +214,21 @@ export const NewChatPage = observer(function ChatPage() {
 
         // upload all the files
         for (const file of newFiles) {
-            uploadFile(file.file).then(async (id) => {
-                // move to the convex id
-                const { url, id: cid } = await assignFile({ id, media_type: file.file.type, filename: file.file.name });
-                chatStore.updateFile({ ...file, upload: "success" as const, id: cid, url });
+            const uploadUrl = await generateImageUploadUrl({});
+            const uploadResponse = await fetch(uploadUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": file.file.type,
+                },
+                body: file.file,
             });
+            const { storageId } = await uploadResponse.json();
+            const { url } = await client.query(api.functions.files.getImageUrl, { id: storageId });
+            if (!url) {
+                console.error("error getting image url", storageId);
+                continue;
+            }
+            chatStore.updateFile({ ...file, upload: "success" as const, id: storageId, url });
         }
     };
 

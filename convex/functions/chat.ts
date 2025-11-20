@@ -1,9 +1,10 @@
 import { ConvexError, v } from "convex/values";
-import { internal } from "../_generated/api";
-import { action, internalMutation, internalQuery, type MutationCtx, mutation, query } from "../_generated/server";
+import type { Id } from "../_generated/dataModel";
+import { internalMutation, internalQuery, type MutationCtx, mutation, query } from "../_generated/server";
 import { chatMessage } from "../schema";
-import { r2 } from "./files";
 
+// get the identity of the user
+// throw an error if the user is not authenticated
 const getIdentity = async (ctx: MutationCtx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
@@ -42,7 +43,8 @@ export const getChat = query({
             const parts = JSON.parse(message.parts);
             for (const part of parts) {
                 if (part.type === "file" && part._karnet_key) {
-                    part.url = await r2.getUrl(part._karnet_key, { expiresIn: 60 * 60 * 24 });
+                    const url = await ctx.storage.getUrl(part._karnet_key as Id<"_storage">);
+                    part.url = url;
                 }
             }
             message.parts = JSON.stringify(parts);
@@ -69,15 +71,43 @@ export const getLastChats = query({
     },
 });
 
+export const patchChatById = internalMutation({
+    args: {
+        id: v.id("chats"),
+        messages: v.array(chatMessage),
+    },
+    handler: async (ctx, args) => {
+        const chat = await ctx.db.get(args.id);
+        if (!chat) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
+        }
+
+        chat.messages = args.messages;
+        await ctx.db.patch(args.id, chat);
+    },
+});
+
 export const updateChat = mutation({
     args: {
         id: v.id("chats"),
         messages: v.array(chatMessage),
     },
     handler: async (ctx, args) => {
-        const identity = await getIdentity(ctx as MutationCtx);
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0002",
+                httpStatusCode: 401,
+                message: "User not authenticated",
+            });
+        }
 
         const chat = await ctx.db.get(args.id);
+
         if (!chat || chat.subject !== identity.subject) {
             throw new ConvexError({
                 uniqueId: "CHAT_0001",
@@ -90,8 +120,6 @@ export const updateChat = mutation({
         chat.is_new = false;
 
         await ctx.db.patch(args.id, chat);
-
-        return chat;
     },
 });
 
@@ -105,13 +133,6 @@ export const updateChatStream = mutation({
     },
     handler: async (ctx, args) => {
         const identity = await getIdentity(ctx as MutationCtx);
-        if (!identity) {
-            throw new ConvexError({
-                uniqueId: "CHAT_0002",
-                httpStatusCode: 401,
-                message: "User not authenticated",
-            });
-        }
 
         const chat = await ctx.db.get(args.id);
         if (!chat || chat.subject !== identity.subject) {
@@ -166,25 +187,8 @@ export const finishChatStreamMutation = internalMutation({
     },
 });
 
-function dataURItoBlob(dataURI: string) {
-    // convert base64 to raw binary data held in a string
-    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-    const byteString = atob(dataURI.split(",")[1]);
-
-    // write the bytes of the string to an ArrayBuffer
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    // write the ArrayBuffer to a blob, and you're done
-    const bb = new Blob([ab]);
-    return bb;
-}
-
 // finish the stream and store the images in R2
-export const finishChatStream = action({
+export const finishChatStream = mutation({
     args: {
         id: v.id("chats"),
         messages: v.array(chatMessage),
@@ -199,31 +203,22 @@ export const finishChatStream = action({
             });
         }
 
-        const messages = args.messages;
-
-        for (const message of messages) {
-            const parts = JSON.parse(message.parts);
-            let imageInMessage = 1;
-            for (const part of parts) {
-                if (part.type === "file" && part.url.includes("data:image")) {
-                    const blob = dataURItoBlob(part.url);
-                    const key = `chat/${args.id.toString()}/${message.id}-${imageInMessage}.png`;
-                    const result = await r2.store(ctx, blob, { key });
-                    const signedUrl = await r2.getUrl(result, {
-                        expiresIn: 60 * 60 * 24,
-                    });
-                    part.url = signedUrl;
-                    part._karnet_key = key;
-                    imageInMessage++;
-                }
-            }
-            message.parts = JSON.stringify(parts);
+        const chat = await ctx.db.get(args.id);
+        if (!chat || chat.subject !== identity.subject) {
+            throw new ConvexError({
+                uniqueId: "CHAT_0001",
+                httpStatusCode: 404,
+                message: "Chat not found",
+            });
         }
 
-        await ctx.runMutation(internal.functions.chat.finishChatStreamMutation, {
-            id: args.id,
-            messages,
-        });
+        chat.messages = args.messages;
+        chat.stream.status = "inactive";
+        chat.stream.id = undefined;
+
+        await ctx.db.patch(args.id, chat);
+
+        return chat;
     },
 });
 

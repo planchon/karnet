@@ -1,15 +1,62 @@
 import * as Sentry from "@sentry/nextjs";
 import { geolocation } from "@vercel/functions";
 import { convertToModelMessages, generateId, generateText, smoothStream, streamText } from "ai";
-import { fetchAction, fetchMutation } from "convex/nextjs";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
 import { openRouterGateway } from "@/ai/gateway";
 import { bodySchema } from "@/ai/schema/chat";
+import type { ChatUIMessage } from "@/components/ai/chat/chat.types";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { generatePrompt } from "@/lib/prompt";
 import { getSession } from "@/lib/session";
+
+function dataURItoBlob(dataURI: string) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    const byteString = atob(dataURI.split(",")[1]);
+
+    // write the bytes of the string to an ArrayBuffer
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    const bb = new Blob([ab]);
+    return bb;
+}
+
+async function handleMessageImageUpload(inputMessages: ChatUIMessage[], token: string) {
+    const messages = inputMessages;
+    for (const message of messages) {
+        for (const part of message.parts) {
+            if (part.type === "file" && part?.url?.includes("data:image")) {
+                const blob = dataURItoBlob(part.url);
+                const uploadUrl = await fetchMutation(api.functions.files.generateImageUploadUrl, {}, { token });
+                const uploadResponse = await fetch(uploadUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": part.mediaType,
+                    },
+                    body: blob,
+                });
+
+                const { storageId } = await uploadResponse.json();
+
+                const { url } = await fetchQuery(api.functions.files.getImageUrl, { id: storageId }, { token });
+
+                part.url = url as string;
+                // @ts-expect-error
+                part._karnet_key = storageId;
+            }
+        }
+    }
+
+    return messages;
+}
 
 export async function POST(req: Request) {
     return await Sentry.startSpan(
@@ -20,7 +67,11 @@ export async function POST(req: Request) {
         async (span) => {
             try {
                 // start by getting the token async
-                getSession();
+                const { jwt } = await getSession();
+                if (!jwt) {
+                    span.setStatus({ code: 1, message: "Unauthorized" });
+                    return new Response("Unauthorized", { status: 401 });
+                }
 
                 const body = await req.json();
                 const { messages, model, chatId, streamId, tools } = bodySchema.parse(body);
@@ -113,7 +164,7 @@ export async function POST(req: Request) {
                                     title: title.text,
                                 },
                                 {
-                                    token: (await getSession()).jwt,
+                                    token: jwt,
                                 }
                             );
                         }
@@ -130,6 +181,8 @@ export async function POST(req: Request) {
                         },
                     },
                     async () => {
+                        await handleMessageImageUpload(messages, jwt);
+
                         await fetchMutation(
                             api.functions.chat.updateChat,
                             {
@@ -141,7 +194,7 @@ export async function POST(req: Request) {
                                     metadata: JSON.stringify(m.metadata),
                                 })),
                             },
-                            { token: (await getSession()).jwt }
+                            { token: jwt }
                         );
                     }
                 );
@@ -179,7 +232,9 @@ export async function POST(req: Request) {
                                 },
                             },
                             async () => {
-                                const preparedMessages = _messages.map((m) => ({
+                                const updatedMessages = await handleMessageImageUpload(_messages, jwt);
+
+                                const preparedMessages = updatedMessages.map((m) => ({
                                     role: m.role,
                                     id: m.id,
                                     // we cannot store the metadata because the type is unknown
@@ -193,14 +248,14 @@ export async function POST(req: Request) {
                                         name: "finishChatStream",
                                     },
                                     async () => {
-                                        await fetchAction(
+                                        await fetchMutation(
                                             api.functions.chat.finishChatStream,
                                             {
                                                 id: chatId as Id<"chats">,
                                                 messages: preparedMessages,
                                             },
                                             {
-                                                token: (await getSession()).jwt,
+                                                token: jwt,
                                             }
                                         );
                                     }
@@ -236,7 +291,7 @@ export async function POST(req: Request) {
                                         },
                                     },
                                     {
-                                        token: (await getSession()).jwt,
+                                        token: jwt,
                                     }
                                 );
                             }
