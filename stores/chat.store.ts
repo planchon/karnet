@@ -94,11 +94,13 @@ export class ChatStore {
     }
 
     canUseModel(model: KarnetModel) {
+        // image generating models
         if (isImageGeneratingModel(model) && this.selectedTool.includes("image")) {
             return true;
         }
 
-        if (!(isImageGeneratingModel(model) || this.selectedTool.includes("image"))) {
+        // text generating models
+        if (!(this.selectedTool.includes("image") || isImageGeneratingModel(model))) {
             return true;
         }
 

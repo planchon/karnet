@@ -13,7 +13,7 @@ import _ from "lodash";
 import { Paperclip } from "lucide-react";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import type { ChatMessageBody } from "@/ai/schema/chat";
 import { Chat } from "@/components/ai/chat";
@@ -39,6 +39,7 @@ export const NewChatPage = observer(function ChatPage() {
     const chatId = useRef<Id<"chats"> | null>(null);
     const { models } = useModels();
     const inputRef = useRef<HTMLInputElement>(null);
+    const selectedModel = useRef<KarnetModel | undefined>(undefined);
 
     usePageTitle("New Chat - Karnet AI Assistant");
 
@@ -126,9 +127,13 @@ export const NewChatPage = observer(function ChatPage() {
         });
     };
 
+    useEffect(() => {
+        selectedModel.current = chatStore.selectedModel || models.find((m) => m.default && chatStore.canUseModel(m));
+    }, [chatStore.selectedModel, models, chatStore.selectedTool.includes("image")]);
+
     // we try to not block anything on the UI thread
     // we want to have the message rendered immediately
-    const onSend = () => {
+    const onSend = useCallback(() => {
         if (!chatStore.allFilesAreUploaded()) {
             alert("Please wait for the files to be uploaded");
             return;
@@ -139,8 +144,7 @@ export const NewChatPage = observer(function ChatPage() {
             return;
         }
 
-        const model = chatStore.selectedModel || models.find((m) => m.default && chatStore.canUseModel(m));
-        if (!model) {
+        if (!selectedModel.current) {
             alert("Please select a model");
             return;
         }
@@ -163,7 +167,7 @@ export const NewChatPage = observer(function ChatPage() {
         const history: string[] = historyStr ? JSON.parse(historyStr) : [];
 
         // Ajouter le nouveau prompt à la fin (éviter les doublons consécutifs)
-        if (history[history.length - 1] !== text) {
+        if (history.at(-1) !== text) {
             history.push(text);
             // Limiter à 50 prompts maximum
             if (history.length > 50) {
@@ -190,7 +194,7 @@ export const NewChatPage = observer(function ChatPage() {
             },
             {
                 body: {
-                    model,
+                    model: selectedModel.current,
                     chatId: chatId.current as Id<"chats">,
                     streamId,
                     tools: tools || [],
@@ -202,7 +206,7 @@ export const NewChatPage = observer(function ChatPage() {
         // this would trigger flickering on the messages
         window.history.replaceState({}, "", `/chat/${chatId.current}`);
         chatStore.resetFiles();
-    };
+    }, [chatStore, selectedModel, sendMessage]);
 
     const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const newFiles = Object.values(e.target.files || {}).map((file) => ({
@@ -278,7 +282,6 @@ export const NewChatPage = observer(function ChatPage() {
                                     onChange={handleFiles}
                                     ref={inputRef}
                                     type="file"
-                                    // to upload the same file multiple times
                                     value=""
                                 />
                                 <Tooltip>
@@ -300,9 +303,9 @@ export const NewChatPage = observer(function ChatPage() {
                         <div className="flex w-full justify-between p-2 py-0 pt-3 pl-1">
                             <div className="flex items-center gap-0">
                                 <Chat.ModelSelect editorRef={editorRef} />
-                                <Chat.MCPSelect editorRef={editorRef} />
                             </div>
-                            <div className="pb-2">
+                            <div className="flex items-center gap-2 pb-2">
+                                <Chat.MCPSelect editorRef={editorRef} />
                                 <Button
                                     className="h-8 rounded-sm pr-[6px]! pl-[8px]!"
                                     disabled={!chatStore.allFilesAreUploaded()}

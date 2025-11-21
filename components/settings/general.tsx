@@ -29,7 +29,7 @@ export const GeneralSettings = () => {
                 <div className="flex min-w-1/3 flex-col gap-2">
                     <p className="flex flex-row items-center gap-1 font-normal text-sm">
                         <Ligature className="size-4 text-gray-900/70" />
-                        Default text generation model
+                        User default text generation model
                     </p>
                     <div className="w-full">
                         <DropdownMenu>
@@ -55,7 +55,7 @@ export const GeneralSettings = () => {
                 <div className="flex flex-col gap-2">
                     <p className="flex flex-row items-center gap-1 font-normal text-sm">
                         <ImageIcon className="size-4 text-gray-900/70" />
-                        Default image generation model
+                        User default image generation model
                     </p>
                     <div className="w-full">
                         <DropdownMenu>

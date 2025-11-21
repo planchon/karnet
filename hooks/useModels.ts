@@ -2,7 +2,7 @@ import { convexQuery } from "@convex-dev/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import z from "zod";
-import { isImageGeneratingModel, type OpenRouterModel, OpenRouterModelSchema } from "@/ai/schema/model";
+import { OpenRouterModelSchema } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useStores } from "./useStores";
@@ -24,29 +24,46 @@ export type UserActiveModel = z.infer<typeof userActiveModelsSchema>;
 
 export type KarnetModel = ReturnType<typeof useModels>["models"][number];
 
+const schema = z.object({
+    models: z.array(OpenRouterModelSchema),
+    defaultTextModels: z.array(z.string()),
+    defaultImageModels: z.array(z.string()),
+});
+
+export type ModelsData = z.infer<typeof schema>;
+
 export const useModels = () => {
     const { chatStore } = useStores();
 
     const {
-        data: allModels,
+        data: { models: allModels, defaultTextModels, defaultImageModels },
         isLoading,
         error,
-    } = useQuery<OpenRouterModel[]>({
+    } = useQuery<ModelsData>({
         queryKey: ["allModels"],
         queryFn: () => fetch("/api/models").then((res) => res.json()),
         initialData: () => {
-            const modelData = localStorage.getItem("all-models");
+            const modelData = localStorage.getItem("models");
             if (!modelData) {
-                return [];
+                return {
+                    models: [],
+                    defaultTextModels: [],
+                    defaultImageModels: [],
+                };
             }
 
             const data = JSON.parse(modelData);
-            const parsed = z.array(OpenRouterModelSchema).safeParse(data);
+            const parsed = schema.safeParse(data);
 
             if (!parsed.success) {
-                localStorage.removeItem("all-models");
-                return [];
+                localStorage.removeItem("models");
+                return {
+                    models: [],
+                    defaultTextModels: [],
+                    defaultImageModels: [],
+                };
             }
+
             return parsed.data;
         },
     });

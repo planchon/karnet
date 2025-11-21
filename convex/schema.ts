@@ -34,25 +34,21 @@ const chatTable = defineTable({
     .index("by_subject", ["subject"])
     .index("by_is_new_and_subject", ["is_new", "subject"]);
 
-const modelTable = defineTable({
-    subject: v.string(),
+const model = {
     model_id: v.string(),
     name: v.string(),
     provider: v.string(),
     features: v.array(v.string()),
     default: v.optional(v.boolean()),
     modality: v.optional(v.union(v.literal("text"), v.literal("image"))),
-}).index("by_subject", ["subject"]);
+};
 
-const fileTable = defineTable({
+const modelTable = defineTable({
     subject: v.string(),
-    file_id: v.string(),
-    media_type: v.string(),
-    filename: v.string(),
+    ...model,
 }).index("by_subject", ["subject"]);
 
 export default defineSchema({
     chats: chatTable,
     models: modelTable,
-    files: fileTable,
 });

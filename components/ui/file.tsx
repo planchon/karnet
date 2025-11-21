@@ -1,11 +1,7 @@
-import { convexQuery } from "@convex-dev/react-query";
 import { IconFileTypeDocx, IconFileTypeXls, IconPdf } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
 import type { FileUIPart } from "ai";
 import { Ban, FileText, X } from "lucide-react";
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 
 export type FileWithUploadProcess = {
@@ -61,7 +57,6 @@ export const FileIcon = ({ fileExtension }: { fileExtension: FileExtension | str
 
 export const File = ({ file, onRemove }: FileProps) => {
     const fileExtension = file.file.name.split(".").pop()?.toLowerCase() || "";
-
     const isImage = Object.keys(_ImageExtensions).includes(fileExtension);
 
     const tooltipText = file.upload === "in_progress" ? "Stop upload" : "Remove";
@@ -104,28 +99,7 @@ export const File = ({ file, onRemove }: FileProps) => {
 };
 
 export const FilePreview = ({ filePart }: { filePart: FileUIPart }) => {
-    const file_id = filePart.providerMetadata?.karnet?.file_id as Id<"files">;
-    const {
-        data: file,
-        isLoading,
-        isError,
-    } = useQuery({
-        ...convexQuery(api.functions.files.getFile, { id: file_id }),
-    });
-
-    if (isLoading) {
-        return <div>loading</div>;
-    }
-
-    if (isError) {
-        return <div>error</div>;
-    }
-
-    if (!file) {
-        return <div>no file</div>;
-    }
-
-    const isImage = Object.keys(_ImageExtensions).includes(file.media_type);
+    const isImage = Object.keys(_ImageExtensions).includes(filePart.mediaType);
 
     return (
         <div
@@ -136,22 +110,22 @@ export const FilePreview = ({ filePart }: { filePart: FileUIPart }) => {
             )}
         >
             {isImage && (
-                <a className="flex items-center gap-2" href={file.url} rel="noopener noreferrer" target="_blank">
+                <a className="flex items-center gap-2" href={filePart.url} rel="noopener noreferrer" target="_blank">
                     <picture>
                         <img
-                            alt={file.filename}
+                            alt={filePart.filename}
                             className="rounded-md border bg-muted object-cover"
                             height={40}
-                            src={file.url}
+                            src={filePart.url}
                             width={40}
                         />
                     </picture>
                 </a>
             )}
             {!isImage && (
-                <a className="flex items-center gap-2" href={file.url} rel="noopener noreferrer" target="_blank">
-                    <FileIcon fileExtension={file.media_type} />
-                    <span className="truncate">{file.filename}</span>
+                <a className="flex items-center gap-2" href={filePart.url} rel="noopener noreferrer" target="_blank">
+                    <FileIcon fileExtension={filePart.mediaType} />
+                    <span className="truncate">{filePart.filename}</span>
                 </a>
             )}
         </div>

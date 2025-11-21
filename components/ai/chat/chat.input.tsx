@@ -1,6 +1,5 @@
 "use client";
 
-import { useUploadFile } from "@convex-dev/r2/react";
 import Document from "@tiptap/extension-document";
 import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -11,12 +10,14 @@ import { Button } from "@ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { Shortcut } from "@ui/shortcut";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
 import { useConvex, useMutation } from "convex/react";
 import { GlobeIcon, GlobeLockIcon } from "lucide-react";
 import { observer } from "mobx-react";
 import { nanoid } from "nanoid";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { MdOutlineImage, MdOutlineImageNotSupported } from "react-icons/md";
 import { ProviderIcons } from "@/ai/models";
 import type { ChatMessageBody } from "@/ai/schema/chat";
 import { isImageGeneratingModel } from "@/ai/schema/model";
@@ -25,7 +26,6 @@ import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
 import { capitalize, cn } from "@/lib/utils";
 import { RewriteEnter } from "./extensions/enter";
-import { ModelSuggestionComponent } from "./extensions/model-suggestion";
 import { renderItems } from "./extensions/textual-commands";
 import { ToolsSuggestionComponent } from "./extensions/tools-suggestion";
 
@@ -71,8 +71,16 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
         }
     }
 
+    const onlyImageModels = chatStore.selectedTool.includes("image");
+
     const groupedByProvider = models
         .filter((model) => model.active)
+        .filter((model) => {
+            if (onlyImageModels) {
+                return model.architecture.output_modalities.includes("image");
+            }
+            return !model.architecture.output_modalities.includes("image");
+        })
         .reduce(
             (acc, model) => {
                 acc[model.provider] = acc[model.provider] || [];
@@ -102,7 +110,7 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
                 side="top"
             >
                 <Command>
-                    <CommandInput placeholder="Search model..." />
+                    <CommandInput placeholder={onlyImageModels ? "Search image model..." : "Search text model..."} />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
                         <CommandEmpty>No model found.</CommandEmpty>
                         {Object.entries(groupedByProvider).map(([provider, providerModels]) => (
@@ -133,23 +141,59 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
     const isSelected = chatStore.selectedTool.includes("web");
     const SearchIcon = isSelected ? <GlobeIcon className="size-4" /> : <GlobeLockIcon className="size-4" />;
 
+    const isImageSelected = chatStore.selectedTool.includes("image");
+    const ImageIcon = isImageSelected ? (
+        <MdOutlineImage className="size-4" />
+    ) : (
+        <MdOutlineImageNotSupported className="size-4" />
+    );
+
     return (
         <div className="relative flex items-center">
-            <Button
-                className={cn(
-                    "h-7 rounded-full px-2 text-gray-600 outline-none ring-0 transition-all duration-100 hover:cursor-pointer hover:bg-gray-200/60",
-                    chatStore.selectedTool.includes("web") && "bg-gray-200 text-gray-800"
-                )}
-                disabled={isDisabled}
-                onClick={() => {
-                    chatStore.toggleTool("web");
-                }}
-                size="sm"
-                variant="ghost"
-            >
-                {SearchIcon}
-                Search
-            </Button>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        className={cn(
+                            "h-7 rounded-full px-2 text-gray-600 outline-none ring-0 transition-all duration-100 hover:cursor-pointer hover:bg-gray-200/60",
+                            chatStore.selectedTool.includes("image") && "bg-gray-200 text-gray-800"
+                        )}
+                        disabled={isDisabled}
+                        onClick={() => {
+                            chatStore.toggleTool("image");
+                        }}
+                        size="sm"
+                        variant="ghost"
+                    >
+                        {ImageIcon}
+                        Image
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent sideOffset={5}>
+                    <span>Generate images</span>
+                </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        className={cn(
+                            "h-7 rounded-full px-2 text-gray-600 outline-none ring-0 transition-all duration-100 hover:cursor-pointer hover:bg-gray-200/60",
+                            chatStore.selectedTool.includes("web") && "bg-gray-200 text-gray-800"
+                        )}
+                        disabled={isDisabled || isImageSelected}
+                        onClick={() => {
+                            chatStore.toggleTool("web");
+                        }}
+                        size="sm"
+                        variant="ghost"
+                    >
+                        {SearchIcon}
+                        Search
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent sideOffset={5}>
+                    <span>Enable web search</span>
+                </TooltipContent>
+            </Tooltip>
         </div>
     );
 });
@@ -188,7 +232,7 @@ export const ChatInput = observer(function ChatInputInside({
                 },
             }),
             Placeholder.configure({
-                placeholder: "use / for commands and @ for entities",
+                placeholder: "ask anything, use / for commands",
             }),
             Mention.configure({
                 suggestions: [
@@ -204,16 +248,6 @@ export const ChatInput = observer(function ChatInputInside({
                                     chatStore.toggleTool(props.id);
                                 }
                             ),
-                    },
-                    {
-                        char: "@",
-                        render: () =>
-                            renderItems(ModelSuggestionComponent, (props: { model?: KarnetModel }) => {
-                                if (!props.model) {
-                                    return;
-                                }
-                                chatStore.setModel(props.model);
-                            }),
                     },
                 ],
             }),
