@@ -48,6 +48,29 @@ const RenderReasoning = memo(
     }
 );
 
+/**
+ * TEMPORARY FIX: Streamdown rendering issues workaround
+ *
+ * This function applies various fixes to markdown content before passing it to Streamdown.
+ * These are temporary workarounds for known issues that should be fixed in future Streamdown updates.
+ *
+ * Remove this function and all its usage after Streamdown is updated with proper fixes
+ *
+ * @param {string} markdown - The raw markdown content
+ * @returns {string} - The fixed markdown content
+ */
+const streamdownFixer = (markdown: string): string => {
+    if (!markdown) return markdown;
+
+    let fixed = markdown;
+
+    // convert $...$ to $$...$$
+    // be careful to no convert $$...$$ to $$$...$$$
+    fixed = fixed.replace(/(?<!\$)\$([^$]+)\$(?!\$)/g, (match) => `$$${match}$$`);
+
+    return fixed;
+};
+
 const RenderText = ({
     part,
     messageId,
@@ -56,7 +79,7 @@ const RenderText = ({
     part: TextUIPart[];
     messageId: string;
     offsetPartIndex: number;
-}) => part.map((p, i) => <Response key={`${messageId}-${offsetPartIndex + i}`}>{p.text}</Response>);
+}) => part.map((p, i) => <Response key={`${messageId}-${offsetPartIndex + i}`}>{streamdownFixer(p.text)}</Response>);
 
 const RenderSource = memo(
     ({
