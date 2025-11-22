@@ -35,7 +35,7 @@ export default function RootLayout({
             <body className={`${geistSans.variable} ${geistMono.variable} ${mozillaHeadline.variable} antialiased`}>
                 {children}
                 <SpeedInsights />
-                {/* <Analytics  /> */}
+                {process.env.NODE_ENV === "production" && <Analytics />}
             </body>
         </html>
     );
