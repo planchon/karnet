@@ -162,7 +162,15 @@ export const ChatPage = observer(function ChatPageComponent() {
 
         // for the history feature - sauvegarder dans un tableau
         const historyStr = localStorage.getItem("chat-history");
-        const history: string[] = historyStr ? JSON.parse(historyStr) : [];
+        let history: string[] = [];
+
+        try {
+            history = historyStr ? JSON.parse(historyStr) : [];
+        } catch (error) {
+            console.error("error parsing history", error);
+            localStorage.removeItem("chat-history");
+            history = [];
+        }
 
         // Ajouter le nouveau prompt à la fin (éviter les doublons consécutifs)
         if (history.at(-1) !== text) {

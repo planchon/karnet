@@ -322,19 +322,18 @@ export const ChatInput = observer(function ChatInputInside({
     useEffect(() => {
         // Charger l'historique depuis localStorage
         const getHistory = (): string[] => {
-            const historyStr = localStorage.getItem("chat-history-array");
-            let history: string[] = historyStr ? JSON.parse(historyStr) : [];
+            const historyStr = localStorage.getItem("chat-history");
+            let historyArray: string[] = [];
 
-            // Migration depuis l'ancien format (compatibilité)
-            if (history.length === 0) {
-                const oldHistory = localStorage.getItem("chat-history");
-                if (oldHistory) {
-                    history = [oldHistory];
-                    localStorage.setItem("chat-history-array", JSON.stringify(history));
-                }
+            try {
+                historyArray = historyStr ? JSON.parse(historyStr) : [];
+            } catch (error) {
+                console.error("error parsing history", error);
+                localStorage.removeItem("chat-history");
+                historyArray = [];
             }
 
-            return history;
+            return historyArray;
         };
 
         const handleHistoryNavigation = (e: KeyboardEvent) => {
