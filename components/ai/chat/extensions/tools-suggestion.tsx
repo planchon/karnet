@@ -113,7 +113,6 @@ export const ToolsSuggestionComponent = (props: ToolsSuggestionComponentProps) =
         <Command
             className="min-w-[200px] border"
             onKeyDown={(e) => {
-                console.log("keydown", e);
                 e.stopPropagation();
             }}
             ref={ref}

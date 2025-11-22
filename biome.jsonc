@@ -26,7 +26,7 @@
         "noAlert": "off"
       },
       "correctness": {
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "off"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": "off",

@@ -39,7 +39,6 @@ export const ModelSuggestionComponent = (props: ModelSuggestionComponentProps) =
             "keydown",
             (event) => {
                 if (event.key === "Escape") {
-                    console.log("escape keydown fovus");
                     props.editor.commands.focus();
                     return false;
                 }

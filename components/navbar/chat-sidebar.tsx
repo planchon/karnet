@@ -24,19 +24,19 @@ export const ChatListItem = ({ chat }: { chat: Doc<"chats"> }) => {
         <Link
             className={cn(
                 "group/item relative max-w-full truncate rounded-sm px-2 py-2 text-sm hover:cursor-pointer hover:bg-accent",
-                location.pathname.includes(`/chat/${chat._id}`) ? "bg-accent font-normal" : ""
+                location.pathname.includes(`/chat/${chat.chat_id}`) ? "bg-accent font-normal" : ""
             )}
-            key={chat._id}
-            to={`/chat/${chat._id}`}
+            key={chat.chat_id}
+            to={`/chat/${chat.chat_id}`}
         >
             <div className="absolute top-[6px] right-[-16px] opacity-0 transition-all duration-200 group-hover/item:right-[6px] group-hover/item:opacity-100">
                 <Button
                     className="z-50 size-6 rounded-sm"
                     onClick={(e) => {
-                        if (location.pathname.includes(`/chat/${chat._id}`)) {
+                        if (location.pathname.includes(`/chat/${chat.chat_id}`)) {
                             navigate("/chat");
                         }
-                        deleteChat({ id: chat._id });
+                        deleteChat({ id: chat.chat_id });
                         toast.success("Chat deleted");
                         e.preventDefault();
                     }}

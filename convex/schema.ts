@@ -9,6 +9,7 @@ export const chatMessage = v.object({
 });
 
 const chatTable = defineTable({
+    chat_id: v.string(),
     subject: v.string(),
     is_deleted: v.boolean(),
     created_at_iso: v.string(),
@@ -18,10 +19,7 @@ const chatTable = defineTable({
 
     // if we have forked the chat
     title: v.string(),
-    smallId: v.optional(v.string()),
     messages: v.array(chatMessage),
-    parent_id: v.optional(v.id("chats")),
-    is_new: v.optional(v.boolean()),
 
     // for the resumable stream option
     stream: v.object({
@@ -29,10 +27,9 @@ const chatTable = defineTable({
         id: v.optional(v.string()),
     }),
 })
-    .index("by_parent_id", ["parent_id"])
-    .index("by_created_at", ["created_at_ts"])
-    .index("by_subject", ["subject"])
-    .index("by_is_new_and_subject", ["is_new", "subject"]);
+    .index("by_chat_id", ["chat_id"])
+    .index("by_chat_id_and_subject", ["chat_id", "subject"])
+    .index("by_subject", ["subject"]);
 
 const model = {
     model_id: v.string(),

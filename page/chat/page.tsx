@@ -1,104 +1,107 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { convexQuery } from "@convex-dev/react-query";
 import { IconSend } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import type { Editor } from "@tiptap/react";
 import { Button } from "@ui/button";
 import { Shortcut } from "@ui/shortcut";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
-import { generateId } from "ai";
 import { useConvex, useMutation } from "convex/react";
 import { motion } from "framer-motion";
 import _ from "lodash";
 import { Paperclip } from "lucide-react";
 import { observer } from "mobx-react";
-import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useLocation, useParams } from "react-router";
+import { toast } from "sonner";
 import type { ChatMessageBody } from "@/ai/schema/chat";
 import { Chat } from "@/components/ai/chat";
 import { ConversationComp } from "@/components/ai/conversation/conversation";
 import { File, type FileWithUploadProcess } from "@/components/ui/file";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useStores } from "@/hooks/useStores";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 
-export const NewChatPage = observer(function ChatPage() {
-    const deleteFile = useMutation(api.functions.files.deleteFile);
-    const createEmptyChat = useMutation(api.functions.chat.createEmptyChat);
-
-    const generateImageUploadUrl = useMutation(api.functions.files.generateImageUploadUrl);
-    const client = useConvex();
-
+export const ChatPage = observer(function ChatPageComponent() {
     const { chatStore } = useStores();
-    const location = usePathname();
+    const location = useLocation();
+
+    const { chatId: paramChatId } = useParams<{ chatId: string }>();
+
+    const [chatId, setChatId] = useState(paramChatId || generateId());
+    const isNewChat = useRef(paramChatId === undefined || location.state?.nonce !== undefined);
+
+    const client = useConvex();
+    const generateImageUploadUrl = useMutation(api.functions.files.generateImageUploadUrl);
+    const deleteFile = useMutation(api.functions.files.deleteFile);
+
+    const chat = useQuery({
+        ...convexQuery(api.functions.chat.getChat, {
+            id: paramChatId ?? "skip",
+        }),
+        initialData: JSON.parse(localStorage.getItem(`chat:${paramChatId}`) || "null"),
+    });
+
     const editorRef = useRef<Editor | null>(null);
-    const chatId = useRef<Id<"chats"> | null>(null);
     const { models } = useModels();
     const inputRef = useRef<HTMLInputElement>(null);
     const selectedModel = useRef<KarnetModel | undefined>(undefined);
+    const [inputPosition, setInputPosition] = useState<"center" | "bottom">(isNewChat.current ? "center" : "bottom");
 
     usePageTitle("New Chat - Karnet AI Assistant");
 
     const { messages, sendMessage, setMessages, stop, status, regenerate } = useChat({
+        id: chatId,
+        resume: !isNewChat,
         experimental_throttle: 200,
     });
 
-    const [inputPosition, setInputPosition] = useState<"center" | "bottom">("center");
-
-    // i want to keep the animation when im on the chat page
     useEffect(() => {
-        if (location === "/chat") {
-            setInputPosition("center");
-            stop();
-            fetchChat();
-            setMessages([]);
+        if (paramChatId && chat.data) {
+            isNewChat.current = false;
+            setChatId(paramChatId);
+            setInputPosition("bottom");
+
+            const parsedMessage = chat.data.messages.map((m) => ({
+                role: m.role,
+                id: m.id,
+                parts: JSON.parse(m.parts),
+                metadata: m.metadata ? JSON.parse(m.metadata) : undefined,
+            }));
+            setMessages(parsedMessage);
+
+            localStorage.setItem(`chat:${chatId}`, JSON.stringify(chat.data));
+            return;
         }
-    }, [location, stop, setMessages]);
 
-    const fetchChat = async () => {
-        const newChat = await createEmptyChat();
-        const id = newChat._id;
-        chatId.current = id;
-    };
+        if (location.state?.nonce) {
+            isNewChat.current = true;
+            setChatId(location.state.nonce);
+            setInputPosition("center");
 
-    // we get the "New chat" from the user when the page is loaded.
-    // that way we dont have to wait when a message is sent
-    useEffect(() => {
-        fetchChat();
-    }, []);
+            stop();
+
+            setMessages([]);
+            return;
+        }
+    }, [chatId, paramChatId, chat.data, location.state?.nonce]);
 
     // i for insert like in vim
     useHotkeys("i, t", () => {
         editorRef.current?.commands.focus();
     });
 
-    const listenToEnter = (e: KeyboardEvent) => {
-        if (
-            e.key === "Enter" &&
-            !e.ctrlKey &&
-            !e.metaKey &&
-            !e.shiftKey &&
-            editorRef.current?.isFocused &&
-            editorRef.current?.getText() !== "" &&
-            !chatStore.dropdownOpen
-        ) {
-            e.preventDefault();
-
-            onSend();
-        }
-    };
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: this is false
     useEffect(() => {
         document.addEventListener("keydown", listenToEnter, { capture: true });
         return () => {
             document.removeEventListener("keydown", listenToEnter, { capture: true });
         };
-    }, []);
+    }, [chatId]);
 
     const regenerateMessage: typeof regenerate = (
         args: Parameters<typeof regenerate>[0],
@@ -112,7 +115,7 @@ export const NewChatPage = observer(function ChatPage() {
 
         const body = {
             model: JSON.parse(JSON.stringify(model)),
-            chatId: chatId.current,
+            chatId,
             streamId: generateId(),
             // TODO: get the used tools from the message (could be differents)
             tools: chatStore.selectedTool,
@@ -129,7 +132,7 @@ export const NewChatPage = observer(function ChatPage() {
 
     useEffect(() => {
         selectedModel.current = chatStore.selectedModel || models.find((m) => m.default && chatStore.canUseModel(m));
-    }, [chatStore.selectedModel, models, chatStore.selectedTool.includes("image")]);
+    }, [chatStore.selectedModel, chatStore.canUseModel, models, chatStore.selectedTool.includes("image")]);
 
     // we try to not block anything on the UI thread
     // we want to have the message rendered immediately
@@ -139,9 +142,8 @@ export const NewChatPage = observer(function ChatPage() {
             return;
         }
 
-        if (!chatId.current) {
-            alert("Please wait for the ID to be generated");
-            return;
+        if (isNewChat.current) {
+            window.history.pushState({}, "", `/chat/${chatId}`);
         }
 
         if (!selectedModel.current) {
@@ -149,21 +151,17 @@ export const NewChatPage = observer(function ChatPage() {
             return;
         }
 
-        if (!chatStore.allFilesAreUploaded()) {
-            alert("wait for all the file to be uploaded");
-            return;
-        }
-
         setInputPosition("bottom");
 
         const text = editorRef.current?.getText();
+
         if (!text) {
             alert("Please enter a message");
             return;
         }
 
         // for the history feature - sauvegarder dans un tableau
-        const historyStr = localStorage.getItem("chat-history-array");
+        const historyStr = localStorage.getItem("chat-history");
         const history: string[] = historyStr ? JSON.parse(historyStr) : [];
 
         // Ajouter le nouveau prompt à la fin (éviter les doublons consécutifs)
@@ -173,14 +171,10 @@ export const NewChatPage = observer(function ChatPage() {
             if (history.length > 50) {
                 history.shift();
             }
-            localStorage.setItem("chat-history-array", JSON.stringify(history));
+            localStorage.setItem("chat-history", JSON.stringify(history));
         }
 
-        // Garder la compatibilité avec l'ancien format
-        localStorage.setItem("chat-history", text);
-
         const tools = _.cloneDeep(chatStore.selectedTool);
-        chatStore.resetTools();
 
         // clear the editor
         editorRef.current?.commands.setContent("");
@@ -195,7 +189,7 @@ export const NewChatPage = observer(function ChatPage() {
             {
                 body: {
                     model: selectedModel.current,
-                    chatId: chatId.current as Id<"chats">,
+                    chatId,
                     streamId,
                     tools: tools || [],
                 } satisfies Omit<ChatMessageBody, "messages">,
@@ -204,9 +198,27 @@ export const NewChatPage = observer(function ChatPage() {
 
         // replace the url without navigate because we dont want to trigger a re-render
         // this would trigger flickering on the messages
-        window.history.replaceState({}, "", `/chat/${chatId.current}`);
         chatStore.resetFiles();
-    }, [chatStore, selectedModel, sendMessage]);
+    }, [chatStore, chatId, selectedModel, sendMessage]);
+
+    const listenToEnter = useCallback(
+        (e: KeyboardEvent) => {
+            if (
+                e.key === "Enter" &&
+                !e.ctrlKey &&
+                !e.metaKey &&
+                !e.shiftKey &&
+                editorRef.current?.isFocused &&
+                editorRef.current?.getText() !== "" &&
+                !chatStore.dropdownOpen
+            ) {
+                e.preventDefault();
+
+                onSend();
+            }
+        },
+        [onSend]
+    );
 
     const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const newFiles = Object.values(e.target.files || {}).map((file) => ({
@@ -238,8 +250,8 @@ export const NewChatPage = observer(function ChatPage() {
 
     const removeFile = (file: FileWithUploadProcess) => {
         if (file.upload === "success") {
-            deleteFile({ id: file.id }).catch((error) => {
-                console.error("error deleting file", error);
+            deleteFile({ id: file.id }).catch(() => {
+                toast.error("Error deleting file");
             });
         }
         chatStore.removeFile(file);

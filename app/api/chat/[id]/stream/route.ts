@@ -4,7 +4,6 @@ import { fetchQuery } from "convex/nextjs";
 import { after } from "next/server";
 import { createResumableStreamContext } from "resumable-stream";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { getSession } from "@/lib/session";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -41,7 +40,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
                     return await fetchQuery(
                         api.functions.chat.getChat,
                         {
-                            id: id as Id<"chats">,
+                            id: id ?? "skip",
                         },
                         {
                             token: jwt,

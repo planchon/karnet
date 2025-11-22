@@ -84,6 +84,17 @@ export async function POST(req: Request) {
                     tools,
                 });
 
+                // create the new chat if it doesn't exist
+                await fetchMutation(
+                    api.functions.chat.generateNewChat,
+                    {
+                        id: chatId,
+                    },
+                    {
+                        token: jwt,
+                    }
+                );
+
                 const openRouter = openRouterGateway();
                 const plugins: unknown[] = [];
 
@@ -146,7 +157,10 @@ export async function POST(req: Request) {
                             }
 
                             // generate a title for the chat
-                            const titlePrompt = `You are a title generator that generates titles for LLM chats. The text is: "${text}". Most of the time, the first message is the most important one. Generate a title for the chat based on the text (put an emoji at the beginning, keep the title short):`;
+                            const titlePrompt = `You are a title generator that generates titles for LLM chats. 
+                            The text is: "${text}". Most of the time, the first message is the most important one. 
+                            Generate one (only ONE) title for the chat based on the text (put an emoji at the beginning, keep the title short):`;
+
                             const _modelTitle = openRouter("google/gemini-2.5-flash-lite");
                             const title = await generateText({
                                 model: _modelTitle,
@@ -160,7 +174,7 @@ export async function POST(req: Request) {
                             await fetchMutation(
                                 api.functions.chat.updateChatTitle,
                                 {
-                                    id: chatId as Id<"chats">,
+                                    id: chatId,
                                     title: title.text,
                                 },
                                 {
@@ -171,33 +185,6 @@ export async function POST(req: Request) {
                     );
 
                 generateTitle();
-
-                Sentry.startSpan(
-                    {
-                        name: "updateChatMessages",
-                        attributes: {
-                            chatId,
-                            messages: JSON.stringify(messages),
-                        },
-                    },
-                    async () => {
-                        await handleMessageImageUpload(messages, jwt);
-
-                        await fetchMutation(
-                            api.functions.chat.updateChat,
-                            {
-                                id: chatId as Id<"chats">,
-                                messages: messages.map((m) => ({
-                                    id: m.id,
-                                    role: m.role,
-                                    parts: JSON.stringify(m.parts),
-                                    metadata: JSON.stringify(m.metadata),
-                                })),
-                            },
-                            { token: jwt }
-                        );
-                    }
-                );
 
                 const streamContext = createResumableStreamContext({
                     waitUntil: after,
