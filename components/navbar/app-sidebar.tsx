@@ -13,6 +13,8 @@ import {
 } from "@ui/dropdown-menu";
 import { observer } from "mobx-react";
 import type * as React from "react";
+import { IoIosHelpCircleOutline } from "react-icons/io";
+import { Link } from "react-router";
 import { Sidebar, SidebarContent } from "@/primitive/ui/sidebar";
 import { SettingsDialog } from "../settings/settings";
 import { ChatSidebar } from "./chat-sidebar";
@@ -40,6 +42,13 @@ export const AppSidebar = observer(function AppSidebarInner({ ...props }: React.
                 <ChatSidebar />
             </SidebarContent>
             <SettingsDialog />
+            <Link
+                className="mt-2 flex w-full flex-row items-center gap-1.5 rounded-xs px-2 py-1 hover:cursor-pointer hover:bg-muted"
+                to="https://karnet.notion.site/"
+            >
+                <IoIosHelpCircleOutline className="text-muted-foreground" />
+                <p className="text-muted-foreground text-sm">Documentation</p>
+            </Link>
             <div className="flex items-center justify-center">
                 <div className="flex w-full flex-row items-center justify-between gap-4 p-2">
                     <div className="flex select-none flex-col">
