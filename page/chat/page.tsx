@@ -2,11 +2,9 @@
 
 import { useChat } from "@ai-sdk/react";
 import { convexQuery } from "@convex-dev/react-query";
-import { IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import type { Editor } from "@tiptap/react";
 import { Button } from "@ui/button";
-import { Shortcut } from "@ui/shortcut";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/tooltip";
 import { useConvex, useMutation } from "convex/react";
 import { motion } from "framer-motion";
@@ -15,7 +13,8 @@ import { Paperclip } from "lucide-react";
 import { observer } from "mobx-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useLocation, useParams } from "react-router";
+import { FaArrowUpLong, FaCircleStop } from "react-icons/fa6";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import type { ChatMessageBody } from "@/ai/schema/chat";
 import { Chat } from "@/components/ai/chat";
@@ -30,6 +29,7 @@ import { cn, generateId } from "@/lib/utils";
 export const ChatPage = observer(function ChatPageComponent() {
     const { chatStore } = useStores();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const { chatId: paramChatId } = useParams<{ chatId: string }>();
 
@@ -37,7 +37,8 @@ export const ChatPage = observer(function ChatPageComponent() {
     const isNewChat = useRef(paramChatId === undefined || location.state?.nonce !== undefined);
 
     const client = useConvex();
-    const generateImageUploadUrl = useMutation(api.functions.files.generateImageUploadUrl);
+    chatStore.client = client;
+
     const deleteFile = useMutation(api.functions.files.deleteFile);
 
     const chat = useQuery({
@@ -53,7 +54,8 @@ export const ChatPage = observer(function ChatPageComponent() {
     const selectedModel = useRef<KarnetModel | undefined>(undefined);
     const [inputPosition, setInputPosition] = useState<"center" | "bottom">(isNewChat.current ? "center" : "bottom");
 
-    usePageTitle("New Chat - Karnet AI Assistant");
+    const title = chat.data?.title || "New Chat";
+    usePageTitle(`${title} - Karnet AI Assistant`);
 
     const { messages, sendMessage, setMessages, stop, status, regenerate } = useChat({
         id: chatId,
@@ -62,6 +64,8 @@ export const ChatPage = observer(function ChatPageComponent() {
     });
 
     useEffect(() => {
+        if (status === "streaming" || status === "error") return;
+
         if (paramChatId && chat.data) {
             isNewChat.current = false;
             setChatId(paramChatId);
@@ -98,8 +102,10 @@ export const ChatPage = observer(function ChatPageComponent() {
 
     useEffect(() => {
         document.addEventListener("keydown", listenToEnter, { capture: true });
+        document.addEventListener("keydown", listenToNewChat, { capture: true });
         return () => {
             document.removeEventListener("keydown", listenToEnter, { capture: true });
+            document.removeEventListener("keydown", listenToNewChat, { capture: true });
         };
     }, [chatId]);
 
@@ -209,8 +215,24 @@ export const ChatPage = observer(function ChatPageComponent() {
         chatStore.resetFiles();
     }, [chatStore, chatId, selectedModel, sendMessage]);
 
+    const listenToNewChat = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key === "c" && !editorRef.current?.isFocused) {
+                isNewChat.current = true;
+                setChatId(generateId());
+                setInputPosition("center");
+                stop();
+                setMessages([]);
+                return;
+            }
+        },
+        [chatId, isNewChat]
+    );
+
     const listenToEnter = useCallback(
         (e: KeyboardEvent) => {
+            if (chatStore.toolDropdownOpen) return;
+
             if (
                 e.key === "Enter" &&
                 !e.ctrlKey &&
@@ -225,36 +247,8 @@ export const ChatPage = observer(function ChatPageComponent() {
                 onSend();
             }
         },
-        [onSend]
+        [onSend, chatStore.toolDropdownOpen]
     );
-
-    const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newFiles = Object.values(e.target.files || {}).map((file) => ({
-            file,
-            upload: "in_progress" as const,
-        }));
-        chatStore.addFiles(newFiles);
-        e.target.value = "";
-
-        // upload all the files
-        for (const file of newFiles) {
-            const uploadUrl = await generateImageUploadUrl({});
-            const uploadResponse = await fetch(uploadUrl, {
-                method: "POST",
-                headers: {
-                    "Content-Type": file.file.type,
-                },
-                body: file.file,
-            });
-            const { storageId } = await uploadResponse.json();
-            const { url } = await client.query(api.functions.files.getImageUrl, { id: storageId });
-            if (!url) {
-                console.error("error getting image url", storageId);
-                continue;
-            }
-            chatStore.updateFile({ ...file, upload: "success" as const, id: storageId, url });
-        }
-    };
 
     const removeFile = (file: FileWithUploadProcess) => {
         if (file.upload === "success") {
@@ -299,7 +293,7 @@ export const ChatPage = observer(function ChatPageComponent() {
                                     accept="application/pdf, image/*"
                                     className="hidden"
                                     multiple
-                                    onChange={handleFiles}
+                                    onChange={(e) => chatStore.handleFileInput(e)}
                                     ref={inputRef}
                                     type="file"
                                     value=""
@@ -326,15 +320,33 @@ export const ChatPage = observer(function ChatPageComponent() {
                             </div>
                             <div className="flex items-center gap-2 pb-2">
                                 <Chat.MCPSelect editorRef={editorRef} />
-                                <Button
-                                    className="h-8 rounded-sm pr-[6px]! pl-[8px]!"
-                                    disabled={!chatStore.allFilesAreUploaded()}
-                                    onClick={() => onSend()}
-                                >
-                                    <IconSend className="size-4" />
-                                    Send
-                                    <Shortcut nothen shortcut={["⌘", "↵"]} />
-                                </Button>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            className="size-8 rounded-sm"
+                                            disabled={!chatStore.allFilesAreUploaded()}
+                                            onClick={() => {
+                                                if (status === "streaming") {
+                                                    stop();
+                                                } else {
+                                                    onSend();
+                                                }
+                                            }}
+                                            size="icon"
+                                        >
+                                            {status === "streaming" ? (
+                                                <FaCircleStop className="size-4" />
+                                            ) : (
+                                                <FaArrowUpLong className="size-4" />
+                                            )}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent sideOffset={5}>
+                                        <span>
+                                            {status === "streaming" ? "Stop the generation" : "Send the message"}
+                                        </span>
+                                    </TooltipContent>
+                                </Tooltip>
                             </div>
                         </div>
                     </Chat.Root>

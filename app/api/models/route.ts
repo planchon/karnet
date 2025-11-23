@@ -6,8 +6,8 @@ const allModelsSchema = z.array(OpenRouterModelSchema);
 
 const allowedProviders = ["anthropic", "azure", "openai", "google", "vertex", "x-ai", "perplexity", "mistralai"];
 
-const defaultTextModels = ["google/gemini-2.5-flash-preview-09-2025"];
-const defaultImageModels = ["google/gemini-2.5-flash-image"];
+const defaultTextModels = "google/gemini-2.5-flash-preview-09-2025";
+const defaultImageModels = "google/gemini-2.5-flash-image";
 
 export async function GET() {
     const models = await fetch("https://openrouter.ai/api/v1/models");
@@ -23,9 +23,12 @@ export async function GET() {
         .filter((model) => allowedProviders.includes(model.provider))
         .sort((a, b) => b.created - a.created);
 
+    const defaultTextModel = filteredModels.find((model) => model.id === defaultTextModels);
+    const defaultImageModel = filteredModels.find((model) => model.id === defaultImageModels);
+
     return NextResponse.json({
         models: filteredModels,
-        defaultTextModels,
-        defaultImageModels,
+        defaultTextModel,
+        defaultImageModel,
     });
 }

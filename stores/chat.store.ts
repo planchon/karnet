@@ -1,11 +1,13 @@
 "use client";
 
 import type { FileUIPart } from "ai";
+import type { ConvexReactClient } from "convex/react";
 import { makeAutoObservable } from "mobx";
 import type { ChatMessageBody } from "@/ai/schema/chat";
 import { isImageGeneratingModel } from "@/ai/schema/model";
 import { commands } from "@/ai/tools";
 import type { FileWithUploadProcess } from "@/components/ui/file";
+import { api } from "@/convex/_generated/api";
 import type { KarnetModel } from "@/hooks/useModels";
 
 export class ChatStore {
@@ -14,9 +16,14 @@ export class ChatStore {
     modelDropdownOpen = false;
     toolDropdownOpen = false;
 
+    defaultTextModel: KarnetModel | null = null;
+    defaultImageModel: KarnetModel | null = null;
+
     selectedModel: KarnetModel | null = null;
     selectedTool: ChatMessageBody["tools"] = [];
     files: FileWithUploadProcess[] = [];
+
+    client: ConvexReactClient | null = null;
 
     availableTools: (ChatMessageBody["tools"][number] & {
         selected: boolean;
@@ -46,24 +53,32 @@ export class ChatStore {
     }
 
     toggleTool(mcp: ChatMessageBody["tools"][number]) {
-        if (mcp === "image" && (!isImageGeneratingModel(this.selectedModel) || this.selectedTool.includes("image"))) {
-            this.selectedModel = null;
-        }
+        let action = "remove";
 
+        // remove the tool if it is already selected
         if (this.selectedTool?.includes(mcp)) {
             this.selectedTool = this.selectedTool?.filter((t) => t !== mcp);
+            action = "remove";
         } else {
             this.selectedTool?.push(mcp);
+            action = "add";
+        }
+
+        // remove search
+        if (action === "add" && mcp === "image") {
+            this.selectedModel = this.defaultImageModel as KarnetModel;
+            this.selectedTool = this.selectedTool?.filter((t) => t !== "web");
+        } else if (action === "remove" && mcp === "image") {
+            this.selectedModel = this.defaultTextModel as KarnetModel;
         }
     }
 
     shouldToolBeDisabled(tool: ChatMessageBody["tools"][number]) {
         switch (tool) {
             case "ocr":
-                return this.files.length === 0;
+                return !this.canUseOCR();
             case "web":
-                // we use vision models to generate images
-                return isImageGeneratingModel(this.selectedModel);
+                return !this.canSearchWeb();
             default:
                 return false;
         }
@@ -108,8 +123,64 @@ export class ChatStore {
     }
 
     // ------------------------------------------------------------
+    // chat management
+    // ------------------------------------------------------------
+
+    canSearchWeb() {
+        return !this.selectedModel?.architecture.output_modalities.includes("image");
+    }
+
+    canInputFiles() {
+        return this.selectedModel?.architecture.input_modalities.includes("file");
+    }
+
+    canInputAudio() {
+        return this.selectedModel?.architecture.input_modalities.includes("audio");
+    }
+
+    canInputVideo() {
+        return this.selectedModel?.architecture.input_modalities.includes("video");
+    }
+
+    canUseOCR() {
+        return this.files.find((f) => f.upload === "success") !== undefined;
+    }
+
+    // ------------------------------------------------------------
     // file management in the chat input
     // ------------------------------------------------------------
+
+    async handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
+        if (!this.client) {
+            return;
+        }
+
+        const newFiles = Object.values(e.target.files || {}).map((file) => ({
+            file,
+            upload: "in_progress" as const,
+        }));
+        this.addFiles(newFiles);
+        e.target.value = "";
+
+        // upload all the files
+        for (const file of newFiles) {
+            const uploadUrl = await this.client.mutation(api.functions.files.generateImageUploadUrl, {});
+            const uploadResponse = await fetch(uploadUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": file.file.type,
+                },
+                body: file.file,
+            });
+            const { storageId } = await uploadResponse.json();
+            const { url } = await this.client.query(api.functions.files.getImageUrl, { id: storageId });
+            if (!url) {
+                console.error("error getting image url", storageId);
+                continue;
+            }
+            this.updateFile({ ...file, upload: "success" as const, id: storageId, url });
+        }
+    }
 
     addFiles(file: FileWithUploadProcess[]) {
         this.files.push(...file);

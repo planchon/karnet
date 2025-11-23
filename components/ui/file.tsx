@@ -64,7 +64,7 @@ export const File = ({ file, onRemove }: FileProps) => {
     return (
         <div
             className={cn(
-                "group relative flex h-10 w-fit select-none items-center gap-2 rounded-md border text-gray-600 text-sm",
+                "group relative flex h-10 w-fit select-none items-center gap-2 rounded-sm text-gray-600 text-sm",
                 isImage && "bg-transparent p-0",
                 !isImage && "bg-gray-100 px-3"
             )}
@@ -84,8 +84,14 @@ export const File = ({ file, onRemove }: FileProps) => {
                 </TooltipContent>
             </Tooltip>
             {isImage && (
-                <picture className="size-10 overflow-hidden rounded-md border bg-muted object-cover">
-                    <img alt={file.file.name} height={40} src={URL.createObjectURL(file.file)} width={40} />
+                <picture className="size-10">
+                    <img
+                        alt={file.file.name}
+                        className="h-full w-full rounded-md border object-cover"
+                        height={60}
+                        src={URL.createObjectURL(file.file)}
+                        width={60}
+                    />
                 </picture>
             )}
             {!isImage && (

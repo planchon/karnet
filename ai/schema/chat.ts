@@ -6,7 +6,7 @@ export const bodySchema = z.object({
     messages: z.array(z.any()).transform((messages) => messages as ChatUIMessage[]),
     chatId: z.string(),
     streamId: z.string(),
-    tools: z.array(z.union([z.literal("web"), z.literal("image"), z.literal("ocr")])),
+    tools: z.array(z.union([z.literal("web"), z.literal("image"), z.literal("ocr"), z.literal("file")])),
     model: OpenRouterModelSchema,
 });
 

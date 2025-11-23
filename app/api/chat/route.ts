@@ -133,6 +133,7 @@ export async function POST(req: Request) {
                     model: _model,
                     system: prompt,
                     messages: modelMessages,
+                    abortSignal: req.signal,
                     experimental_transform: smoothStream({ chunking: "word" }),
                     providerOptions: {},
                 });
@@ -209,44 +210,26 @@ export async function POST(req: Request) {
                             };
                         }
                     },
-                    onFinish: ({ messages: _messages }) => {
-                        return Sentry.startSpan(
+                    onFinish: async ({ messages: _messages }) => {
+                        const updatedMessages = await handleMessageImageUpload(_messages, jwt);
+
+                        const preparedMessages = updatedMessages.map((m) => ({
+                            role: m.role,
+                            id: m.id,
+                            // we cannot store the metadata because the type is unknown
+                            metadata: JSON.stringify(m.metadata) || undefined,
+                            // we cannot store the parts because the type too complexe and will change
+                            parts: JSON.stringify(m.parts),
+                        }));
+
+                        await fetchMutation(
+                            api.functions.chat.finishChatStream,
                             {
-                                name: "finishChatStream",
-                                attributes: {
-                                    chatId,
-                                    messages: JSON.stringify(messages),
-                                },
+                                id: chatId as Id<"chats">,
+                                messages: preparedMessages,
                             },
-                            async () => {
-                                const updatedMessages = await handleMessageImageUpload(_messages, jwt);
-
-                                const preparedMessages = updatedMessages.map((m) => ({
-                                    role: m.role,
-                                    id: m.id,
-                                    // we cannot store the metadata because the type is unknown
-                                    metadata: JSON.stringify(m.metadata) || undefined,
-                                    // we cannot store the parts because the type too complexe and will change
-                                    parts: JSON.stringify(m.parts),
-                                }));
-
-                                await Sentry.startSpan(
-                                    {
-                                        name: "finishChatStream",
-                                    },
-                                    async () => {
-                                        await fetchMutation(
-                                            api.functions.chat.finishChatStream,
-                                            {
-                                                id: chatId as Id<"chats">,
-                                                messages: preparedMessages,
-                                            },
-                                            {
-                                                token: jwt,
-                                            }
-                                        );
-                                    }
-                                );
+                            {
+                                token: jwt,
                             }
                         );
                     },
@@ -258,29 +241,18 @@ export async function POST(req: Request) {
                     async consumeSseStream({ stream }) {
                         await streamContext.createNewResumableStream(streamId, () => stream);
 
-                        await Sentry.startSpan(
+                        // change the stream status to active
+                        await fetchMutation(
+                            api.functions.chat.updateChatStream,
                             {
-                                name: "updateChatStream",
-                                attributes: {
-                                    chatId,
-                                    streamId,
+                                id: chatId as Id<"chats">,
+                                stream: {
+                                    status: "active",
+                                    id: streamId,
                                 },
                             },
-                            async () => {
-                                // change the stream status to active
-                                await fetchMutation(
-                                    api.functions.chat.updateChatStream,
-                                    {
-                                        id: chatId as Id<"chats">,
-                                        stream: {
-                                            status: "active",
-                                            id: streamId,
-                                        },
-                                    },
-                                    {
-                                        token: jwt,
-                                    }
-                                );
+                            {
+                                token: jwt,
                             }
                         );
                     },

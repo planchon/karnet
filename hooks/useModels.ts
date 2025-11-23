@@ -26,8 +26,8 @@ export type KarnetModel = ReturnType<typeof useModels>["models"][number];
 
 const schema = z.object({
     models: z.array(OpenRouterModelSchema),
-    defaultTextModels: z.array(z.string()),
-    defaultImageModels: z.array(z.string()),
+    defaultTextModel: OpenRouterModelSchema.nullish(),
+    defaultImageModel: OpenRouterModelSchema.nullish(),
 });
 
 export type ModelsData = z.infer<typeof schema>;
@@ -36,7 +36,7 @@ export const useModels = () => {
     const { chatStore } = useStores();
 
     const {
-        data: { models: allModels, defaultTextModels, defaultImageModels },
+        data: { models: allModels, defaultTextModel, defaultImageModel },
         isLoading,
         error,
     } = useQuery<ModelsData>({
@@ -47,8 +47,8 @@ export const useModels = () => {
             if (!modelData) {
                 return {
                     models: [],
-                    defaultTextModels: [],
-                    defaultImageModels: [],
+                    defaultTextModel: null,
+                    defaultImageModel: null,
                 };
             }
 
@@ -59,8 +59,8 @@ export const useModels = () => {
                 localStorage.removeItem("models");
                 return {
                     models: [],
-                    defaultTextModels: [],
-                    defaultImageModels: [],
+                    defaultTextModel: null,
+                    defaultImageModel: null,
                 };
             }
 
@@ -142,5 +142,18 @@ export const useModels = () => {
             {} as Record<string, (typeof models)[number][]>
         );
 
-    return { models, textModels, imageModels, isLoading, error, groupedByProvider, activeGroupedByProvider };
+    chatStore.defaultTextModel = defaultTextModel as KarnetModel;
+    chatStore.defaultImageModel = defaultImageModel as KarnetModel;
+
+    return {
+        models,
+        textModels,
+        imageModels,
+        defaultTextModel,
+        defaultImageModel,
+        isLoading,
+        error,
+        groupedByProvider,
+        activeGroupedByProvider,
+    };
 };

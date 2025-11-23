@@ -1,3 +1,4 @@
+import { FaFile } from "react-icons/fa";
 import { LuScanText } from "react-icons/lu";
 import { MdOutlineSearch } from "react-icons/md";
 import { RiImageCircleAiFill } from "react-icons/ri";
@@ -14,19 +15,25 @@ export const commands: Command[] = [
     {
         id: "web",
         name: "Search",
-        description: "Search the web",
+        description: "Add search results to your message",
         icon: MdOutlineSearch,
     },
     {
         id: "image",
         name: "Image Generation",
-        description: "Generate AI Images",
+        description: "Generate images using AI",
         icon: RiImageCircleAiFill,
     },
     {
         id: "ocr",
         name: "Mistral OCR",
-        description: "Use the best OCR model",
+        description: "Use Mistral OCR",
         icon: LuScanText,
+    },
+    {
+        id: "file",
+        name: "File upload",
+        description: "Upload files to your message",
+        icon: FaFile,
     },
 ];

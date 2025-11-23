@@ -1,12 +1,11 @@
 "use client";
 
 import type { Editor, Range } from "@tiptap/react";
-import { Command, CommandEmpty, CommandItem, CommandList } from "@ui/command";
+import { Command, CommandEmpty, CommandItem, CommandList, CommandSeparator } from "@ui/command";
 import { Command as Cmd } from "cmdk";
 import { CheckIcon } from "lucide-react";
-import { eventNames } from "process";
 import React, { useEffect, useState } from "react";
-import { FaImage, FaInternetExplorer, FaReact } from "react-icons/fa";
+import { FaFile, FaImage, FaInternetExplorer, FaReact } from "react-icons/fa";
 import { commands } from "@/ai/tools";
 import { useStores } from "@/hooks/useStores";
 
@@ -104,10 +103,23 @@ export const ToolsSuggestionComponent = (props: ToolsSuggestionComponentProps) =
 
     const handleSelect = (id: string) => {
         props.editor.chain().focus().deleteRange(props.range).run();
-        callback({
-            id,
-        });
+        if (id === "file") {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "application/pdf, image/*";
+            input.click();
+            input.onchange = (e) => {
+                // @ts-expect-error
+                chatStore.handleFileInput(e);
+            };
+        } else {
+            callback({
+                id,
+            });
+        }
     };
+
+    const toolsCommands = commands.filter((command) => command.id !== "file");
 
     return (
         <Command
@@ -120,20 +132,28 @@ export const ToolsSuggestionComponent = (props: ToolsSuggestionComponentProps) =
             <Cmd.Input onValueChange={onChange} style={{ display: "none" }} value={query} />
             <CommandEmpty>No results.</CommandEmpty>
             <CommandList className="scrollbar-thin flex max-h-48 flex-col gap-1 overflow-y-auto px-1 pt-1">
-                {commands.map((command) => (
+                {toolsCommands.map((command) => (
                     <CommandItem
                         className="flex justify-between"
+                        disabled={chatStore.shouldToolBeDisabled(command.id)}
                         key={command.id}
                         onSelect={() => handleSelect(command.id)}
                         value={command.name}
                     >
                         <div className="flex items-center gap-2">
                             <command.icon />
-                            {command.name}
+                            {command.description}
                         </div>
                         {chatStore.selectedTool.includes(command.id) && <CheckIcon className="size-4" />}
                     </CommandItem>
                 ))}
+                <CommandSeparator className="my-1" />
+                <CommandItem onSelect={() => handleSelect("file")} value="file">
+                    <div className="flex items-center gap-2">
+                        <FaFile />
+                        Upload file to your message
+                    </div>
+                </CommandItem>
             </CommandList>
         </Command>
     );

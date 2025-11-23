@@ -27,7 +27,7 @@ export const renderItems = (
                 props,
             });
 
-            chatStore.setDropdownOpen(true);
+            chatStore.setToolDropdownOpen(true);
 
             if (!component) {
                 console.error("No component found");
@@ -70,7 +70,7 @@ export const renderItems = (
         onExit: () => {
             popup?.[0]?.destroy();
             component?.destroy();
-            chatStore.setDropdownOpen(false);
+            chatStore.setToolDropdownOpen(false);
         },
     };
 };

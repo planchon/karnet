@@ -17,10 +17,10 @@ import { observer } from "mobx-react";
 import { nanoid } from "nanoid";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { LuScanText } from "react-icons/lu";
 import { MdOutlineImage, MdOutlineImageNotSupported } from "react-icons/md";
 import { ProviderIcons } from "@/ai/models";
 import type { ChatMessageBody } from "@/ai/schema/chat";
-import { isImageGeneratingModel } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
 import { type KarnetModel, useModels } from "@/hooks/useModels";
 import { useStores } from "@/hooks/useStores";
@@ -137,7 +137,6 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
 }) {
     const { chatStore } = useStores();
 
-    const isDisabled = isImageGeneratingModel(chatStore.selectedModel);
     const isSelected = chatStore.selectedTool.includes("web");
     const SearchIcon = isSelected ? <GlobeIcon className="size-4" /> : <GlobeLockIcon className="size-4" />;
 
@@ -155,9 +154,35 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
                     <Button
                         className={cn(
                             "h-7 rounded-full px-2 text-gray-600 outline-none ring-0 transition-all duration-100 hover:cursor-pointer hover:bg-gray-200/60",
+                            chatStore.selectedTool.includes("ocr") && "bg-gray-200 text-gray-800",
+                            !chatStore.canUseOCR() && "cursor-none opacity-50 hover:cursor-default hover:bg-transparent"
+                        )}
+                        onClick={() => {
+                            if (!chatStore.canUseOCR()) return;
+
+                            chatStore.toggleTool("ocr");
+                        }}
+                        size="sm"
+                        variant="ghost"
+                    >
+                        <LuScanText className="size-4" />
+                        Mistral OCR
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent sideOffset={5}>
+                    <span>
+                        Use Mistral OCR
+                        {!chatStore.canUseOCR() && ", (disabled because no PDF files attached)"}
+                    </span>
+                </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        className={cn(
+                            "h-7 rounded-full px-2 text-gray-600 outline-none ring-0 transition-all duration-100 hover:cursor-pointer hover:bg-gray-200/60",
                             chatStore.selectedTool.includes("image") && "bg-gray-200 text-gray-800"
                         )}
-                        disabled={isDisabled}
                         onClick={() => {
                             chatStore.toggleTool("image");
                         }}
@@ -179,7 +204,7 @@ export const ChatMCPSelect = observer(function ChatMcpSelectInner({
                             "h-7 rounded-full px-2 text-gray-600 outline-none ring-0 transition-all duration-100 hover:cursor-pointer hover:bg-gray-200/60",
                             chatStore.selectedTool.includes("web") && "bg-gray-200 text-gray-800"
                         )}
-                        disabled={isDisabled || isImageSelected}
+                        disabled={!chatStore.canSearchWeb()}
                         onClick={() => {
                             chatStore.toggleTool("web");
                         }}
@@ -245,6 +270,7 @@ export const ChatInput = observer(function ChatInputInside({
                                     if (!props.id) {
                                         return;
                                     }
+
                                     chatStore.toggleTool(props.id);
                                 }
                             ),
@@ -338,6 +364,7 @@ export const ChatInput = observer(function ChatInputInside({
 
         const handleHistoryNavigation = (e: KeyboardEvent) => {
             if (!editor?.isFocused) return;
+            if (chatStore.toolDropdownOpen) return;
 
             const history = getHistory();
             if (history.length === 0) return;
@@ -422,6 +449,8 @@ export const ChatInput = observer(function ChatInputInside({
         // Réinitialiser la navigation quand l'utilisateur envoie le message (Enter)
         const handleEnter = (e: KeyboardEvent) => {
             if (!editor?.isFocused) return;
+            if (chatStore.toolDropdownOpen) return;
+
             if (e.key === "Enter" && !e.shiftKey) {
                 isNavigatingRef.current = false;
                 historyIndexRef.current = -1;
