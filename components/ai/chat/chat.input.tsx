@@ -112,7 +112,9 @@ export const ChatModelSelect = observer(function ChatModelSelectInner({
                 <Command>
                     <CommandInput placeholder={onlyImageModels ? "Search image model..." : "Search text model..."} />
                     <CommandList className="scrollbar-thin max-h-48 overflow-y-auto">
-                        <CommandEmpty>No model found.</CommandEmpty>
+                        <CommandEmpty className="px-2 py-6 text-center text-sm">
+                            You don't have any model activated. <br /> (you can activate them in the settings)
+                        </CommandEmpty>
                         {Object.entries(groupedByProvider).map(([provider, providerModels]) => (
                             <CommandGroup className="py-0" heading={capitalize(provider)} key={provider}>
                                 {providerModels.map((m) => (
