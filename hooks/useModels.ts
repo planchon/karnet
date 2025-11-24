@@ -96,17 +96,19 @@ export const useModels = () => {
         }
     }, [allModels]);
 
+    console.log("userActiveModels", userActiveModels);
+
     const models = useMemo(
         () =>
             allModels.map((model) => {
                 const userActiveModel = userActiveModels.find((activeModel) => activeModel.model_id === model.id);
 
-                if (userActiveModel && "_id" in userActiveModel && "default" in userActiveModel) {
+                if (userActiveModel && "_id" in userActiveModel) {
                     return {
                         ...model,
                         active: true as const,
                         active_id: userActiveModel._id,
-                        default: userActiveModel.default,
+                        default: "default" in userActiveModel ? userActiveModel.default : false,
                     };
                 }
                 return { ...model, active: false as const, default: false };

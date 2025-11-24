@@ -68,12 +68,14 @@ export const getModels = query({
         if (models.length === 0) {
             return [
                 {
+                    karnet_default: true,
                     model_id: "google/gemini-2.5-flash-preview-09-2025",
                     name: "Gemini 2.5 Flash",
                     provider: "google",
                     features: ["text", "image"],
                 },
                 {
+                    karnet_default: true,
                     model_id: "google/gemini-2.5-flash-image",
                     name: "Gemini 2.5 Flash Image",
                     provider: "google",

@@ -147,7 +147,7 @@ export const ModelsSettings = () => {
     }, [search]);
 
     const toggleModel = (model: KarnetModel) => {
-        if (model.active) {
+        if (model.active && "active_id" in model && typeof model.active_id === "string") {
             deactivateModel({ id: model.active_id });
         } else {
             activateModel({

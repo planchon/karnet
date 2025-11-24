@@ -43,6 +43,7 @@ export const GeneralSettings = () => {
                                     .filter((model) => model.active)
                                     .filter((model) => model.architecture.output_modalities.includes("text"))
                                     .filter((model) => !model.architecture.output_modalities.includes("image"))
+                                    .filter((model) => !("karnet_default" in model && model.karnet_default))
                                     .map((model) => (
                                         <DropdownMenuItem key={model.id} onClick={() => setDefaultModel(model, "text")}>
                                             {model.name}
