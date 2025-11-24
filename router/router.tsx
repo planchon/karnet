@@ -11,7 +11,7 @@ export const GeneralAppRouter = () => (
     <LayoutGroup>
         <AnimatePresence mode="wait">
             <Routes>
-                <Route element={<LoginPage />} path="/login" />
+                <Route element={<LoginPage />} path="/login/*" />
                 <Route element={<Protected />} path="/">
                     <Route element={<GeneralOutlet />} path="/chat">
                         <Route element={<ChatPage />} path=":chatId?" />
