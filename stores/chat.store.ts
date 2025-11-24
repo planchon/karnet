@@ -36,6 +36,19 @@ export class ChatStore {
         makeAutoObservable(this, {}, { autoBind: true });
     }
 
+    setDefaultModels(defaultTextModel: KarnetModel, defaultImageModel: KarnetModel) {
+        this.defaultTextModel = defaultTextModel;
+        this.defaultImageModel = defaultImageModel;
+
+        if (!this.selectedModel) {
+            if (this.selectedTool.includes("image")) {
+                this.selectedModel = defaultImageModel;
+            } else {
+                this.selectedModel = defaultTextModel;
+            }
+        }
+    }
+
     setModel(model: KarnetModel) {
         if (!isImageGeneratingModel(model) && this.selectedTool.includes("image")) {
             this.selectedTool = this.selectedTool.filter((t) => t !== "image");

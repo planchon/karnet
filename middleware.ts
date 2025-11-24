@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export default clerkMiddleware(async (auth, req) => {
     const authRes = await auth();
 
-    const landingRoutes = ["/login", "/waitlist"];
+    const landingRoutes = ["/login", "/waitlist", "/"];
 
     if (authRes.isAuthenticated && landingRoutes.includes(req.nextUrl.pathname) && req.nextUrl.pathname !== "/chat") {
         return NextResponse.redirect(new URL("/chat", req.url));

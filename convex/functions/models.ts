@@ -65,6 +65,23 @@ export const getModels = query({
             .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
             .collect();
 
+        if (models.length === 0) {
+            return [
+                {
+                    model_id: "google/gemini-2.5-flash-preview-09-2025",
+                    name: "Gemini 2.5 Flash",
+                    provider: "google",
+                    features: ["text", "image"],
+                },
+                {
+                    model_id: "google/gemini-2.5-flash-image",
+                    name: "Gemini 2.5 Flash Image",
+                    provider: "google",
+                    features: ["image"],
+                },
+            ];
+        }
+
         return models;
     },
 });

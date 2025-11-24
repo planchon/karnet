@@ -142,8 +142,7 @@ export const useModels = () => {
             {} as Record<string, (typeof models)[number][]>
         );
 
-    chatStore.defaultTextModel = defaultTextModel as KarnetModel;
-    chatStore.defaultImageModel = defaultImageModel as KarnetModel;
+    chatStore.setDefaultModels(defaultTextModel as KarnetModel, defaultImageModel as KarnetModel);
 
     return {
         models,
