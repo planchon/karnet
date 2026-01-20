@@ -7,7 +7,7 @@ export type InputModalities = z.infer<typeof InputModalitiesSchema>;
 // Define the schema for the 'architecture' object
 export const ArchitectureSchema = z.object({
     input_modalities: z.array(InputModalitiesSchema), // Assuming a fixed set of modalities
-    output_modalities: z.array(z.string()), // Assuming a fixed set of modalities
+    output_modalities: z.array(z.enum(["text", "image", "audio", "file", "video"])), // Assuming a fixed set of modalities
     tokenizer: z.string(),
     instruct_type: z.string().nullish(),
 });
