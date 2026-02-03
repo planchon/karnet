@@ -3,7 +3,7 @@ import remarkGfm from "remark-gfm";
 import remarkHtml from "remark-html";
 
 /**
- * Converts markdown to HTML with basic styling for clipboard
+ * Converts markdown to HTML with minimal inline styling for Word compatibility
  */
 export async function convertMarkdownToHtml(markdown: string): Promise<string> {
     // Convert markdown to HTML using remark
@@ -12,109 +12,40 @@ export async function convertMarkdownToHtml(markdown: string): Promise<string> {
         .use(remarkHtml, { sanitize: false }) // Convert to HTML
         .process(markdown);
 
-    const html = result.toString();
+    let html = result.toString();
 
-    // Add basic styling
-    const styledHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            margin-top: 24px;
-            margin-bottom: 16px;
-            font-weight: 600;
-            line-height: 1.25;
-        }
-        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
-        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
-        h3 { font-size: 1.25em; }
-        p { margin-bottom: 16px; }
-        code {
-            background-color: #f6f8fa;
-            border-radius: 3px;
-            padding: 0.2em 0.4em;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 85%;
-        }
-        pre {
-            background-color: #f6f8fa;
-            border-radius: 6px;
-            padding: 16px;
-            overflow: auto;
-        }
-        pre code {
-            background-color: transparent;
-            padding: 0;
-        }
-        a {
-            color: #0366d6;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        blockquote {
-            border-left: 4px solid #dfe2e5;
-            padding-left: 16px;
-            margin-left: 0;
-            color: #6a737d;
-        }
-        ul, ol {
-            padding-left: 2em;
-            margin-bottom: 16px;
-        }
-        li {
-            margin-bottom: 0.25em;
-        }
-        hr {
-            border: 0;
-            border-top: 1px solid #e1e4e8;
-            margin: 24px 0;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-        strong {
-            font-weight: 600;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 16px;
-        }
-        table th,
-        table td {
-            padding: 6px 13px;
-            border: 1px solid #dfe2e5;
-        }
-        table tr {
-            background-color: #fff;
-            border-top: 1px solid #c6cbd1;
-        }
-        table tr:nth-child(2n) {
-            background-color: #f6f8fa;
-        }
-        table th {
-            font-weight: 600;
-            background-color: #f6f8fa;
-        }
-    </style>
-</head>
-<body>
-${html}
-</body>
-</html>`;
+    // Apply minimal inline styles for Word compatibility
+    // Word handles basic HTML tags well, so we keep styling minimal
+    html = html
+        // Headings - just adjust font sizes
+        .replace(/<h1>/g, '<h1 style="font-size:2em;font-weight:bold;margin:0.67em 0;">')
+        .replace(/<h2>/g, '<h2 style="font-size:1.5em;font-weight:bold;margin:0.75em 0;">')
+        .replace(/<h3>/g, '<h3 style="font-size:1.17em;font-weight:bold;margin:0.83em 0;">')
+        .replace(/<h4>/g, '<h4 style="font-size:1em;font-weight:bold;margin:1.12em 0;">')
+        .replace(/<h5>/g, '<h5 style="font-size:0.83em;font-weight:bold;margin:1.5em 0;">')
+        .replace(/<h6>/g, '<h6 style="font-size:0.67em;font-weight:bold;margin:1.67em 0;">')
+        // Paragraphs
+        .replace(/<p>/g, '<p style="margin:1em 0;">')
+        // Code blocks
+        .replace(/<pre>/g, '<pre style="background-color:#f5f5f5;padding:1em;border:1px solid #ddd;font-family:monospace;">')
+        .replace(/<code>/g, '<code style="font-family:monospace;background-color:#f5f5f5;padding:0.2em 0.4em;">')
+        // Remove code background when inside pre
+        .replace(/<pre style="[^"]*"><code style="[^"]*">/g, '<\\0>')
+        .replace(/<\\0>/g, '<pre style="background-color:#f5f5f5;padding:1em;border:1px solid #ddd;font-family:monospace;"><code style="font-family:monospace;">')
+        // Blockquotes
+        .replace(/<blockquote>/g, '<blockquote style="border-left:4px solid #ddd;padding-left:1em;margin-left:0;color:#666;">')
+        // Lists
+        .replace(/<ul>/g, '<ul style="margin:1em 0;padding-left:2em;">')
+        .replace(/<ol>/g, '<ol style="margin:1em 0;padding-left:2em;">')
+        // Tables
+        .replace(/<table>/g, '<table style="border-collapse:collapse;width:100%;margin:1em 0;">')
+        .replace(/<th>/g, '<th style="border:1px solid #ddd;padding:8px;background-color:#f5f5f5;font-weight:bold;">')
+        .replace(/<td>/g, '<td style="border:1px solid #ddd;padding:8px;">')
+        // Links
+        .replace(/<a /g, '<a style="color:#0066cc;text-decoration:underline;" ')
+        // Horizontal rules
+        .replace(/<hr>/g, '<hr style="border:none;border-top:1px solid #ddd;margin:1em 0;">');
 
-    return styledHtml;
+    // Return just the HTML fragment with meta charset for proper encoding
+    return `<meta charset="utf-8">${html}`;
 }
