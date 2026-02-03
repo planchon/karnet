@@ -217,7 +217,16 @@ export const ChatPage = observer(function ChatPageComponent() {
 
     const listenToNewChat = useCallback(
         (e: KeyboardEvent) => {
-            if (e.key === "c" && !editorRef.current?.isFocused) {
+            // Only trigger new chat if 'c' is pressed without modifier keys and no text is selected
+            if (
+                e.key === "c" &&
+                !editorRef.current?.isFocused &&
+                !e.ctrlKey &&
+                !e.metaKey &&
+                !e.shiftKey &&
+                !e.altKey &&
+                window.getSelection()?.toString() === ""
+            ) {
                 isNewChat.current = true;
                 setChatId(generateId());
                 setInputPosition("center");
