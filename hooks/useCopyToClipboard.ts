@@ -1,5 +1,7 @@
+import { removeMarkdown } from "@excalidraw/markdown-to-text";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { convertMarkdownToHtml } from "@/lib/markdown-to-html";
 
 type CopiedValue = string | null;
 
@@ -16,7 +18,19 @@ export function useCopyToClipboard(): [CopiedValue, CopyFn] {
 
         // Try to save to clipboard then save it in the state if worked
         try {
-            await navigator.clipboard.writeText(text);
+            // Convert markdown to plain text for text/plain format
+            const textToCopy = removeMarkdown(text);
+
+            // Create clipboard items with HTML and plain text formats
+            const htmlContent = await convertMarkdownToHtml(text);
+
+            const clipboardItem = new ClipboardItem({
+                "text/plain": new Blob([textToCopy], { type: "text/plain" }),
+                "text/html": new Blob([htmlContent], { type: "text/html" }),
+            });
+
+            await navigator.clipboard.write([clipboardItem]);
+
             setCopiedText(text);
             toast.success("Copied to clipboard");
             setTimeout(() => {
