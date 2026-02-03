@@ -1,26 +1,10 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import z from "zod";
 import { OpenRouterModelSchema } from "@/ai/schema/model";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { useStores } from "./useStores";
-
-const userActiveModelsSchema = z.array(
-    z.object({
-        _id: z.string().transform((val) => val as Id<"models">),
-        _creationTime: z.number(),
-        subject: z.string(),
-        model_id: z.string(),
-        name: z.string(),
-        provider: z.string(),
-        features: z.array(z.string()),
-        default: z.boolean().optional(),
-    })
-);
-
-export type UserActiveModel = z.infer<typeof userActiveModelsSchema>;
 
 export type KarnetModel = ReturnType<typeof useModels>["models"][number];
 
@@ -36,65 +20,21 @@ export const useModels = () => {
     const { chatStore } = useStores();
 
     const {
-        data: { models: allModels, defaultTextModel, defaultImageModel },
+        data: { models: allModels, defaultTextModel, defaultImageModel } = {
+            models: [],
+            defaultTextModel: null,
+            defaultImageModel: null,
+        },
         isLoading,
         error,
     } = useQuery<ModelsData>({
         queryKey: ["allModels"],
         queryFn: () => fetch("/api/models").then((res) => res.json()),
-        initialData: () => {
-            const modelData = localStorage.getItem("models");
-            if (!modelData) {
-                return {
-                    models: [],
-                    defaultTextModel: null,
-                    defaultImageModel: null,
-                };
-            }
-
-            const data = JSON.parse(modelData);
-            const parsed = schema.safeParse(data);
-
-            if (!parsed.success) {
-                localStorage.removeItem("models");
-                return {
-                    models: [],
-                    defaultTextModel: null,
-                    defaultImageModel: null,
-                };
-            }
-
-            return parsed.data;
-        },
     });
 
-    const { data: userActiveModels } = useQuery({
+    const { data: userActiveModels = [] } = useQuery({
         ...convexQuery(api.functions.models.getModels, {}),
-        initialData: () => {
-            const userActiveModelsData = localStorage.getItem("user-active-models");
-            if (!userActiveModelsData) {
-                return [];
-            }
-            const parsed = userActiveModelsSchema.safeParse(JSON.parse(userActiveModelsData));
-            if (!parsed.success) {
-                localStorage.removeItem("user-active-models");
-                return [];
-            }
-            return parsed.data;
-        },
     });
-
-    useEffect(() => {
-        if (userActiveModels) {
-            localStorage.setItem("user-active-models", JSON.stringify(userActiveModels));
-        }
-    }, [userActiveModels]);
-
-    useEffect(() => {
-        if (allModels) {
-            localStorage.setItem("all-models", JSON.stringify(allModels));
-        }
-    }, [allModels]);
 
     console.log("userActiveModels", userActiveModels);
 
