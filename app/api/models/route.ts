@@ -6,7 +6,7 @@ const allModelsSchema = z.array(OpenRouterModelSchema);
 
 const allowedProviders = ["anthropic", "azure", "openai", "google", "vertex", "x-ai", "perplexity", "mistralai"];
 
-const defaultTextModels = "google/gemini-2.5-flash-preview-09-2025";
+const defaultTextModels = "google/gemini-3-flash-preview";
 const defaultImageModels = "google/gemini-2.5-flash-image";
 
 export async function GET() {
