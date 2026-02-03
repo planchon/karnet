@@ -1,8 +1,10 @@
 "use client";
 
 import { removeMarkdown } from "@excalidraw/markdown-to-text";
+import { convertMarkdownToDocx } from "@mohtasham/md-to-docx";
 import { Check, Copy } from "lucide-react";
-import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { useState } from "react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 
@@ -13,11 +15,32 @@ type CopyButtonProps = {
 };
 
 export function CopyButton({ content, copyMessage, convertMarkdown = true }: CopyButtonProps) {
-    const [isCopied, copy] = useCopyToClipboard();
+    const [isCopied, setIsCopied] = useState(false);
 
-    const handleCopy = () => {
-        const textToCopy = convertMarkdown ? removeMarkdown(content) : content;
-        copy(copyMessage || textToCopy);
+    const handleCopy = async () => {
+        try {
+            const textToCopy = convertMarkdown ? removeMarkdown(content) : content;
+
+            // Create clipboard items with both formats
+            const docxBlob = await convertMarkdownToDocx(content);
+
+            const clipboardItem = new ClipboardItem({
+                "text/plain": new Blob([textToCopy], { type: "text/plain" }),
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document": docxBlob,
+            });
+
+            await navigator.clipboard.write([clipboardItem]);
+
+            // Show success state
+            setIsCopied(true);
+            toast.success(copyMessage || "Copied to clipboard");
+
+            // Reset after 1.5 seconds
+            setTimeout(() => setIsCopied(false), 1500);
+        } catch (error) {
+            console.error("Failed to copy:", error);
+            toast.error("Failed to copy to clipboard");
+        }
     };
 
     return (
