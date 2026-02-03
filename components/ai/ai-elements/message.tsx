@@ -1,3 +1,4 @@
+import { removeMarkdown } from "@excalidraw/markdown-to-text";
 import { Button } from "@ui/button";
 import {
     DropdownMenu,
@@ -122,7 +123,7 @@ export const MessageActions = ({ message, regenerate }: { message: UIMessage; re
                 visible && "opacity-100"
             )}
         >
-            <Button onClick={() => handleCopy(text || "wtf")} size="icon" variant="ghost">
+            <Button onClick={() => handleCopy(removeMarkdown(text || ""))} size="icon" variant="ghost">
                 <AnimatePresence initial={false} mode="wait">
                     {isCopied ? (
                         <motion.div

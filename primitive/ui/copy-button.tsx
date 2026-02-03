@@ -1,5 +1,6 @@
 "use client";
 
+import { removeMarkdown } from "@excalidraw/markdown-to-text";
 import { Check, Copy } from "lucide-react";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { cn } from "@/lib/utils";
@@ -8,16 +9,22 @@ import { Button } from "@/primitive/ui/button";
 type CopyButtonProps = {
     content: string;
     copyMessage?: string;
+    convertMarkdown?: boolean;
 };
 
-export function CopyButton({ content, copyMessage }: CopyButtonProps) {
+export function CopyButton({ content, copyMessage, convertMarkdown = true }: CopyButtonProps) {
     const [isCopied, copy] = useCopyToClipboard();
+
+    const handleCopy = () => {
+        const textToCopy = convertMarkdown ? removeMarkdown(content) : content;
+        copy(copyMessage || textToCopy);
+    };
 
     return (
         <Button
             aria-label="Copy to clipboard"
             className="relative h-6 w-6"
-            onClick={() => copy(copyMessage || content)}
+            onClick={handleCopy}
             size="icon"
             variant="ghost"
         >

@@ -16,6 +16,7 @@
     "@clerk/react-router": "^1.10.0",
     "@convex-dev/r2": "^0.7.3",
     "@convex-dev/react-query": "0.0.0-alpha.11",
+    "@excalidraw/markdown-to-text": "^0.1.2",
     "@lobehub/icons": "^2.25.0",
     "@openrouter/ai-sdk-provider": "^1.2.0",
     "@radix-ui/react-avatar": "^1.1.10",

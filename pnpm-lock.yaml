@@ -26,6 +26,9 @@ importers:
       '@convex-dev/react-query':
         specifier: 0.0.0-alpha.11
         version: 0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.85.5(react@19.1.0))(convex@1.29.3(@clerk/clerk-react@5.53.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@4.1.12)
+      '@excalidraw/markdown-to-text':
+        specifier: ^0.1.2
+        version: 0.1.2
       '@lobehub/icons':
         specifier: ^2.25.0
         version: 2.25.0(@babel/core@7.28.0)(@types/react@19.1.8)(acorn@8.15.0)(antd@5.26.7(date-fns@4.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(framer-motion@12.23.9(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1653,6 +1656,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@excalidraw/markdown-to-text@0.1.2':
+    resolution: {integrity: sha512-1nDXBNAojfi3oSFwJswKREkFm5wrSjqay81QlyRv2pkITG/XYB5v+oChENVBQLcxQwX4IUATWvXM5BcaNhPiIg==}
 
   '@floating-ui/core@0.7.3':
     resolution: {integrity: sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==}
@@ -10286,6 +10292,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.8':
     optional: true
+
+  '@excalidraw/markdown-to-text@0.1.2': {}
 
   '@floating-ui/core@0.7.3': {}
 
