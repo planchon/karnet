@@ -1,10 +1,10 @@
 "use client";
 
 import { removeMarkdown } from "@excalidraw/markdown-to-text";
-import { convertMarkdownToDocx } from "@mohtasham/md-to-docx";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { convertMarkdownToHtml } from "@/lib/markdown-to-html";
 import { cn } from "@/lib/utils";
 import { Button } from "@/primitive/ui/button";
 
@@ -21,12 +21,12 @@ export function CopyButton({ content, copyMessage, convertMarkdown = true }: Cop
         try {
             const textToCopy = convertMarkdown ? removeMarkdown(content) : content;
 
-            // Create clipboard items with both formats
-            const docxBlob = await convertMarkdownToDocx(content);
+            // Create clipboard items with HTML and plain text formats
+            const htmlContent = await convertMarkdownToHtml(content);
 
             const clipboardItem = new ClipboardItem({
                 "text/plain": new Blob([textToCopy], { type: "text/plain" }),
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document": docxBlob,
+                "text/html": new Blob([htmlContent], { type: "text/html" }),
             });
 
             await navigator.clipboard.write([clipboardItem]);
