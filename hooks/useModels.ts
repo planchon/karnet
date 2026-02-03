@@ -85,7 +85,18 @@ export const useModels = () => {
             {} as Record<string, (typeof models)[number][]>
         );
 
-    chatStore.setDefaultModels(defaultTextModel as KarnetModel, defaultImageModel as KarnetModel);
+    // Use user's selected default models from database, fallback to API defaults
+    const userDefaultTextModel = models.find(
+        (model) => model.default && !model.architecture.output_modalities.includes("image")
+    );
+    const userDefaultImageModel = models.find(
+        (model) => model.default && model.architecture.output_modalities.includes("image")
+    );
+
+    chatStore.setDefaultModels(
+        (userDefaultTextModel || defaultTextModel) as KarnetModel,
+        (userDefaultImageModel || defaultImageModel) as KarnetModel
+    );
 
     return {
         models,
