@@ -440,7 +440,7 @@ function Section({
   );
 }
 
-function App() {
+function Playground() {
   return (
     <main className="min-h-svh bg-background text-foreground">
       <header className="border-b px-5 py-8 sm:px-8">
@@ -1368,4 +1368,4 @@ function App() {
   );
 }
 
-export default App;
+export default Playground;

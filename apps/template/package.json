@@ -37,7 +37,7 @@
     "ultracite": "7.8.1",
     "vite": "^8.0.12"
   },
-  "name": "portal",
+  "name": "template",
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -b",
