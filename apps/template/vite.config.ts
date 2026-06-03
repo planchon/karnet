@@ -6,19 +6,25 @@ import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     tanstackRouter({
       autoCodeSplitting: true,
       target: "react",
     }),
     react(),
-    babel({ presets: [reactCompilerPreset()] }),
+    ...(command === "serve"
+      ? [babel({ presets: [reactCompilerPreset()] })]
+      : []),
     tailwindcss(),
   ],
+  build: {
+    minify: false,
+    reportCompressedSize: false,
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-});
+}));

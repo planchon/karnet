@@ -4,7 +4,7 @@ React 19 SPA starter for Karnet apps.
 
 ## Stack
 
-- **React 19** with the React Compiler
+- **React 19** with the React Compiler (dev only)
 - **Vite 8** + **TypeScript 6**
 - **TanStack Router** (file-based routes, code splitting)
 - **TanStack Query** (shared client, route context)
@@ -14,11 +14,12 @@ React 19 SPA starter for Karnet apps.
 ## Scripts
 
 ```bash
-pnpm dev       # start dev server
-pnpm build     # production build + typecheck
-pnpm preview   # preview production build
-pnpm check     # lint
-pnpm fix       # auto-fix lint/format issues
+pnpm dev        # start dev server
+pnpm build      # production build (fast; no typecheck or lint)
+pnpm typecheck  # TypeScript project references
+pnpm preview    # preview production build
+pnpm check      # lint
+pnpm fix        # auto-fix lint/format issues
 ```
 
 ## Getting started
@@ -30,7 +31,7 @@ pnpm dev
 ```
 
 - `/` — minimal home page
-- `/playground` — shadcn/ui component showcase
+- `/playground` — shadcn/ui component showcase (dev only)
 
 ## Environment
 
